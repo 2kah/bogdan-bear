@@ -1,0 +1,14 @@
+syntax: glob
+build
+bin
+gen
+libs
+*.cfg
+*.vcxproj*
+*.cmake
+*.sdf
+*.sln
+*.suo
+*.ipch
+*.stamp*
+*.rule
