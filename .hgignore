@@ -12,3 +12,4 @@ libs
 *.ipch
 *.stamp*
 *.rule
+OGRETest-build
