@@ -13,3 +13,4 @@ libs
 *.stamp*
 *.rule
 OGRETest-build
+Prototype-build/
