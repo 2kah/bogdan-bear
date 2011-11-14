@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "Refactor.h"
+#include "Game.h"
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 #define WIN32_LEAN_AND_MEAN
@@ -18,7 +19,9 @@ extern "C" {
     int main(int argc, char *argv[])
 #endif
     {
-        std::cout << "Hello, Bogdan!" << std::endl;
+        Game game;
+
+        game.run();
 
         return 0;
     }
