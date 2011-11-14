@@ -95,10 +95,12 @@ if (NOT OGRE_BUILD_PLATFORM_IPHONE)
 endif()
  
 set(HDRS
+    ./Refactor.h
 	./Game.h
 )
  
 set(SRCS
+    ./Refactor.cpp
 	./Game.cpp
 )
  
