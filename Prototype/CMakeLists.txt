@@ -107,7 +107,7 @@ include_directories( ${OIS_INCLUDE_DIRS}
 	${OGRE_SAMPLES_INCLUDEPATH}
 )
  
-add_executable(Prototype WIN32 ${HDRS} ${SRCS})
+add_executable(Prototype ${HDRS} ${SRCS})
  
 set_target_properties(Prototype PROPERTIES DEBUG_POSTFIX _d)
  

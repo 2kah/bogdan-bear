@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "Game.h"
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
@@ -10,11 +12,14 @@ extern "C" {
 #endif
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-    INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
+    //INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT)
+    int main(int argc, char *argv[])
 #else
     int main(int argc, char *argv[])
 #endif
     {
+        std::cout << "Hello, Bogdan!" << std::endl;
+
         return 0;
     }
 
