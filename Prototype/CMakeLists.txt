@@ -97,11 +97,15 @@ endif()
 set(HDRS
     ./Refactor.h
 	./Game.h
+    
+    ./BaseApplication.h
 )
  
 set(SRCS
     ./Refactor.cpp
 	./Game.cpp
+    
+    ./BaseApplication.cpp
 )
  
 include_directories( ${OIS_INCLUDE_DIRS}
