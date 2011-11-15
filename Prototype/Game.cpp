@@ -3,6 +3,7 @@
 #include <OgreTimer.h>
 
 #include "Game.h"
+#include "Object.h"
 
 Game::Game(void)
 {
@@ -14,11 +15,8 @@ Game::~Game(void)
 
 void Game::createScene(void)
 {
-    Ogre::Entity* ogreHead = mSceneMgr->createEntity("Head", "ogrehead.mesh");
- 
-    Ogre::SceneNode* headNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-    headNode->attachObject(ogreHead);
- 
+    mObject = new Object(mSceneMgr);
+
     // Set ambient light
     mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
  
@@ -47,7 +45,7 @@ void Game::run(void)
     double oldTime = timer.getMilliseconds() / 1000.0;
 
     double simTime = 0;
-    double simFrameLength = 1.0;
+    double simFrameLength = 0.01;
 
     timer.reset();
     double simTimeQueued = 0.0;
@@ -76,7 +74,7 @@ void Game::run(void)
             //previousState = currentState;
             //integrate (physics) (currentState, simTime, dt);
 
-            std::cout << "LOL" << std::endl;
+            mObject->update();
 
             simTime += simFrameLength;
             simTimeQueued -= simFrameLength;

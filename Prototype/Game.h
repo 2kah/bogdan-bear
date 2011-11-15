@@ -3,6 +3,8 @@
 
 #include "BaseApplication.h"
 
+#include "Object.h"
+
 class Game : public BaseApplication
 {
 public:
@@ -13,6 +15,9 @@ public:
 
 protected:
     virtual void createScene(void);
+
+private:
+    Object *mObject;
 };
 
 #endif // #ifndef __Game_h_

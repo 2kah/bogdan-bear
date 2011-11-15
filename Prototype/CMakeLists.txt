@@ -97,6 +97,7 @@ endif()
 set(HDRS
     ./Refactor.h
 	./Game.h
+    ./Object.h
     
     ./BaseApplication.h
 )
@@ -104,6 +105,7 @@ set(HDRS
 set(SRCS
     ./Refactor.cpp
 	./Game.cpp
+    ./Object.cpp
     
     ./BaseApplication.cpp
 )
