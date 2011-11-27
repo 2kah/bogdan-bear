@@ -15,7 +15,9 @@ Game::~Game(void)
 
 void Game::createScene(void)
 {
-    mObject = new Object(mSceneMgr);
+    objects.push_back(new Object(mSceneMgr, Ogre::Vector3(50, 0, 50), "bogdan"));
+    objects.push_back(new Object(mSceneMgr, Ogre::Vector3(0, 0, 0), "poo"));
+    objects.push_back(new Object(mSceneMgr, Ogre::Vector3(50, 0, 0), "hello"));
 
     // Set ambient light
     mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
@@ -74,7 +76,12 @@ void Game::run(void)
             //previousState = currentState;
             //integrate (physics) (currentState, simTime, dt);
 
-            mObject->update();
+            for (std::vector<Object *>::size_type i = 0; i != objects.size(); ++i)
+            {
+                Object *object = objects[i];
+
+                object->update();
+            }
 
             simTime += simFrameLength;
             simTimeQueued -= simFrameLength;

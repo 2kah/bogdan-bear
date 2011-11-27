@@ -1,6 +1,8 @@
 #ifndef __Game_h_
 #define __Game_h_
 
+#include <vector>
+
 #include "BaseApplication.h"
 
 #include "Object.h"
@@ -17,7 +19,7 @@ protected:
     virtual void createScene(void);
 
 private:
-    Object *mObject;
+    std::vector<Object *> objects;
 };
 
 #endif // #ifndef __Game_h_

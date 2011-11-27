@@ -1,17 +1,20 @@
 #ifndef __Object_h_
 #define __Object_h_
 
+#include <string>
+
 #include <OgreSceneManager.h>
 
 class Object
 {
 public:
-    Object(Ogre::SceneManager *sceneMgr);
+    Object();
+    Object(Ogre::SceneManager *sceneMgr, Ogre::Vector3 position, std::string name);
     virtual ~Object(void);
 
     virtual void update(void);
 
-private:
+protected:
     Ogre::SceneNode *mSceneNode;
 };
 
