@@ -50,6 +50,9 @@ endif ()
 set(CMAKE_DEBUG_POSTFIX "_d")
  
 set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/dist")
+
+set(BULLET_LIBS BulletDynamics BulletCollision LinearMath)
+set(BULLET_INCLUDE ${Prototype_SOURCE_DIR}/bullet/src)
  
 find_package(OGRE REQUIRED)
  
@@ -115,7 +118,10 @@ set(SRCS
 include_directories( ${OIS_INCLUDE_DIRS}
 	${OGRE_INCLUDE_DIRS}
 	${OGRE_SAMPLES_INCLUDEPATH}
+    ${BULLET_INCLUDE}
 )
+
+subdirs(bullet)
  
 add_executable(Prototype ${HDRS} ${SRCS})
  
