@@ -1,9 +1,12 @@
 #include <iostream>
+#include <vector>
 
 #include <OgreTimer.h>
 
 #include "Game.h"
 #include "Object.h"
+#include "SceneObject.h"
+#include "Player.h"
 
 Game::Game(void)
 {
@@ -15,9 +18,25 @@ Game::~Game(void)
 
 void Game::createScene(void)
 {
-    objects.push_back(new Object(mSceneMgr, Ogre::Vector3(50, 0, 50), "bogdan"));
-    objects.push_back(new Object(mSceneMgr, Ogre::Vector3(0, 0, 0), "poo"));
-    objects.push_back(new Object(mSceneMgr, Ogre::Vector3(50, 0, 0), "hello"));
+    // Create a list of SceneObjects (one of which is a player) at various positions
+    std::vector<SceneObject *> things;
+
+    things.push_back(new SceneObject(Ogre::Vector3(50, 0, 50)));
+    things.push_back(new SceneObject(Ogre::Vector3(0, 0, 0)));
+    things.push_back(new SceneObject(Ogre::Vector3(50, 0, 0)));
+    things.push_back(new Player(Ogre::Vector3(100, 0, 100)));
+
+    // Add all the scene objects to the scene and list of objects
+    for (std::vector<SceneObject *>::size_type i = 0; i != things.size(); ++i)
+    {
+        SceneObject *thing = things[i];
+
+        std::stringstream name("");
+        name << (int) i;
+
+        thing->addToScene(mSceneMgr, name.str());
+        objects.push_back(thing);
+    }
 
     // Set ambient light
     mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
@@ -76,6 +95,7 @@ void Game::run(void)
             //previousState = currentState;
             //integrate (physics) (currentState, simTime, dt);
 
+            // update all the known objects
             for (std::vector<Object *>::size_type i = 0; i != objects.size(); ++i)
             {
                 Object *object = objects[i];

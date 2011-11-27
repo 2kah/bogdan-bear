@@ -1,14 +1,15 @@
 #ifndef __Player_h_
 #define __Player_h_
 
-#include "Object.h"
+#include "SceneObject.h"
 
-class Player: public Object
+class Player: public SceneObject
 {
 public:
-    Player(Ogre::SceneManager *sceneMgr, Ogre::Vector3 position, std::string name);
+    Player(Ogre::Vector3 position);
     virtual ~Player(void);
 
+    virtual void addToScene(Ogre::SceneManager *sceneMgr, std::string name);
     virtual void update(void);
 };
 
