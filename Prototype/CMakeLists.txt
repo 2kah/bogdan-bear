@@ -101,6 +101,9 @@ set(HDRS
     ./Refactor.h
 	./Game.h
     ./Object.h
+    
+    ./SceneObject.h
+    
     ./Player.h
     
     ./BaseApplication.h
@@ -110,6 +113,9 @@ set(SRCS
     ./Refactor.cpp
 	./Game.cpp
     ./Object.cpp
+    
+    ./SceneObject.cpp
+    
     ./Player.cpp
     
     ./BaseApplication.cpp
