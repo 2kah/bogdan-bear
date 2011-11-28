@@ -133,7 +133,7 @@ add_executable(Prototype ${HDRS} ${SRCS})
  
 set_target_properties(Prototype PROPERTIES DEBUG_POSTFIX _d)
  
-target_link_libraries(Prototype ${OGRE_LIBRARIES} ${OIS_LIBRARIES})
+target_link_libraries(Prototype ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${BULLET_LIBS})
  
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/bin)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/media)
