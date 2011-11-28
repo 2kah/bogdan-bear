@@ -39,7 +39,7 @@ void Game::createScene(void)
         name << (int) i;
 
         thing->addToScene(mSceneMgr, name.str());
-        objects.push_back(thing);
+        objects.insert(thing);
     }
 
     // Set ambient light
@@ -111,13 +111,22 @@ void Game::run(void)
             //integrate (physics) (currentState, simTime, dt);
             dynamicsWorld->stepSimulation(simFrameLength, 1, simFrameLength);
 
-            // update all the known objects
-            for (std::vector<Object *>::size_type i = 0; i != objects.size(); ++i)
+            for(std::set<Object *>::iterator i = objects.begin(); i != objects.end(); ++i)
             {
-                Object *object = objects[i];
+                Object *object = *i;
 
                 object->update();
             }
+
+            for(std::set<SceneObject *>::iterator i = sceneRemoveQueue.begin(); i != sceneRemoveQueue.end(); ++i)
+            {
+                SceneObject *object = *i;
+
+                objects.erase(object);
+                object->removeFromScene(mSceneMgr);
+            }
+
+            sceneRemoveQueue.clear();
 
             simTime += simFrameLength;
             simTimeQueued -= simFrameLength;
@@ -145,6 +154,11 @@ void Game::run(void)
 
     std::cout << "You have been eaten by Bogdan!" << std::endl;
     std::cout << "*** GAME OVER ***" << std::endl;
+}
+
+void Game::removeSceneObject(SceneObject *object)
+{
+    sceneRemoveQueue.insert(object);
 }
 
 bool Game::keyPressed(const OIS::KeyEvent &arg)
@@ -175,13 +189,20 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
 	}
     else if (arg.key == OIS::KC_W)
 	{
+        static int i = 0;
+        
+        std::stringstream name("explosion");
+        name << (int) i;
+
+        ++i;
+
         player->shoot();
 
-        Explosion *explosion = new Explosion(player->position);
+        Explosion *explosion = new Explosion(this, player->position);
 
-        explosion->addToScene(mSceneMgr, "explosion");
+        explosion->addToScene(mSceneMgr, name.str());
 
-        objects.push_back(explosion);
+        objects.insert(explosion);
 	}
     else if (arg.key == OIS::KC_LSHIFT)
 	{

@@ -2,6 +2,7 @@
 #define __Game_h_
 
 #include <vector>
+#include <set>
 
 #include "BaseApplication.h"
 
@@ -16,6 +17,8 @@ public:
 
     virtual void run(void);
 
+    virtual void removeSceneObject(SceneObject *);
+
 protected:
     virtual void createScene(void);
 
@@ -23,8 +26,11 @@ protected:
     virtual bool keyReleased(const OIS::KeyEvent &arg);
 
 private:
-    std::vector<Object *> objects;
     Player *player;
+
+    std::set<Object *> objects;
+    
+    std::set<SceneObject *> sceneRemoveQueue;
 };
 
 #endif // #ifndef __Game_h_
