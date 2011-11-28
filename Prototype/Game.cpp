@@ -161,6 +161,11 @@ void Game::removeSceneObject(SceneObject *object)
     sceneRemoveQueue.insert(object);
 }
 
+void Game::carveSphere(Ogre::Vector3 position, double radius)
+{
+    std::cout << "Carving sphere at " << position << " of radius " << radius << std::endl;
+}
+
 bool Game::keyPressed(const OIS::KeyEvent &arg)
 {
     BaseApplication::keyPressed(arg);
