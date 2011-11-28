@@ -105,6 +105,7 @@ set(HDRS
     ./SceneObject.h
     
     ./Player.h
+    ./Explosion.h
     
     ./BaseApplication.h
 )
@@ -117,6 +118,7 @@ set(SRCS
     ./SceneObject.cpp
     
     ./Player.cpp
+    ./Explosion.cpp
     
     ./BaseApplication.cpp
 )
