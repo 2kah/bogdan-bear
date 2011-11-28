@@ -28,6 +28,13 @@ void SceneObject::addToScene(Ogre::SceneManager *sceneMgr, std::string name)
     mSceneNode->translate(position);
 }
 
+void SceneObject::removeFromScene(Ogre::SceneManager *sceneMgr)
+{
+    for (int i = 0; i < mSceneNode->numAttachedObjects(); ++i){
+        sceneMgr->destroyMovableObject(mSceneNode->getAttachedObject(i));
+    }
+}
+
 void SceneObject::update(void)
 {
     mSceneNode->yaw(Ogre::Degree(0.5));

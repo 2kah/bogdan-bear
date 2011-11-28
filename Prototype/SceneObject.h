@@ -15,6 +15,8 @@ public:
     virtual ~SceneObject(void);
 
     virtual void addToScene(Ogre::SceneManager *sceneMgr, std::string name);
+    virtual void removeFromScene(Ogre::SceneManager *sceneMgr);
+
     virtual void update(void);
 
 protected:
