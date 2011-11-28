@@ -29,7 +29,7 @@ void Explosion::update(void)
 {
     if (size < 100)
     {
-        mSceneNode->scale(1.01, 1.01, 1.01);
+        mSceneNode->setScale(size / 100.0, size / 100.0, size / 100.0);
         ++size;
     }
     else
