@@ -19,6 +19,8 @@ public:
 
 protected:
     Ogre::SceneNode *mSceneNode;
+
+public:
     Ogre::Vector3 position;
 };
 

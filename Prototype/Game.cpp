@@ -8,6 +8,7 @@
 #include "Object.h"
 #include "SceneObject.h"
 #include "Player.h"
+#include "Explosion.h"
 
 Game::Game(void)
 {
@@ -175,6 +176,12 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
     else if (arg.key == OIS::KC_W)
 	{
         player->shoot();
+
+        Explosion *explosion = new Explosion(player->position);
+
+        explosion->addToScene(mSceneMgr, "explosion");
+
+        objects.push_back(explosion);
 	}
     else if (arg.key == OIS::KC_LSHIFT)
 	{
