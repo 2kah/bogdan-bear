@@ -11,6 +11,15 @@ public:
 
     virtual void addToScene(Ogre::SceneManager *sceneMgr, std::string name);
     virtual void update(void);
+
+    virtual void forward();
+    virtual void back();
+    virtual void left();
+    virtual void right();
+
+    virtual void jump();
+    virtual void shoot();
+    virtual void platform();
 };
 
 #endif // #ifndef __Player_h_
