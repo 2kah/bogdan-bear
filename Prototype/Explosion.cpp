@@ -34,6 +34,7 @@ void Explosion::update(void)
     }
     else
     {
+        game->carveSphere(position, size);
         game->removeSceneObject(this);
     }
 }

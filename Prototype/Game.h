@@ -19,6 +19,8 @@ public:
 
     virtual void removeSceneObject(SceneObject *);
 
+    virtual void carveSphere(Ogre::Vector3 position, double radius);
+
 protected:
     virtual void createScene(void);
 
