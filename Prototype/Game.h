@@ -6,6 +6,7 @@
 #include "BaseApplication.h"
 
 #include "Object.h"
+#include "Player.h"
 
 class Game : public BaseApplication
 {
@@ -18,8 +19,12 @@ public:
 protected:
     virtual void createScene(void);
 
+    virtual bool keyPressed(const OIS::KeyEvent &arg);
+    virtual bool keyReleased(const OIS::KeyEvent &arg);
+
 private:
     std::vector<Object *> objects;
+    Player *player;
 };
 
 #endif // #ifndef __Game_h_

@@ -366,10 +366,6 @@ bool BaseApplication::keyPressed( const OIS::KeyEvent &arg )
     {
         mShutDown = true;
     }
-	else if (arg.key == OIS::KC_LEFT)
-	{
-		printf("%s\n", "GOING LEFT!!!");
-	}
 
     mCameraMan->injectKeyDown(arg);
     return true;
