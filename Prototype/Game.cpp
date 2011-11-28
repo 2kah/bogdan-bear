@@ -2,6 +2,7 @@
 #include <vector>
 
 #include <OgreTimer.h>
+#include <btBulletDynamicsCommon.h>
 
 #include "Game.h"
 #include "Object.h"
@@ -63,6 +64,17 @@ void Game::run(void)
         return;
     }
 
+    btBroadphaseInterface* broadphase = new btDbvtBroadphase();
+ 
+    btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
+    btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
+ 
+    btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
+ 
+    btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
+ 
+    dynamicsWorld->setGravity(btVector3(0,-10,0));
+
     Ogre::Timer timer;
 
     double oldTime = timer.getMilliseconds() / 1000.0;
@@ -96,6 +108,7 @@ void Game::run(void)
         {
             //previousState = currentState;
             //integrate (physics) (currentState, simTime, dt);
+            dynamicsWorld->stepSimulation(simFrameLength, 1, simFrameLength);
 
             // update all the known objects
             for (std::vector<Object *>::size_type i = 0; i != objects.size(); ++i)
