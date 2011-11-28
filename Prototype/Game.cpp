@@ -21,10 +21,12 @@ void Game::createScene(void)
     // Create a list of SceneObjects (one of which is a player) at various positions
     std::vector<SceneObject *> things;
 
+    player = new Player(Ogre::Vector3(100, 0, 100));
+
     things.push_back(new SceneObject(Ogre::Vector3(50, 0, 50)));
     things.push_back(new SceneObject(Ogre::Vector3(0, 0, 0)));
     things.push_back(new SceneObject(Ogre::Vector3(50, 0, 0)));
-    things.push_back(new Player(Ogre::Vector3(100, 0, 100)));
+    things.push_back(player);
 
     // Add all the scene objects to the scene and list of objects
     for (std::vector<SceneObject *>::size_type i = 0; i != things.size(); ++i)
@@ -129,4 +131,49 @@ void Game::run(void)
 
     std::cout << "You have been eaten by Bogdan!" << std::endl;
     std::cout << "*** GAME OVER ***" << std::endl;
+}
+
+bool Game::keyPressed(const OIS::KeyEvent &arg)
+{
+    BaseApplication::keyPressed(arg);
+    
+    if (mTrayMgr->isDialogVisible()) return true;   // don't process any more keys if dialog is up
+    
+    if (arg.key == OIS::KC_UP)
+	{
+        player->forward();
+	}
+    else if (arg.key == OIS::KC_DOWN)
+	{
+        player->back();
+	}
+    else if (arg.key == OIS::KC_LEFT)
+	{
+        player->left();
+	}
+    else if (arg.key == OIS::KC_RIGHT)
+	{
+        player->right();
+	}
+	else if (arg.key == OIS::KC_SPACE)
+	{
+        player->jump();
+	}
+    else if (arg.key == OIS::KC_W)
+	{
+        player->shoot();
+	}
+    else if (arg.key == OIS::KC_LSHIFT)
+	{
+        player->platform();
+	}
+    
+    return true;
+}
+
+bool Game::keyReleased(const OIS::KeyEvent &arg)
+{
+    BaseApplication::keyReleased(arg);
+
+    return true;
 }
