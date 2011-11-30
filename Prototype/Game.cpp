@@ -9,6 +9,7 @@
 #include "SceneObject.h"
 #include "Player.h"
 #include "Explosion.h"
+#include "FallingObject.h"
 
 Game::Game(void)
 {
@@ -24,11 +25,13 @@ void Game::createScene(void)
     std::vector<SceneObject *> things;
 
     player = new Player(Ogre::Vector3(100, 0, 100));
+    fallingObject = new FallingObject(Ogre::Vector3(0,100,0));
 
     things.push_back(new SceneObject(Ogre::Vector3(50, 0, 50)));
     things.push_back(new SceneObject(Ogre::Vector3(0, 0, 0)));
     things.push_back(new SceneObject(Ogre::Vector3(50, 0, 0)));
     things.push_back(player);
+    things.push_back(fallingObject);
 
     // Add all the scene objects to the scene and list of objects
     for (std::vector<SceneObject *>::size_type i = 0; i != things.size(); ++i)
@@ -39,6 +42,7 @@ void Game::createScene(void)
         name << (int) i;
 
         thing->addToScene(mSceneMgr, name.str());
+        thing->addToPhysics(dynamicsWorld);
         objects.insert(thing);
     }
 
@@ -60,11 +64,7 @@ void Game::run(void)
     mPluginsCfg = "plugins.cfg";
 #endif
 
-    if (!setup())
-    {
-        return;
-    }
-
+    //this code is in wrong place
     btBroadphaseInterface* broadphase = new btDbvtBroadphase();
  
     btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
@@ -72,9 +72,15 @@ void Game::run(void)
  
     btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
  
-    btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
+    dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
  
-    dynamicsWorld->setGravity(btVector3(0,-10,0));
+    dynamicsWorld->setGravity(btVector3(0,-1,0));
+
+    
+    if (!setup())
+    {
+        return;
+    }
 
     Ogre::Timer timer;
 
