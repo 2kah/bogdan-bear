@@ -8,6 +8,7 @@
 
 #include "Object.h"
 #include "Player.h"
+#include "FallingObject.h"
 
 class Game : public BaseApplication
 {
@@ -29,6 +30,8 @@ protected:
 
 private:
     Player *player;
+    FallingObject *fallingObject;
+    btDiscreteDynamicsWorld* dynamicsWorld;
 
     std::set<Object *> objects;
     

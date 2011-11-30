@@ -4,6 +4,7 @@
 #include <string>
 
 #include <OgreSceneManager.h>
+#include <btBulletDynamicsCommon.h>
 
 #include "Object.h"
 
@@ -17,10 +18,14 @@ public:
     virtual void addToScene(Ogre::SceneManager *sceneMgr, std::string name);
     virtual void removeFromScene(Ogre::SceneManager *sceneMgr);
 
+    virtual void addToPhysics(btDiscreteDynamicsWorld* dynamicsWorld);
+    virtual void removeFromPhysics(btDiscreteDynamicsWorld* dynamicsWorld);
+
     virtual void update(void);
 
 protected:
     Ogre::SceneNode *mSceneNode;
+
 
 public:
     Ogre::Vector3 position;
