@@ -8,6 +8,7 @@
 
 #include "Object.h"
 #include "Player.h"
+#include "Tower.h"
 #include "FallingObject.h"
 
 class Game : public BaseApplication
@@ -34,6 +35,7 @@ private:
     btDiscreteDynamicsWorld* dynamicsWorld;
 
     std::set<Object *> objects;
+    std::Tower* tower;
     
     std::set<SceneObject *> sceneRemoveQueue;
 };

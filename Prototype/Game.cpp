@@ -6,6 +6,7 @@
 
 #include "Game.h"
 #include "Object.h"
+#include "Tower.h"
 #include "SceneObject.h"
 #include "Player.h"
 #include "Explosion.h"
@@ -76,6 +77,7 @@ void Game::run(void)
  
     dynamicsWorld->setGravity(btVector3(0,-1,0));
 
+    //tower = new Tower(mSceneMgr);// To build a tower
     
     if (!setup())
     {
