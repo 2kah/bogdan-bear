@@ -9,9 +9,6 @@
 
 #include "Tower.h"
 
-#include "bullet\Extras\Serialize\BulletWorldImporter\btBulletWorldImporter.h"
-#include "bullet\src\BulletDynamics\Dynamics\btDynamicsWorld.h"
-
 #define PI 3.14159265
 
 Tower::Tower(): mSceneNode(0)
