@@ -76,13 +76,13 @@ void Game::run(void)
     dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
  
     dynamicsWorld->setGravity(btVector3(0,-1,0));
-
-    //tower = new Tower(mSceneMgr);// To build a tower
     
     if (!setup())
     {
         return;
     }
+    
+    tower = new Tower(mSceneMgr);// To build a tower
 
     Ogre::Timer timer;
 
