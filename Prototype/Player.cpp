@@ -18,6 +18,8 @@ Player::~Player(void)
 {
 }
 
+
+
 void Player::addToScene(Ogre::SceneManager *sceneMgr, std::string name)
 {
     Ogre::Entity* playerEntity = sceneMgr->createEntity(name, "ninja.mesh");
@@ -26,6 +28,11 @@ void Player::addToScene(Ogre::SceneManager *sceneMgr, std::string name)
     playerNode->attachObject(playerEntity);
 
     playerNode->translate(position);
+
+    //TODO: put this code somewhere nicer
+    cameraNode = playerNode->createChildSceneNode();
+    cameraNode->setPosition(0, 100, 0);
+    //cameraNode->attachObject(mCamera);
 }
 
 void Player::update(void)

@@ -33,6 +33,9 @@ protected:
     virtual bool mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
     virtual bool mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
 
+    virtual void createCamera(void);
+    virtual void createViewports(void);
+
 private:
     Player *player;
     FallingObject *fallingObject;
@@ -42,6 +45,9 @@ private:
     Tower* tower;
     
     std::set<SceneObject *> sceneRemoveQueue;
+    
+    Ogre::Camera* mCamera;
+
 };
 
 #endif // #ifndef __Game_h_
