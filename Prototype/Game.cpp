@@ -32,7 +32,7 @@ void Game::createScene(void)
     things.push_back(new SceneObject(Ogre::Vector3(0, 0, 0)));
     things.push_back(new SceneObject(Ogre::Vector3(50, 0, 0)));*/
     things.push_back(player);
-    things.push_back(fallingObject);
+    //things.push_back(fallingObject);
 
     // Add all the scene objects to the scene and list of objects
     for (std::vector<SceneObject *>::size_type i = 0; i != things.size(); ++i)
@@ -180,6 +180,7 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
     
     if (mTrayMgr->isDialogVisible()) return true;   // don't process any more keys if dialog is up
     
+    //may be nicer as a switch case
     if (arg.key == OIS::KC_UP || arg.key == OIS::KC_W)
 	{
         player->forward();
@@ -207,6 +208,28 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
 bool Game::keyReleased(const OIS::KeyEvent &arg)
 {
     BaseApplication::keyReleased(arg);
+
+    switch (arg.key)
+    {
+    case OIS::KC_UP:
+    case OIS::KC_W:
+        player->stopMovingForward();
+        break;
+    case OIS::KC_DOWN:
+    case OIS::KC_S:
+        player->stopMovingBack();
+        break;
+    case OIS::KC_LEFT:
+    case OIS::KC_A:
+        player->stopMovingLeft();
+        break;
+    case OIS::KC_RIGHT:
+    case OIS::KC_D:
+        player->stopMovingRight();
+        break;
+    default:
+        break;
+    }
 
     return true;
 }
