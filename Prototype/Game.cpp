@@ -28,9 +28,9 @@ void Game::createScene(void)
     player = new Player(Ogre::Vector3(100, 0, 100));
     fallingObject = new FallingObject(Ogre::Vector3(0,100,0));
 
-    things.push_back(new SceneObject(Ogre::Vector3(50, 0, 50)));
+    /*things.push_back(new SceneObject(Ogre::Vector3(50, 0, 50)));
     things.push_back(new SceneObject(Ogre::Vector3(0, 0, 0)));
-    things.push_back(new SceneObject(Ogre::Vector3(50, 0, 0)));
+    things.push_back(new SceneObject(Ogre::Vector3(50, 0, 0)));*/
     things.push_back(player);
     things.push_back(fallingObject);
 
@@ -180,19 +180,19 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
     
     if (mTrayMgr->isDialogVisible()) return true;   // don't process any more keys if dialog is up
     
-    if (arg.key == OIS::KC_UP)
+    if (arg.key == OIS::KC_UP || arg.key == OIS::KC_W)
 	{
         player->forward();
 	}
-    else if (arg.key == OIS::KC_DOWN)
+    else if (arg.key == OIS::KC_DOWN || arg.key == OIS::KC_S)
 	{
         player->back();
 	}
-    else if (arg.key == OIS::KC_LEFT)
+    else if (arg.key == OIS::KC_LEFT || arg.key == OIS::KC_A)
 	{
         player->left();
 	}
-    else if (arg.key == OIS::KC_RIGHT)
+    else if (arg.key == OIS::KC_RIGHT || arg.key == OIS::KC_D)
 	{
         player->right();
 	}
@@ -200,8 +200,33 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
 	{
         player->jump();
 	}
-    else if (arg.key == OIS::KC_W)
+    
+    return true;
+}
+
+bool Game::keyReleased(const OIS::KeyEvent &arg)
+{
+    BaseApplication::keyReleased(arg);
+
+    return true;
+}
+
+bool Game::mouseMoved(const OIS::MouseEvent &arg)
+{
+    BaseApplication::mouseMoved(arg);
+    return true;
+}
+
+bool Game::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id)
+{
+    BaseApplication::mousePressed(arg, id);
+
+    if (id == OIS::MB_Right)
 	{
+        player->platform();
+	}
+    else if (id == OIS::MB_Left)
+    {
         static int i = 0;
         
         std::stringstream name("explosion");
@@ -216,18 +241,13 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
         explosion->addToScene(mSceneMgr, name.str());
 
         objects.insert(explosion);
-	}
-    else if (arg.key == OIS::KC_LSHIFT)
-	{
-        player->platform();
-	}
-    
+    }
+
     return true;
 }
 
-bool Game::keyReleased(const OIS::KeyEvent &arg)
+bool Game::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id)
 {
-    BaseApplication::keyReleased(arg);
-
+    BaseApplication::mouseReleased(arg, id);
     return true;
 }
