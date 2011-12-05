@@ -43,6 +43,7 @@ void SceneObject::removeFromPhysics(btDiscreteDynamicsWorld* dynamicsWorld)
 {
 }
 
+//TODO: make update take time since last frame as parameter
 void SceneObject::update(void)
 {
     mSceneNode->yaw(Ogre::Degree(0.5));

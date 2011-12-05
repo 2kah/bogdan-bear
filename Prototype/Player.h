@@ -26,10 +26,14 @@ public:
     virtual void shoot();
     virtual void platform();
 
+    //TODO: remove this horrible hack
+    Ogre::SceneNode *cameraNode;
+
 private:
     Ogre::Real mMove;     //The movement constant
     Ogre::Vector3 mDirection;     //Value to move in the correct direction
     Ogre::SceneNode *playerNode;
+
 };
 
 #endif // #ifndef __Player_h_

@@ -26,7 +26,7 @@ void Game::createScene(void)
     std::vector<SceneObject *> things;
 
     player = new Player(Ogre::Vector3(100, 0, 100));
-    fallingObject = new FallingObject(Ogre::Vector3(0,100,0));
+    //fallingObject = new FallingObject(Ogre::Vector3(0,100,0));
 
     /*things.push_back(new SceneObject(Ogre::Vector3(50, 0, 50)));
     things.push_back(new SceneObject(Ogre::Vector3(0, 0, 0)));
@@ -46,6 +46,8 @@ void Game::createScene(void)
         thing->addToPhysics(dynamicsWorld);
         objects.insert(thing);
     }
+    //TODO: fix this disgusting hack
+    player->cameraNode->attachObject(mCamera);
 
     // Set ambient light
     mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
@@ -162,6 +164,23 @@ void Game::run(void)
 
     std::cout << "You have been eaten by Bogdan!" << std::endl;
     std::cout << "*** GAME OVER ***" << std::endl;
+}
+
+//TODO: put this code where it should be
+void Game::createCamera(void)
+{
+    mCamera = mSceneMgr->createCamera("playerCam");
+    mCamera->setNearClipDistance(1);
+}
+
+void Game::createViewports(void)
+{
+    // Create one viewport, entire window
+    Ogre::Viewport* vp = mWindow->addViewport(mCamera);
+    vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
+
+    // Alter the camera aspect ratio to match the viewport
+    mCamera->setAspectRatio(Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
 }
 
 void Game::removeSceneObject(SceneObject *object)
