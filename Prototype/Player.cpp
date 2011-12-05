@@ -8,6 +8,10 @@
 Player::Player(Ogre::Vector3 position)
 {
     this->position = position;
+
+    //Movement speed - TODO: this should be a cvar
+    mMove = 250;
+    mDirection = Ogre::Vector3::ZERO;
 }
 
 Player::~Player(void)
@@ -16,38 +20,64 @@ Player::~Player(void)
 
 void Player::addToScene(Ogre::SceneManager *sceneMgr, std::string name)
 {
-    Ogre::Entity* ogreHead = sceneMgr->createEntity(name, "ninja.mesh");
+    Ogre::Entity* playerEntity = sceneMgr->createEntity(name, "ninja.mesh");
 
-    mSceneNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
-    mSceneNode->attachObject(ogreHead);
+    playerNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
+    playerNode->attachObject(playerEntity);
 
-    mSceneNode->translate(position);
+    playerNode->translate(position);
 }
 
 void Player::update(void)
 {
-    mSceneNode->yaw(Ogre::Degree(0.5));
-    mSceneNode->pitch(Ogre::Degree(0.1));
+    /*mSceneNode->yaw(Ogre::Degree(0.5));
+    mSceneNode->pitch(Ogre::Degree(0.1));*/
+    //TODO: update this based on time since last frame
+    playerNode->translate(mDirection * 0.01, Ogre::Node::TS_LOCAL);
 }
 
 void Player::forward(void)
 {
     std::cout << "MOVING FORWARD" << std::endl;
+    mDirection.z = -mMove;
+}
+
+void Player::stopMovingForward(void)
+{
+    mDirection.z = 0;
 }
 
 void Player::back(void)
 {
     std::cout << "MOVING BACK" << std::endl;
+    mDirection.z = mMove;
+}
+
+void Player::stopMovingBack(void)
+{
+    mDirection.z = 0;
 }
 
 void Player::left(void)
 {
     std::cout << "MOVING LEFT" << std::endl;
+    mDirection.x = -mMove;
+}
+
+void Player::stopMovingLeft(void)
+{
+    mDirection.x = 0;
 }
 
 void Player::right(void)
 {
     std::cout << "MOVING RIGHT" << std::endl;
+    mDirection.x = mMove;
+}
+
+void Player::stopMovingRight(void)
+{
+    mDirection.x = 0;
 }
 
 void Player::jump(void)

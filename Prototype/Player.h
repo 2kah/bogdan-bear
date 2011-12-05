@@ -17,9 +17,19 @@ public:
     virtual void left();
     virtual void right();
 
+    virtual void stopMovingForward();
+    virtual void stopMovingBack();
+    virtual void stopMovingLeft();
+    virtual void stopMovingRight();
+
     virtual void jump();
     virtual void shoot();
     virtual void platform();
+
+private:
+    Ogre::Real mMove;     //The movement constant
+    Ogre::Vector3 mDirection;     //Value to move in the correct direction
+    Ogre::SceneNode *playerNode;
 };
 
 #endif // #ifndef __Player_h_
