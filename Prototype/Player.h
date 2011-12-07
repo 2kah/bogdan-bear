@@ -26,7 +26,7 @@ public:
     virtual void shoot();
     virtual void platform();
 
-    //TODO: remove this horrible hack
+    //TODO: make this nicer
     Ogre::SceneNode *cameraNode;
 
 private:

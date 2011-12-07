@@ -10,7 +10,7 @@ Player::Player(Ogre::Vector3 position)
     this->position = position;
 
     //Movement speed - TODO: this should be a cvar
-    mMove = 250;
+    mMove = 2;
     mDirection = Ogre::Vector3::ZERO;
 }
 
@@ -39,8 +39,7 @@ void Player::update(void)
 {
     /*mSceneNode->yaw(Ogre::Degree(0.5));
     mSceneNode->pitch(Ogre::Degree(0.1));*/
-    //TODO: update this based on time since last frame
-    playerNode->translate(mDirection * 0.01, Ogre::Node::TS_LOCAL);
+    playerNode->translate(mDirection, Ogre::Node::TS_LOCAL);
 }
 
 void Player::forward(void)
