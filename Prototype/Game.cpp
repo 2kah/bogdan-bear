@@ -46,7 +46,6 @@ void Game::createScene(void)
         thing->addToPhysics(dynamicsWorld);
         objects.insert(thing);
     }
-    //TODO: fix this disgusting hack
     player->cameraNode->attachObject(mCamera);
 
     // Set ambient light
@@ -256,6 +255,9 @@ bool Game::keyReleased(const OIS::KeyEvent &arg)
 bool Game::mouseMoved(const OIS::MouseEvent &arg)
 {
     BaseApplication::mouseMoved(arg);
+    const OIS::MouseState &ms = mMouse->getMouseState();
+    player->lookX(ms.X.rel);
+    player->lookY(ms.Y.rel);
     return true;
 }
 
