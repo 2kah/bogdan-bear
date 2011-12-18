@@ -3,6 +3,8 @@
 
 #include "SceneObject.h"
 
+//#include "Playercam.h"
+
 class Player: public SceneObject
 {
 public:
@@ -26,13 +28,20 @@ public:
     virtual void shoot();
     virtual void platform();
 
-    //TODO: make this nicer
+    virtual void lookX(int dist);
+    virtual void lookY(int dist);
+
+    //TODO: make this nicer?
     Ogre::SceneNode *cameraNode;
 
 private:
     Ogre::Real mMove;     //The movement constant
     Ogre::Vector3 mDirection;     //Value to move in the correct direction
     Ogre::SceneNode *playerNode;
+
+    Ogre::Radian rotX;
+    Ogre::Radian rotY;
+    float rotationFactor; //TODO: scale this to change mouse sensitivity
 
 };
 

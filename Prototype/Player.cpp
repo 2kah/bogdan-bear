@@ -12,13 +12,13 @@ Player::Player(Ogre::Vector3 position)
     //Movement speed - TODO: this should be a cvar
     mMove = 2;
     mDirection = Ogre::Vector3::ZERO;
+    rotX = 0;
+    rotationFactor = 0.05;
 }
 
 Player::~Player(void)
 {
 }
-
-
 
 void Player::addToScene(Ogre::SceneManager *sceneMgr, std::string name)
 {
@@ -31,7 +31,7 @@ void Player::addToScene(Ogre::SceneManager *sceneMgr, std::string name)
 
     //TODO: put this code somewhere nicer
     cameraNode = playerNode->createChildSceneNode();
-    cameraNode->setPosition(0, 100, 0);
+    cameraNode->setPosition(0, 180, 0);
     //cameraNode->attachObject(mCamera);
 }
 
@@ -39,6 +39,10 @@ void Player::update(void)
 {
     /*mSceneNode->yaw(Ogre::Degree(0.5));
     mSceneNode->pitch(Ogre::Degree(0.1));*/
+    playerNode->yaw(rotX);
+    cameraNode->pitch(rotY);
+    rotX = 0;
+    rotY = 0;
     playerNode->translate(mDirection, Ogre::Node::TS_LOCAL);
 }
 
@@ -101,3 +105,12 @@ void Player::platform(void)
     std::cout << "CREATING PLATFORM" << std::endl;
 }
 
+void Player::lookX(int dist)
+{
+    rotX += Ogre::Degree(-dist * rotationFactor);
+}
+
+void Player::lookY(int dist)
+{
+    rotY += Ogre::Degree(-dist * rotationFactor);
+}
