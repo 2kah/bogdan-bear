@@ -25,7 +25,7 @@ void Game::createScene(void)
     // Create a list of SceneObjects (one of which is a player) at various positions
     std::vector<SceneObject *> things;
 
-    player = new Player(Ogre::Vector3(100, 0, 100));
+    player = new Player(Ogre::Vector3(0, 0, 500));
     //fallingObject = new FallingObject(Ogre::Vector3(0,100,0));
 
     /*things.push_back(new SceneObject(Ogre::Vector3(50, 0, 50)));
@@ -50,6 +50,14 @@ void Game::createScene(void)
 
     // Set ambient light
     mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
+    //TODO: replace with actual lighting
+    Ogre::Light* pointlight1 = mSceneMgr->createLight("pointlight1");
+    pointlight1->setType(Ogre::Light::LT_POINT);
+    pointlight1->setPosition(Ogre::Vector3(500, 150, 0));
+    Ogre::Light* pointlight2 = mSceneMgr->createLight("pointlight2");
+    pointlight2->setType(Ogre::Light::LT_POINT);
+    pointlight2->setPosition(Ogre::Vector3(-500, 150, 0));
+    
  
     // Create a light
     Ogre::Light* l = mSceneMgr->createLight("MainLight");
