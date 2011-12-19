@@ -20,6 +20,7 @@ Tower::Tower(Ogre::SceneManager *mSceneMgr)
     int h = 50;
 	int r = 7;
 	int p = 84;
+	int scale = 50;
 	Ogre::Entity* entity [8];
 	Ogre::SceneNode* node [50][8][84];
 	int radius = 8;
@@ -75,15 +76,20 @@ Tower::Tower(Ogre::SceneManager *mSceneMgr)
                 if (randSeg [height][radius][position] == 1)
                 {
                     //rads is the radian value for each block around the centre point
+
                     double rads = ((1/nseg)+((double)position/(nseg/2)))*PI;
                     //degs is the degree for how much the block is rotated
                     double degs = 360/(double)nseg;
+					double xPos = ((scale*radius)+(scale*(0.5)))*cos(rads);
+					double yPos = ((scale*((double)height/2)));
+					double zPos = ((scale*radius)+(scale*(0.5)))*sin(rads);
                     //Postion k is the height, the others are the postion relative to the middle of the tower
-                    Ogre::Vector3 pos(Ogre::Vector3((radius+0.5)*cos(rads), (double)height/2, (radius+0.5)*sin(rads)));
+                    Ogre::Vector3 pos(Ogre::Vector3(xPos, yPos, zPos));
                     //How much the block is rotated depending on its position
                     Ogre::Quaternion rot(Ogre::Degree(-(degs/2)-(position*degs)), Ogre::Vector3::UNIT_Y);
                     //Scale is 1
-                    Ogre::Vector3 scale(1, 1, 1);
+                    Ogre::Vector3 scale(scale, scale, scale);
+
                     //Add the entity to the static geometry
                     sg->addEntity(entity[radius], pos, rot, scale);
                 }
