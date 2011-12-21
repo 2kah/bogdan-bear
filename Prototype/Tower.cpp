@@ -25,7 +25,7 @@ Tower::Tower(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynamicsWor
     int h = 50;
 	int r = 7;
 	int p = 84;
-	double scale = 10;
+	double scale = 15;
 	Ogre::Entity* entity [8];
 	Ogre::SceneNode* node [50][8][84];
 	btRigidBody* blockRigidBody;// [50][8][84];
@@ -80,44 +80,44 @@ Tower::Tower(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynamicsWor
 		//Loads bullet meshes for each sector shape
 		if(radius == 1)
 		{
-			fileLoader->loadFile("onebb.bullet");
+			fileLoader->loadFile("onebbb.bullet");
 			printf("onebb.bullet loaded\n");
 			//blockShape = fileLoader->getCollisionShapeByName("oneb.bullet");
 
 		}
 		if(radius == 2) 
 		{
-			fileLoader->loadFile("twobb.bullet");
+			fileLoader->loadFile("twobbb.bullet");
 			printf("twobb.bullet loaded\n");
 			//blockShape = fileLoader->getCollisionShapeByName("twob.bullet");
 		}
 		if(radius == 3) 
 		{
-			fileLoader->loadFile("threebb.bullet");
+			fileLoader->loadFile("threebbb.bullet");
 			printf("threebb.bullet loaded\n");
 			//blockShape = fileLoader->getCollisionShapeByName("threeb.bullet");
 		}
 		if(radius == 4)
 		{
-			fileLoader->loadFile("fourbb.bullet");
+			fileLoader->loadFile("fourbbb.bullet");
 			printf("fourbb.bullet loaded\n");
 			//blockShape = fileLoader->getCollisionShapeByName("fourb.bullet");
 		}
 		if(radius == 5) 
 		{
-			fileLoader->loadFile("fivebb.bullet");
+			fileLoader->loadFile("fivebbb.bullet");
 			printf("fiveb.bullet loaded\n");
 			//blockShape = fileLoader->getCollisionShapeByName("fiveb.bullet");
 		}
 		if(radius == 6) 
 		{
-			fileLoader->loadFile("sixbb.bullet");
+			fileLoader->loadFile("sixbbb.bullet");
 			printf("sixb.bullet loaded\n");
 			//blockShape = fileLoader->getCollisionShapeByName("sixb.bullet");
 		}
 		if(radius == 7) 
 		{
-			fileLoader->loadFile("sevenbb.bullet");
+			fileLoader->loadFile("sevenbbb.bullet");
 			printf("sevenb.bullet loaded\n");
 			//blockShape = fileLoader->getCollisionShapeByName("sevenb.bullet");
 			
@@ -157,10 +157,10 @@ Tower::Tower(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynamicsWor
 					blockShape = blockObject->getCollisionShape();
 					//Scale bullet mesh to appropriate size
 					//THIS MAKES IT -LOOK- RIGHT, DON'T KNOW IF IT IS RIGHT, PLEASE EXPLORE FURTHER
-					blockShape->setLocalScaling(btVector3(1.5,1.5,1.5));
+					blockShape->setLocalScaling(btVector3(1,1,1));
 								
 					btQuaternion qRot(0,0,0,1);
-					qRot.setRotation(btVector3(0,1,0), degs);
+					qRot.setRotation(btVector3(0,1,0), ((-PI/(9.5*radius))-rads));
 					btDefaultMotionState* blockMotionState = new btDefaultMotionState(btTransform(qRot,btVector3(xPos,yPos,zPos)));
 					btRigidBody::btRigidBodyConstructionInfo blockRigidBodyCI(0,blockMotionState,blockShape,btVector3(0,0,0));
 				    blockRigidBody= new btRigidBody(blockRigidBodyCI);
