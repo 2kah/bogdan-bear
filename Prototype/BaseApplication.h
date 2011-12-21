@@ -47,11 +47,11 @@ protected:
     virtual bool setup();
     virtual bool configure(void);
     virtual void chooseSceneManager(void);
-    virtual void createCamera(void) = 0; //Overriden
+    virtual void createCamera(void);
     virtual void createFrameListener(void);
     virtual void createScene(void) = 0; // Override me!
     virtual void destroyScene(void);
-    virtual void createViewports(void) = 0;
+    virtual void createViewports(void);
     virtual void setupResources(void);
     virtual void createResourceListener(void);
     virtual void loadResources(void);
@@ -74,7 +74,7 @@ protected:
     virtual void windowClosed(Ogre::RenderWindow* rw);
 
     Ogre::Root *mRoot;
-    //Ogre::Camera* mCamera;
+    Ogre::Camera* mCamera;
     Ogre::SceneManager* mSceneMgr;
     Ogre::RenderWindow* mWindow;
     Ogre::String mResourcesCfg;
