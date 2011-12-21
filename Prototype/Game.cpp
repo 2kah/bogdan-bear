@@ -34,6 +34,7 @@ void Game::createScene(void)
     things.push_back(player);
     things.push_back(fallingObject);
 
+
     // Add all the scene objects to the scene and list of objects
     for (std::vector<SceneObject *>::size_type i = 0; i != things.size(); ++i)
     {
@@ -41,7 +42,6 @@ void Game::createScene(void)
 
         std::stringstream name("");
         name << (int) i;
-
         thing->addToScene(mSceneMgr, name.str());
         thing->addToPhysics(dynamicsWorld);
         objects.insert(thing);
