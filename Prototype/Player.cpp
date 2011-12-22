@@ -2,8 +2,11 @@
 
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>
+#include <math.h>
 
 #include "Player.h"
+
+#define PI 3.14159265
 
 Player::Player(Ogre::Vector3 position)
 {
@@ -95,8 +98,48 @@ void Player::jump(void)
     std::cout << "JUMPING" << std::endl;
 }
 
-void Player::shoot(void)
+void Player::shoot(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynamicsWorld)
 {
+	double l = 1000;
+	double X = cameraNode->convertLocalToWorldPosition(Ogre::Vector3(0,0,0)).x;
+	double Y = cameraNode->convertLocalToWorldPosition(Ogre::Vector3(0,0,0)).y;
+	double Z = cameraNode->convertLocalToWorldPosition(Ogre::Vector3(0,0,0)).z;
+	btVector3 rayFrom(X,Y,Z);
+	printf("%f, %f, %f\n", X,Y,Z);
+	printf("%f, %f\n", playerNode->getOrientation().getYaw().valueDegrees(), cameraNode->getOrientation().getPitch().valueDegrees());
+	double camX1 = 0;
+	double camY1 = (-1)*-sin(cameraNode->getOrientation().getPitch().valueRadians());
+	double camZ1 = (-1)*cos(cameraNode->getOrientation().getPitch().valueRadians());
+	printf("%f, %f, %f\n", camX1,camY1,camZ1);
+	double camX = camZ1*sin(playerNode->getOrientation().getYaw().valueRadians());
+	double camY = camY1;
+	double camZ = camZ1*cos(playerNode->getOrientation().getYaw().valueRadians());
+	printf("%f, %f, %f\n", camX,camY,camZ);
+	double dirX = X+(l*camX);
+	double dirY = Y+(l*camY);
+	double dirZ = Z+(l*camZ);
+	btVector3 rayTo(dirX,dirY,dirZ);
+	printf("%f, %f, %f\n", dirX,dirY,dirZ);
+	//btCollisionWorld collisionWorld  = *dynamicsWorld->getCollisionWorld();
+	btCollisionWorld::ClosestRayResultCallback rayCallback(rayFrom, rayTo);
+
+	dynamicsWorld->rayTest(rayFrom,rayTo,rayCallback);
+	if (rayCallback.hasHit())
+	{
+		printf("hit!\n");
+		/*btRigidBody* body = btRigidBody::upcast(rayCallback.m_collisionObject);
+		if (body)
+		{
+			body->setActivationState(ACTIVE_TAG);
+			btVector3 impulse = rayTo;
+			impulse.normalize();
+			float impulseStrength = 10.f;
+			impulse *= impulseStrength;
+			btVector3 relPos = rayCallback.m_hitPointWorld - body->getCenterOfMassPosition();
+			body->applyImpulse(impulse,relPos);
+		}*/
+	}
+
     std::cout << "SHOOTING" << std::endl;
 }
 

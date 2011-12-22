@@ -25,7 +25,7 @@ public:
     virtual void stopMovingRight();
 
     virtual void jump();
-    virtual void shoot();
+    virtual void shoot(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynamicsWorld);
     virtual void platform();
 
     virtual void lookX(int dist);
