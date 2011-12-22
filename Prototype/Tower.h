@@ -10,6 +10,8 @@
 #include <math.h>
 #include <btBulletDynamicsCommon.h>
 
+#include <OgreVector3.h>
+
 #include "bullet/src/BulletWorldImporter/btBulletWorldImporter.h"
 
 class TowerListener;
@@ -39,7 +41,7 @@ public:
 
     virtual void update(void);
 
-    virtual void carveSphere();
+    virtual void carveSphere(Ogre::Vector3 position, double radius);
     virtual void rebuild();
     virtual void synchronise();
 
