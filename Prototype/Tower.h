@@ -2,6 +2,8 @@
 #define __Tower_h_
 
 #include <string>
+#include <vector>
+#include <set>
 
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>
@@ -10,7 +12,9 @@
 
 #include "bullet/src/BulletWorldImporter/btBulletWorldImporter.h"
 
+class TowerListener;
 
+/*
 class Tower
 {
 public:
@@ -23,6 +27,65 @@ public:
 protected:
     Ogre::SceneNode *mSceneNode;
 	btCollisionShape* blockShape;
+};
+*/
+
+class TowerRefactor
+{
+public:
+    TowerRefactor();
+    TowerRefactor(double blocksize, unsigned levels, unsigned layers, unsigned sectors);
+    virtual ~TowerRefactor(void);
+
+    virtual void update(void);
+
+    virtual void carveSphere();
+    virtual void rebuild();
+    virtual void synchronise();
+
+    void addTowerListener(TowerListener *listener);
+
+//protected:
+    std::set<TowerListener *> towerListeners;
+
+    double blocksize;
+    unsigned levels;
+    unsigned layers;
+    unsigned sectors;
+
+    std::vector<std::vector<std::vector<bool> > > blocks;
+
+private:
+    void fireBlocksUpdated();
+};
+
+class TowerListener
+{
+public:
+    TowerListener() {};
+    virtual ~TowerListener() = 0;
+};
+
+class TowerGraphics : public TowerListener
+{
+public:
+    TowerGraphics();
+    TowerGraphics(TowerRefactor *tower, Ogre::SceneManager *sceneManager);
+    virtual ~TowerGraphics();
+
+protected:
+    TowerRefactor *tower;
+};
+
+class TowerPhysics : public TowerListener
+{
+public:
+    TowerPhysics();
+    TowerPhysics(TowerRefactor *tower, btDiscreteDynamicsWorld* dynamicsWorld);
+    virtual ~TowerPhysics();
+
+protected:
+    TowerRefactor *tower;
 };
 
 #endif // #ifndef __Tower_h_

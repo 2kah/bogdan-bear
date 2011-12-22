@@ -22,6 +22,11 @@ Game::~Game(void)
 
 void Game::createScene(void)
 {
+    //tower = new Tower(mSceneMgr, dynamicsWorld);
+    tower = new TowerRefactor(0, 50, 7, 84);
+    TowerGraphics *towerGraphics = new TowerGraphics(tower, mSceneMgr);
+    TowerPhysics *towerPhysics = new TowerPhysics(tower, dynamicsWorld);
+    
     // Create a list of SceneObjects (one of which is a player) at various positions
     std::vector<SceneObject *> things;
 
@@ -107,8 +112,6 @@ void Game::run(void)
     double simTimeQueued = 0.0;
 
     int counted = 0;
-
-	tower = new Tower(mSceneMgr, dynamicsWorld);
 
     while (true)
     {

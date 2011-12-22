@@ -43,7 +43,7 @@ private:
     btDiscreteDynamicsWorld* dynamicsWorld;
 
     std::set<Object *> objects;
-    Tower* tower;
+    TowerRefactor* tower;
     
     std::set<SceneObject *> sceneRemoveQueue;
 	    
