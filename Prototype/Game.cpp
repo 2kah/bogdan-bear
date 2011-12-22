@@ -7,6 +7,8 @@
 #include "Game.h"
 #include "Object.h"
 #include "Tower.h"
+#include "Builder.h"
+
 #include "SceneObject.h"
 #include "Player.h"
 #include "Explosion.h"
@@ -24,9 +26,13 @@ void Game::createScene(void)
 {
     //tower = new Tower(mSceneMgr, dynamicsWorld);
     tower = new TowerRefactor(0, 50, 7, 84);
+
+    Builder *builder = new Builder(tower);
+    builder->regenerate();
+
     TowerGraphics *towerGraphics = new TowerGraphics(tower, mSceneMgr);
     TowerPhysics *towerPhysics = new TowerPhysics(tower, dynamicsWorld);
-    
+
     // Create a list of SceneObjects (one of which is a player) at various positions
     std::vector<SceneObject *> things;
 

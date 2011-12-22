@@ -230,32 +230,6 @@ TowerRefactor::TowerRefactor(double blocksize, unsigned levels, unsigned layers,
     this->sectors = sectors;
 
     this->blocks = std::vector<std::vector<std::vector<bool> > >(levels, std::vector<std::vector<bool> >(layers, std::vector<bool>(sectors, false)));
-
-    // Random generation
-
-    //Loop through 3D array, filling with random 0's and 1's
-    for (unsigned height = 0; height < levels; ++height)
-    {
-        for (unsigned radius = 0; radius < layers; ++radius)
-        {
-            for (unsigned position = 0; position < sectors; ++position)
-            {
-                //Worth looking at different seeds for this
-                unsigned x = rand() % levels; 
-
-                //Makes the tower more sparse at the top - Larger the height, less likely the blocks
-                if (x < (height - 2)) x = 0;
-                else x = 1;
-
-                //Makes the tower taper at the top - Bigger radiuses at top are cut off
-                if ((floor((double)(levels-height)/radius)) <= radius) x = 0;
-                //if (height == (h-1)) x = 1;
-                this->blocks[height][radius][position] = x;
-            }
-        }
-		printf("Done floor %i\n", height);
-    }
-	printf("Done random gen.\n");
 }
 
 TowerRefactor::~TowerRefactor(void)
