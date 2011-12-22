@@ -240,8 +240,9 @@ void TowerRefactor::update(void)
 {
 }
 
-void TowerRefactor::carveSphere()
+void TowerRefactor::carveSphere(Ogre::Vector3 position, double radius)
 {
+    std::cout << "(Tower) Removing blocks in a radius of " << radius << " from " << position << " (Not implemented)" << std::endl;
 }
 
 void TowerRefactor::rebuild()

@@ -210,7 +210,9 @@ void Game::removeSceneObject(SceneObject *object)
 
 void Game::carveSphere(Ogre::Vector3 position, double radius)
 {
-    std::cout << "Carving sphere at " << position << " of radius " << radius << std::endl;
+    std::cout << "(Game) Carving sphere at " << position << " of radius " << radius << std::endl;
+
+    this->tower->carveSphere(position, radius);
 }
 
 bool Game::keyPressed(const OIS::KeyEvent &arg)

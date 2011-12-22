@@ -11,7 +11,6 @@
 #include "Tower.h"
 #include "FallingObject.h"
 
-
 class Game : public BaseApplication
 {
 public:
