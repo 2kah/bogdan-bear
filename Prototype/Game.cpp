@@ -288,7 +288,7 @@ bool Game::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id)
 
         ++i;
 
-        player->shoot();
+        player->shoot(mSceneMgr,dynamicsWorld);
 
         Explosion *explosion = new Explosion(this, player->position);
 
