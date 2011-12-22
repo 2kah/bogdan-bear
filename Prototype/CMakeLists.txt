@@ -103,6 +103,8 @@ set(HDRS
     ./Object.h
     ./Tower.h
 
+    ./Builder.h
+    
     ./SceneObject.h
     
     ./Player.h
@@ -117,6 +119,8 @@ set(SRCS
 	./Game.cpp
     ./Object.cpp
     ./Tower.cpp
+    
+    ./Builder.cpp
     
     ./SceneObject.cpp
     
