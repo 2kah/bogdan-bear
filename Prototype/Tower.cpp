@@ -253,18 +253,18 @@ void TowerRefactor::synchronise()
 {
 }
 
-BlockPosition TowerRefactor::getBlockPosition(unsigned level, unsigned layer, unsigned sector, double scale)
+BlockPosition TowerRefactor::getBlockPosition(unsigned level, unsigned layer, unsigned sector)
 {
     BlockPosition position;
     
     double nseg = layer * 12;
 
     double angle = ((2*PI) / nseg) * (sector + 0.5);
-    double radius = scale * (layer + 0.5);
+    double radius = this->blocksize * (layer + 0.5);
 
     position.angle = angle;
     position.x = radius * cos(angle);
-    position.y = (scale / 2) * (level + 0.5); // is vertical scale half?
+    position.y = (this->blocksize / 2) * (level + 0.5); // is vertical scale half?
     position.z = radius * sin(angle);
 
     return position;
@@ -294,8 +294,6 @@ TowerGraphics::TowerGraphics(TowerRefactor *tower, Ogre::SceneManager *sceneMana
 
     Ogre::StaticGeometry* sg = sceneManager->createStaticGeometry("Tower");
 
-    double scale = 15;
-
     //Loop through the radius values first
     for (unsigned radius = 1; radius < this->tower->layers; radius++)
     {
@@ -314,7 +312,7 @@ TowerGraphics::TowerGraphics(TowerRefactor *tower, Ogre::SceneManager *sceneMana
             {
                 if (this->tower->blocks[height][radius][position] == 1)
                 {
-                    BlockPosition position_ = this->tower->getBlockPosition(height, radius, position, scale);
+                    BlockPosition position_ = this->tower->getBlockPosition(height, radius, position);
                     double degs = 360 / ((double) nseg);
 
                     //Postion k is the height, the others are the postion relative to the middle of the tower
@@ -325,7 +323,7 @@ TowerGraphics::TowerGraphics(TowerRefactor *tower, Ogre::SceneManager *sceneMana
                     Ogre::Quaternion rot(Ogre::Degree(-(degs/2)-(position*degs)), Ogre::Vector3::UNIT_Y);
 
                     //Scale is 1
-                    Ogre::Vector3 scale(scale, scale, scale);
+                    Ogre::Vector3 scale(this->tower->blocksize, this->tower->blocksize, this->tower->blocksize);
 
                     //Add the entity to the static geometry
                     sg->addEntity(entity[radius], pos, rot, scale);
@@ -351,9 +349,7 @@ TowerPhysics::TowerPhysics()
 TowerPhysics::TowerPhysics(TowerRefactor *tower, btDiscreteDynamicsWorld* dynamicsWorld)
 {
     this->tower = tower;
-
-	double scale = 15;
-
+    
 	btRigidBody* blockRigidBody;// [50][8][84];
 	btCollisionObject* blockObject;
 
@@ -424,7 +420,7 @@ TowerPhysics::TowerPhysics(TowerRefactor *tower, btDiscreteDynamicsWorld* dynami
                 //Generates random segments
                 if (this->tower->blocks[height][radius][position] == 1)
                 {
-                    BlockPosition position_ = this->tower->getBlockPosition(height, radius, position, scale);
+                    BlockPosition position_ = this->tower->getBlockPosition(height, radius, position);
                     double degs = 360 / ((double) nseg);
 
 					//Adds bullet mesh to object
