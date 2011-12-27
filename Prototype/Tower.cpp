@@ -14,7 +14,7 @@
 
 #define PI 3.14159265
 
-/*
+///*
 Tower::Tower()
 {
 
@@ -216,7 +216,7 @@ Tower::~Tower(void)
 void Tower::update(void)
 {
 }
-*/
+//*/
 
 // TOWER REFACTOR
 
@@ -354,44 +354,44 @@ TowerPhysics::TowerPhysics(TowerRefactor *tower, btDiscreteDynamicsWorld* dynami
 		{
 			fileLoader->loadFile("onebbb.bullet");
 			printf("onebb.bullet loaded\n");
-			//blockShape = fileLoader->getCollisionShapeByName("oneb.bullet");
+			blockShape = fileLoader->getCollisionShapeByName("onebbb.bullet");
 
 		}
 		if(radius == 2) 
 		{
 			fileLoader->loadFile("twobbb.bullet");
 			printf("twobb.bullet loaded\n");
-			//blockShape = fileLoader->getCollisionShapeByName("twob.bullet");
+			blockShape = fileLoader->getCollisionShapeByName("twobbb.bullet");
 		}
 		if(radius == 3) 
 		{
 			fileLoader->loadFile("threebbb.bullet");
 			printf("threebb.bullet loaded\n");
-			//blockShape = fileLoader->getCollisionShapeByName("threeb.bullet");
+			blockShape = fileLoader->getCollisionShapeByName("threebbb.bullet");
 		}
 		if(radius == 4)
 		{
 			fileLoader->loadFile("fourbbb.bullet");
 			printf("fourbb.bullet loaded\n");
-			//blockShape = fileLoader->getCollisionShapeByName("fourb.bullet");
+			blockShape = fileLoader->getCollisionShapeByName("fourbbb.bullet");
 		}
 		if(radius == 5) 
 		{
 			fileLoader->loadFile("fivebbb.bullet");
 			printf("fiveb.bullet loaded\n");
-			//blockShape = fileLoader->getCollisionShapeByName("fiveb.bullet");
+			blockShape = fileLoader->getCollisionShapeByName("fivebbb.bullet");
 		}
 		if(radius == 6) 
 		{
 			fileLoader->loadFile("sixbbb.bullet");
 			printf("sixb.bullet loaded\n");
-			//blockShape = fileLoader->getCollisionShapeByName("sixb.bullet");
+			blockShape = fileLoader->getCollisionShapeByName("sixbbb.bullet");
 		}
 		if(radius == 7) 
 		{
 			fileLoader->loadFile("sevenbbb.bullet");
 			printf("sevenb.bullet loaded\n");
-			//blockShape = fileLoader->getCollisionShapeByName("sevenb.bullet");
+			blockShape = fileLoader->getCollisionShapeByName("sevenbbb.bullet");
 			
 		}
 
@@ -417,8 +417,14 @@ TowerPhysics::TowerPhysics(TowerRefactor *tower, btDiscreteDynamicsWorld* dynami
                     //Postion k is the height, the others are the postion relative to the middle of the tower
 
 					//Adds bullet mesh to object
-			        blockObject = dynamicsWorld->getCollisionObjectArray()[(dynamicsWorld->getNumCollisionObjects())-1];//
+
+                    printf("NumCollisionObjects()-1 = %d\n", (dynamicsWorld->getNumCollisionObjects())-1);
+
+			        blockObject = dynamicsWorld->getCollisionObjectArray()[(dynamicsWorld->getNumCollisionObjects()-1)];//
 					blockShape = blockObject->getCollisionShape();
+
+                    printf("%s\n", blockShape->getName());
+
 					//Scale bullet mesh to appropriate size
 					//THIS MAKES IT -LOOK- RIGHT, DON'T KNOW IF IT IS RIGHT, PLEASE EXPLORE FURTHER
 					blockShape->setLocalScaling(btVector3(1,1,1));
