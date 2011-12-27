@@ -32,6 +32,10 @@ protected:
 };
 //*/
 
+struct BlockPosition {
+    double x, y, z, angle;
+};
+
 class TowerRefactor
 {
 public:
@@ -44,6 +48,8 @@ public:
     virtual void carveSphere(Ogre::Vector3 position, double radius);
     virtual void rebuild();
     virtual void synchronise();
+
+    virtual BlockPosition getBlockPosition(unsigned level, unsigned layer, unsigned sector, double scale);
 
     void addTowerListener(TowerListener *listener);
 

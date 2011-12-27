@@ -253,6 +253,36 @@ void TowerRefactor::synchronise()
 {
 }
 
+BlockPosition TowerRefactor::getBlockPosition(unsigned level, unsigned layer, unsigned sector, double scale)
+{
+    BlockPosition position;
+    
+    double nseg = layer * 12;
+    
+    double rads = ((1.0 / nseg) + ((double) sector / (nseg / 2))) * PI;
+
+    position.angle = rads;
+    position.x = (scale*layer + scale/2) * cos(rads);
+    position.y = scale * (((double) level) / 2);
+    position.z = (scale*layer + scale/2) * sin(rads);
+
+    /*
+    unsigned position = sector;
+    unsigned radius = layer;
+    unsigned height = level;
+
+    double rads = ((1/nseg)+((double)position/(nseg/2)))*PI;
+    //degs is the degree for how much the block is rotated
+    double degs = 360/(double)nseg;
+	double xPos = ((scale*radius)+(scale*(0.5)))*cos(rads);
+	double yPos = ((scale*((double)height/2)));
+	double zPos = ((scale*radius)+(scale*(0.5)))*sin(rads);
+    */
+
+    return position;
+}
+
+
 void TowerRefactor::addTowerListener(TowerListener *listener)
 {
     this->towerListeners.insert(listener);
@@ -296,17 +326,16 @@ TowerGraphics::TowerGraphics(TowerRefactor *tower, Ogre::SceneManager *sceneMana
             {
                 if (this->tower->blocks[height][radius][position] == 1)
                 {
-                    //rads is the radian value for each block around the centre point
-                    double rads = ((1/nseg)+((double)position/(nseg/2)))*PI;
-                    //degs is the degree for how much the block is rotated
-                    double degs = 360/(double)nseg;
-					double xPos = ((scale*radius)+(scale*(0.5)))*cos(rads);
-					double yPos = ((scale*((double)height/2)));
-					double zPos = ((scale*radius)+(scale*(0.5)))*sin(rads);
+                    BlockPosition position_ = this->tower->getBlockPosition(height, radius, position, scale);
+                    double degs = 360 / ((double) nseg);
+
                     //Postion k is the height, the others are the postion relative to the middle of the tower
-                    Ogre::Vector3 pos(Ogre::Vector3(xPos, yPos, zPos));
+                    //Ogre::Vector3 pos(Ogre::Vector3(xPos, yPos, zPos));
+                    Ogre::Vector3 pos(Ogre::Vector3(position_.x, position_.y, position_.z));
+
                     //How much the block is rotated depending on its position
                     Ogre::Quaternion rot(Ogre::Degree(-(degs/2)-(position*degs)), Ogre::Vector3::UNIT_Y);
+
                     //Scale is 1
                     Ogre::Vector3 scale(scale, scale, scale);
 
@@ -407,14 +436,8 @@ TowerPhysics::TowerPhysics(TowerRefactor *tower, btDiscreteDynamicsWorld* dynami
                 //Generates random segments
                 if (this->tower->blocks[height][radius][position] == 1)
                 {
-                    //rads is the radian value for each block around the centre point
-                    double rads = ((1/nseg)+((double)position/(nseg/2)))*PI;
-                    //degs is the degree for how much the block is rotated
-                    double degs = 360/(double)nseg;
-					double xPos = ((scale*radius)+(scale*(0.5)))*cos(rads);
-					double yPos = ((scale*((double)height/2)));
-					double zPos = ((scale*radius)+(scale*(0.5)))*sin(rads);
-                    //Postion k is the height, the others are the postion relative to the middle of the tower
+                    BlockPosition position_ = this->tower->getBlockPosition(height, radius, position, scale);
+                    double degs = 360 / ((double) nseg);
 
 					//Adds bullet mesh to object
 
@@ -430,11 +453,11 @@ TowerPhysics::TowerPhysics(TowerRefactor *tower, btDiscreteDynamicsWorld* dynami
 					blockShape->setLocalScaling(btVector3(1,1,1));
 								
 					btQuaternion qRot(0,0,0,1);
-					qRot.setRotation(btVector3(0,1,0), ((-PI/(9.5*radius))-rads));
-					btDefaultMotionState* blockMotionState = new btDefaultMotionState(btTransform(qRot,btVector3(xPos,yPos,zPos)));
+					qRot.setRotation(btVector3(0,1,0), ((-PI/(9.5*radius))-position_.angle));
+					btDefaultMotionState* blockMotionState = new btDefaultMotionState(btTransform(qRot,btVector3(position_.x, position_.y, position_.z)));
 					btRigidBody::btRigidBodyConstructionInfo blockRigidBodyCI(0,blockMotionState,blockShape,btVector3(0,0,0));
 				    blockRigidBody= new btRigidBody(blockRigidBodyCI);
-					blockRigidBody->setCenterOfMassTransform(btTransform(qRot,btVector3(xPos,yPos,zPos)));
+					blockRigidBody->setCenterOfMassTransform(btTransform(qRot,btVector3(position_.x, position_.y, position_.z)));
 
 					dynamicsWorld->addRigidBody(blockRigidBody);
 
