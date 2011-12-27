@@ -279,6 +279,13 @@ BlockPosition TowerRefactor::getBlockPosition(unsigned level, unsigned layer, un
 	double zPos = ((scale*radius)+(scale*(0.5)))*sin(rads);
     */
 
+    // -- this is what x,y,z should be for the generated geometry
+    // angle = ((2*PI) / nseg) * (sector + 0.5);
+    // radius = this->blocksize * (layer + 0.5);
+    // x = radius * cos(angle);
+    // y = (level + 0.5) * this->blocksize;
+    // z = radius * sin(angle)
+
     return position;
 }
 
