@@ -24,8 +24,6 @@ Game::~Game(void)
 
 void Game::createScene(void)
 {
-#define __USE_OLD_TOWER__
-#ifdef __USE_OLD_TOWER__
     //this code is in wrong place
     btBroadphaseInterface* broadphase = new btDbvtBroadphase();
  
@@ -38,6 +36,8 @@ void Game::createScene(void)
  
     dynamicsWorld->setGravity(btVector3(0,-9.8,0));
 
+//#define __USE_OLD_TOWER__
+#ifdef __USE_OLD_TOWER__
     Tower *tower = new Tower(mSceneMgr, dynamicsWorld);
 #else
     tower = new TowerRefactor(0, 50, 7, 84);
@@ -89,8 +89,8 @@ void Game::createScene(void)
 
  
     // Create a light
-    Ogre::Light* l = mSceneMgr->createLight("MainLight");
-    l->setPosition(20,80,50);
+    //Ogre::Light* l = mSceneMgr->createLight("MainLight");
+    //l->setPosition(20,80,50);
 
 }
 

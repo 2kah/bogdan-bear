@@ -354,44 +354,44 @@ TowerPhysics::TowerPhysics(TowerRefactor *tower, btDiscreteDynamicsWorld* dynami
 		{
 			fileLoader->loadFile("onebbb.bullet");
 			printf("onebb.bullet loaded\n");
-			blockShape = fileLoader->getCollisionShapeByName("onebbb.bullet");
+			//blockShape = fileLoader->getCollisionShapeByName("onebbb.bullet");
 
 		}
 		if(radius == 2) 
 		{
 			fileLoader->loadFile("twobbb.bullet");
 			printf("twobb.bullet loaded\n");
-			blockShape = fileLoader->getCollisionShapeByName("twobbb.bullet");
+			//blockShape = fileLoader->getCollisionShapeByName("twobbb.bullet");
 		}
 		if(radius == 3) 
 		{
 			fileLoader->loadFile("threebbb.bullet");
 			printf("threebb.bullet loaded\n");
-			blockShape = fileLoader->getCollisionShapeByName("threebbb.bullet");
+			//blockShape = fileLoader->getCollisionShapeByName("threebbb.bullet");
 		}
 		if(radius == 4)
 		{
 			fileLoader->loadFile("fourbbb.bullet");
 			printf("fourbb.bullet loaded\n");
-			blockShape = fileLoader->getCollisionShapeByName("fourbbb.bullet");
+			//blockShape = fileLoader->getCollisionShapeByName("fourbbb.bullet");
 		}
 		if(radius == 5) 
 		{
 			fileLoader->loadFile("fivebbb.bullet");
 			printf("fiveb.bullet loaded\n");
-			blockShape = fileLoader->getCollisionShapeByName("fivebbb.bullet");
+			//blockShape = fileLoader->getCollisionShapeByName("fivebbb.bullet");
 		}
 		if(radius == 6) 
 		{
 			fileLoader->loadFile("sixbbb.bullet");
 			printf("sixb.bullet loaded\n");
-			blockShape = fileLoader->getCollisionShapeByName("sixbbb.bullet");
+			//blockShape = fileLoader->getCollisionShapeByName("sixbbb.bullet");
 		}
 		if(radius == 7) 
 		{
 			fileLoader->loadFile("sevenbbb.bullet");
 			printf("sevenb.bullet loaded\n");
-			blockShape = fileLoader->getCollisionShapeByName("sevenbbb.bullet");
+			//blockShape = fileLoader->getCollisionShapeByName("sevenbbb.bullet");
 			
 		}
 
