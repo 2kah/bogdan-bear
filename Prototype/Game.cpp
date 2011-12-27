@@ -24,7 +24,22 @@ Game::~Game(void)
 
 void Game::createScene(void)
 {
-    //tower = new Tower(mSceneMgr, dynamicsWorld);
+#define __USE_OLD_TOWER__
+#ifdef __USE_OLD_TOWER__
+    //this code is in wrong place
+    btBroadphaseInterface* broadphase = new btDbvtBroadphase();
+ 
+    btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
+    btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
+ 
+    btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
+ 
+    dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
+ 
+    dynamicsWorld->setGravity(btVector3(0,-9.8,0));
+
+    Tower *tower = new Tower(mSceneMgr, dynamicsWorld);
+#else
     tower = new TowerRefactor(0, 50, 7, 84);
 
     Builder *builder = new Builder(tower);
@@ -32,6 +47,7 @@ void Game::createScene(void)
 
     TowerGraphics *towerGraphics = new TowerGraphics(tower, mSceneMgr);
     TowerPhysics *towerPhysics = new TowerPhysics(tower, dynamicsWorld);
+#endif
 
     // Create a list of SceneObjects (one of which is a player) at various positions
     std::vector<SceneObject *> things;
@@ -87,19 +103,6 @@ void Game::run(void)
     mResourcesCfg = "resources.cfg";
     mPluginsCfg = "plugins.cfg";
 #endif
-
-    //this code is in wrong place
-    btBroadphaseInterface* broadphase = new btDbvtBroadphase();
- 
-    btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
-    btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
- 
-    btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
- 
-    dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
- 
-    dynamicsWorld->setGravity(btVector3(0,-9.8,0));
-
     //tower = new Tower(mSceneMgr);// To build a tower
     
     if (!setup())

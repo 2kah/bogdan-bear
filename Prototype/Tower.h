@@ -16,7 +16,7 @@
 
 class TowerListener;
 
-/*
+///*
 class Tower
 {
 public:
@@ -30,7 +30,7 @@ protected:
     Ogre::SceneNode *mSceneNode;
 	btCollisionShape* blockShape;
 };
-*/
+//*/
 
 class TowerRefactor
 {
