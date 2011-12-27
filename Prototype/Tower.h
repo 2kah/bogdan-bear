@@ -49,7 +49,7 @@ public:
     virtual void rebuild();
     virtual void synchronise();
 
-    virtual BlockPosition getBlockPosition(unsigned level, unsigned layer, unsigned sector, double scale);
+    virtual BlockPosition getBlockPosition(unsigned level, unsigned layer, unsigned sector);
 
     void addTowerListener(TowerListener *listener);
 
