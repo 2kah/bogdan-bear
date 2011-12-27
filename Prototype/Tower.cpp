@@ -331,7 +331,7 @@ TowerGraphics::TowerGraphics(TowerRefactor *tower, Ogre::SceneManager *sceneMana
 
                     //Postion k is the height, the others are the postion relative to the middle of the tower
                     //Ogre::Vector3 pos(Ogre::Vector3(xPos, yPos, zPos));
-                    Ogre::Vector3 pos(Ogre::Vector3(position_.x, position_.y, position_.z));
+                    Ogre::Vector3 pos(position_.x, position_.y, position_.z);
 
                     //How much the block is rotated depending on its position
                     Ogre::Quaternion rot(Ogre::Degree(-(degs/2)-(position*degs)), Ogre::Vector3::UNIT_Y);
