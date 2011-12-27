@@ -258,32 +258,20 @@ BlockPosition TowerRefactor::getBlockPosition(unsigned level, unsigned layer, un
     BlockPosition position;
     
     double nseg = layer * 12;
-    
-    double rads = ((1.0 / nseg) + ((double) sector / (nseg / 2))) * PI;
+    double rads = ((2*PI) / nseg) * (sector + 0.5);
+
+    double radius = scale * (layer + 0.5);
 
     position.angle = rads;
-    position.x = (scale*layer + scale/2) * cos(rads);
-    position.y = scale * (((double) level) / 2);
-    position.z = (scale*layer + scale/2) * sin(rads);
-
-    /*
-    unsigned position = sector;
-    unsigned radius = layer;
-    unsigned height = level;
-
-    double rads = ((1/nseg)+((double)position/(nseg/2)))*PI;
-    //degs is the degree for how much the block is rotated
-    double degs = 360/(double)nseg;
-	double xPos = ((scale*radius)+(scale*(0.5)))*cos(rads);
-	double yPos = ((scale*((double)height/2)));
-	double zPos = ((scale*radius)+(scale*(0.5)))*sin(rads);
-    */
+    position.x = radius * cos(rads);
+    position.y = (scale / 2) * (level + 0.5); // is vertical scale half?
+    position.z = radius * sin(rads);
 
     // -- this is what x,y,z should be for the generated geometry
     // angle = ((2*PI) / nseg) * (sector + 0.5);
     // radius = this->blocksize * (layer + 0.5);
     // x = radius * cos(angle);
-    // y = (level + 0.5) * this->blocksize;
+    // y = this->blocksize * (level + 0.5); // This is the only difference
     // z = radius * sin(angle)
 
     return position;
