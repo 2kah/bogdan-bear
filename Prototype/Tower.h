@@ -32,13 +32,32 @@ protected:
 };
 //*/
 
-struct BlockPosition {
+struct BlockPosition
+{
     double x, y, z, angle;
+};
+
+// Because we don't have a unified vector3, not sure what's best
+struct Point
+{
+    double x, y, z;
+};
+
+// Points as shown in http://you.mongle.me/tower/circles/gamesproject.png
+// base: a1, b1, c1, d1
+//  top: a2, b2, c2, d2
+struct BlockPoints
+{
+    Point a1, b1, c1, d1;
+    Point a2, b2, c2, d2;
 };
 
 class TowerRefactor
 {
 public:
+    static const short COLLISION_GROUP = 1; // 0000 0001
+    static const short COLLISION_MASK  = 2; // 0000 0010
+
     TowerRefactor();
     TowerRefactor(double blocksize, unsigned levels, unsigned layers, unsigned sectors);
     virtual ~TowerRefactor(void);
@@ -50,6 +69,7 @@ public:
     virtual void synchronise();
 
     virtual BlockPosition getBlockPosition(unsigned level, unsigned layer, unsigned sector);
+    virtual BlockPoints getBlockPoints(unsigned level, unsigned layer, unsigned sector);
 
     void addTowerListener(TowerListener *listener);
 
