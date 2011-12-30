@@ -148,10 +148,10 @@ Tower::Tower(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynamicsWor
                     //How much the block is rotated depending on its position
                     Ogre::Quaternion rot(Ogre::Degree(-(degs/2)-(position*degs)), Ogre::Vector3::UNIT_Y);
                     //Scale is 1
-                    Ogre::Vector3 scale(scale, scale, scale);
+                    Ogre::Vector3 scaleVector(scale, scale, scale);
 
                     //Add the entity to the static geometry
-                    sg->addEntity(entity[radius], pos, rot, scale);
+                    sg->addEntity(entity[radius], pos, rot, scaleVector);
 
 					//Adds bullet mesh to object
 			        blockObject = dynamicsWorld->getCollisionObjectArray()[(dynamicsWorld->getNumCollisionObjects())-1];//
