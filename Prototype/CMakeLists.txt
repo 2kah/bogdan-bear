@@ -38,7 +38,7 @@ if(UNIX)
 
 	else ()
 	  message(SEND_ERROR "Failed to find module path.")
-	endif(EXISTS "/usr/local/lib/OGRE")
+	endif(EXISTS "/usr/local/lib/OGRE/cmake")
 endif(UNIX)
  
 if (CMAKE_BUILD_TYPE STREQUAL "")
@@ -51,7 +51,7 @@ set(CMAKE_DEBUG_POSTFIX "_d")
  
 set(CMAKE_INSTALL_PREFIX "$ENV{OGRE_HOME}/boost_1_42")
 
-set(BULLET_LIBS BulletDynamics BulletCollision LinearMath BulletWorldImporter_Debug)
+set(BULLET_LIBS BulletDynamics BulletCollision LinearMath)
 set(BULLET_INCLUDE ${Prototype_SOURCE_DIR}/bullet/src)
  
 find_package(OGRE REQUIRED)
