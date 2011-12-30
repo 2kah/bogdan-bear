@@ -46,7 +46,7 @@ void Game::createScene(void)
     builder->regenerate();
 
     TowerGraphics *towerGraphics = new TowerGraphics(tower, mSceneMgr);
-    //TowerPhysics *towerPhysics = new TowerPhysics(tower, dynamicsWorld);
+    TowerPhysics *towerPhysics = new TowerPhysics(tower, dynamicsWorld);
 #endif
 
     // Create a list of SceneObjects (one of which is a player) at various positions
