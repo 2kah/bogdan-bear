@@ -13,6 +13,9 @@
 #include "Tower.h"
 //#include "DebugDraw.h"
 
+#include <OgreManualObject.h>
+#include <OgreMeshSerializer.h>
+
 #define PI 3.14159265
 
 ///*
@@ -258,7 +261,7 @@ BlockPosition TowerRefactor::getBlockPosition(unsigned level, unsigned layer, un
 {
     BlockPosition position;
     
-    double nseg = layer * 12;
+    double nseg = this->sectors; //layer * 12;
 
     double angle = ((2*PI) / nseg) * (sector + 0.5);
     double radius = this->blocksize * (layer + 0.5);
@@ -325,6 +328,9 @@ TowerGraphics::TowerGraphics(TowerRefactor *tower, Ogre::SceneManager *sceneMana
     this->tower = tower;
 
     Ogre::Entity *entity[8];
+    std::vector<Ogre::Entity *> blockEnts;
+
+    blockEnts.push_back(NULL);
 
     Ogre::StaticGeometry* sg = sceneManager->createStaticGeometry("Tower");
 
@@ -339,21 +345,128 @@ TowerGraphics::TowerGraphics(TowerRefactor *tower, Ogre::SceneManager *sceneMana
         Ogre::String ra = Ogre::StringConverter::toString(radius);
         entity[radius] = sceneManager->createEntity("Head" + ra, meshnum + ".mesh");
 
+        // Generated sections:
+        BlockPoints points = this->tower->getBlockPoints(0, radius, 0);
+
+        Ogre::String name = "manual " + Ogre::StringConverter::toString(radius);
+
+        Ogre::ManualObject *block = sceneManager->createManualObject(name);
+
+        block->begin("BaseWhiteNoLighting", Ogre::RenderOperation::OT_TRIANGLE_LIST);
+                    
+        block->position(points.a1.x, points.a1.y, points.a1.z); // a1 = 0
+        block->colour(Ogre::ColourValue::Red);
+        block->position(points.b1.x, points.b1.y, points.b1.z); // b1 = 1
+        block->colour(Ogre::ColourValue::Green);
+        block->position(points.c1.x, points.c1.y, points.c1.z); // c1 = 2
+        block->colour(Ogre::ColourValue::Blue);
+        block->position(points.d1.x, points.d1.y, points.d1.z); // d1 = 3
+        block->colour(Ogre::ColourValue::White);
+        block->position(points.a2.x, points.a2.y, points.a2.z); // a2 = 4
+        block->colour(Ogre::ColourValue::White);
+        block->position(points.b2.x, points.b2.y, points.b2.z); // b2 = 5
+        block->colour(Ogre::ColourValue::Blue);
+        block->position(points.c2.x, points.c2.y, points.c2.z); // c2 = 6
+        block->colour(Ogre::ColourValue::Green);
+        block->position(points.d2.x, points.d2.y, points.d2.z); // d2 = 7
+        block->colour(Ogre::ColourValue::Red);
+
+        // Top
+        // d2 -> b2 -> c2 <--
+        block->index(6);
+        block->index(5);
+        block->index(7);
+
+        // d2 -> c2 -> a2 <--
+        block->index(4);
+        block->index(6);
+        block->index(7);
+
+        // Bottom
+        //
+        block->index(3);
+        block->index(1);
+        block->index(2);
+
+        //
+        block->index(3);
+        block->index(2);
+        block->index(0);
+                    
+        // Outer
+        // c1 <- a1 <- a2
+        block->index(4);
+        block->index(0);
+        block->index(2);
+
+        // c1 -> c2 -> a2
+        block->index(2);
+        block->index(6);
+        block->index(4);
+                    
+        // Clockwise
+        // b1 -> c1 -> c2 <--
+        block->index(6);
+        block->index(2);
+        block->index(1);
+
+        // b1 -> c2 -> b2 <--
+        block->index(5);
+        block->index(6);
+        block->index(1);
+
+        // Anti
+        // a1 -> d1 -> d2 <--
+        block->index(7);
+        block->index(3);
+        block->index(0);
+
+        // a1 -> d2 -> a2 <--
+        block->index(4);
+        block->index(7);
+        block->index(0);
+
+        // Inner
+        // d1 -> b1 -> b2 <--
+        block->index(5);
+        block->index(1);
+        block->index(3);
+
+        // d1 -> b2 -> d2 <--
+        block->index(7);
+        block->index(5);
+        block->index(3);
+                    
+        block->end();
+
+        Ogre::MeshPtr pointer = block->convertToMesh(name);
+        Ogre::MeshSerializer serializer;
+
+        serializer.exportMesh(pointer.getPointer(), name + ".mesh");
+
+        Ogre::Entity *blockEnt = sceneManager->createEntity(name + " ent", name);
+
+        blockEnts.push_back(blockEnt);
+
         //Loop through the height
         for (unsigned height = 0; height < this->tower->levels; height++)
         {
-            for (unsigned position = 0; position < nseg; position++)
+            //for (unsigned position = 0; position < nseg; position++)
+            for (unsigned position = 0; position < this->tower->sectors; position++)
             {
                 if (this->tower->blocks[height][radius][position] == 1)
                 {
+                    ///*
                     BlockPosition position_ = this->tower->getBlockPosition(height, radius, position);
 
                     Ogre::Vector3 pos(position_.x, position_.y, position_.z);
                     Ogre::Quaternion rot(Ogre::Radian(-position_.angle), Ogre::Vector3::UNIT_Y);
-                    Ogre::Vector3 scale(this->tower->blocksize, this->tower->blocksize, this->tower->blocksize);
+                    //Ogre::Vector3 scale(this->tower->blocksize, this->tower->blocksize, this->tower->blocksize);
 
                     //Add the entity to the static geometry
-                    sg->addEntity(entity[radius], pos, rot, scale);
+                    //sg->addEntity(entity[radius], pos, rot, scale);
+                    sg->addEntity(blockEnts[radius], Ogre::Vector3(0, this->tower->blocksize * height, 0), rot, Ogre::Vector3(1, 1, 1));
+                    //*/
                 }
             }
         }
