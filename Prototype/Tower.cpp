@@ -6,6 +6,7 @@
 #include <math.h>
 #include <btBulletDynamicsCommon.h>
 
+#include "bullet/src/BulletCollision/CollisionShapes/btConvexHullShape.h"
 
 #include "bullet/src/BulletWorldImporter/btBulletWorldImporter.h"
 
@@ -270,6 +271,39 @@ BlockPosition TowerRefactor::getBlockPosition(unsigned level, unsigned layer, un
     return position;
 }
 
+// These are not the points of the non-generated models
+// Points as shown in http://you.mongle.me/tower/circles/gamesproject.png
+// base: a1, b1, c1, d1
+//  top: a2, b2, c2, d2
+BlockPoints TowerRefactor::getBlockPoints(unsigned level, unsigned layer, unsigned sector)
+{
+    double blockheight = this->blocksize;
+    double size = this->blocksize;
+    double radius = size * layer;
+
+    double angle = ((2*PI) / this->sectors);
+    double offset = angle * sector;
+
+    double bottom = blockheight * level;
+    double top = blockheight * (level + 1);
+
+    Point a1 = {(radius + size) * cos(offset + angle), bottom, (radius + size) * sin(offset + angle)};
+    Point a2 = {(radius + size) * cos(offset + angle),    top, (radius + size) * sin(offset + angle)};
+
+    Point d1 = {(radius) * cos(offset + angle), bottom, (radius) * sin(offset + angle)};
+    Point d2 = {(radius) * cos(offset + angle),    top, (radius) * sin(offset + angle)};
+
+    Point b1 = {(radius) * cos(offset), bottom, (radius) * sin(offset)};
+    Point b2 = {(radius) * cos(offset),    top, (radius) * sin(offset)};
+
+    Point c1 = {(radius + size) * cos(offset), bottom, (radius + size) * sin(offset)};
+    Point c2 = {(radius + size) * cos(offset),    top, (radius + size) * sin(offset)};
+
+    BlockPoints points = {a1, b1, c1, d1,
+                          a2, b2, c2, d2};
+
+    return points;
+}
 
 void TowerRefactor::addTowerListener(TowerListener *listener)
 {
@@ -313,16 +347,9 @@ TowerGraphics::TowerGraphics(TowerRefactor *tower, Ogre::SceneManager *sceneMana
                 if (this->tower->blocks[height][radius][position] == 1)
                 {
                     BlockPosition position_ = this->tower->getBlockPosition(height, radius, position);
-                    double degs = 360 / ((double) nseg);
 
-                    //Postion k is the height, the others are the postion relative to the middle of the tower
-                    //Ogre::Vector3 pos(Ogre::Vector3(xPos, yPos, zPos));
                     Ogre::Vector3 pos(position_.x, position_.y, position_.z);
-
-                    //How much the block is rotated depending on its position
-                    Ogre::Quaternion rot(Ogre::Degree(-(degs/2)-(position*degs)), Ogre::Vector3::UNIT_Y);
-
-                    //Scale is 1
+                    Ogre::Quaternion rot(Ogre::Radian(-position_.angle), Ogre::Vector3::UNIT_Y);
                     Ogre::Vector3 scale(this->tower->blocksize, this->tower->blocksize, this->tower->blocksize);
 
                     //Add the entity to the static geometry
@@ -420,6 +447,7 @@ TowerPhysics::TowerPhysics(TowerRefactor *tower, btDiscreteDynamicsWorld* dynami
                 //Generates random segments
                 if (this->tower->blocks[height][radius][position] == 1)
                 {
+                    ///*
                     BlockPosition position_ = this->tower->getBlockPosition(height, radius, position);
                     double degs = 360 / ((double) nseg);
 
@@ -443,19 +471,47 @@ TowerPhysics::TowerPhysics(TowerRefactor *tower, btDiscreteDynamicsWorld* dynami
 				    blockRigidBody= new btRigidBody(blockRigidBodyCI);
 					blockRigidBody->setCenterOfMassTransform(btTransform(qRot,btVector3(position_.x, position_.y, position_.z)));
 
-					dynamicsWorld->addRigidBody(blockRigidBody);
+                    dynamicsWorld->addRigidBody(blockRigidBody, TowerRefactor::COLLISION_GROUP, TowerRefactor::COLLISION_MASK);
+                    //*/
 
+                    // Generated block physics:
+                    /*
+                    {
+                    BlockPoints points = this->tower->getBlockPoints(height, radius, position);
+
+                    btConvexHullShape *blockShape = new btConvexHullShape();
+
+                    // ugly
+                    blockShape->addPoint(btVector3(points.a1.x, points.a1.y, points.a1.z));
+                    blockShape->addPoint(btVector3(points.b1.x, points.b1.y, points.b1.z));
+                    blockShape->addPoint(btVector3(points.c1.x, points.c1.y, points.c1.z));
+                    blockShape->addPoint(btVector3(points.d1.x, points.d1.y, points.d1.z));
+                    blockShape->addPoint(btVector3(points.a2.x, points.a2.y, points.a2.z));
+                    blockShape->addPoint(btVector3(points.b2.x, points.b2.y, points.b2.z));
+                    blockShape->addPoint(btVector3(points.c2.x, points.c2.y, points.c2.z));
+                    blockShape->addPoint(btVector3(points.d2.x, points.d2.y, points.d2.z));
+
+                    btDefaultMotionState* blockMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 0)));
+                    
+                    btRigidBody::btRigidBodyConstructionInfo blockRigidBodyCI(0, blockMotionState, blockShape, btVector3(0, 0, 0));
+                    btRigidBody *blockRigidBody = new btRigidBody(blockRigidBodyCI);
+
+                    dynamicsWorld->addRigidBody(blockRigidBody, 1, 2);
+                    }
+                    */
                 }
             }
         }
     }
 
+    /*
 	btQuaternion qRot(0,0,0,1);
 	btDefaultMotionState* blockMotionState = new btDefaultMotionState(btTransform(qRot,btVector3(0,0,0)));
 	btRigidBody::btRigidBodyConstructionInfo blockRigidBodyCI(0,blockMotionState,blockShape,btVector3(0,0,0));
 	blockRigidBody= new btRigidBody(blockRigidBodyCI);
 	
 	dynamicsWorld->addRigidBody(blockRigidBody);
+    */
 
 	btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0,1,0),1);
     
@@ -463,7 +519,7 @@ TowerPhysics::TowerPhysics(TowerRefactor *tower, btDiscreteDynamicsWorld* dynami
     btRigidBody::btRigidBodyConstructionInfo
                 groundRigidBodyCI(0,groundMotionState,groundShape,btVector3(0,0,0));
     btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
-    dynamicsWorld->addRigidBody(groundRigidBody);
+    dynamicsWorld->addRigidBody(groundRigidBody, 4, 2);
 	//DebugDraw->DebugDraw(mSceneMgr, dynamicsWorld);
 }
 

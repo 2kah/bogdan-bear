@@ -6,6 +6,7 @@
 #include <OgreSphere.h>
 
 #include "FallingObject.h"
+#include "Tower.h"
 
 FallingObject::FallingObject(Ogre::Vector3 position)
 {
@@ -38,7 +39,7 @@ void FallingObject::addToPhysics(btDiscreteDynamicsWorld* dynamicsWorld)
     btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass, fallMotionState, ogreHead, fallInertia);
     fallRigidBody = new btRigidBody(fallRigidBodyCI);
 	
-    dynamicsWorld->addRigidBody(fallRigidBody);
+    dynamicsWorld->addRigidBody(fallRigidBody, 2, TowerRefactor::COLLISION_GROUP & 4);
 }
 
 void FallingObject::update(void)
