@@ -19,13 +19,13 @@
 #define PI 3.14159265
 
 ///*
-Tower::Tower()
+TowerOld::TowerOld()
 {
 
 }
 
 
-Tower::Tower(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynamicsWorld)
+TowerOld::TowerOld(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynamicsWorld)
 {
     int h = 50;
 	int r = 7;
@@ -212,21 +212,21 @@ Tower::Tower(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynamicsWor
     //mSceneNode->translate(position);
 }
 
-Tower::~Tower(void)
+TowerOld::~TowerOld(void)
 {
 
 }
 
-void Tower::update(void)
+void TowerOld::update(void)
 {
 }
 //*/
 
 // TOWER REFACTOR
 
-TowerRefactor::TowerRefactor(): blocksize(0), levels(0), layers(0), sectors(0), blocks(0) {}
+Tower::Tower(): blocksize(0), levels(0), layers(0), sectors(0), blocks(0) {}
 
-TowerRefactor::TowerRefactor(double blocksize, unsigned levels, unsigned layers, unsigned sectors)
+Tower::Tower(double blocksize, unsigned levels, unsigned layers, unsigned sectors)
 {
     this->blocksize = blocksize;
     this->levels = levels;
@@ -236,28 +236,28 @@ TowerRefactor::TowerRefactor(double blocksize, unsigned levels, unsigned layers,
     this->blocks = std::vector<std::vector<std::vector<bool> > >(levels, std::vector<std::vector<bool> >(layers, std::vector<bool>(sectors, false)));
 }
 
-TowerRefactor::~TowerRefactor(void)
+Tower::~Tower(void)
 {
 }
 
-void TowerRefactor::update(void)
+void Tower::update(void)
 {
 }
 
-void TowerRefactor::carveSphere(Ogre::Vector3 position, double radius)
+void Tower::carveSphere(Ogre::Vector3 position, double radius)
 {
     std::cout << "(Tower) Removing blocks in a radius of " << radius << " from " << position << " (Not implemented)" << std::endl;
 }
 
-void TowerRefactor::rebuild()
+void Tower::rebuild()
 {
 }
 
-void TowerRefactor::synchronise()
+void Tower::synchronise()
 {
 }
 
-BlockPosition TowerRefactor::getBlockPosition(unsigned level, unsigned layer, unsigned sector)
+BlockPosition Tower::getBlockPosition(unsigned level, unsigned layer, unsigned sector)
 {
     BlockPosition position;
     
@@ -278,7 +278,7 @@ BlockPosition TowerRefactor::getBlockPosition(unsigned level, unsigned layer, un
 // Points as shown in http://you.mongle.me/tower/circles/gamesproject.png
 // base: a1, b1, c1, d1
 //  top: a2, b2, c2, d2
-BlockPoints TowerRefactor::getBlockPoints(unsigned level, unsigned layer, unsigned sector)
+BlockPoints Tower::getBlockPoints(unsigned level, unsigned layer, unsigned sector)
 {
     double blockheight = this->blocksize;
     double size = this->blocksize;
@@ -308,7 +308,7 @@ BlockPoints TowerRefactor::getBlockPoints(unsigned level, unsigned layer, unsign
     return points;
 }
 
-void TowerRefactor::addTowerListener(TowerListener *listener)
+void Tower::addTowerListener(TowerListener *listener)
 {
     this->towerListeners.insert(listener);
 }
@@ -323,32 +323,25 @@ TowerGraphics::TowerGraphics()
 {
 }
 
-TowerGraphics::TowerGraphics(TowerRefactor *tower, Ogre::SceneManager *sceneManager)
+TowerGraphics::TowerGraphics(Tower *tower, Ogre::SceneManager *sceneManager)
 {
     this->tower = tower;
 
-    Ogre::Entity *entity[8];
     std::vector<Ogre::Entity *> blockEnts;
-
-    blockEnts.push_back(NULL);
 
     Ogre::StaticGeometry* sg = sceneManager->createStaticGeometry("Tower");
 
     //Loop through the radius values first
-    for (unsigned radius = 1; radius < this->tower->layers; radius++)
+    for (unsigned layer = 0; layer < this->tower->layers; layer++)
     {
-        //nseg is the number of blocks in that radius value
-        unsigned nseg = radius*12;
-
         //Convert stuff to string to use in file name
-        Ogre::String meshnum = Ogre::StringConverter::toString(radius);
-        Ogre::String ra = Ogre::StringConverter::toString(radius);
-        entity[radius] = sceneManager->createEntity("Head" + ra, meshnum + ".mesh");
+        Ogre::String meshnum = Ogre::StringConverter::toString(layer);
+        Ogre::String ra = Ogre::StringConverter::toString(layer);
 
         // Generated sections:
-        BlockPoints points = this->tower->getBlockPoints(0, radius, 0);
+        BlockPoints points = this->tower->getBlockPoints(0, layer, 0);
 
-        Ogre::String name = "manual " + Ogre::StringConverter::toString(radius);
+        Ogre::String name = "manual " + Ogre::StringConverter::toString(layer);
 
         Ogre::ManualObject *block = sceneManager->createManualObject(name);
 
@@ -448,25 +441,20 @@ TowerGraphics::TowerGraphics(TowerRefactor *tower, Ogre::SceneManager *sceneMana
 
         blockEnts.push_back(blockEnt);
 
-        //Loop through the height
-        for (unsigned height = 0; height < this->tower->levels; height++)
+        for (unsigned level = 0; level < this->tower->levels; level++)
         {
-            //for (unsigned position = 0; position < nseg; position++)
-            for (unsigned position = 0; position < this->tower->sectors; position++)
+            for (unsigned sector = 0; sector < this->tower->sectors; sector++)
             {
-                if (this->tower->blocks[height][radius][position] == 1)
+                if (this->tower->blocks[level][layer][sector] == 1)
                 {
-                    ///*
-                    BlockPosition position_ = this->tower->getBlockPosition(height, radius, position);
+                    BlockPosition position_ = this->tower->getBlockPosition(level, layer, sector);
 
                     Ogre::Vector3 pos(position_.x, position_.y, position_.z);
                     Ogre::Quaternion rot(Ogre::Radian(-position_.angle), Ogre::Vector3::UNIT_Y);
                     //Ogre::Vector3 scale(this->tower->blocksize, this->tower->blocksize, this->tower->blocksize);
 
                     //Add the entity to the static geometry
-                    //sg->addEntity(entity[radius], pos, rot, scale);
-                    sg->addEntity(blockEnts[radius], Ogre::Vector3(0, this->tower->blocksize * height, 0), rot, Ogre::Vector3(1, 1, 1));
-                    //*/
+                    sg->addEntity(blockEnts[layer], Ogre::Vector3(0, this->tower->blocksize * level, 0), rot, Ogre::Vector3(1, 1, 1));
                 }
             }
         }
@@ -486,7 +474,7 @@ TowerPhysics::TowerPhysics()
 {
 }
 
-TowerPhysics::TowerPhysics(TowerRefactor *tower, btDiscreteDynamicsWorld* dynamicsWorld)
+TowerPhysics::TowerPhysics(Tower *tower, btDiscreteDynamicsWorld* dynamicsWorld)
 {
     this->tower = tower;
     
@@ -496,71 +484,38 @@ TowerPhysics::TowerPhysics(TowerRefactor *tower, btDiscreteDynamicsWorld* dynami
     btBulletWorldImporter* fileLoader = new btBulletWorldImporter(dynamicsWorld);
 
     btCollisionShape* blockShape;
+    
+    std::vector<btCollisionShape *> blockShapes;
+    //blockShapes.push_back(NULL);
 
-    for (unsigned radius = 1; radius < this->tower->layers; radius++)
+    for (unsigned radius = 0; radius < this->tower->layers; radius++)
     {
-        //nseg is the number of blocks in that radius value
-        unsigned  nseg = radius*12;
+        {
+        BlockPoints points = this->tower->getBlockPoints(0, radius, 0);
 
-		//Loads bullet meshes for each sector shape
-		if(radius == 1)
-		{
-			fileLoader->loadFile("onebbb.bullet");
-			printf("onebb.bullet loaded\n");
-			//blockShape = fileLoader->getCollisionShapeByName("onebbb.bullet");
+        btConvexHullShape *blockShape = new btConvexHullShape();
 
-		}
-		if(radius == 2) 
-		{
-			fileLoader->loadFile("twobbb.bullet");
-			printf("twobb.bullet loaded\n");
-			//blockShape = fileLoader->getCollisionShapeByName("twobbb.bullet");
-		}
-		if(radius == 3) 
-		{
-			fileLoader->loadFile("threebbb.bullet");
-			printf("threebb.bullet loaded\n");
-			//blockShape = fileLoader->getCollisionShapeByName("threebbb.bullet");
-		}
-		if(radius == 4)
-		{
-			fileLoader->loadFile("fourbbb.bullet");
-			printf("fourbb.bullet loaded\n");
-			//blockShape = fileLoader->getCollisionShapeByName("fourbbb.bullet");
-		}
-		if(radius == 5) 
-		{
-			fileLoader->loadFile("fivebbb.bullet");
-			printf("fiveb.bullet loaded\n");
-			//blockShape = fileLoader->getCollisionShapeByName("fivebbb.bullet");
-		}
-		if(radius == 6) 
-		{
-			fileLoader->loadFile("sixbbb.bullet");
-			printf("sixb.bullet loaded\n");
-			//blockShape = fileLoader->getCollisionShapeByName("sixbbb.bullet");
-		}
-		if(radius == 7) 
-		{
-			fileLoader->loadFile("sevenbbb.bullet");
-			printf("sevenb.bullet loaded\n");
-			//blockShape = fileLoader->getCollisionShapeByName("sevenbbb.bullet");
-			
-		}
+        // ugly
+        blockShape->addPoint(btVector3(points.a1.x, points.a1.y, points.a1.z));
+        blockShape->addPoint(btVector3(points.b1.x, points.b1.y, points.b1.z));
+        blockShape->addPoint(btVector3(points.c1.x, points.c1.y, points.c1.z));
+        blockShape->addPoint(btVector3(points.d1.x, points.d1.y, points.d1.z));
+        blockShape->addPoint(btVector3(points.a2.x, points.a2.y, points.a2.z));
+        blockShape->addPoint(btVector3(points.b2.x, points.b2.y, points.b2.z));
+        blockShape->addPoint(btVector3(points.c2.x, points.c2.y, points.c2.z));
+        blockShape->addPoint(btVector3(points.d2.x, points.d2.y, points.d2.z));
 
-		//blockShape = new btBoxShape(btVector3(scale,scale,scale));
-		//blockShape = new btCylinderShape(btVector3(r+1,(scale*height*0.5)+(0.5*scale),r+1));
-		//printf("This many objects %i\n", (dynamicsWorld->getNumCollisionObjects()));
+        blockShapes.push_back(blockShape);
+        }
 
-        //Loop through the height
         for (unsigned height = 0; height < this->tower->levels; height++)
         {
-            for (unsigned position = 0; position < nseg; position++)
+            for (unsigned position = 0; position < this->tower->sectors; position++)
             {
                 //Generates random segments
                 if (this->tower->blocks[height][radius][position] == 1)
                 {
-                    ///*
+                    /*
                     BlockPosition position_ = this->tower->getBlockPosition(height, radius, position);
                     double degs = 360 / ((double) nseg);
 
@@ -584,12 +539,13 @@ TowerPhysics::TowerPhysics(TowerRefactor *tower, btDiscreteDynamicsWorld* dynami
 				    blockRigidBody= new btRigidBody(blockRigidBodyCI);
 					blockRigidBody->setCenterOfMassTransform(btTransform(qRot,btVector3(position_.x, position_.y, position_.z)));
 
-                    dynamicsWorld->addRigidBody(blockRigidBody, TowerRefactor::COLLISION_GROUP, TowerRefactor::COLLISION_MASK);
-                    //*/
+                    dynamicsWorld->addRigidBody(blockRigidBody, Tower::COLLISION_GROUP, Tower::COLLISION_MASK);
+                    */
 
                     // Generated block physics:
-                    /*
+                    ///*
                     {
+                    /*
                     BlockPoints points = this->tower->getBlockPoints(height, radius, position);
 
                     btConvexHullShape *blockShape = new btConvexHullShape();
@@ -603,28 +559,24 @@ TowerPhysics::TowerPhysics(TowerRefactor *tower, btDiscreteDynamicsWorld* dynami
                     blockShape->addPoint(btVector3(points.b2.x, points.b2.y, points.b2.z));
                     blockShape->addPoint(btVector3(points.c2.x, points.c2.y, points.c2.z));
                     blockShape->addPoint(btVector3(points.d2.x, points.d2.y, points.d2.z));
+                    */
 
-                    btDefaultMotionState* blockMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 0)));
+                    BlockPosition position_ = this->tower->getBlockPosition(height, radius, position);
+
+                    btDefaultMotionState* blockMotionState = new btDefaultMotionState(btTransform(btQuaternion(btVector3(0, 1, 0), btScalar(-position_.angle))));
                     
-                    btRigidBody::btRigidBodyConstructionInfo blockRigidBodyCI(0, blockMotionState, blockShape, btVector3(0, 0, 0));
+                    btRigidBody::btRigidBodyConstructionInfo blockRigidBodyCI(0, blockMotionState, blockShapes[radius], btVector3(0, 0, 0));
                     btRigidBody *blockRigidBody = new btRigidBody(blockRigidBodyCI);
+
+                    blockRigidBody->setActivationState(ISLAND_SLEEPING); // no benefit?
 
                     dynamicsWorld->addRigidBody(blockRigidBody, 1, 2);
                     }
-                    */
+                    //*/
                 }
             }
         }
     }
-
-    /*
-	btQuaternion qRot(0,0,0,1);
-	btDefaultMotionState* blockMotionState = new btDefaultMotionState(btTransform(qRot,btVector3(0,0,0)));
-	btRigidBody::btRigidBodyConstructionInfo blockRigidBodyCI(0,blockMotionState,blockShape,btVector3(0,0,0));
-	blockRigidBody= new btRigidBody(blockRigidBodyCI);
-	
-	dynamicsWorld->addRigidBody(blockRigidBody);
-    */
 
 	btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0,1,0),1);
     

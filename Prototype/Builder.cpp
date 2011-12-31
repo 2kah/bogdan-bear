@@ -4,7 +4,7 @@ Builder::Builder()
 {
 }
 
-Builder::Builder(TowerRefactor *tower)
+Builder::Builder(Tower *tower)
 {
     this->tower = tower;
 }
@@ -14,7 +14,27 @@ Builder::~Builder(void)
 }
 
 void Builder::regenerate(void)
-{     
+{    
+//#define USE_OLD_GENERATOR
+#ifndef USE_OLD_GENERATOR
+    for (unsigned level = 0; level < this->tower->levels; ++level)
+    {
+        for (unsigned layer = 0; layer < this->tower->layers; ++layer) {
+            unsigned stair_sector = level % this->tower->sectors;
+            unsigned rail_sector = (level + 1) % this->tower->sectors;
+            
+            this->tower->blocks[level][layer][stair_sector] = true;
+            this->tower->blocks[level][layer][rail_sector] = true;
+            this->tower->blocks[(level + 1) % this->tower->levels][this->tower->layers - 1][stair_sector] = true;
+
+            for (unsigned sector = 0; sector < this->tower->sectors; ++sector) {
+                if (layer < 4) {
+                    this->tower->blocks[level][layer][sector] = (bool) (rand() % 2);
+                }
+            }
+        }
+    }
+#else
     //Loop through 3D array, filling with random 0's and 1's
     for (unsigned height = 0; height < this->tower->levels; ++height)
     {
@@ -36,4 +56,5 @@ void Builder::regenerate(void)
             }
         }
     }
+#endif
 }

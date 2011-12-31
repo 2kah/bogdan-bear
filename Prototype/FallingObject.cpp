@@ -39,7 +39,7 @@ void FallingObject::addToPhysics(btDiscreteDynamicsWorld* dynamicsWorld)
     btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass, fallMotionState, ogreHead, fallInertia);
     fallRigidBody = new btRigidBody(fallRigidBodyCI);
 	
-    dynamicsWorld->addRigidBody(fallRigidBody, 2, TowerRefactor::COLLISION_GROUP & 4);
+    dynamicsWorld->addRigidBody(fallRigidBody, 2, Tower::COLLISION_GROUP & 4);
 }
 
 void FallingObject::update(void)

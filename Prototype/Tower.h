@@ -17,12 +17,12 @@
 class TowerListener;
 
 ///*
-class Tower
+class TowerOld
 {
 public:
-	Tower();
-    Tower(Ogre::SceneManager *msceneMgr, btDiscreteDynamicsWorld* dynamicsWorld);
-    virtual ~Tower(void);
+	TowerOld();
+    TowerOld(Ogre::SceneManager *msceneMgr, btDiscreteDynamicsWorld* dynamicsWorld);
+    virtual ~TowerOld(void);
 
     virtual void update(void);
 
@@ -52,15 +52,15 @@ struct BlockPoints
     Point a2, b2, c2, d2;
 };
 
-class TowerRefactor
+class Tower
 {
 public:
     static const short COLLISION_GROUP = 1; // 0000 0001
     static const short COLLISION_MASK  = 2; // 0000 0010
 
-    TowerRefactor();
-    TowerRefactor(double blocksize, unsigned levels, unsigned layers, unsigned sectors);
-    virtual ~TowerRefactor(void);
+    Tower();
+    Tower(double blocksize, unsigned levels, unsigned layers, unsigned sectors);
+    virtual ~Tower(void);
 
     virtual void update(void);
 
@@ -98,22 +98,22 @@ class TowerGraphics : public TowerListener
 {
 public:
     TowerGraphics();
-    TowerGraphics(TowerRefactor *tower, Ogre::SceneManager *sceneManager);
+    TowerGraphics(Tower *tower, Ogre::SceneManager *sceneManager);
     virtual ~TowerGraphics();
 
 protected:
-    TowerRefactor *tower;
+    Tower *tower;
 };
 
 class TowerPhysics : public TowerListener
 {
 public:
     TowerPhysics();
-    TowerPhysics(TowerRefactor *tower, btDiscreteDynamicsWorld* dynamicsWorld);
+    TowerPhysics(Tower *tower, btDiscreteDynamicsWorld* dynamicsWorld);
     virtual ~TowerPhysics();
 
 protected:
-    TowerRefactor *tower;
+    Tower *tower;
 };
 
 #endif // #ifndef __Tower_h_

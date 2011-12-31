@@ -38,15 +38,15 @@ void Game::createScene(void)
 
 //#define __USE_OLD_TOWER__
 #ifdef __USE_OLD_TOWER__
-    Tower *tower = new Tower(mSceneMgr, dynamicsWorld);
+    TowerOld *tower = new TowerOld(mSceneMgr, dynamicsWorld);
 #else
-    tower = new TowerRefactor(15, 50, 7, 84);
+    tower = new Tower(32, 64, 8, 32);
 
     Builder *builder = new Builder(tower);
     builder->regenerate();
 
     TowerGraphics *towerGraphics = new TowerGraphics(tower, mSceneMgr);
-    TowerPhysics *towerPhysics = new TowerPhysics(tower, dynamicsWorld);
+    //TowerPhysics *towerPhysics = new TowerPhysics(tower, dynamicsWorld);
 #endif
 
     // Create a list of SceneObjects (one of which is a player) at various positions
@@ -103,8 +103,6 @@ void Game::run(void)
     mResourcesCfg = "resources.cfg";
     mPluginsCfg = "plugins.cfg";
 #endif
-    //tower = new Tower(mSceneMgr);// To build a tower
-    
     if (!setup())
     {
         return;
