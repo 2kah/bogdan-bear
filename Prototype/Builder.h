@@ -6,10 +6,10 @@
 class Builder : public TowerListener
 {
 public:
-    TowerRefactor *tower;
+    Tower *tower;
 
     Builder();
-    Builder(TowerRefactor *tower);
+    Builder(Tower *tower);
     virtual ~Builder(void);
 
     virtual void regenerate(void);
