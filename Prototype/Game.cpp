@@ -40,7 +40,7 @@ void Game::createScene(void)
 #ifdef __USE_OLD_TOWER__
     TowerOld *tower = new TowerOld(mSceneMgr, dynamicsWorld);
 #else
-    tower = new Tower(32, 64, 8, 32);
+    tower = new Tower(32, 128, 16, 32);
 
     Builder *builder = new Builder(tower);
     builder->regenerate();

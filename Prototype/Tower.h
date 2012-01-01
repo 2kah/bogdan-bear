@@ -103,6 +103,14 @@ public:
 
 protected:
     Tower *tower;
+    Ogre::SceneManager *sceneManager;
+
+    std::vector<Ogre::Entity *> blockEntities;
+
+    Ogre::StaticGeometry* geometry;
+
+    virtual void createBlockEntities(void);
+    virtual void rebuildStaticGeometry(void);
 };
 
 class TowerPhysics : public TowerListener
