@@ -28,17 +28,18 @@ TowerOld::TowerOld()
 TowerOld::TowerOld(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynamicsWorld)
 {
     int h = 50;
-	int r = 7;
-	int p = 84;
+	int r = 5;
+	int p = 96;
 	double scale = 15;
 	Ogre::Entity* entity [8];
-	Ogre::SceneNode* node [50][8][84];
-	btRigidBody* blockRigidBody;// [50][8][84];
+	Ogre::SceneNode* node [50][5][96];
+	btRigidBody* blockRigidBody;
 	btCollisionObject* blockObject;
-	int radius = 8;
+	int radius = 5;
 	int height = 50;
 	int position = 84;
-	int randSeg [50][8][84];
+	int randSeg [50][5][96];
+	int visible [50][5][96] = {0};
 
 	//btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0,1,0),1);
 
@@ -71,58 +72,135 @@ TowerOld::TowerOld(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynam
 		printf("Done floor %i\n", height);
     }
 	printf("Done random gen.\n");
+
+	
+	//Remove ones hidden vertically
+    for (radius = 0; radius < r; ++radius)
+    {
+        for (position = 0; position < p; ++position)
+        {
+			visible[h-1][radius][position]= randSeg [h-1][radius][position];
+			visible[0][radius][position]= randSeg [0][radius][position];
+        }
+    }
+	for (position = 0; position < p; ++position)
+    {
+        for (radius = 0; radius < r; ++radius)
+        {
+            for (height = 1; height < h-2; ++height)
+            {
+				int top = randSeg [height+1][radius][position];
+				int current = randSeg [height][radius][position];
+				int bottom = randSeg [height-1][radius][position];
+				int check = visible[height][radius][position];
+
+				if(current == 0) visible[height][radius][position] = 0;
+				else if(top == 1 && bottom == 1 && check == 0) visible[height][radius][position] = 0;
+				else visible [height][radius][position] = 1;
+            }
+        }
+    }
+
+	//Remove ones hidden from outside to middle
+    for (height = 0; height < h; ++height)
+    {
+        for (position = 0; position < p; ++position)
+        {
+			visible[height][r-2][position]= randSeg [height][r-2][position];
+			visible[height][0][position]= randSeg [height][0][position];
+        }
+    }
+	for (height = 0; height < h; ++height)
+    {
+        for (position = 0; position < p; ++position)
+        {
+            for (radius = 1; radius < r-1; ++radius)
+            {
+				int front = randSeg [height][radius + 1][(position*2)+1];
+				int front1 = randSeg [height][radius + 1][(position*2)];
+				int current = randSeg [height][radius][position];
+				int behind = randSeg [height][radius - 1][(int)floor((double)position/2)];
+				int check = visible[height][radius][position];
+
+				if(current == 0) visible[height][radius][position] = 0;
+				else if(front == 1 && front1 == 1 && behind == 1 && check == 0) visible[height][radius][position] = 0;
+				else visible [height][radius][position] = 1;
+            }
+        }
+    }
+
+	//Remove ones hidden from the sides
+	for (height = 0; height < h; ++height)
+    {
+        for (radius = 0; radius < r; ++radius)
+        {
+			int nseg = ((int)pow((double)2,(radius))*12);
+            for (position = 0; position < p; ++position)
+            {
+				int left = randSeg [height][radius][(position + 1) % nseg];
+				int current = randSeg [height][radius][position];
+				int right = randSeg [height][radius][(position - 1) % nseg];
+				int check = visible[height][radius][position];
+
+				if(current == 0) visible[height][radius][position] = 0;
+				else if(left == 1 && right == 1 && check == 0) visible[height][radius][position] = 0;
+				else visible [height][radius][position] = 1;
+            }
+        }
+    }
+
     //Loop through the radius values first
     for (radius = 1; radius < r; radius++)
     {
         //nseg is the number of blocks in that radius value
-        int nseg = radius*12;
+        int nseg = ((int)pow((double)2,(radius-1))*12);
 
         //Convert stuff to string to use in file name
         Ogre::String meshnum = Ogre::StringConverter::toString(radius);
         Ogre::String ra = Ogre::StringConverter::toString(radius);
-        entity[radius] = mSceneMgr->createEntity("Head" + ra, meshnum + ".mesh");
+        entity[radius] = mSceneMgr->createEntity("Head" + ra,"test" + meshnum + ".mesh");
 
 		//Loads bullet meshes for each sector shape
 		if(radius == 1)
 		{
-			fileLoader->loadFile("onebbb.bullet");
+			fileLoader->loadFile("onebt.bullet");
 			printf("onebb.bullet loaded\n");
 			//blockShape = fileLoader->getCollisionShapeByName("oneb.bullet");
 
 		}
 		if(radius == 2) 
 		{
-			fileLoader->loadFile("twobbb.bullet");
+			fileLoader->loadFile("twobt.bullet");
 			printf("twobb.bullet loaded\n");
 			//blockShape = fileLoader->getCollisionShapeByName("twob.bullet");
 		}
 		if(radius == 3) 
 		{
-			fileLoader->loadFile("threebbb.bullet");
+			fileLoader->loadFile("threebt.bullet");
 			printf("threebb.bullet loaded\n");
 			//blockShape = fileLoader->getCollisionShapeByName("threeb.bullet");
 		}
 		if(radius == 4)
 		{
-			fileLoader->loadFile("fourbbb.bullet");
+			fileLoader->loadFile("fourbt.bullet");
 			printf("fourbb.bullet loaded\n");
 			//blockShape = fileLoader->getCollisionShapeByName("fourb.bullet");
 		}
 		if(radius == 5) 
 		{
-			fileLoader->loadFile("fivebbb.bullet");
+			fileLoader->loadFile("fivebt.bullet");
 			printf("fiveb.bullet loaded\n");
 			//blockShape = fileLoader->getCollisionShapeByName("fiveb.bullet");
 		}
 		if(radius == 6) 
 		{
-			fileLoader->loadFile("sixbbb.bullet");
+			fileLoader->loadFile("sixbt.bullet");
 			printf("sixb.bullet loaded\n");
 			//blockShape = fileLoader->getCollisionShapeByName("sixb.bullet");
 		}
 		if(radius == 7) 
 		{
-			fileLoader->loadFile("sevenbbb.bullet");
+			fileLoader->loadFile("sevenbt.bullet");
 			printf("sevenb.bullet loaded\n");
 			//blockShape = fileLoader->getCollisionShapeByName("sevenb.bullet");
 			
@@ -138,7 +216,7 @@ TowerOld::TowerOld(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynam
             for (position = 0; position < nseg; position++)
             {
                 //Generates random segments
-                if (randSeg [height][radius][position] == 1)
+                if (visible [height][radius-1][position] == 1)
                 {
                     //rads is the radian value for each block around the centre point
                     double rads = ((1/nseg)+((double)position/(nseg/2)))*PI;
@@ -171,7 +249,7 @@ TowerOld::TowerOld(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynam
 				    blockRigidBody= new btRigidBody(blockRigidBodyCI);
 					blockRigidBody->setCenterOfMassTransform(btTransform(qRot,btVector3(xPos,yPos,zPos)));
 
-					dynamicsWorld->addRigidBody(blockRigidBody);
+					//dynamicsWorld->addRigidBody(blockRigidBody);
 
                 }
             }
