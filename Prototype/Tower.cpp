@@ -313,6 +313,16 @@ void Tower::addTowerListener(TowerListener *listener)
     this->towerListeners.insert(listener);
 }
 
+void Tower::fireBlocksUpdated()
+{
+    for(std::set<TowerListener *>::iterator i = this->towerListeners.begin(); i != this->towerListeners.end(); ++i)
+    {
+       TowerListener *listener = *i;
+
+       listener->blocksUpdated();
+    }
+}
+
 TowerListener::~TowerListener()
 {
 }
@@ -328,7 +338,11 @@ TowerGraphics::TowerGraphics(Tower *tower, Ogre::SceneManager *sceneManager)
     this->tower = tower;
     this->sceneManager = sceneManager;
     
+    this->tower->addTowerListener(this);
+
     this->createBlockEntities();
+
+    this->geometry = this->sceneManager->createStaticGeometry("Tower");
     this->rebuildStaticGeometry();
 }
 
@@ -336,7 +350,12 @@ TowerGraphics::~TowerGraphics()
 {
 }
 
-void TowerGraphics:: createBlockEntities(void)
+void TowerGraphics::blocksUpdated(void)
+{
+    this->rebuildStaticGeometry();
+}
+
+void TowerGraphics::createBlockEntities(void)
 {
     for (unsigned layer = 0; layer < this->tower->layers; ++layer)
     {
@@ -453,7 +472,9 @@ void TowerGraphics:: createBlockEntities(void)
 
 void TowerGraphics::rebuildStaticGeometry(void)
 {
-    this->geometry = this->sceneManager->createStaticGeometry("Tower");
+    std::cout << "Rebuilding static geometry." << std::endl;
+    
+    this->geometry->reset();
 
     for (unsigned level = 0; level < this->tower->levels; ++level)
     {
@@ -481,7 +502,6 @@ void TowerGraphics::rebuildStaticGeometry(void)
 }
 
 // Tower Physics
-
 TowerPhysics::TowerPhysics()
 {
 }

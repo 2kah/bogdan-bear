@@ -45,6 +45,8 @@ void Game::createScene(void)
     Builder *builder = new Builder(tower);
     builder->regenerate();
 
+    this->objects.insert(builder);
+
     TowerGraphics *towerGraphics = new TowerGraphics(tower, mSceneMgr);
     //TowerPhysics *towerPhysics = new TowerPhysics(tower, dynamicsWorld);
 #endif
@@ -60,7 +62,6 @@ void Game::createScene(void)
     //things.push_back(new SceneObject(Ogre::Vector3(50, 0, 0)));
     things.push_back(player);
     things.push_back(fallingObject);
-
 
     // Add all the scene objects to the scene and list of objects
     for (std::vector<SceneObject *>::size_type i = 0; i != things.size(); ++i)

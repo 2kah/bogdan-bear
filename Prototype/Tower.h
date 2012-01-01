@@ -83,7 +83,7 @@ public:
 
     std::vector<std::vector<std::vector<bool> > > blocks;
 
-private:
+//private: // public for now
     void fireBlocksUpdated();
 };
 
@@ -92,6 +92,8 @@ class TowerListener
 public:
     TowerListener() {};
     virtual ~TowerListener() = 0;
+
+    virtual void blocksUpdated(void) = 0;
 };
 
 class TowerGraphics : public TowerListener
@@ -100,6 +102,8 @@ public:
     TowerGraphics();
     TowerGraphics(Tower *tower, Ogre::SceneManager *sceneManager);
     virtual ~TowerGraphics();
+
+    virtual void blocksUpdated(void);
 
 protected:
     Tower *tower;
@@ -110,6 +114,7 @@ protected:
     Ogre::StaticGeometry* geometry;
 
     virtual void createBlockEntities(void);
+public: // for now
     virtual void rebuildStaticGeometry(void);
 };
 
