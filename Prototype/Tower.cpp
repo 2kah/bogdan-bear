@@ -326,13 +326,19 @@ TowerGraphics::TowerGraphics()
 TowerGraphics::TowerGraphics(Tower *tower, Ogre::SceneManager *sceneManager)
 {
     this->tower = tower;
+    this->sceneManager = sceneManager;
+    
+    this->createBlockEntities();
+    this->rebuildStaticGeometry();
+}
 
-    std::vector<Ogre::Entity *> blockEnts;
+TowerGraphics::~TowerGraphics()
+{
+}
 
-    Ogre::StaticGeometry* sg = sceneManager->createStaticGeometry("Tower");
-
-    //Loop through the radius values first
-    for (unsigned layer = 0; layer < this->tower->layers; layer++)
+void TowerGraphics:: createBlockEntities(void)
+{
+    for (unsigned layer = 0; layer < this->tower->layers; ++layer)
     {
         //Convert stuff to string to use in file name
         Ogre::String meshnum = Ogre::StringConverter::toString(layer);
@@ -346,9 +352,11 @@ TowerGraphics::TowerGraphics(Tower *tower, Ogre::SceneManager *sceneManager)
         Ogre::ManualObject *block = sceneManager->createManualObject(name);
 
         block->begin("BaseWhiteNoLighting", Ogre::RenderOperation::OT_TRIANGLE_LIST);
-                    
+
+        Ogre::ColourValue orange = Ogre::ColourValue(1, 0, 0, 0.5);
+
         block->position(points.a1.x, points.a1.y, points.a1.z); // a1 = 0
-        block->colour(Ogre::ColourValue::Red);
+        block->colour(orange);
         block->position(points.b1.x, points.b1.y, points.b1.z); // b1 = 1
         block->colour(Ogre::ColourValue::Green);
         block->position(points.c1.x, points.c1.y, points.c1.z); // c1 = 2
@@ -362,7 +370,7 @@ TowerGraphics::TowerGraphics(Tower *tower, Ogre::SceneManager *sceneManager)
         block->position(points.c2.x, points.c2.y, points.c2.z); // c2 = 6
         block->colour(Ogre::ColourValue::Green);
         block->position(points.d2.x, points.d2.y, points.d2.z); // d2 = 7
-        block->colour(Ogre::ColourValue::Red);
+        block->colour(orange);
 
         // Top
         // d2 -> b2 -> c2 <--
@@ -437,35 +445,39 @@ TowerGraphics::TowerGraphics(Tower *tower, Ogre::SceneManager *sceneManager)
 
         serializer.exportMesh(pointer.getPointer(), name + ".mesh");
 
-        Ogre::Entity *blockEnt = sceneManager->createEntity(name + " ent", name);
+        Ogre::Entity *blockEntity = sceneManager->createEntity(name + " ent", name);
 
-        blockEnts.push_back(blockEnt);
+        this->blockEntities.push_back(blockEntity);
+    }
+}
 
-        for (unsigned level = 0; level < this->tower->levels; level++)
+void TowerGraphics::rebuildStaticGeometry(void)
+{
+    this->geometry = this->sceneManager->createStaticGeometry("Tower");
+
+    for (unsigned level = 0; level < this->tower->levels; ++level)
+    {
+        for (unsigned layer = 0; layer < this->tower->layers; ++layer)
         {
-            for (unsigned sector = 0; sector < this->tower->sectors; sector++)
+            for (unsigned sector = 0; sector < this->tower->sectors; ++sector)
             {
-                if (this->tower->blocks[level][layer][sector] == 1)
+                if (this->tower->blocks[level][layer][sector])
                 {
-                    BlockPosition position_ = this->tower->getBlockPosition(level, layer, sector);
+                    Ogre::Radian angle(this->tower->getBlockPosition(level, layer, sector).angle);
+                    
+                    // Block entities are generated with the correct distance from the centre and at the right scale, but must be rotated and brought to the right level
+                    Ogre::Vector3 position(0, this->tower->blocksize * level, 0);
+                    Ogre::Quaternion rotation(angle, Ogre::Vector3::UNIT_Y);
 
-                    Ogre::Vector3 pos(position_.x, position_.y, position_.z);
-                    Ogre::Quaternion rot(Ogre::Radian(-position_.angle), Ogre::Vector3::UNIT_Y);
-                    //Ogre::Vector3 scale(this->tower->blocksize, this->tower->blocksize, this->tower->blocksize);
-
-                    //Add the entity to the static geometry
-                    sg->addEntity(blockEnts[layer], Ogre::Vector3(0, this->tower->blocksize * level, 0), rot, Ogre::Vector3(1, 1, 1));
+                    // Add the entity to the static geometry at 
+                    this->geometry->addEntity(this->blockEntities[layer], position, rotation);
                 }
             }
         }
     }
 
-	//Display the static geometry
-    sg->build();
-}
-
-TowerGraphics::~TowerGraphics()
-{
+	//Build the static geometry
+    this->geometry->build();
 }
 
 // Tower Physics

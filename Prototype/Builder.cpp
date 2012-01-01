@@ -28,8 +28,8 @@ void Builder::regenerate(void)
             this->tower->blocks[(level + 1) % this->tower->levels][this->tower->layers - 1][stair_sector] = true;
 
             for (unsigned sector = 0; sector < this->tower->sectors; ++sector) {
-                if (layer < 4) {
-                    this->tower->blocks[level][layer][sector] = (bool) (rand() % 2);
+                if (layer < 8) {
+                    this->tower->blocks[level][layer][sector] = (rand() % (layer + 1) <= 1);
                 }
             }
         }
