@@ -48,8 +48,6 @@ if (CMAKE_BUILD_TYPE STREQUAL "")
 endif ()
  
 set(CMAKE_DEBUG_POSTFIX "_d")
- 
-set(CMAKE_INSTALL_PREFIX "$ENV{OGRE_HOME}/boost_1_42")
 
 set(BULLET_LIBS BulletDynamics BulletCollision LinearMath)
 set(BULLET_INCLUDE ${Prototype_SOURCE_DIR}/bullet/src)
@@ -93,7 +91,7 @@ if (NOT OGRE_BUILD_PLATFORM_IPHONE)
  
 	# Set up referencing of Boost
 	include_directories(${Boost_INCLUDE_DIR})
-	add_definitions(-DBOOST_ALL_NO_LIB)
+	add_definitions(-DBOOST_ALL)
 	set(OGRE_LIBRARIES ${OGRE_LIBRARIES} ${Boost_LIBRARIES})
 endif()
  

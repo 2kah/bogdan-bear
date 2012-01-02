@@ -7,8 +7,9 @@
 #include <btBulletDynamicsCommon.h>
 
 #include "Updatable.h"
+#include "Object.h"
 
-class SceneObject: public Updatable
+class SceneObject: public Updatable, public Object
 {
 public:
     SceneObject();
@@ -25,10 +26,6 @@ public:
 
 protected:
     Ogre::SceneNode *mSceneNode;
-
-
-public:
-    Ogre::Vector3 position;
 };
 
 #endif // #ifndef __SceneObject_h_
