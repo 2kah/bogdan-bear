@@ -391,13 +391,13 @@ void Tower::addTowerListener(TowerListener *listener)
     this->towerListeners.insert(listener);
 }
 
-void Tower::fireBlocksUpdated()
+void Tower::fireBlocksUpdated(unsigned level)
 {
     for(std::set<TowerListener *>::iterator i = this->towerListeners.begin(); i != this->towerListeners.end(); ++i)
     {
        TowerListener *listener = *i;
 
-       listener->blocksUpdated();
+       listener->blocksUpdated(level);
     }
 }
 

@@ -84,7 +84,7 @@ public:
     std::vector<std::vector<std::vector<bool> > > blocks;
 
 //private: // public for now
-    void fireBlocksUpdated();
+    void fireBlocksUpdated(unsigned level);
 };
 
 class TowerListener
@@ -93,7 +93,7 @@ public:
     TowerListener() {};
     virtual ~TowerListener() = 0;
 
-    virtual void blocksUpdated(void) = 0;
+    virtual void blocksUpdated(unsigned level) = 0;
 };
 
 class TowerPhysics : public TowerListener
