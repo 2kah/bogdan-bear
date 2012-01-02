@@ -49,9 +49,9 @@ endif ()
  
 set(CMAKE_DEBUG_POSTFIX "_d")
  
-set(CMAKE_INSTALL_PREFIX "$ENV{OGRE_HOME}/boost_1_42")
+set(CMAKE_INSTALL_PREFIX "$ENV{OGRE_HOME}/boost_1_44")
 
-set(BULLET_LIBS BulletDynamics BulletCollision LinearMath)
+set(BULLET_LIBS ${Prototype_SOURCE_DIR}/bullet/lib/BulletDynamics ${Prototype_SOURCE_DIR}/bullet/lib/BulletCollision ${Prototype_SOURCE_DIR}/bullet/lib/LinearMath)
 set(BULLET_INCLUDE ${Prototype_SOURCE_DIR}/bullet/src)
  
 find_package(OGRE REQUIRED)
@@ -146,16 +146,17 @@ set(SRCS
 include_directories( ${OIS_INCLUDE_DIRS}
 	${OGRE_INCLUDE_DIRS}
 	${OGRE_SAMPLES_INCLUDEPATH}
+    
     ${BULLET_INCLUDE}
+    ${Prototype_SOURCE_DIR}/bullet/Extras/Serialize/BulletWorldImporter
+    ${Prototype_SOURCE_DIR}/bullet/Extras/Serialize/BulletFileLoader
 )
-
-subdirs(bullet)
  
 add_executable(Prototype ${HDRS} ${SRCS})
  
 set_target_properties(Prototype PROPERTIES DEBUG_POSTFIX _d)
  
-target_link_libraries(Prototype ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${BULLET_LIBS} ${Prototype_SOURCE_DIR}/bullet/src/BulletWorldImporter/BulletFileLoader_Debug.lib ${Prototype_SOURCE_DIR}/bullet/src/BulletWorldImporter/BulletWorldImporter_Debug.lib)
+target_link_libraries(Prototype ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${BULLET_LIBS})
  
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/bin)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/media)

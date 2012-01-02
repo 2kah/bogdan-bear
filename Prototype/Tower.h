@@ -12,7 +12,7 @@
 
 #include <OgreVector3.h>
 
-#include "bullet/src/BulletWorldImporter/btBulletWorldImporter.h"
+#include <btBulletWorldImporter.h>
 
 class TowerListener;
 
