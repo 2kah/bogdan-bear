@@ -16,7 +16,7 @@ public:
     virtual void update(void);
     virtual void regenerate(void);
 
-    virtual void blocksUpdated(void);
+    virtual void blocksUpdated(unsigned level);
 
 protected:
     unsigned timer;

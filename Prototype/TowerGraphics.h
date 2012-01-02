@@ -14,7 +14,7 @@ public:
     TowerGraphics(Tower *tower, Ogre::SceneManager *sceneManager);
     virtual ~TowerGraphics();
 
-    virtual void blocksUpdated(void);
+    virtual void blocksUpdated(unsigned level);
 
 protected:
     Tower *tower;
@@ -22,10 +22,12 @@ protected:
 
     std::vector<Ogre::Entity *> blockEntities;
 
-    Ogre::StaticGeometry* geometry;
+    Ogre::StaticGeometry *geometry;
+
+    Ogre::ManualObject *wholething; // TODO: temporary
+    virtual void rebuildTowerObject(unsigned level, bool first);
 
     virtual void createBlockEntities(void);
-public: // for now
     virtual void rebuildStaticGeometry(void);
 };
 

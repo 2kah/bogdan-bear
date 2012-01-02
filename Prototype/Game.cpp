@@ -38,7 +38,7 @@ void Game::createScene(void)
  
     dynamicsWorld->setGravity(btVector3(0,-9.8,0));
 
-#define __USE_OLD_TOWER__
+//#define __USE_OLD_TOWER__
 #ifdef __USE_OLD_TOWER__
     TowerOld *tower = new TowerOld(mSceneMgr, dynamicsWorld);
 #else

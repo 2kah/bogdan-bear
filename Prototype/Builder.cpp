@@ -18,11 +18,11 @@ Builder::~Builder(void)
 
 void Builder::update(void)
 {
-    return; // rebuilding static geometry too slow atm
+    //return; // rebuilding static geometry too slow atm
     
     ++this->timer;
 
-    if (timer >= 100 && this->level >= 0)
+    if (timer >= 10 && this->level >= 0)
     {
         this->timer = 0;
 
@@ -34,13 +34,15 @@ void Builder::update(void)
             }
         }
 
-        --this->level;
+        this->tower->fireBlocksUpdated(level);
 
-        this->tower->fireBlocksUpdated();
+        if (this->level != 0) {
+            --this->level;
+        }
     }
 }
 
-void Builder::blocksUpdated(void)
+void Builder::blocksUpdated(unsigned level)
 {
 }
 
