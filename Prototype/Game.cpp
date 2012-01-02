@@ -6,7 +6,9 @@
 
 #include "Game.h"
 #include "Object.h"
+
 #include "Tower.h"
+#include "TowerGraphics.h"
 #include "Builder.h"
 
 #include "SceneObject.h"
