@@ -6,7 +6,7 @@
 
 #include "BaseApplication.h"
 
-#include "Object.h"
+#include "Updatable.h"
 #include "Player.h"
 #include "Tower.h"
 #include "FallingObject.h"
@@ -41,7 +41,7 @@ private:
     FallingObject *fallingObject;
     btDiscreteDynamicsWorld* dynamicsWorld;
 
-    std::set<Object *> objects;
+    std::set<Updatable *> objects;
     Tower* tower;
     
     std::set<SceneObject *> sceneRemoveQueue;

@@ -5,7 +5,7 @@
 #include <btBulletDynamicsCommon.h>
 
 #include "Game.h"
-#include "Object.h"
+#include "Updatable.h"
 
 #include "Tower.h"
 #include "TowerGraphics.h"
@@ -146,9 +146,9 @@ void Game::run(void)
             //integrate (physics) (currentState, simTime, dt);
             dynamicsWorld->stepSimulation(simFrameLength, 1, simFrameLength);
 
-            for(std::set<Object *>::iterator i = objects.begin(); i != objects.end(); ++i)
+            for(std::set<Updatable *>::iterator i = objects.begin(); i != objects.end(); ++i)
             {
-                Object *object = *i;
+                Updatable *object = *i;
 
                 object->update();
             }

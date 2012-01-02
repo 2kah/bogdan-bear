@@ -6,9 +6,9 @@
 #include <OgreSceneManager.h>
 #include <btBulletDynamicsCommon.h>
 
-#include "Object.h"
+#include "Updatable.h"
 
-class SceneObject: public Object
+class SceneObject: public Updatable
 {
 public:
     SceneObject();

@@ -1,12 +1,15 @@
 #ifndef __Object_h_
 #define __Object_h_
 
+#include <OgreVector3.h>
+
 class Object
 {
 public:
     virtual ~Object(void) {};
-
-    virtual void update(void) = 0;
+protected:
+    Ogre::Vector3 position;
+    Ogre::Vector3 orientation;
 };
 
 #endif // #ifndef __Object_h_
