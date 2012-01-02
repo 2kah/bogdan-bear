@@ -1,10 +1,10 @@
 #ifndef __Builder_h_
 #define __Builder_h_
 
-#include "Object.h"
+#include "Updatable.h"
 #include "Tower.h"
 
-class Builder : public Object, public TowerListener
+class Builder : public Updatable, public TowerListener
 {
 public:
     Tower *tower;

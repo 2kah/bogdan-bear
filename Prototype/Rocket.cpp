@@ -1,7 +1,10 @@
 #include "Rocket.h"
 
-Rocket::Rocket()
+#include "Explosion.h"
+
+Rocket::Rocket(Ogre::Vector3 position)
 {
+    this->position = position;
 }
 
 Rocket::~Rocket(void)

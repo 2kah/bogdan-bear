@@ -100,6 +100,9 @@ endif()
 set(HDRS
     ./Refactor.h
 	./Game.h
+    
+    ./Updatable.h
+    
     ./Object.h
     
     ./Tower.h
@@ -120,6 +123,9 @@ set(HDRS
 set(SRCS
     ./Refactor.cpp
 	./Game.cpp
+    
+    ./Updatable.cpp
+    
     ./Object.cpp
     
     ./Tower.cpp
