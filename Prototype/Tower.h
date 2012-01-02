@@ -96,28 +96,6 @@ public:
     virtual void blocksUpdated(void) = 0;
 };
 
-class TowerGraphics : public TowerListener
-{
-public:
-    TowerGraphics();
-    TowerGraphics(Tower *tower, Ogre::SceneManager *sceneManager);
-    virtual ~TowerGraphics();
-
-    virtual void blocksUpdated(void);
-
-protected:
-    Tower *tower;
-    Ogre::SceneManager *sceneManager;
-
-    std::vector<Ogre::Entity *> blockEntities;
-
-    Ogre::StaticGeometry* geometry;
-
-    virtual void createBlockEntities(void);
-public: // for now
-    virtual void rebuildStaticGeometry(void);
-};
-
 class TowerPhysics : public TowerListener
 {
 public:
