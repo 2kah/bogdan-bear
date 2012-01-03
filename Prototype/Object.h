@@ -1,7 +1,7 @@
 #ifndef __Object_h_
 #define __Object_h_
 
-#include <boost/signals2.hpp>
+//#include <boost/signals2.hpp>
 
 #include <OgreVector3.h>
 
