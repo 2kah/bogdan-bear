@@ -51,51 +51,39 @@ set(CMAKE_DEBUG_POSTFIX "_d")
  
 set(CMAKE_INSTALL_PREFIX "$ENV{OGRE_HOME}/boost_1_44")
 
-set(BULLET_LIBS ${Prototype_SOURCE_DIR}/bullet/lib/BulletDynamics ${Prototype_SOURCE_DIR}/bullet/lib/BulletCollision ${Prototype_SOURCE_DIR}/bullet/lib/LinearMath)
+#set(BULLET_LIBS ${Prototype_SOURCE_DIR}/bullet/lib/BulletDynamics ${Prototype_SOURCE_DIR}/bullet/lib/BulletCollision ${Prototype_SOURCE_DIR}/bullet/lib/LinearMath)
+
+set(${BULLET_PHYSICS_SOURCE_DIR}/bullet)
+set(BULLET_LIBS BulletDynamics BulletCollision LinearMath BulletWorldImporter BulletFileLoader)
 set(BULLET_INCLUDE ${Prototype_SOURCE_DIR}/bullet/src)
  
 find_package(OGRE REQUIRED)
- 
-#if(NOT "${OGRE_VERSION_NAME}" STREQUAL "Cthugha")
-#  message(SEND_ERROR "You need Ogre 1.7 Cthugha to build this.")
-#endif()
- 
 find_package(OIS REQUIRED)
- 
-if(NOT OIS_FOUND)
-	message(SEND_ERROR "Failed to find OIS.")
-endif()
- 
+
+set(Boost_ADDITIONAL_VERSIONS "1.48.0" "1.44" "1.44.0" "1.42" "1.42.0" "1.41.0" "1.41" "1.40.0" "1.40" "1.39.0" "1.39" "1.38.0" "1.38" "1.37.0" "1.37")
+
 # Find Boost
-if (NOT OGRE_BUILD_PLATFORM_IPHONE)
-	if (WIN32 OR APPLE)
-		set(Boost_USE_STATIC_LIBS TRUE)
-	else ()
-		# Statically linking boost to a dynamic Ogre build doesn't work on Linux 64bit
-		set(Boost_USE_STATIC_LIBS ${OGRE_STATIC})
-	endif ()
-	if (MINGW)
-		# this is probably a bug in CMake: the boost find module tries to look for
-		# boost libraries with name libboost_*, but CMake already prefixes library
-		# search names with "lib". This is the workaround.
-		set(CMAKE_FIND_LIBRARY_PREFIXES ${CMAKE_FIND_LIBRARY_PREFIXES} "")
-	endif ()
-	set(Boost_ADDITIONAL_VERSIONS "1.44" "1.44.0" "1.42" "1.42.0" "1.41.0" "1.41" "1.40.0" "1.40" "1.39.0" "1.39" "1.38.0" "1.38" "1.37.0" "1.37" )
-	# Components that need linking (NB does not include header-only components like bind)
-	set(OGRE_BOOST_COMPONENTS thread date_time)
-	find_package(Boost COMPONENTS ${OGRE_BOOST_COMPONENTS} QUIET)
-	if (NOT Boost_FOUND)
-		# Try again with the other type of libs
-		set(Boost_USE_STATIC_LIBS NOT ${Boost_USE_STATIC_LIBS})
-		find_package(Boost COMPONENTS ${OGRE_BOOST_COMPONENTS} QUIET)
-	endif()
-	find_package(Boost QUIET)
- 
-	# Set up referencing of Boost
-	include_directories(${Boost_INCLUDE_DIR})
-	add_definitions(-DBOOST_ALL_NO_LIB)
-	set(OGRE_LIBRARIES ${OGRE_LIBRARIES} ${Boost_LIBRARIES})
-endif()
+if (WIN32 OR APPLE)
+    set(Boost_USE_STATIC_LIBS TRUE)
+else ()
+    # Statically linking boost to a dynamic Ogre build doesn't work on Linux 64bit
+    set(Boost_USE_STATIC_LIBS ${OGRE_STATIC})
+endif ()
+if (MINGW)
+    # this is probably a bug in CMake: the boost find module tries to look for
+    # boost libraries with name libboost_*, but CMake already prefixes library
+    # search names with "lib". This is the workaround.
+    set(CMAKE_FIND_LIBRARY_PREFIXES ${CMAKE_FIND_LIBRARY_PREFIXES} "")
+endif ()
+set(Boost_ADDITIONAL_VERSIONS "1.48.0" "1.44" "1.44.0" "1.42" "1.42.0" "1.41.0" "1.41" "1.40.0" "1.40" "1.39.0" "1.39" "1.38.0" "1.38" "1.37.0" "1.37" )
+# Components that need linking (NB does not include header-only components like bind)
+set(OGRE_BOOST_COMPONENTS thread date_time)
+find_package(Boost REQUIRED)
+
+# Set up referencing of Boost
+include_directories(${Boost_INCLUDE_DIR})
+add_definitions(-DBOOST_ALL_NO_LIB)
+set(OGRE_LIBRARIES ${OGRE_LIBRARIES} ${Boost_LIBRARIES})
  
 set(HDRS
     ./Refactor.h
@@ -151,6 +139,8 @@ include_directories( ${OIS_INCLUDE_DIRS}
     ${Prototype_SOURCE_DIR}/bullet/Extras/Serialize/BulletWorldImporter
     ${Prototype_SOURCE_DIR}/bullet/Extras/Serialize/BulletFileLoader
 )
+ 
+subdirs(bullet)
  
 add_executable(Prototype ${HDRS} ${SRCS})
  
@@ -247,6 +237,6 @@ if(UNIX)
 	)
  
 endif(UNIX)
- 
+
 set(EXECUTABLE_OUTPUT_PATH $ENV{REFACTOR_HOME})
 set(LIBRARY_OUTPUT_PATH $ENV{REFACTOR_HOME})
