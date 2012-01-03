@@ -60,7 +60,7 @@ set(BULLET_INCLUDE ${Prototype_SOURCE_DIR}/bullet/src)
 find_package(OGRE REQUIRED)
 find_package(OIS REQUIRED)
 
-set(Boost_ADDITIONAL_VERSIONS "1.48.0" "1.44" "1.44.0" "1.42" "1.42.0" "1.41.0" "1.41" "1.40.0" "1.40" "1.39.0" "1.39" "1.38.0" "1.38" "1.37.0" "1.37")
+set(Boost_ADDITIONAL_VERSIONS "1.47" "1.44" "1.44.0" "1.42" "1.42.0" "1.41.0" "1.41" "1.40.0" "1.40" "1.39.0" "1.39" "1.38.0" "1.38" "1.37.0" "1.37")
 
 # Find Boost
 if (WIN32 OR APPLE)
@@ -75,14 +75,14 @@ if (MINGW)
     # search names with "lib". This is the workaround.
     set(CMAKE_FIND_LIBRARY_PREFIXES ${CMAKE_FIND_LIBRARY_PREFIXES} "")
 endif ()
-set(Boost_ADDITIONAL_VERSIONS "1.48.0" "1.44" "1.44.0" "1.42" "1.42.0" "1.41.0" "1.41" "1.40.0" "1.40" "1.39.0" "1.39" "1.38.0" "1.38" "1.37.0" "1.37" )
+set(Boost_ADDITIONAL_VERSIONS "1.47" "1.44" "1.44.0" "1.42" "1.42.0" "1.41.0" "1.41" "1.40.0" "1.40" "1.39.0" "1.39" "1.38.0" "1.38" "1.37.0" "1.37" )
 # Components that need linking (NB does not include header-only components like bind)
 set(OGRE_BOOST_COMPONENTS thread date_time)
 find_package(Boost REQUIRED)
 
 # Set up referencing of Boost
 include_directories(${Boost_INCLUDE_DIR})
-add_definitions(-DBOOST_ALL_NO_LIB)
+add_definitions(-DBOOST_ALL) # _NO_LIB)
 set(OGRE_LIBRARIES ${OGRE_LIBRARIES} ${Boost_LIBRARIES})
  
 set(HDRS
@@ -130,8 +130,14 @@ set(SRCS
     
     ./BaseApplication.cpp
 )
- 
-include_directories( ${OIS_INCLUDE_DIRS}
+
+find_package(Boost 1.47 REQUIRED)
+add_definitions(-DBOOST_ALL)
+link_directories ( ${Boost_LIBRARY_DIRS} )
+include_directories ( ${Boost_INCLUDE_DIRS} )
+
+include_directories(
+    ${OIS_INCLUDE_DIRS}
 	${OGRE_INCLUDE_DIRS}
 	${OGRE_SAMPLES_INCLUDEPATH}
     
@@ -146,7 +152,13 @@ add_executable(Prototype ${HDRS} ${SRCS})
  
 set_target_properties(Prototype PROPERTIES DEBUG_POSTFIX _d)
  
-target_link_libraries(Prototype ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${BULLET_LIBS})
+target_link_libraries(
+    Prototype
+    ${OGRE_LIBRARIES}
+    ${OIS_LIBRARIES}
+    ${BULLET_LIBS}
+    ${BOOST_LIBRARIES}
+)
  
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/bin)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/media)
