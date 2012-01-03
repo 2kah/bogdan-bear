@@ -6,9 +6,8 @@
 #include <math.h>
 #include <btBulletDynamicsCommon.h>
 
-#include "bullet/src/BulletCollision/CollisionShapes/btConvexHullShape.h"
-
-#include "bullet/src/BulletWorldImporter/btBulletWorldImporter.h"
+#include <BulletCollision/CollisionShapes/btConvexHullShape.h>
+#include <btBulletWorldImporter.h>
 
 #include "Tower.h"
 //#include "DebugDraw.h"
