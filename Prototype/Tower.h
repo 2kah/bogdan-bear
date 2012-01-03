@@ -1,18 +1,16 @@
 #ifndef __Tower_h_
 #define __Tower_h_
 
-#include <string>
 #include <vector>
-#include <set>
 
-#include <OgreSceneManager.h>
-#include <OgreEntity.h>
-#include <math.h>
-#include <btBulletDynamicsCommon.h>
+#include <boost/signal.hpp>
 
 #include <OgreVector3.h>
 
-#include <btBulletWorldImporter.h>
+#include <OgreSceneManager.h>
+#include <OgreEntity.h>
+
+#include <btBulletDynamicsCommon.h>
 
 class TowerListener;
 
@@ -70,6 +68,8 @@ public:
 
     virtual BlockPosition getBlockPosition(unsigned level, unsigned layer, unsigned sector);
     virtual BlockPoints getBlockPoints(unsigned level, unsigned layer, unsigned sector);
+
+    boost::signal<void (unsigned level)> blocksUpdated;
 
     void addTowerListener(TowerListener *listener);
 

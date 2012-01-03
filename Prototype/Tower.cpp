@@ -387,17 +387,23 @@ BlockPoints Tower::getBlockPoints(unsigned level, unsigned layer, unsigned secto
 
 void Tower::addTowerListener(TowerListener *listener)
 {
-    this->towerListeners.insert(listener);
+    //this->towerListeners.insert(listener);
+
+    this->blocksUpdated.connect(boost::bind(&TowerListener::blocksUpdated, listener, _1));
 }
 
 void Tower::fireBlocksUpdated(unsigned level)
 {
+    /*
     for(std::set<TowerListener *>::iterator i = this->towerListeners.begin(); i != this->towerListeners.end(); ++i)
     {
        TowerListener *listener = *i;
 
        listener->blocksUpdated(level);
     }
+    */
+
+    this->blocksUpdated(level);
 }
 
 TowerListener::~TowerListener()
