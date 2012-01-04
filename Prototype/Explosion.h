@@ -24,8 +24,8 @@ public:
 
     virtual void update();
 
-    void addToScene(Ogre::SceneManager *, Ogre::String);
-    void removeFromScene(Ogre::SceneManager *sceneMgr);
+    void addToScene(Ogre::SceneManager *sceneManager);
+    void removeFromScene(Ogre::SceneManager *sceneManager);
 
     ExplosionSignals signals;
 protected:
