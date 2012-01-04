@@ -16,6 +16,9 @@
 #include "Explosion.h"
 #include "FallingObject.h"
 
+#include "Rocket.h"
+#include "RocketGraphics.h"
+
 Game::Game(void)
 {
 }
@@ -52,6 +55,9 @@ void Game::createScene(void)
     TowerGraphics *towerGraphics = new TowerGraphics(tower, mSceneMgr);
     //TowerPhysics *towerPhysics = new TowerPhysics(tower, dynamicsWorld);
 #endif
+
+    Rocket *rocket = new Rocket(Ogre::Vector3(0, 0, 800));
+    RocketGraphics *rocketGraphics = new RocketGraphics(rocket, mSceneMgr);
 
     // Create a list of SceneObjects (one of which is a player) at various positions
     std::vector<SceneObject *> things;

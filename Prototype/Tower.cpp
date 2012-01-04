@@ -406,10 +406,6 @@ void Tower::fireBlocksUpdated(unsigned level)
     this->blocksUpdated(level);
 }
 
-TowerListener::~TowerListener()
-{
-}
-
 // Tower Physics
 TowerPhysics::TowerPhysics()
 {

@@ -1,4 +1,5 @@
 #include "TowerGraphics.h"
+#include "Tower.h"
 
 #include <iostream>
 
@@ -7,11 +8,6 @@
 #include "OgreStaticGeometry.h"
 
 #include "OgreManualObject.h"
-#include "OgreMeshSerializer.h"
-
-TowerGraphics::TowerGraphics()
-{
-}
 
 // Create a graphical representation of a Tower attached to a given SceneManager.
 TowerGraphics::TowerGraphics(Tower *tower, Ogre::SceneManager *sceneManager)

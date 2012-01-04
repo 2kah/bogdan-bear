@@ -94,10 +94,13 @@ set(HDRS
     ./Object.h
     
     ./Tower.h
+    ./TowerListener.h
     ./TowerGraphics.h
     ./Builder.h
     
     ./Rocket.h
+    ./RocketListener.h
+    ./RocketGraphics.h
     
     ./SceneObject.h
     
@@ -112,15 +115,12 @@ set(SRCS
     ./Refactor.cpp
 	./Game.cpp
     
-    ./Updatable.cpp
-    
-    ./Object.cpp
-    
     ./Tower.cpp
     ./TowerGraphics.cpp
     ./Builder.cpp
     
     ./Rocket.cpp
+    ./RocketGraphics.cpp
     
     ./SceneObject.cpp
     

@@ -12,7 +12,7 @@
 
 #include <btBulletDynamicsCommon.h>
 
-class TowerListener;
+#include "TowerListener.h"
 
 ///*
 class TowerOld
@@ -85,15 +85,6 @@ public:
 
 //private: // public for now
     void fireBlocksUpdated(unsigned level);
-};
-
-class TowerListener
-{
-public:
-    TowerListener() {};
-    virtual ~TowerListener() = 0;
-
-    virtual void blocksUpdated(unsigned level) = 0;
 };
 
 class TowerPhysics : public TowerListener
