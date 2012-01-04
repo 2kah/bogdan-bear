@@ -13,6 +13,8 @@ public:
     RocketGraphics(Rocket *rocket, Ogre::SceneManager *sceneManager);
     virtual ~RocketGraphics();
 protected:
+    virtual void rocketUpdated(Rocket *rocket);
+
     Rocket *rocket;
 
     Ogre::SceneNode *sceneNode;

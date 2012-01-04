@@ -7,12 +7,14 @@
 #include "Object.h"
 
 class Ogre::Vector3;
+class Ogre::Quaternion;
 class Rocket;
 class Explosion;
 
 namespace {
 class RocketSignals {
 public:
+    boost::signal<void (Rocket *)> updated;
     boost::signal<void (Rocket *, Explosion *)> exploded;
 };
 }
@@ -20,7 +22,9 @@ public:
 class Rocket: public Updatable, public Object
 {
 public:
-    Rocket(Ogre::Vector3 position);
+    static const double SPEED;
+
+    Rocket(Ogre::Vector3 position, Ogre::Quaternion orientation);
     virtual ~Rocket();
 
     virtual void update();
