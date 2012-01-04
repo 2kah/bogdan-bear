@@ -1,4 +1,7 @@
 #include "RocketGraphics.h"
+
+#include <string>
+
 #include "Rocket.h"
 
 #include <OGRE/OgreSceneManager.h>
@@ -7,8 +10,8 @@
 RocketGraphics::RocketGraphics(Rocket *rocket, Ogre::SceneManager *sceneManager)
 {
     this->rocket = rocket;
-
-    Ogre::Entity *entity = sceneManager->createEntity("rocket__", "Barrel.mesh");
+    
+    Ogre::Entity *entity = sceneManager->createEntity("Barrel.mesh");
     
     this->sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode();
     this->sceneNode->attachObject(entity);
@@ -21,4 +24,5 @@ RocketGraphics::RocketGraphics(Rocket *rocket, Ogre::SceneManager *sceneManager)
 
 RocketGraphics::~RocketGraphics()
 {
+    // lrn2
 }

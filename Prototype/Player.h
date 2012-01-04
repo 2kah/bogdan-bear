@@ -1,9 +1,20 @@
 #ifndef __Player_h_
 #define __Player_h_
 
+#include <boost/signal.hpp>
+
 #include "SceneObject.h"
 
 //#include "Playercam.h"
+
+class Player;
+class Rocket;
+
+namespace {
+struct PlayerSignals {
+    boost::signal<void (Player *, Rocket *)> fired;
+};
+}
 
 class Player: public SceneObject
 {
@@ -33,6 +44,8 @@ public:
 
     //TODO: make this nicer?
     Ogre::SceneNode *cameraNode;
+
+    PlayerSignals signals;
 
 private:
     Ogre::Real mMove;     //The movement constant

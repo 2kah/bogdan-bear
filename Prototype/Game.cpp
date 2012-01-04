@@ -1,7 +1,9 @@
 #include <iostream>
 #include <vector>
 
-#include <OgreTimer.h>
+#include <boost/bind.hpp>
+
+#include <OGRE/OgreTimer.h>
 #include <btBulletDynamicsCommon.h>
 
 #include "Game.h"
@@ -19,6 +21,8 @@
 #include "Rocket.h"
 #include "RocketGraphics.h"
 
+#include "GameTestThing.h"
+
 Game::Game(void)
 {
 }
@@ -28,7 +32,7 @@ Game::~Game(void)
 }
 
 void Game::createScene(void)
-{
+{    
     //this code is in wrong place
     btBroadphaseInterface* broadphase = new btDbvtBroadphase();
  
@@ -56,14 +60,13 @@ void Game::createScene(void)
     //TowerPhysics *towerPhysics = new TowerPhysics(tower, dynamicsWorld);
 #endif
 
-    Rocket *rocket = new Rocket(Ogre::Vector3(0, 0, 800));
-    RocketGraphics *rocketGraphics = new RocketGraphics(rocket, mSceneMgr);
-
     // Create a list of SceneObjects (one of which is a player) at various positions
     std::vector<SceneObject *> things;
 
-    player = new Player(Ogre::Vector3(0, 0, 500));
+    player = new Player(Ogre::Vector3(0, 0, 800));
     fallingObject = new FallingObject(Ogre::Vector3(0,200,0));
+
+    this->gameTestThing = new GameTestThing(this);
 
     //things.push_back(new SceneObject(Ogre::Vector3(50, 0, 50)));
     //things.push_back(new SceneObject(Ogre::Vector3(0, 0, 0)));
@@ -159,6 +162,8 @@ void Game::run(void)
                 object->update();
             }
 			
+            this->gameTestThing->update();
+
             for(std::set<SceneObject *>::iterator i = sceneRemoveQueue.begin(); i != sceneRemoveQueue.end(); ++i)
             {
                 SceneObject *object = *i;
@@ -302,20 +307,7 @@ bool Game::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id)
 	}
     else if (id == OIS::MB_Left)
     {
-        static int i = 0;
-        
-        std::stringstream name("explosion");
-        name << (int) i;
-
-        ++i;
-
         player->shoot(mSceneMgr,dynamicsWorld);
-
-        Explosion *explosion = new Explosion(this, player->position);
-
-        explosion->addToScene(mSceneMgr, name.str());
-
-        objects.insert(explosion);
     }
 
     return true;
@@ -326,5 +318,3 @@ bool Game::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id)
     BaseApplication::mouseReleased(arg, id);
     return true;
 }
-
-

@@ -5,9 +5,8 @@
 
 #include "Explosion.h"
 
-Explosion::Explosion(Game *game, Ogre::Vector3 position): size(0)
+Explosion::Explosion(Ogre::Vector3 position): size(0)
 {
-    this->game = game;
     this->position = position;
 }
 
@@ -23,6 +22,15 @@ void Explosion::addToScene(Ogre::SceneManager *sceneMgr, std::string name)
     mSceneNode->attachObject(ogreHead);
 
     mSceneNode->translate(position);
+
+    this->update();
+}
+
+void Explosion::removeFromScene(Ogre::SceneManager *sceneMgr)
+{
+    for (int i = 0; i < mSceneNode->numAttachedObjects(); ++i){
+        sceneMgr->destroyMovableObject(mSceneNode->getAttachedObject(i));
+    }
 }
 
 void Explosion::update(void)
@@ -34,7 +42,6 @@ void Explosion::update(void)
     }
     else
     {
-        game->carveSphere(position, size);
-        game->removeSceneObject(this);
+        this->signals.finished(this);
     }
 }
