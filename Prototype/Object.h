@@ -1,9 +1,8 @@
 #ifndef __Object_h_
 #define __Object_h_
 
-#include <boost/signals2.hpp>
-
-#include <OgreVector3.h>
+#include <OGRE/OgreVector3.h>
+#include <OGRE/OgreQuaternion.h>
 
 class Object
 {
@@ -11,7 +10,7 @@ public:
     virtual ~Object(void) {};
 //protected:
     Ogre::Vector3 position;
-    Ogre::Vector3 orientation;
+    Ogre::Quaternion orientation;
 };
 
 #endif // #ifndef __Object_h_

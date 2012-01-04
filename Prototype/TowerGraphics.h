@@ -1,16 +1,18 @@
 #ifndef __TowerGraphics_h_
 #define __TowerGraphics_h_
 
-#include "Tower.h"
+#include <OGRE/OgreSceneManager.h>
+#include <OGRE/OgreEntity.h>
+#include <OGRE/OgreStaticGeometry.h>
+#include <OGRE/OgreMeshSerializer.h>
 
-#include "OgreSceneManager.h"
-#include "OgreEntity.h"
-#include "OgreStaticGeometry.h"
+#include "TowerListener.h"
+
+class Tower;
 
 class TowerGraphics : public TowerListener
 {
 public:
-    TowerGraphics();
     TowerGraphics(Tower *tower, Ogre::SceneManager *sceneManager);
     virtual ~TowerGraphics();
 
