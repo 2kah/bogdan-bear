@@ -89,6 +89,8 @@ set(HDRS
     ./Refactor.h
 	./Game.h
     
+    ./GameTestThing.h
+    
     ./Updatable.h
     
     ./Object.h
@@ -114,6 +116,8 @@ set(HDRS
 set(SRCS
     ./Refactor.cpp
 	./Game.cpp
+    
+    ./GameTestThing.cpp
     
     ./Tower.cpp
     ./TowerGraphics.cpp

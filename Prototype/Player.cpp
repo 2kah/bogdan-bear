@@ -5,6 +5,7 @@
 #include <math.h>
 
 #include "Player.h"
+#include "Rocket.h"
 
 #define PI 3.14159265
 
@@ -139,6 +140,8 @@ void Player::shoot(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynam
 			body->applyImpulse(impulse,relPos);
 		}*/
 	}
+
+    this->signals.fired(this, new Rocket(this->position));
 
     std::cout << "SHOOTING" << std::endl;
 }

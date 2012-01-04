@@ -4,14 +4,22 @@
 #include <vector>
 #include <set>
 
+#include <btBulletDynamicsCommon.h>
+
 #include "BaseApplication.h"
+#include "RocketListener.h"
 
-#include "Updatable.h"
-#include "Player.h"
-#include "Tower.h"
-#include "FallingObject.h"
+class Updatable;
+class Tower;
+class Player;
+class Rocket;
+class Explosion;
 
-class Game : public BaseApplication
+class SceneObject;
+class FallingObject;
+class GameTestThing;
+
+class Game : public BaseApplication, public RocketListener
 {
 public:
     Game(void);
@@ -35,7 +43,6 @@ protected:
     virtual void createCamera(void);
     virtual void createViewports(void);
 
-
 private:
     Player *player;
     FallingObject *fallingObject;
@@ -48,6 +55,9 @@ private:
 	    
     Ogre::Camera* mCamera;
 
+    GameTestThing *gameTestThing;
+
+    friend class GameTestThing;
 };
 
 #endif // #ifndef __Game_h_

@@ -91,6 +91,8 @@ protected:
     OIS::InputManager* mInputManager;
     OIS::Mouse*    mMouse;
     OIS::Keyboard* mKeyboard;
+
+    friend class GameTestThing;
 };
 
 #endif // #ifndef __BaseApplication_h_

@@ -69,9 +69,9 @@ public:
     virtual BlockPosition getBlockPosition(unsigned level, unsigned layer, unsigned sector);
     virtual BlockPoints getBlockPoints(unsigned level, unsigned layer, unsigned sector);
 
-    boost::signal<void (unsigned level)> blocksUpdated;
-
     void addTowerListener(TowerListener *listener);
+
+    boost::signal<void (unsigned level)> blocksUpdated;
 
 //protected:
     std::set<TowerListener *> towerListeners;

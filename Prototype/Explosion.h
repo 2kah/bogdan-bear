@@ -1,22 +1,36 @@
 #ifndef __Explosion_h_
 #define __Explosion_h_
 
-#include "SceneObject.h"
+#include <boost/signals.hpp>
 
-#include "Game.h"
+#include <OGRE/OgreVector3.h>
 
-class Explosion: public SceneObject
+#include "Updatable.h"
+#include "Object.h"
+
+class Explosion;
+
+namespace {
+struct ExplosionSignals {
+    boost::signal<void (Explosion *)> finished;
+};
+}
+
+class Explosion: public Updatable, public Object
 {
 public:
-    Explosion(Game *game, Ogre::Vector3 position);
-    virtual ~Explosion(void);
+    Explosion(Ogre::Vector3 position);
+    virtual ~Explosion();
 
-    virtual void addToScene(Ogre::SceneManager *sceneMgr, std::string name);
-    virtual void update(void);
+    virtual void update();
 
+    void addToScene(Ogre::SceneManager *, Ogre::String);
+    void removeFromScene(Ogre::SceneManager *sceneMgr);
+
+    ExplosionSignals signals;
 protected:
     int size;
-    Game *game;
+    Ogre::SceneNode *mSceneNode;
 };
 
 #endif // #ifndef __Explosion_h_
