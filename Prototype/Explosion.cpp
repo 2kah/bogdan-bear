@@ -14,9 +14,9 @@ Explosion::~Explosion(void)
 {
 }
 
-void Explosion::addToScene(Ogre::SceneManager *sceneMgr, std::string name)
+void Explosion::addToScene(Ogre::SceneManager *sceneMgr)
 {
-    Ogre::Entity *ogreHead = sceneMgr->createEntity(name, "sphere.mesh");
+    Ogre::Entity *ogreHead = sceneMgr->createEntity("sphere.mesh");
 
     mSceneNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
     mSceneNode->attachObject(ogreHead);
