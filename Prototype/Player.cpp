@@ -48,6 +48,8 @@ void Player::update(void)
     rotX = 0;
     rotY = 0;
     playerNode->translate(mDirection, Ogre::Node::TS_LOCAL);
+
+    this->position = playerNode->getPosition();
 }
 
 void Player::forward(void)
@@ -141,7 +143,10 @@ void Player::shoot(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynam
 		}*/
 	}
 
-    this->signals.fired(this, new Rocket(this->position));
+    Ogre::Quaternion orientation = this->cameraNode->getOrientation() * this->playerNode->getOrientation();
+    orientation = orientation * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
+
+    this->signals.fired(this, new Rocket(this->position + Ogre::Vector3::UNIT_Y * 100, orientation));
 
     std::cout << "SHOOTING" << std::endl;
 }

@@ -1,10 +1,16 @@
 #include "Rocket.h"
 
+#include <OGRE/OgreVector3.h>
+#include <OGRE/OgreQuaternion.h>
+
 #include "Explosion.h"
 
-Rocket::Rocket(Ogre::Vector3 position)
+const double Rocket::SPEED = 10;
+
+Rocket::Rocket(Ogre::Vector3 position, Ogre::Quaternion orientation)
 {
     this->position = position;
+    this->orientation = orientation;
 
     this->timer = 0;
 }
@@ -15,7 +21,10 @@ Rocket::~Rocket()
 
 void Rocket::update()
 {
-    if (this->timer >= 300)
+    this->position = this->position + this->orientation * Ogre::Vector3(Rocket::SPEED, 0, 0);
+    this->signals.updated(this);
+
+    if (this->timer >= 100)
     {
         this->timer = 0;
 

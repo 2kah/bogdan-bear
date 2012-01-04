@@ -63,7 +63,7 @@ void Game::createScene(void)
     // Create a list of SceneObjects (one of which is a player) at various positions
     std::vector<SceneObject *> things;
 
-    player = new Player(Ogre::Vector3(0, 0, 800));
+    player = new Player(Ogre::Vector3(0, 0, 1000));
     fallingObject = new FallingObject(Ogre::Vector3(0,200,0));
 
     this->gameTestThing = new GameTestThing(this);
