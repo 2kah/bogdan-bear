@@ -66,13 +66,8 @@ void GameTestThing::rocketExploded(Rocket *rocket, Explosion *explosion)
     this->game->objects.insert(explosion);
 
     explosion->signals.finished.connect(boost::bind(&GameTestThing::explosionFinished, this, _1));
-
-    static int i = 0;
-    std::stringstream name("explosion");
-    name << i;
-    ++i;
-
-    explosion->addToScene(this->game->mSceneMgr, name.str());
+    
+    explosion->addToScene(this->game->mSceneMgr);
 
     this->removeQueue.insert(rocket);
 }
