@@ -1,20 +1,16 @@
 #ifndef __Tower_h_
 #define __Tower_h_
 
-#include <string>
 #include <vector>
-#include <set>
 
-#include <OgreSceneManager.h>
-#include <OgreEntity.h>
-#include <math.h>
-#include <btBulletDynamicsCommon.h>
+#include <boost/signal.hpp>
 
 #include <OgreVector3.h>
 
-#include "bullet/src/BulletWorldImporter/btBulletWorldImporter.h"
+#include <OgreSceneManager.h>
+#include <OgreEntity.h>
 
-class TowerListener;
+#include <btBulletDynamicsCommon.h>
 
 ///*
 class TowerOld
@@ -52,6 +48,14 @@ struct BlockPoints
     Point a2, b2, c2, d2;
 };
 
+class Tower;
+
+namespace {
+struct TowerSignals {
+    boost::signal<void (Tower *, unsigned level)> levelUpdated;
+};
+}
+
 class Tower
 {
 public:
@@ -71,32 +75,18 @@ public:
     virtual BlockPosition getBlockPosition(unsigned level, unsigned layer, unsigned sector);
     virtual BlockPoints getBlockPoints(unsigned level, unsigned layer, unsigned sector);
 
-    void addTowerListener(TowerListener *listener);
+    TowerSignals signals;
 
 //protected:
-    std::set<TowerListener *> towerListeners;
-
     double blocksize;
     unsigned levels;
     unsigned layers;
     unsigned sectors;
 
     std::vector<std::vector<std::vector<bool> > > blocks;
-
-//private: // public for now
-    void fireBlocksUpdated(unsigned level);
 };
 
-class TowerListener
-{
-public:
-    TowerListener() {};
-    virtual ~TowerListener() = 0;
-
-    virtual void blocksUpdated(unsigned level) = 0;
-};
-
-class TowerPhysics : public TowerListener
+class TowerPhysics
 {
 public:
     TowerPhysics();

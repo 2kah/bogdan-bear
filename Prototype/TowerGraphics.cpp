@@ -2,16 +2,16 @@
 
 #include <iostream>
 
+#include <boost/signal.hpp>
+#include <boost/bind.hpp>
+
+#include "Tower.h"
+
 #include "OgreSceneManager.h"
 #include "OgreEntity.h"
 #include "OgreStaticGeometry.h"
 
 #include "OgreManualObject.h"
-#include "OgreMeshSerializer.h"
-
-TowerGraphics::TowerGraphics()
-{
-}
 
 // Create a graphical representation of a Tower attached to a given SceneManager.
 TowerGraphics::TowerGraphics(Tower *tower, Ogre::SceneManager *sceneManager)
@@ -20,7 +20,7 @@ TowerGraphics::TowerGraphics(Tower *tower, Ogre::SceneManager *sceneManager)
     this->sceneManager = sceneManager;
     
     // Listen for changes to the tower that may need to be reflected in the graphics
-    this->tower->addTowerListener(this);
+    this->tower->signals.levelUpdated.connect(boost::bind(&TowerGraphics::blocksUpdated, this, _1, _2));
 
     // Generate a block entity for each layer of the tower
     //this->createBlockEntities();
@@ -71,7 +71,7 @@ TowerGraphics::~TowerGraphics()
 }
 
 // Update the graphics of the tower if blocks have changed
-void TowerGraphics::blocksUpdated(unsigned level)
+void TowerGraphics::blocksUpdated(Tower *tower, unsigned level)
 {
     //this->rebuildStaticGeometry();
     this->rebuildTowerObject(level, false);

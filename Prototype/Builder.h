@@ -4,7 +4,7 @@
 #include "Updatable.h"
 #include "Tower.h"
 
-class Builder : public Updatable, public TowerListener
+class Builder : public Updatable
 {
 public:
     Tower *tower;
@@ -16,7 +16,7 @@ public:
     virtual void update(void);
     virtual void regenerate(void);
 
-    virtual void blocksUpdated(unsigned level);
+    virtual void blocksUpdated(Tower *tower, unsigned level);
 
 protected:
     unsigned timer;

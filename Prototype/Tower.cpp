@@ -6,9 +6,8 @@
 #include <math.h>
 #include <btBulletDynamicsCommon.h>
 
-#include "bullet/src/BulletCollision/CollisionShapes/btConvexHullShape.h"
-
-#include "bullet/src/BulletWorldImporter/btBulletWorldImporter.h"
+#include <BulletCollision/CollisionShapes/btConvexHullShape.h>
+#include <btBulletWorldImporter.h>
 
 #include "Tower.h"
 //#include "DebugDraw.h"
@@ -384,25 +383,6 @@ BlockPoints Tower::getBlockPoints(unsigned level, unsigned layer, unsigned secto
                           a2, b2, c2, d2};
 
     return points;
-}
-
-void Tower::addTowerListener(TowerListener *listener)
-{
-    this->towerListeners.insert(listener);
-}
-
-void Tower::fireBlocksUpdated(unsigned level)
-{
-    for(std::set<TowerListener *>::iterator i = this->towerListeners.begin(); i != this->towerListeners.end(); ++i)
-    {
-       TowerListener *listener = *i;
-
-       listener->blocksUpdated(level);
-    }
-}
-
-TowerListener::~TowerListener()
-{
 }
 
 // Tower Physics

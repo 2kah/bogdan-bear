@@ -1,18 +1,37 @@
 #ifndef __Player_h_
 #define __Player_h_
 
-#include "SceneObject.h"
+#include <boost/signal.hpp>
 
-//#include "Playercam.h"
+#include "Updatable.h"
+#include "Object.h"
 
-class Player: public SceneObject
+class btDiscreteDynamicsWorld;
+
+class Player;
+class Platform;
+class Rocket;
+
+namespace {
+struct PlayerSignals {
+    boost::signal<void (Player *)> updated;
+    boost::signal<void (Player *, Rocket *)> fired;
+    boost::signal<void (Player *, Platform *)> platform;
+};
+}
+
+class Player : public Updatable, public Object
 {
 public:
-    Player(Ogre::Vector3 position);
-    virtual ~Player(void);
+    static const double ROTATION_SPEED;
+    static const double MOVEMENT_SPEED;
 
-    virtual void addToScene(Ogre::SceneManager *sceneMgr, std::string name);
-    virtual void update(void);
+    Player(Ogre::Vector3 position);
+    virtual ~Player();
+
+    virtual void update();
+
+    PlayerSignals signals;
 
     virtual void forward();
     virtual void back();
@@ -31,18 +50,12 @@ public:
     virtual void lookX(int dist);
     virtual void lookY(int dist);
 
-    //TODO: make this nicer?
-    Ogre::SceneNode *cameraNode;
-
+    Ogre::Quaternion relativeAim;
 private:
-    Ogre::Real mMove;     //The movement constant
-    Ogre::Vector3 mDirection;     //Value to move in the correct direction
-    Ogre::SceneNode *playerNode;
+    Ogre::Vector3 velocity;
 
     Ogre::Radian rotX;
     Ogre::Radian rotY;
-    float rotationFactor; //TODO: scale this to change mouse sensitivity
-
 };
 
 #endif // #ifndef __Player_h_

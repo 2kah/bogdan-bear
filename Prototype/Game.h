@@ -4,12 +4,19 @@
 #include <vector>
 #include <set>
 
+#include <btBulletDynamicsCommon.h>
+
 #include "BaseApplication.h"
 
-#include "Updatable.h"
-#include "Player.h"
-#include "Tower.h"
-#include "FallingObject.h"
+class Updatable;
+class Tower;
+class Player;
+class Rocket;
+class Explosion;
+
+class SceneObject;
+class FallingObject;
+class GameTestThing;
 
 class Game : public BaseApplication
 {
@@ -18,8 +25,6 @@ public:
     virtual ~Game(void);
 
     virtual void run(void);
-
-    virtual void removeSceneObject(SceneObject *);
 
     virtual void carveSphere(Ogre::Vector3 position, double radius);
 
@@ -35,7 +40,6 @@ protected:
     virtual void createCamera(void);
     virtual void createViewports(void);
 
-
 private:
     Player *player;
     FallingObject *fallingObject;
@@ -43,11 +47,12 @@ private:
 
     std::set<Updatable *> objects;
     Tower* tower;
-    
-    std::set<SceneObject *> sceneRemoveQueue;
 	    
     Ogre::Camera* mCamera;
 
+    GameTestThing *gameTestThing;
+
+    friend class GameTestThing;
 };
 
 #endif // #ifndef __Game_h_

@@ -9,7 +9,7 @@ public:
     FallingObject(Ogre::Vector3 position);
     virtual ~FallingObject(void);
 
-    virtual void addToScene(Ogre::SceneManager *sceneMgr, std::string name);
+    virtual void addToScene(Ogre::SceneManager *sceneMgr);
     virtual void addToPhysics(btDiscreteDynamicsWorld* dynamicsWorld);
     virtual void update(void);
 

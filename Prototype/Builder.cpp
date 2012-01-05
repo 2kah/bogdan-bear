@@ -1,5 +1,7 @@
 #include "Builder.h"
 
+#include <boost/signal.hpp>
+
 Builder::Builder()
 {
 }
@@ -22,7 +24,7 @@ void Builder::update(void)
     
     ++this->timer;
 
-    if (timer >= 10 && this->level >= 0)
+    if (timer >= 20 && this->level >= 0)
     {
         this->timer = 0;
 
@@ -34,7 +36,7 @@ void Builder::update(void)
             }
         }
 
-        this->tower->fireBlocksUpdated(level);
+        this->tower->signals.levelUpdated(this->tower, level);
 
         if (this->level != 0) {
             --this->level;
@@ -42,7 +44,7 @@ void Builder::update(void)
     }
 }
 
-void Builder::blocksUpdated(unsigned level)
+void Builder::blocksUpdated(Tower *tower, unsigned level)
 {
 }
 

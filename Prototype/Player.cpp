@@ -1,119 +1,113 @@
-#include <iostream>
-
-#include <OgreSceneManager.h>
-#include <OgreEntity.h>
-#include <math.h>
-
 #include "Player.h"
 
+#include <iostream>
+#include <math.h>
+
+#include <OGRE/OgreSceneManager.h>
+#include <OGRE/OgreEntity.h>
+
+#include <btBulletDynamicsCommon.h>
+
+#include "Platform.h"
+#include "Rocket.h"
+
 #define PI 3.14159265
+
+const double Player::MOVEMENT_SPEED = 5;
+const double Player::ROTATION_SPEED = 0.05;
 
 Player::Player(Ogre::Vector3 position)
 {
     this->position = position;
 
-    //Movement speed - TODO: this should be a cvar
-    mMove = 2;
-    mDirection = Ogre::Vector3::ZERO;
-    rotX = 0;
-    rotationFactor = 0.05;
+    this->velocity = Ogre::Vector3::ZERO;
 }
 
-Player::~Player(void)
+Player::~Player()
 {
 }
 
-void Player::addToScene(Ogre::SceneManager *sceneMgr, std::string name)
+void Player::update()
 {
-    Ogre::Entity* playerEntity = sceneMgr->createEntity(name, "ninja.mesh");
+    this->orientation = this->orientation * Ogre::Quaternion(Ogre::Radian(rotX), Ogre::Vector3::UNIT_Y);
+    this->relativeAim = this->relativeAim * Ogre::Quaternion(Ogre::Radian(rotY), Ogre::Vector3::UNIT_X);
 
-    playerNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
-    playerNode->attachObject(playerEntity);
-
-    playerNode->translate(position);
-
-    //TODO: put this code somewhere nicer
-    cameraNode = playerNode->createChildSceneNode();
-    cameraNode->setPosition(0, 180, 0);
-    //cameraNode->attachObject(mCamera);
-}
-
-void Player::update(void)
-{
-    /*mSceneNode->yaw(Ogre::Degree(0.5));
-    mSceneNode->pitch(Ogre::Degree(0.1));*/
-    playerNode->yaw(rotX);
-    cameraNode->pitch(rotY);
     rotX = 0;
     rotY = 0;
-    playerNode->translate(mDirection, Ogre::Node::TS_LOCAL);
+    
+    this->position = this->position + this->orientation * this->velocity;
+    
+    this->signals.updated(this);
 }
 
 void Player::forward(void)
 {
     std::cout << "MOVING FORWARD" << std::endl;
-    mDirection.z = -mMove;
+    this->velocity.z = -Player::MOVEMENT_SPEED;
 }
 
 void Player::stopMovingForward(void)
 {
-    mDirection.z = 0;
+    this->velocity.z = 0;
 }
 
 void Player::back(void)
 {
     std::cout << "MOVING BACK" << std::endl;
-    mDirection.z = mMove;
+    this->velocity.z = Player::MOVEMENT_SPEED;
 }
 
 void Player::stopMovingBack(void)
 {
-    mDirection.z = 0;
+    this->velocity.z = 0;
 }
 
 void Player::left(void)
 {
     std::cout << "MOVING LEFT" << std::endl;
-    mDirection.x = -mMove;
+    this->velocity.x = -Player::MOVEMENT_SPEED;
 }
 
 void Player::stopMovingLeft(void)
 {
-    mDirection.x = 0;
+    this->velocity.x = 0;
 }
 
 void Player::right(void)
 {
     std::cout << "MOVING RIGHT" << std::endl;
-    mDirection.x = mMove;
+    this->velocity.x = Player::MOVEMENT_SPEED;
 }
 
 void Player::stopMovingRight(void)
 {
-    mDirection.x = 0;
+    this->velocity.x = 0;
 }
 
 void Player::jump(void)
 {
     std::cout << "JUMPING" << std::endl;
+
+    this->position = this->position + Ogre::Vector3(0, 200, 0);
 }
 
 void Player::shoot(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynamicsWorld, TowerOld* tower)
 {
     double l = 1000;
-    double X = cameraNode->convertLocalToWorldPosition(Ogre::Vector3(0,0,0)).x;
-    double Y = cameraNode->convertLocalToWorldPosition(Ogre::Vector3(0,0,0)).y;
-    double Z = cameraNode->convertLocalToWorldPosition(Ogre::Vector3(0,0,0)).z;
+	double X = this->position.x;
+	double Y = this->position.y + 180;
+    double Z = this->position.z;
+
     btVector3 rayFrom(X,Y,Z);
     printf("%f, %f, %f\n", X,Y,Z);
-    printf("%f, %f\n", playerNode->getOrientation().getYaw().valueDegrees(), cameraNode->getOrientation().getPitch().valueDegrees());
+    printf("%f, %f\n", this->orientation.getYaw().valueDegrees(), this->relativeAim.getPitch().valueDegrees());
     double camX1 = 0;
-    double camY1 = (-1)*-sin(cameraNode->getOrientation().getPitch().valueRadians());
-    double camZ1 = (-1)*cos(cameraNode->getOrientation().getPitch().valueRadians());
+	double camY1 = (-1)*-sin(this->relativeAim.getPitch().valueRadians());
+	double camZ1 = (-1)*cos(this->relativeAim.getPitch().valueRadians());
     printf("%f, %f, %f\n", camX1,camY1,camZ1);
-    double camX = camZ1*sin(playerNode->getOrientation().getYaw().valueRadians());
+	double camX = camZ1*sin(this->orientation.getYaw().valueRadians());
     double camY = camY1;
-    double camZ = camZ1*cos(playerNode->getOrientation().getYaw().valueRadians());
+	double camZ = camZ1*cos(this->orientation.getYaw().valueRadians());
     printf("%f, %f, %f\n", camX,camY,camZ);
     double dirX = X+(l*camX);
     double dirY = Y+(l*camY);
@@ -170,20 +164,24 @@ void Player::shoot(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynam
             }
         }
     }
-    std::cout << "SHOOTING" << std::endl;
+    
+    Ogre::Quaternion orientation = this->orientation * this->relativeAim;
+    orientation = orientation * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
+
+    this->signals.fired(this, new Rocket(this->position + Ogre::Vector3::UNIT_Y * 180, orientation));
 }
 
 void Player::platform(void)
 {
-    std::cout << "CREATING PLATFORM" << std::endl;
+    this->signals.platform(this, new Platform(this->position, this->orientation));
 }
 
 void Player::lookX(int dist)
 {
-    rotX += Ogre::Degree(-dist * rotationFactor);
+    rotX += Ogre::Degree(-dist * Player::ROTATION_SPEED);
 }
 
 void Player::lookY(int dist)
 {
-    rotY += Ogre::Degree(-dist * rotationFactor);
+    rotY += Ogre::Degree(-dist * Player::ROTATION_SPEED);
 }
