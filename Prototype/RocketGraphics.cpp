@@ -14,7 +14,7 @@ RocketGraphics::RocketGraphics(Rocket *rocket, Ogre::SceneManager *sceneManager)
     this->sceneManager = sceneManager;
     this->entity = sceneManager->createEntity("Barrel.mesh");
     this->sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode();
-    this->sceneNode->attachObject(entity);
+    this->sceneNode->attachObject(this->entity);
 
     this->sceneNode->setScale(2, 10, 2);
 

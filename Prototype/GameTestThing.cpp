@@ -10,9 +10,12 @@
 
 #include "Game.h"
 #include "Player.h"
+
 #include "Rocket.h"
 #include "RocketGraphics.h"
+
 #include "Explosion.h"
+#include "ExplosionGraphics.h"
 
 GameTestThing::GameTestThing(Game *game)
 {
@@ -67,12 +70,12 @@ void GameTestThing::rocketExploded(Rocket *rocket, Explosion *explosion)
 
     explosion->signals.finished.connect(boost::bind(&GameTestThing::explosionFinished, this, _1));
     
-    explosion->addToScene(this->game->mSceneMgr);
+    ExplosionGraphics *explosionGraphics = new ExplosionGraphics(explosion, this->game->mSceneMgr);
 
     this->removeQueue.insert(rocket);
 }
 
 void GameTestThing::explosionFinished(Explosion *explosion)
 {
-    explosion->removeFromScene(this->game->mSceneMgr);
+    this->removeQueue.insert(explosion);
 }

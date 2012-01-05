@@ -7,7 +7,6 @@
 #include <btBulletDynamicsCommon.h>
 
 #include "BaseApplication.h"
-#include "RocketListener.h"
 
 class Updatable;
 class Tower;
@@ -19,7 +18,7 @@ class SceneObject;
 class FallingObject;
 class GameTestThing;
 
-class Game : public BaseApplication, public RocketListener
+class Game : public BaseApplication
 {
 public:
     Game(void);
