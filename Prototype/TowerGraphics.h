@@ -6,17 +6,15 @@
 #include <OGRE/OgreStaticGeometry.h>
 #include <OGRE/OgreMeshSerializer.h>
 
-#include "TowerListener.h"
-
 class Tower;
 
-class TowerGraphics : public TowerListener
+class TowerGraphics
 {
 public:
     TowerGraphics(Tower *tower, Ogre::SceneManager *sceneManager);
     virtual ~TowerGraphics();
 
-    virtual void blocksUpdated(unsigned level);
+    virtual void blocksUpdated(Tower *tower, unsigned level);
 
 protected:
     Tower *tower;

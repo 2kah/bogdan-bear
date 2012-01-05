@@ -5,12 +5,10 @@
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreEntity.h>
 
-#include "RocketListener.h"
-
 class Rocket;
 class Explosion;
 
-class RocketGraphics : public RocketListener
+class RocketGraphics
 {
 public:
     RocketGraphics(Rocket *rocket, Ogre::SceneManager *sceneManager);

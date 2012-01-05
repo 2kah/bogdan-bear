@@ -12,6 +12,7 @@ class Explosion;
 
 namespace {
 struct ExplosionSignals {
+    boost::signal<void (Explosion *)> updated;
     boost::signal<void (Explosion *)> finished;
 };
 }
