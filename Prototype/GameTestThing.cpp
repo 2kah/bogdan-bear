@@ -12,6 +12,7 @@
 
 #include "Player.h"
 #include "PlayerGraphics.h"
+#include "PlayerCamera.h"
 
 #include "Platform.h"
 #include "PlatformGraphics.h"
@@ -29,10 +30,8 @@ GameTestThing::GameTestThing(Game *game)
     this->player = new Player(Ogre::Vector3(0, 0, 1000));
     this->game->player = this->player;
 
-    this->player->addToScene(this->game->mSceneMgr);
-    this->player->signals.updated.connect(boost::bind(&Player::doGraphics, this->player, _1));
-
     new PlayerGraphics(this->player, this->game->mSceneMgr);
+    new PlayerCamera(this->player, this->game->mCamera);
 
     Player *enemy = new Player(Ogre::Vector3(1000, 0, 1000));
     new PlayerGraphics(enemy, this->game->mSceneMgr);
@@ -46,7 +45,7 @@ GameTestThing::GameTestThing(Game *game)
     enemy->signals.fired.connect(boost::bind(&GameTestThing::playerFired, this, _1, _2));
     enemy->signals.platform.connect(boost::bind(&GameTestThing::platformCreated, this, _1, _2));
 
-    this->player->cameraNode->attachObject(this->game->mCamera);
+    //this->player->cameraNode->attachObject(this->game->mCamera);
 }
 
 GameTestThing::~GameTestThing()

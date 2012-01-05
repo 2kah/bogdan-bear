@@ -27,40 +27,17 @@ Player::~Player()
 {
 }
 
-void Player::addToScene(Ogre::SceneManager *sceneMgr)
-{
-    playerNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
-
-    playerNode->translate(position);
-
-    //TODO: put this code somewhere nicer
-    cameraNode = playerNode->createChildSceneNode();
-    cameraNode->setPosition(0, 180, 0);
-    //cameraNode->attachObject(mCamera);
-}
-
 void Player::update()
 {
     this->orientation = this->orientation * Ogre::Quaternion(Ogre::Radian(rotX), Ogre::Vector3::UNIT_Y);
-    //this->orientation = this->orientation * Ogre::Quaternion(Ogre::Radian(rotY), Ogre::Vector3::UNIT_X);
-
-    //this->cameraNode->setOrientation(Ogre::Quaternion(this->orientation.getPitch(), Ogre::Vector3::UNIT_Z));
-    //this->cameraNode->setOrientation(this->orientation);
+    this->relativeAim = this->relativeAim * Ogre::Quaternion(Ogre::Radian(rotY), Ogre::Vector3::UNIT_X);
 
     rotX = 0;
+    rotY = 0;
     
     this->position = this->position + this->orientation * this->velocity;
     
     this->signals.updated(this);
-}
-
-void Player::doGraphics(Player *player)
-{
-    this->cameraNode->pitch(rotY);
-    rotY = 0;
-
-    this->playerNode->setPosition(this->position);
-    this->playerNode->setOrientation(this->orientation);
 }
 
 void Player::forward(void)
@@ -117,19 +94,20 @@ void Player::jump(void)
 void Player::shoot(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynamicsWorld)
 {
 	double l = 1000;
-	double X = cameraNode->convertLocalToWorldPosition(Ogre::Vector3(0,0,0)).x;
-	double Y = cameraNode->convertLocalToWorldPosition(Ogre::Vector3(0,0,0)).y;
-	double Z = cameraNode->convertLocalToWorldPosition(Ogre::Vector3(0,0,0)).z;
+	double X = this->position.x;
+	double Y = this->position.y + 180;
+    double Z = this->position.z;
+
 	btVector3 rayFrom(X,Y,Z);
 	printf("%f, %f, %f\n", X,Y,Z);
-	printf("%f, %f\n", playerNode->getOrientation().getYaw().valueDegrees(), cameraNode->getOrientation().getPitch().valueDegrees());
+    printf("%f, %f\n", this->orientation.getYaw().valueDegrees(), this->relativeAim.getPitch().valueDegrees());
 	double camX1 = 0;
-	double camY1 = (-1)*-sin(cameraNode->getOrientation().getPitch().valueRadians());
-	double camZ1 = (-1)*cos(cameraNode->getOrientation().getPitch().valueRadians());
+	double camY1 = (-1)*-sin(this->relativeAim.getPitch().valueRadians());
+	double camZ1 = (-1)*cos(this->relativeAim.getPitch().valueRadians());
 	printf("%f, %f, %f\n", camX1,camY1,camZ1);
-	double camX = camZ1*sin(playerNode->getOrientation().getYaw().valueRadians());
+	double camX = camZ1*sin(this->orientation.getYaw().valueRadians());
 	double camY = camY1;
-	double camZ = camZ1*cos(playerNode->getOrientation().getYaw().valueRadians());
+	double camZ = camZ1*cos(this->orientation.getYaw().valueRadians());
 	printf("%f, %f, %f\n", camX,camY,camZ);
 	double dirX = X+(l*camX);
 	double dirY = Y+(l*camY);
@@ -156,7 +134,7 @@ void Player::shoot(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynam
 		}*/
 	}
 
-    Ogre::Quaternion orientation = this->cameraNode->getOrientation() * this->playerNode->getOrientation();
+    Ogre::Quaternion orientation = this->orientation * this->relativeAim;
     orientation = orientation * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
 
     this->signals.fired(this, new Rocket(this->position + Ogre::Vector3::UNIT_Y * 100, orientation));
@@ -164,7 +142,7 @@ void Player::shoot(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynam
 
 void Player::platform(void)
 {
-    this->signals.platform(this, new Platform(this->position, this->playerNode->getOrientation()));
+    this->signals.platform(this, new Platform(this->position, this->orientation));
 }
 
 void Player::lookX(int dist)

@@ -29,9 +29,9 @@ public:
     Player(Ogre::Vector3 position);
     virtual ~Player();
 
-    void addToScene(Ogre::SceneManager *sceneMgr);
-    void doGraphics(Player *player);
     virtual void update();
+
+    PlayerSignals signals;
 
     virtual void forward();
     virtual void back();
@@ -50,14 +50,9 @@ public:
     virtual void lookX(int dist);
     virtual void lookY(int dist);
 
-    //TODO: make this nicer?
-    Ogre::SceneNode *cameraNode;
-
-    PlayerSignals signals;
-
+    Ogre::Quaternion relativeAim;
 private:
-    Ogre::Vector3 velocity;     //Value to move in the correct direction
-    Ogre::SceneNode *playerNode;
+    Ogre::Vector3 velocity;
 
     Ogre::Radian rotX;
     Ogre::Radian rotY;
