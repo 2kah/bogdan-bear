@@ -1,27 +1,30 @@
-#include <iostream>
+#include "Player.h"
 
-#include <OgreSceneManager.h>
-#include <OgreEntity.h>
+#include <iostream>
 #include <math.h>
 
-#include "Player.h"
+#include <OGRE/OgreSceneManager.h>
+#include <OGRE/OgreEntity.h>
+
+#include <btBulletDynamicsCommon.h>
+
 #include "Platform.h"
 #include "Rocket.h"
 
 #define PI 3.14159265
+
+const double Player::MOVEMENT_SPEED = 5;
+const double Player::ROTATION_SPEED = 0.05;
 
 Player::Player(Ogre::Vector3 position)
 {
     this->position = position;
 
     //Movement speed - TODO: this should be a cvar
-    mMove = 2;
     mDirection = Ogre::Vector3::ZERO;
-    rotX = 0;
-    rotationFactor = 0.05;
 }
 
-Player::~Player(void)
+Player::~Player()
 {
 }
 
@@ -51,12 +54,14 @@ void Player::update(void)
     playerNode->translate(mDirection, Ogre::Node::TS_LOCAL);
 
     this->position = playerNode->getPosition();
+
+    this->signals.updated(this);
 }
 
 void Player::forward(void)
 {
     std::cout << "MOVING FORWARD" << std::endl;
-    mDirection.z = -mMove;
+    mDirection.z = -Player::MOVEMENT_SPEED;
 }
 
 void Player::stopMovingForward(void)
@@ -67,7 +72,7 @@ void Player::stopMovingForward(void)
 void Player::back(void)
 {
     std::cout << "MOVING BACK" << std::endl;
-    mDirection.z = mMove;
+    mDirection.z = Player::MOVEMENT_SPEED;
 }
 
 void Player::stopMovingBack(void)
@@ -78,7 +83,7 @@ void Player::stopMovingBack(void)
 void Player::left(void)
 {
     std::cout << "MOVING LEFT" << std::endl;
-    mDirection.x = -mMove;
+    mDirection.x = -Player::MOVEMENT_SPEED;
 }
 
 void Player::stopMovingLeft(void)
@@ -89,7 +94,7 @@ void Player::stopMovingLeft(void)
 void Player::right(void)
 {
     std::cout << "MOVING RIGHT" << std::endl;
-    mDirection.x = mMove;
+    mDirection.x = Player::MOVEMENT_SPEED;
 }
 
 void Player::stopMovingRight(void)
@@ -157,10 +162,10 @@ void Player::platform(void)
 
 void Player::lookX(int dist)
 {
-    rotX += Ogre::Degree(-dist * rotationFactor);
+    rotX += Ogre::Degree(-dist * Player::ROTATION_SPEED);
 }
 
 void Player::lookY(int dist)
 {
-    rotY += Ogre::Degree(-dist * rotationFactor);
+    rotY += Ogre::Degree(-dist * Player::ROTATION_SPEED);
 }

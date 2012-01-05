@@ -3,9 +3,10 @@
 
 #include <boost/signal.hpp>
 
-#include "SceneObject.h"
+#include "Updatable.h"
+#include "Object.h"
 
-//#include "Playercam.h"
+class btDiscreteDynamicsWorld;
 
 class Player;
 class Platform;
@@ -13,14 +14,18 @@ class Rocket;
 
 namespace {
 struct PlayerSignals {
+    boost::signal<void (Player *)> updated;
     boost::signal<void (Player *, Rocket *)> fired;
     boost::signal<void (Player *, Platform *)> platform;
 };
 }
 
-class Player: public SceneObject
+class Player : public Updatable, public Object
 {
 public:
+    static const double ROTATION_SPEED;
+    static const double MOVEMENT_SPEED;
+
     Player(Ogre::Vector3 position);
     virtual ~Player(void);
 
@@ -50,14 +55,11 @@ public:
     PlayerSignals signals;
 
 private:
-    Ogre::Real mMove;     //The movement constant
     Ogre::Vector3 mDirection;     //Value to move in the correct direction
     Ogre::SceneNode *playerNode;
 
     Ogre::Radian rotX;
     Ogre::Radian rotY;
-    float rotationFactor; //TODO: scale this to change mouse sensitivity
-
 };
 
 #endif // #ifndef __Player_h_
