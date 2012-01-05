@@ -46,8 +46,13 @@ private:
     btDiscreteDynamicsWorld* dynamicsWorld;
 
     std::set<Updatable *> objects;
+
+#ifdef __USE_OLD_TOWER__
+    TowerOld *tower;
+#else
     Tower* tower;
-	    
+#endif  
+
     Ogre::Camera* mCamera;
 
     GameTestThing *gameTestThing;

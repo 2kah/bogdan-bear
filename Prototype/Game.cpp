@@ -1,3 +1,5 @@
+//#define __USE_OLD_TOWER__
+
 #include <iostream>
 #include <vector>
 
@@ -41,7 +43,6 @@ void Game::createScene(void)
  
     dynamicsWorld->setGravity(btVector3(0,-9.8,0));
 
-//#define __USE_OLD_TOWER__
 #ifdef __USE_OLD_TOWER__
     TowerOld *tower = new TowerOld(mSceneMgr, dynamicsWorld);
 #else
@@ -279,7 +280,11 @@ bool Game::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id)
 	}
     else if (id == OIS::MB_Left)
     {
+#ifdef __USE_OLD_TOWER__
+        player->shoot(mSceneMgr,dynamicsWorld,);
+#else
         player->shoot(mSceneMgr,dynamicsWorld);
+#endif
     }
 
     return true;

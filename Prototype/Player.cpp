@@ -7,9 +7,12 @@
 #include <OGRE/OgreEntity.h>
 
 #include <btBulletDynamicsCommon.h>
+#include <BulletCollision/CollisionDispatch/btGhostObject.h>
 
 #include "Platform.h"
 #include "Rocket.h"
+
+#include "Tower.h"
 
 #define PI 3.14159265
 
@@ -91,7 +94,8 @@ void Player::jump(void)
     this->position = this->position + Ogre::Vector3(0, 200, 0);
 }
 
-void Player::shoot(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynamicsWorld, TowerOld* tower)
+#ifdef __USE_OLD_TOWER__
+void Player::shoot(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld *dynamicsWorld, TowerOld *tower)
 {
     double l = 1000;
 	double X = this->position.x;
@@ -164,12 +168,21 @@ void Player::shoot(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynam
             }
         }
     }
-    
+
     Ogre::Quaternion orientation = this->orientation * this->relativeAim;
     orientation = orientation * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
 
     this->signals.fired(this, new Rocket(this->position + Ogre::Vector3::UNIT_Y * 180, orientation));
 }
+#else
+void Player::shoot(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld *dynamicsWorld)
+{
+    Ogre::Quaternion orientation = this->orientation * this->relativeAim;
+    orientation = orientation * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
+
+    this->signals.fired(this, new Rocket(this->position + Ogre::Vector3::UNIT_Y * 180, orientation));
+}
+#endif
 
 void Player::platform(void)
 {
