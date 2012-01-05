@@ -5,6 +5,7 @@
 #include <set>
 
 #include <btBulletDynamicsCommon.h>
+class TowerOld;
 
 #include "BaseApplication.h"
 

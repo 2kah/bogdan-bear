@@ -14,6 +14,7 @@
 
 #include <OgreManualObject.h>
 #include <OgreMeshSerializer.h>
+#include <OGRE/OgreException.h>
 
 #define PI 3.14159265
 
@@ -157,7 +158,8 @@ TowerOld::TowerOld(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynam
         //Convert stuff to string to use in file name
         Ogre::String meshnum = Ogre::StringConverter::toString(radius);
         Ogre::String ra = Ogre::StringConverter::toString(radius);
-        entity[radius] = mSceneMgr->createEntity("Head" + ra,"test" + meshnum + ".mesh");
+        
+        entity[radius] = mSceneMgr->createEntity("Head" + ra, meshnum + ".mesh");
 
 		//Loads bullet meshes for each sector shape
 		if(radius == 1)
