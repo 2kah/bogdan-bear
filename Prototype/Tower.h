@@ -22,6 +22,7 @@ public:
 
     virtual void update(void);
 
+    virtual void carveSphere(Ogre::Vector3 position, double radius) {};
 protected:
     Ogre::SceneNode *mSceneNode;
 	btCollisionShape* blockShape;
