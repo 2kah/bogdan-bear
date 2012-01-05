@@ -17,10 +17,10 @@ FallingObject::~FallingObject(void)
 {
 }
 
-void FallingObject::addToScene(Ogre::SceneManager *sceneMgr, std::string name)
+void FallingObject::addToScene(Ogre::SceneManager *sceneMgr)
 {
 	//Falling object mesh 
-    Ogre::Entity* ogreHead = sceneMgr->createEntity(name, "spheredemo.mesh");;
+    Ogre::Entity* ogreHead = sceneMgr->createEntity("spheredemo.mesh");;
 
     mSceneNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
     mSceneNode->attachObject(ogreHead);

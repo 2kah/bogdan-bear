@@ -26,8 +26,6 @@ public:
 
     virtual void run(void);
 
-    virtual void removeSceneObject(SceneObject *);
-
     virtual void carveSphere(Ogre::Vector3 position, double radius);
 
 protected:
@@ -49,8 +47,6 @@ private:
 
     std::set<Updatable *> objects;
     Tower* tower;
-    
-    std::set<SceneObject *> sceneRemoveQueue;
 	    
     Ogre::Camera* mCamera;
 
