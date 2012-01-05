@@ -1,11 +1,14 @@
 #ifndef __RocketGraphics_h_
 #define __RocketGraphics_h_
 
-#include <OgreSceneManager.h>
+#include <OGRE/OgreSceneManager.h>
+#include <OGRE/OgreSceneNode.h>
+#include <OGRE/OgreEntity.h>
 
 #include "RocketListener.h"
 
 class Rocket;
+class Explosion;
 
 class RocketGraphics : public RocketListener
 {
@@ -14,10 +17,13 @@ public:
     virtual ~RocketGraphics();
 protected:
     virtual void rocketUpdated(Rocket *rocket);
+    virtual void rocketExploded(Rocket *rocket, Explosion *explosion);
 
     Rocket *rocket;
 
+    Ogre::SceneManager *sceneManager;
     Ogre::SceneNode *sceneNode;
+    Ogre::Entity *entity;
 };
 
 #endif // #ifndef __RocketGraphics_h_
