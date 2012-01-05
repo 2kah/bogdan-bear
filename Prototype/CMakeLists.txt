@@ -101,6 +101,7 @@ set(HDRS
     
     ./Player.h
     ./PlayerGraphics.h
+    ./PlayerCamera.h
     
     ./Platform.h
     ./PlatformGraphics.h
@@ -129,6 +130,7 @@ set(SRCS
     
     ./Player.cpp
     ./PlayerGraphics.cpp
+    ./PlayerCamera.cpp
     
     ./Platform.cpp
     ./PlatformGraphics.cpp
