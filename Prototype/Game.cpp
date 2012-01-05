@@ -281,9 +281,9 @@ bool Game::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id)
     else if (id == OIS::MB_Left)
     {
 #ifdef __USE_OLD_TOWER__
-        player->shoot(mSceneMgr,dynamicsWorld,);
+        player->shoot(mSceneMgr, dynamicsWorld, this->tower);
 #else
-        player->shoot(mSceneMgr,dynamicsWorld);
+        player->shoot();
 #endif
     }
 
