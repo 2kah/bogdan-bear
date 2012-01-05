@@ -59,17 +59,9 @@ void Game::createScene(void)
     // Create a list of SceneObjects (one of which is a player) at various positions
     std::vector<SceneObject *> things;
 
-    player = new Player(Ogre::Vector3(0, 0, 1000));
     fallingObject = new FallingObject(Ogre::Vector3(0,200,0));
 
     this->gameTestThing = new GameTestThing(this);
-
-    //things.push_back(new SceneObject(Ogre::Vector3(50, 0, 50)));
-    //things.push_back(new SceneObject(Ogre::Vector3(0, 0, 0)));
-    //things.push_back(new SceneObject(Ogre::Vector3(50, 0, 0)));
-    
-    player->addToScene(mSceneMgr, "player_");
-    objects.insert(player);
     
     //things.push_back(player);
     things.push_back(fallingObject);
@@ -85,8 +77,6 @@ void Game::createScene(void)
         thing->addToPhysics(dynamicsWorld);
         objects.insert(thing);
     }
-
-	player->cameraNode->attachObject(mCamera);
 
     // Set ambient light
     mSceneMgr->setAmbientLight(Ogre::ColourValue(0.9, 0.9, 0.9));

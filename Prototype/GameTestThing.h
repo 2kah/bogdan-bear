@@ -20,6 +20,7 @@ public:
     virtual void update();
 protected:
     Game *game;
+    Player *player;
 private:
     void playerFired(Player *player, Rocket *rocket);
     void rocketExploded(Rocket *rocket, Explosion *explosion);

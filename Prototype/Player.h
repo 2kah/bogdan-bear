@@ -27,10 +27,11 @@ public:
     static const double MOVEMENT_SPEED;
 
     Player(Ogre::Vector3 position);
-    virtual ~Player(void);
+    virtual ~Player();
 
-    virtual void addToScene(Ogre::SceneManager *sceneMgr, std::string name);
-    virtual void update(void);
+    void addToScene(Ogre::SceneManager *sceneMgr);
+    void doGraphics(Player *player);
+    virtual void update();
 
     virtual void forward();
     virtual void back();
@@ -55,7 +56,7 @@ public:
     PlayerSignals signals;
 
 private:
-    Ogre::Vector3 mDirection;     //Value to move in the correct direction
+    Ogre::Vector3 velocity;     //Value to move in the correct direction
     Ogre::SceneNode *playerNode;
 
     Ogre::Radian rotX;

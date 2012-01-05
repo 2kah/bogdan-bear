@@ -20,20 +20,16 @@ Player::Player(Ogre::Vector3 position)
 {
     this->position = position;
 
-    //Movement speed - TODO: this should be a cvar
-    mDirection = Ogre::Vector3::ZERO;
+    this->velocity = Ogre::Vector3::ZERO;
 }
 
 Player::~Player()
 {
 }
 
-void Player::addToScene(Ogre::SceneManager *sceneMgr, std::string name)
+void Player::addToScene(Ogre::SceneManager *sceneMgr)
 {
-    Ogre::Entity* playerEntity = sceneMgr->createEntity(name, "ninja.mesh");
-
     playerNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
-    playerNode->attachObject(playerEntity);
 
     playerNode->translate(position);
 
@@ -43,68 +39,79 @@ void Player::addToScene(Ogre::SceneManager *sceneMgr, std::string name)
     //cameraNode->attachObject(mCamera);
 }
 
-void Player::update(void)
+void Player::update()
 {
-    /*mSceneNode->yaw(Ogre::Degree(0.5));
-    mSceneNode->pitch(Ogre::Degree(0.1));*/
-    playerNode->yaw(rotX);
-    cameraNode->pitch(rotY);
+    this->orientation = this->orientation * Ogre::Quaternion(Ogre::Radian(rotX), Ogre::Vector3::UNIT_Y);
+    //this->orientation = this->orientation * Ogre::Quaternion(Ogre::Radian(rotY), Ogre::Vector3::UNIT_X);
+
+    //this->cameraNode->setOrientation(Ogre::Quaternion(this->orientation.getPitch(), Ogre::Vector3::UNIT_Z));
+    //this->cameraNode->setOrientation(this->orientation);
+
     rotX = 0;
-    rotY = 0;
-    playerNode->translate(mDirection, Ogre::Node::TS_LOCAL);
-
-    this->position = playerNode->getPosition();
-
+    
+    this->position = this->position + this->orientation * this->velocity;
+    
     this->signals.updated(this);
+}
+
+void Player::doGraphics(Player *player)
+{
+    this->cameraNode->pitch(rotY);
+    rotY = 0;
+
+    this->playerNode->setPosition(this->position);
+    this->playerNode->setOrientation(this->orientation);
 }
 
 void Player::forward(void)
 {
     std::cout << "MOVING FORWARD" << std::endl;
-    mDirection.z = -Player::MOVEMENT_SPEED;
+    this->velocity.z = -Player::MOVEMENT_SPEED;
 }
 
 void Player::stopMovingForward(void)
 {
-    mDirection.z = 0;
+    this->velocity.z = 0;
 }
 
 void Player::back(void)
 {
     std::cout << "MOVING BACK" << std::endl;
-    mDirection.z = Player::MOVEMENT_SPEED;
+    this->velocity.z = Player::MOVEMENT_SPEED;
 }
 
 void Player::stopMovingBack(void)
 {
-    mDirection.z = 0;
+    this->velocity.z = 0;
 }
 
 void Player::left(void)
 {
     std::cout << "MOVING LEFT" << std::endl;
-    mDirection.x = -Player::MOVEMENT_SPEED;
+    this->velocity.x = -Player::MOVEMENT_SPEED;
 }
 
 void Player::stopMovingLeft(void)
 {
-    mDirection.x = 0;
+    this->velocity.x = 0;
 }
 
 void Player::right(void)
 {
     std::cout << "MOVING RIGHT" << std::endl;
-    mDirection.x = Player::MOVEMENT_SPEED;
+    this->velocity.x = Player::MOVEMENT_SPEED;
 }
 
 void Player::stopMovingRight(void)
 {
-    mDirection.x = 0;
+    this->velocity.x = 0;
 }
 
 void Player::jump(void)
 {
     std::cout << "JUMPING" << std::endl;
+
+    this->position = this->position + Ogre::Vector3(0, 200, 0);
 }
 
 void Player::shoot(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynamicsWorld)
