@@ -9,7 +9,9 @@
 #include <OGRE/OgreVector3.h>
 
 #include "Game.h"
+
 #include "Player.h"
+#include "PlayerGraphics.h"
 
 #include "Platform.h"
 #include "PlatformGraphics.h"

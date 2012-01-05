@@ -99,6 +99,9 @@ set(HDRS
     ./TowerGraphics.h
     ./Builder.h
     
+    ./Player.h
+    ./PlayerGraphics.h
+    
     ./Platform.h
     ./PlatformGraphics.h
     
@@ -109,8 +112,6 @@ set(HDRS
     ./ExplosionGraphics.h
     
     ./SceneObject.h
-    
-    ./Player.h
     ./FallingObject.h
     
     ./BaseApplication.h
@@ -126,6 +127,9 @@ set(SRCS
     ./TowerGraphics.cpp
     ./Builder.cpp
     
+    ./Player.cpp
+    ./PlayerGraphics.cpp
+    
     ./Platform.cpp
     ./PlatformGraphics.cpp
     
@@ -136,8 +140,6 @@ set(SRCS
     ./ExplosionGraphics.cpp
     
     ./SceneObject.cpp
-    
-    ./Player.cpp
     ./FallingObject.cpp
     
     ./BaseApplication.cpp
