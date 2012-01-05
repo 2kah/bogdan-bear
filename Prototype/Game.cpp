@@ -15,11 +15,7 @@
 
 #include "SceneObject.h"
 #include "Player.h"
-#include "Explosion.h"
 #include "FallingObject.h"
-
-#include "Rocket.h"
-#include "RocketGraphics.h"
 
 #include "GameTestThing.h"
 
