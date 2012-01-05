@@ -7,6 +7,7 @@
 #include "Object.h"
 
 class btDiscreteDynamicsWorld;
+class TowerOld;
 
 class Player;
 class Platform;
@@ -44,7 +45,11 @@ public:
     virtual void stopMovingRight();
 
     virtual void jump();
-    virtual void shoot(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynamicsWorld);
+#ifdef __USE_OLD_TOWER__
+    virtual void shoot(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld *dynamicsWorld, TowerOld *tower);
+#else
+    virtual void shoot(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld *dynamicsWorld);
+#endif
     virtual void platform();
 
     virtual void lookX(int dist);
