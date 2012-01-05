@@ -7,6 +7,7 @@
 
 class Game;
 class Player;
+class Platform;
 class Rocket;
 class Explosion;
 
@@ -19,14 +20,12 @@ public:
     virtual void update();
 protected:
     Game *game;
-
-    unsigned timer;
 private:
     void playerFired(Player *player, Rocket *rocket);
     void rocketExploded(Rocket *rocket, Explosion *explosion);
     void explosionFinished(Explosion *explosion);
-
-    Rocket *rocket;
+    void platformCreated(Player *player, Platform *platform);
+    void platformExpired(Platform *platform);
 
     std::set<Updatable *> removeQueue;
 };

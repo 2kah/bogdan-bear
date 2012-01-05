@@ -99,6 +99,9 @@ set(HDRS
     ./TowerGraphics.h
     ./Builder.h
     
+    ./Platform.h
+    ./PlatformGraphics.h
+    
     ./Rocket.h
     ./RocketGraphics.h
     
@@ -122,6 +125,9 @@ set(SRCS
     ./Tower.cpp
     ./TowerGraphics.cpp
     ./Builder.cpp
+    
+    ./Platform.cpp
+    ./PlatformGraphics.cpp
     
     ./Rocket.cpp
     ./RocketGraphics.cpp

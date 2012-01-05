@@ -5,6 +5,7 @@
 #include <math.h>
 
 #include "Player.h"
+#include "Platform.h"
 #include "Rocket.h"
 
 #define PI 3.14159265
@@ -147,13 +148,11 @@ void Player::shoot(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynam
     orientation = orientation * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
 
     this->signals.fired(this, new Rocket(this->position + Ogre::Vector3::UNIT_Y * 100, orientation));
-
-    std::cout << "SHOOTING" << std::endl;
 }
 
 void Player::platform(void)
 {
-    std::cout << "CREATING PLATFORM" << std::endl;
+    this->signals.platform(this, new Platform(this->position, this->playerNode->getOrientation()));
 }
 
 void Player::lookX(int dist)
