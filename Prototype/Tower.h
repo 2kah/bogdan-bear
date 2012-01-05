@@ -12,8 +12,6 @@
 
 #include <btBulletDynamicsCommon.h>
 
-#include "TowerListener.h"
-
 ///*
 class TowerOld
 {
@@ -50,6 +48,14 @@ struct BlockPoints
     Point a2, b2, c2, d2;
 };
 
+class Tower;
+
+namespace {
+struct TowerSignals {
+    boost::signal<void (Tower *, unsigned level)> levelUpdated;
+};
+}
+
 class Tower
 {
 public:
@@ -69,25 +75,18 @@ public:
     virtual BlockPosition getBlockPosition(unsigned level, unsigned layer, unsigned sector);
     virtual BlockPoints getBlockPoints(unsigned level, unsigned layer, unsigned sector);
 
-    void addTowerListener(TowerListener *listener);
-
-    boost::signal<void (unsigned level)> blocksUpdated;
+    TowerSignals signals;
 
 //protected:
-    std::set<TowerListener *> towerListeners;
-
     double blocksize;
     unsigned levels;
     unsigned layers;
     unsigned sectors;
 
     std::vector<std::vector<std::vector<bool> > > blocks;
-
-//private: // public for now
-    void fireBlocksUpdated(unsigned level);
 };
 
-class TowerPhysics : public TowerListener
+class TowerPhysics
 {
 public:
     TowerPhysics();

@@ -96,18 +96,18 @@ set(HDRS
     ./Object.h
     
     ./Tower.h
-    ./TowerListener.h
     ./TowerGraphics.h
     ./Builder.h
     
     ./Rocket.h
-    ./RocketListener.h
     ./RocketGraphics.h
+    
+    ./Explosion.h
+    ./ExplosionGraphics.h
     
     ./SceneObject.h
     
     ./Player.h
-    ./Explosion.h
     ./FallingObject.h
     
     ./BaseApplication.h
@@ -126,10 +126,12 @@ set(SRCS
     ./Rocket.cpp
     ./RocketGraphics.cpp
     
+    ./Explosion.cpp
+    ./ExplosionGraphics.cpp
+    
     ./SceneObject.cpp
     
     ./Player.cpp
-    ./Explosion.cpp
     ./FallingObject.cpp
     
     ./BaseApplication.cpp

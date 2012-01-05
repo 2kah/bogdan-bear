@@ -170,6 +170,8 @@ void Game::run(void)
 
                 objects.erase(object);
                 object->removeFromScene(mSceneMgr);
+
+                delete object;
             }
             sceneRemoveQueue.clear();
 
