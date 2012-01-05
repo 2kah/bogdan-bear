@@ -8,11 +8,13 @@
 //#include "Playercam.h"
 
 class Player;
+class Platform;
 class Rocket;
 
 namespace {
 struct PlayerSignals {
     boost::signal<void (Player *, Rocket *)> fired;
+    boost::signal<void (Player *, Platform *)> platform;
 };
 }
 

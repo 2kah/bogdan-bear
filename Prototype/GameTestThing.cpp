@@ -11,6 +11,9 @@
 #include "Game.h"
 #include "Player.h"
 
+#include "Platform.h"
+#include "PlatformGraphics.h"
+
 #include "Rocket.h"
 #include "RocketGraphics.h"
 
@@ -21,9 +24,8 @@ GameTestThing::GameTestThing(Game *game)
 {
     this->game = game;
     
-    this->timer = 0;
-
     this->game->player->signals.fired.connect(boost::bind(&GameTestThing::playerFired, this, _1, _2));
+    this->game->player->signals.platform.connect(boost::bind(&GameTestThing::platformCreated, this, _1, _2));
 }
 
 GameTestThing::~GameTestThing()
@@ -32,15 +34,6 @@ GameTestThing::~GameTestThing()
 
 void GameTestThing::update()
 {
-    if (this->timer < 300)
-    {
-        ++this->timer;
-    }
-    else
-    {
-        this->timer = 0;
-    }
-
     for(std::set<Updatable *>::iterator i = this->removeQueue.begin(); i != this->removeQueue.end(); ++i)
     {
         Updatable *object = *i;
@@ -53,8 +46,6 @@ void GameTestThing::update()
 
 void GameTestThing::playerFired(Player *player, Rocket *rocket)
 {
-    std::cout << "Player fired, adding rocket..." << std::endl;
-
     this->game->objects.insert(rocket);
 
     RocketGraphics *rocketGraphics = new RocketGraphics(rocket, this->game->mSceneMgr);
@@ -64,8 +55,6 @@ void GameTestThing::playerFired(Player *player, Rocket *rocket)
 
 void GameTestThing::rocketExploded(Rocket *rocket, Explosion *explosion)
 {
-    std::cout << "Rocket exploded, adding explosion..." << std::endl;
-
     this->game->objects.insert(explosion);
 
     explosion->signals.finished.connect(boost::bind(&GameTestThing::explosionFinished, this, _1));
@@ -78,4 +67,18 @@ void GameTestThing::rocketExploded(Rocket *rocket, Explosion *explosion)
 void GameTestThing::explosionFinished(Explosion *explosion)
 {
     this->removeQueue.insert(explosion);
+}
+
+void GameTestThing::platformCreated(Player *player, Platform *platform)
+{
+    this->game->objects.insert(platform);
+
+    PlatformGraphics *platfromGraphics = new PlatformGraphics(platform, this->game->mSceneMgr);
+
+    platform->signals.expired.connect(boost::bind(&GameTestThing::platformExpired, this, _1));
+}
+
+void GameTestThing::platformExpired(Platform *platform)
+{
+    this->removeQueue.insert(platform);
 }

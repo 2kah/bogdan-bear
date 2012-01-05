@@ -24,7 +24,7 @@ void Builder::update(void)
     
     ++this->timer;
 
-    if (timer >= 10 && this->level >= 0)
+    if (timer >= 20 && this->level >= 0)
     {
         this->timer = 0;
 
