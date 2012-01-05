@@ -16,7 +16,7 @@ public:
     SceneObject(Ogre::Vector3 position);
     virtual ~SceneObject(void);
 
-    virtual void addToScene(Ogre::SceneManager *sceneMgr, std::string name);
+    virtual void addToScene(Ogre::SceneManager *sceneMgr);
     virtual void removeFromScene(Ogre::SceneManager *sceneMgr);
 
     virtual void addToPhysics(btDiscreteDynamicsWorld* dynamicsWorld);

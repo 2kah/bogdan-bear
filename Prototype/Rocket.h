@@ -1,15 +1,37 @@
 #ifndef __Rocket_h_
-#define __Rocker_h_
+#define __Rocket_h_
 
+#include <boost/signal.hpp>
+
+#include "Updatable.h"
 #include "Object.h"
 
-#include <OgreVector3.h>
+class Ogre::Vector3;
+class Ogre::Quaternion;
+class Rocket;
+class Explosion;
 
-class Rocket: public Object
+namespace {
+class RocketSignals {
+public:
+    boost::signal<void (Rocket *)> updated;
+    boost::signal<void (Rocket *, Explosion *)> exploded;
+};
+}
+
+class Rocket: public Updatable, public Object
 {
 public:
-    Rocket(Ogre::Vector3 position);
-    virtual ~Rocket(void);
+    static const double SPEED;
+
+    Rocket(Ogre::Vector3 position, Ogre::Quaternion orientation);
+    virtual ~Rocket();
+
+    virtual void update();
+
+    RocketSignals signals;
+private:
+    unsigned timer;
 };
 
 #endif // #ifndef __Rocket_h_

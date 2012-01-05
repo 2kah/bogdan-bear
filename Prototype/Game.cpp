@@ -1,7 +1,9 @@
 #include <iostream>
 #include <vector>
 
-#include <OgreTimer.h>
+#include <boost/bind.hpp>
+
+#include <OGRE/OgreTimer.h>
 #include <btBulletDynamicsCommon.h>
 
 #include "Game.h"
@@ -13,8 +15,9 @@
 
 #include "SceneObject.h"
 #include "Player.h"
-#include "Explosion.h"
 #include "FallingObject.h"
+
+#include "GameTestThing.h"
 
 Game::Game(void)
 {
@@ -25,7 +28,7 @@ Game::~Game(void)
 }
 
 void Game::createScene(void)
-{
+{    
     //this code is in wrong place
     btBroadphaseInterface* broadphase = new btDbvtBroadphase();
  
@@ -56,13 +59,11 @@ void Game::createScene(void)
     // Create a list of SceneObjects (one of which is a player) at various positions
     std::vector<SceneObject *> things;
 
-    player = new Player(Ogre::Vector3(0, 0, 500));
     fallingObject = new FallingObject(Ogre::Vector3(0,200,0));
 
-    //things.push_back(new SceneObject(Ogre::Vector3(50, 0, 50)));
-    //things.push_back(new SceneObject(Ogre::Vector3(0, 0, 0)));
-    //things.push_back(new SceneObject(Ogre::Vector3(50, 0, 0)));
-    things.push_back(player);
+    this->gameTestThing = new GameTestThing(this);
+    
+    //things.push_back(player);
     things.push_back(fallingObject);
 
     // Add all the scene objects to the scene and list of objects
@@ -70,14 +71,10 @@ void Game::createScene(void)
     {
         SceneObject *thing = things[i];
 
-        std::stringstream name("");
-        name << (int) i;
-        thing->addToScene(mSceneMgr, name.str());
+        thing->addToScene(mSceneMgr);
         thing->addToPhysics(dynamicsWorld);
         objects.insert(thing);
     }
-
-	player->cameraNode->attachObject(mCamera);
 
     // Set ambient light
     mSceneMgr->setAmbientLight(Ogre::ColourValue(0.9, 0.9, 0.9));
@@ -88,8 +85,7 @@ void Game::createScene(void)
     Ogre::Light* pointlight2 = mSceneMgr->createLight("pointlight2");
     pointlight2->setType(Ogre::Light::LT_POINT);
     pointlight2->setPosition(Ogre::Vector3(-500, 150, 0));
-    
-
+ 
  
     // Create a light
     //Ogre::Light* l = mSceneMgr->createLight("MainLight");
@@ -153,14 +149,7 @@ void Game::run(void)
                 object->update();
             }
 			
-            for(std::set<SceneObject *>::iterator i = sceneRemoveQueue.begin(); i != sceneRemoveQueue.end(); ++i)
-            {
-                SceneObject *object = *i;
-
-                objects.erase(object);
-                object->removeFromScene(mSceneMgr);
-            }
-            sceneRemoveQueue.clear();
+            this->gameTestThing->update();
 
             simTime += simFrameLength;
             simTimeQueued -= simFrameLength;
@@ -204,12 +193,6 @@ void Game::createViewports(void)
 
     // Alter the camera aspect ratio to match the viewport
     mCamera->setAspectRatio(Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
-}
-
-
-void Game::removeSceneObject(SceneObject *object)
-{
-    sceneRemoveQueue.insert(object);
 }
 
 void Game::carveSphere(Ogre::Vector3 position, double radius)
@@ -296,20 +279,7 @@ bool Game::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id)
 	}
     else if (id == OIS::MB_Left)
     {
-        static int i = 0;
-        
-        std::stringstream name("explosion");
-        name << (int) i;
-
-        ++i;
-
         player->shoot(mSceneMgr,dynamicsWorld);
-
-        Explosion *explosion = new Explosion(this, player->position);
-
-        explosion->addToScene(mSceneMgr, name.str());
-
-        objects.insert(explosion);
     }
 
     return true;
@@ -320,5 +290,3 @@ bool Game::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id)
     BaseApplication::mouseReleased(arg, id);
     return true;
 }
-
-

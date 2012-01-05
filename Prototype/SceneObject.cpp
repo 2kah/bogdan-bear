@@ -18,9 +18,9 @@ SceneObject::~SceneObject(void)
 {
 }
 
-void SceneObject::addToScene(Ogre::SceneManager *sceneMgr, std::string name)
+void SceneObject::addToScene(Ogre::SceneManager *sceneMgr)
 {
-    Ogre::Entity* ogreHead = sceneMgr->createEntity(name, "ogrehead.mesh");
+    Ogre::Entity* ogreHead = sceneMgr->createEntity("ogrehead.mesh");
 
     mSceneNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
     mSceneNode->attachObject(ogreHead);
