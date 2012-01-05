@@ -137,7 +137,7 @@ void Player::shoot(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynam
     Ogre::Quaternion orientation = this->orientation * this->relativeAim;
     orientation = orientation * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
 
-    this->signals.fired(this, new Rocket(this->position + Ogre::Vector3::UNIT_Y * 100, orientation));
+    this->signals.fired(this, new Rocket(this->position + Ogre::Vector3::UNIT_Y * 180, orientation));
 }
 
 void Player::platform(void)

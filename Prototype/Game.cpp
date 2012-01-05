@@ -71,9 +71,7 @@ void Game::createScene(void)
     {
         SceneObject *thing = things[i];
 
-        std::stringstream name("");
-        name << (int) i;
-        thing->addToScene(mSceneMgr, name.str());
+        thing->addToScene(mSceneMgr);
         thing->addToPhysics(dynamicsWorld);
         objects.insert(thing);
     }
@@ -87,8 +85,7 @@ void Game::createScene(void)
     Ogre::Light* pointlight2 = mSceneMgr->createLight("pointlight2");
     pointlight2->setType(Ogre::Light::LT_POINT);
     pointlight2->setPosition(Ogre::Vector3(-500, 150, 0));
-    
-
+ 
  
     // Create a light
     //Ogre::Light* l = mSceneMgr->createLight("MainLight");
@@ -154,17 +151,6 @@ void Game::run(void)
 			
             this->gameTestThing->update();
 
-            for(std::set<SceneObject *>::iterator i = sceneRemoveQueue.begin(); i != sceneRemoveQueue.end(); ++i)
-            {
-                SceneObject *object = *i;
-
-                objects.erase(object);
-                object->removeFromScene(mSceneMgr);
-
-                delete object;
-            }
-            sceneRemoveQueue.clear();
-
             simTime += simFrameLength;
             simTimeQueued -= simFrameLength;
 
@@ -207,12 +193,6 @@ void Game::createViewports(void)
 
     // Alter the camera aspect ratio to match the viewport
     mCamera->setAspectRatio(Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
-}
-
-
-void Game::removeSceneObject(SceneObject *object)
-{
-    sceneRemoveQueue.insert(object);
 }
 
 void Game::carveSphere(Ogre::Vector3 position, double radius)
