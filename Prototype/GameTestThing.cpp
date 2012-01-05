@@ -26,8 +26,27 @@ GameTestThing::GameTestThing(Game *game)
 {
     this->game = game;
     
-    this->game->player->signals.fired.connect(boost::bind(&GameTestThing::playerFired, this, _1, _2));
-    this->game->player->signals.platform.connect(boost::bind(&GameTestThing::platformCreated, this, _1, _2));
+    this->player = new Player(Ogre::Vector3(0, 0, 1000));
+    this->game->player = this->player;
+
+    this->player->addToScene(this->game->mSceneMgr);
+    this->player->signals.updated.connect(boost::bind(&Player::doGraphics, this->player, _1));
+
+    new PlayerGraphics(this->player, this->game->mSceneMgr);
+
+    Player *enemy = new Player(Ogre::Vector3(1000, 0, 1000));
+    new PlayerGraphics(enemy, this->game->mSceneMgr);
+
+    this->game->objects.insert(this->player);
+    this->game->objects.insert(enemy);
+
+    this->player->signals.fired.connect(boost::bind(&GameTestThing::playerFired, this, _1, _2));
+    this->player->signals.platform.connect(boost::bind(&GameTestThing::platformCreated, this, _1, _2));
+
+    enemy->signals.fired.connect(boost::bind(&GameTestThing::playerFired, this, _1, _2));
+    enemy->signals.platform.connect(boost::bind(&GameTestThing::platformCreated, this, _1, _2));
+
+    this->player->cameraNode->attachObject(this->game->mCamera);
 }
 
 GameTestThing::~GameTestThing()
