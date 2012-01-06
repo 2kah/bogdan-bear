@@ -51,8 +51,6 @@ public:
 
 #ifdef __USE_OLD_TOWER__
     virtual void shoot(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld *dynamicsWorld, TowerOld *tower);
-#else
-    virtual void shoot();
 #endif
 
     Ogre::Quaternion relativeAim;
