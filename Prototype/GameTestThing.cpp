@@ -22,6 +22,7 @@
 #include "RocketGraphics.h"
 
 #include "Explosion.h"
+#include "ExplosionPhysics.h"
 #include "ExplosionGraphics.h"
 
 GameTestThing::GameTestThing(Game *game)
@@ -48,8 +49,6 @@ GameTestThing::GameTestThing(Game *game)
 
     enemy->signals.fired.connect(boost::bind(&GameTestThing::playerFired, this, _1, _2));
     enemy->signals.platform.connect(boost::bind(&GameTestThing::platformCreated, this, _1, _2));
-
-    //this->player->cameraNode->attachObject(this->game->mCamera);
 }
 
 GameTestThing::~GameTestThing()
@@ -83,7 +82,8 @@ void GameTestThing::rocketExploded(Rocket *rocket, Explosion *explosion)
 
     explosion->signals.finished.connect(boost::bind(&GameTestThing::explosionFinished, this, _1));
     
-    ExplosionGraphics *explosionGraphics = new ExplosionGraphics(explosion, this->game->mSceneMgr);
+    new ExplosionGraphics(explosion, this->game->mSceneMgr);
+    new ExplosionPhysics(explosion, this->game->dynamicsWorld);
 
     this->removeQueue.insert(rocket);
 }

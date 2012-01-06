@@ -22,7 +22,7 @@ void TowerBuilder::update(void)
     
     ++this->timer;
 
-    if (timer >= 20 && this->level >= 0)
+    if (timer >= 20 && this->level >= 10)
     {
         this->timer = 0;
 
@@ -30,7 +30,7 @@ void TowerBuilder::update(void)
         {
             for (unsigned sector = 0; sector < this->tower->sectors; ++sector)
             {
-                this->tower->blocks[this->level][layer][sector] = true;
+                this->tower->blocks[this->level][layer][sector] = (rand() % (layer + 1) <= 1);
             }
         }
 
