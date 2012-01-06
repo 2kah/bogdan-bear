@@ -103,6 +103,8 @@ TowerPhysics::TowerPhysics(Tower *tower, btDiscreteDynamicsWorld* dynamicsWorld)
                     btRigidBody::btRigidBodyConstructionInfo blockRigidBodyCI(0, blockMotionState, blockShapes[radius], btVector3(0, 0, 0));
                     btRigidBody *blockRigidBody = new btRigidBody(blockRigidBodyCI);
 
+                    blockRigidBody->setUserPointer(new BlockReference(this->tower, height, radius, position));
+
                     blockRigidBody->setActivationState(ISLAND_SLEEPING); // no benefit?
 
                     dynamicsWorld->addRigidBody(blockRigidBody, 1, 2);

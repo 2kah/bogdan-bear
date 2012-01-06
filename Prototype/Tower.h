@@ -51,6 +51,19 @@ struct BlockPoints
 
 class Tower;
 
+struct BlockReference
+{
+    BlockReference(Tower *tower, unsigned level, unsigned layer, unsigned sector) {
+        this->tower = tower;
+        this->level = level;
+        this->layer = layer;
+        this->sector = sector;
+    }
+
+    Tower *tower;
+    unsigned level, layer, sector;
+};
+
 namespace {
 struct TowerSignals {
     boost::signal<void (Tower *, unsigned level)> levelUpdated;
@@ -63,11 +76,10 @@ public:
     static const short COLLISION_GROUP = 1; // 0000 0001
     static const short COLLISION_MASK  = 2; // 0000 0010
 
-    Tower();
     Tower(double blocksize, unsigned levels, unsigned layers, unsigned sectors);
-    virtual ~Tower(void);
+    virtual ~Tower();
 
-    virtual void update(void);
+    virtual void update();
 
     virtual void carveSphere(Ogre::Vector3 position, double radius);
     virtual void rebuild();

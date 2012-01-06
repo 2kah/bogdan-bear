@@ -302,9 +302,6 @@ void TowerOld::update(void)
 //*/
 
 // TOWER REFACTOR
-
-Tower::Tower(): blocksize(0), levels(0), layers(0), sectors(0), blocks(0) {}
-
 Tower::Tower(double blocksize, unsigned levels, unsigned layers, unsigned sectors)
 {
     this->blocksize = blocksize;
@@ -315,11 +312,11 @@ Tower::Tower(double blocksize, unsigned levels, unsigned layers, unsigned sector
     this->blocks = std::vector<std::vector<std::vector<bool> > >(levels, std::vector<std::vector<bool> >(layers, std::vector<bool>(sectors, false)));
 }
 
-Tower::~Tower(void)
+Tower::~Tower()
 {
 }
 
-void Tower::update(void)
+void Tower::update()
 {
 }
 
