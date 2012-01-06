@@ -12,8 +12,9 @@
 #include "Updatable.h"
 
 #include "Tower.h"
+#include "TowerBuilder.h"
+#include "TowerPhysics.h"
 #include "TowerGraphics.h"
-#include "Builder.h"
 
 #include "SceneObject.h"
 #include "Player.h"
@@ -48,7 +49,7 @@ void Game::createScene(void)
 #else
     tower = new Tower(32, 128, 16, 32);
 
-    Builder *builder = new Builder(tower);
+    TowerBuilder *builder = new TowerBuilder(tower);
     builder->regenerate();
 
     this->objects.insert(builder);

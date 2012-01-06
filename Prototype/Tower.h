@@ -87,15 +87,4 @@ public:
     std::vector<std::vector<std::vector<bool> > > blocks;
 };
 
-class TowerPhysics
-{
-public:
-    TowerPhysics();
-    TowerPhysics(Tower *tower, btDiscreteDynamicsWorld* dynamicsWorld);
-    virtual ~TowerPhysics();
-
-protected:
-    Tower *tower;
-};
-
 #endif // #ifndef __Tower_h_

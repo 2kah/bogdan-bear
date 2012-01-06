@@ -1,26 +1,25 @@
-#ifndef __Builder_h_
-#define __Builder_h_
+#ifndef __TowerBuilder_h_
+#define __TowerBuilder_h_
 
 #include "Updatable.h"
-#include "Tower.h"
 
-class Builder : public Updatable
+class Tower;
+
+class TowerBuilder : public Updatable
 {
 public:
-    Tower *tower;
-
-    Builder();
-    Builder(Tower *tower);
-    virtual ~Builder(void);
+    TowerBuilder(Tower *tower);
+    virtual ~TowerBuilder(void);
 
     virtual void update(void);
     virtual void regenerate(void);
 
     virtual void blocksUpdated(Tower *tower, unsigned level);
 
+    Tower *tower;
 protected:
     unsigned timer;
     unsigned level;
 };
 
-#endif // #ifndef __Builder_h_
+#endif // #ifndef __TowerBuilder_h_
