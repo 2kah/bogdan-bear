@@ -287,8 +287,6 @@ bool Game::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id)
     {
 #ifdef __USE_OLD_TOWER__
         player->shoot(mSceneMgr, dynamicsWorld, this->tower);
-#else
-        player->shoot();
 #endif
         this->playerInput.signals.fire(true);
     }

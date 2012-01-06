@@ -87,6 +87,12 @@ void Player::look(int x, int y)
 
 void Player::fire(bool state)
 {
+    if (state) {
+        Ogre::Quaternion orientation = this->orientation * this->relativeAim;
+        orientation = orientation * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
+
+        this->signals.fired(this, new Rocket(this->position + Ogre::Vector3::UNIT_Y * 180, orientation));
+    }
 }
 
 void Player::create(bool state)
@@ -180,14 +186,6 @@ void Player::shoot(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld *dynam
         }
     }
 
-    Ogre::Quaternion orientation = this->orientation * this->relativeAim;
-    orientation = orientation * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
-
-    this->signals.fired(this, new Rocket(this->position + Ogre::Vector3::UNIT_Y * 180, orientation));
-}
-#else
-void Player::shoot()
-{
     Ogre::Quaternion orientation = this->orientation * this->relativeAim;
     orientation = orientation * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
 
