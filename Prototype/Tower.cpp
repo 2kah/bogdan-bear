@@ -164,44 +164,44 @@ TowerOld::TowerOld(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld* dynam
 		//Loads bullet meshes for each sector shape
 		if(radius == 1)
 		{
-			fileLoader->loadFile("onebt.bullet");
+			fileLoader->loadFile("onebbb.bullet");
 			printf("onebb.bullet loaded\n");
 			//blockShape = fileLoader->getCollisionShapeByName("oneb.bullet");
 
 		}
 		if(radius == 2) 
 		{
-			fileLoader->loadFile("twobt.bullet");
+			fileLoader->loadFile("twobbb.bullet");
 			printf("twobb.bullet loaded\n");
 			//blockShape = fileLoader->getCollisionShapeByName("twob.bullet");
 		}
 		if(radius == 3) 
 		{
-			fileLoader->loadFile("threebt.bullet");
+			fileLoader->loadFile("threebbb.bullet");
 			printf("threebb.bullet loaded\n");
 			//blockShape = fileLoader->getCollisionShapeByName("threeb.bullet");
 		}
 		if(radius == 4)
 		{
-			fileLoader->loadFile("fourbt.bullet");
+			fileLoader->loadFile("fourbbb.bullet");
 			printf("fourbb.bullet loaded\n");
 			//blockShape = fileLoader->getCollisionShapeByName("fourb.bullet");
 		}
 		if(radius == 5) 
 		{
-			fileLoader->loadFile("fivebt.bullet");
+			fileLoader->loadFile("fivebbb.bullet");
 			printf("fiveb.bullet loaded\n");
 			//blockShape = fileLoader->getCollisionShapeByName("fiveb.bullet");
 		}
 		if(radius == 6) 
 		{
-			fileLoader->loadFile("sixbt.bullet");
+			fileLoader->loadFile("sixbbb.bullet");
 			printf("sixb.bullet loaded\n");
 			//blockShape = fileLoader->getCollisionShapeByName("sixb.bullet");
 		}
 		if(radius == 7) 
 		{
-			fileLoader->loadFile("sevenbt.bullet");
+			fileLoader->loadFile("sevenbbb.bullet");
 			printf("sevenb.bullet loaded\n");
 			//blockShape = fileLoader->getCollisionShapeByName("sevenb.bullet");
 			

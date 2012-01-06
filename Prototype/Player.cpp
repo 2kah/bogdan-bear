@@ -3,11 +3,15 @@
 #include <iostream>
 #include <math.h>
 
+#include <boost/bind.hpp>
+
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreEntity.h>
 
 #include <btBulletDynamicsCommon.h>
 #include <BulletCollision/CollisionDispatch/btGhostObject.h>
+
+#include "PlayerInput.h"
 
 #include "Platform.h"
 #include "Rocket.h"
@@ -43,55 +47,62 @@ void Player::update()
     this->signals.updated(this);
 }
 
-void Player::forward(void)
+void Player::addInput(PlayerInput &input)
 {
-    std::cout << "MOVING FORWARD" << std::endl;
-    this->velocity.z = -Player::MOVEMENT_SPEED;
+    input.signals.move.connect(boost::bind(&Player::movement, this, _1, _2));
+    input.signals.look.connect(boost::bind(&Player::look, this, _1, _2));
+
+    input.signals.fire.connect(boost::bind(&Player::fire, this, _1));
+    input.signals.create.connect(boost::bind(&Player::create, this, _1));
+
+    input.signals.jump.connect(boost::bind(&Player::jump, this, _1));
+    input.signals.use.connect(boost::bind(&Player::use, this, _1));
 }
 
-void Player::stopMovingForward(void)
+void Player::movement(DIRECTION direction, bool state)
 {
-    this->velocity.z = 0;
+    if (direction == DIRECTION::FORWARD)
+    {
+        this->velocity.z = -Player::MOVEMENT_SPEED * state;
+    }
+    else if (direction == DIRECTION::BACKWARD)
+    {
+        this->velocity.z = Player::MOVEMENT_SPEED * state;
+    }
+    else if (direction == DIRECTION::LEFT)
+    {
+        this->velocity.x = -Player::MOVEMENT_SPEED * state;
+    }
+    else if (direction == DIRECTION::RIGHT)
+    {
+        this->velocity.x = Player::MOVEMENT_SPEED * state;
+    }
 }
 
-void Player::back(void)
+void Player::look(int x, int y)
 {
-    std::cout << "MOVING BACK" << std::endl;
-    this->velocity.z = Player::MOVEMENT_SPEED;
+    this->rotX += Ogre::Degree(-x * Player::ROTATION_SPEED);
+    this->rotY += Ogre::Degree(-y * Player::ROTATION_SPEED);
 }
 
-void Player::stopMovingBack(void)
+void Player::fire(bool state)
 {
-    this->velocity.z = 0;
 }
 
-void Player::left(void)
+void Player::create(bool state)
 {
-    std::cout << "MOVING LEFT" << std::endl;
-    this->velocity.x = -Player::MOVEMENT_SPEED;
+    if (state) {
+        this->signals.platform(this, new Platform(this->position, this->orientation));
+    }
 }
 
-void Player::stopMovingLeft(void)
+void Player::jump(bool state)
 {
-    this->velocity.x = 0;
+    this->velocity.y = Player::MOVEMENT_SPEED * state;
 }
 
-void Player::right(void)
+void Player::use(bool state)
 {
-    std::cout << "MOVING RIGHT" << std::endl;
-    this->velocity.x = Player::MOVEMENT_SPEED;
-}
-
-void Player::stopMovingRight(void)
-{
-    this->velocity.x = 0;
-}
-
-void Player::jump(void)
-{
-    std::cout << "JUMPING" << std::endl;
-
-    this->position = this->position + Ogre::Vector3(0, 200, 0);
 }
 
 #ifdef __USE_OLD_TOWER__
@@ -183,18 +194,3 @@ void Player::shoot()
     this->signals.fired(this, new Rocket(this->position + Ogre::Vector3::UNIT_Y * 180, orientation));
 }
 #endif
-
-void Player::platform(void)
-{
-    this->signals.platform(this, new Platform(this->position, this->orientation));
-}
-
-void Player::lookX(int dist)
-{
-    rotX += Ogre::Degree(-dist * Player::ROTATION_SPEED);
-}
-
-void Player::lookY(int dist)
-{
-    rotY += Ogre::Degree(-dist * Player::ROTATION_SPEED);
-}
