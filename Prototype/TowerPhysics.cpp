@@ -105,9 +105,9 @@ TowerPhysics::TowerPhysics(Tower *tower, btDiscreteDynamicsWorld* dynamicsWorld)
 
                     blockRigidBody->setUserPointer(new BlockReference(this->tower, height, radius, position));
 
-                    blockRigidBody->setActivationState(ISLAND_SLEEPING); // no benefit?
+                    //blockRigidBody->setActivationState(ISLAND_SLEEPING); // no benefit?
 
-                    dynamicsWorld->addRigidBody(blockRigidBody, 1, 2);
+                    dynamicsWorld->addRigidBody(blockRigidBody); // , 1, 2);
                     }
                     //*/
                 }
