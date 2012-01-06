@@ -113,6 +113,7 @@ set(HDRS
     ./RocketGraphics.h
     
     ./Explosion.h
+    ./ExplosionPhysics.h
     ./ExplosionGraphics.h
     
     ./SceneObject.h
@@ -145,6 +146,7 @@ set(SRCS
     ./RocketGraphics.cpp
     
     ./Explosion.cpp
+    ./ExplosionPhysics.cpp
     ./ExplosionGraphics.cpp
     
     ./SceneObject.cpp

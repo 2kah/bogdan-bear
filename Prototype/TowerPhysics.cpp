@@ -43,7 +43,7 @@ TowerPhysics::TowerPhysics(Tower *tower, btDiscreteDynamicsWorld* dynamicsWorld)
         blockShapes.push_back(blockShape);
         }
 
-        for (unsigned height = 0; height < this->tower->levels; height++)
+        for (unsigned height = 0; height < 10 /*this->tower->levels*/; height++)
         {
             for (unsigned position = 0; position < this->tower->sectors; position++)
             {
