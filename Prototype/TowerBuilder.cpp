@@ -1,12 +1,10 @@
-#include "Builder.h"
+#include "TowerBuilder.h"
 
 #include <boost/signal.hpp>
 
-Builder::Builder()
-{
-}
+#include "Tower.h"
 
-Builder::Builder(Tower *tower)
+TowerBuilder::TowerBuilder(Tower *tower)
 {
     this->tower = tower;
 
@@ -14,11 +12,11 @@ Builder::Builder(Tower *tower)
     this->level = this->tower->levels - 1;
 }
 
-Builder::~Builder(void)
+TowerBuilder::~TowerBuilder(void)
 {
 }
 
-void Builder::update(void)
+void TowerBuilder::update(void)
 {
     //return; // rebuilding static geometry too slow atm
     
@@ -44,11 +42,11 @@ void Builder::update(void)
     }
 }
 
-void Builder::blocksUpdated(Tower *tower, unsigned level)
+void TowerBuilder::blocksUpdated(Tower *tower, unsigned level)
 {
 }
 
-void Builder::regenerate(void)
+void TowerBuilder::regenerate(void)
 {    
 //#define USE_OLD_GENERATOR
 #ifndef USE_OLD_GENERATOR
