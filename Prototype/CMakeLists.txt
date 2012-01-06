@@ -99,7 +99,9 @@ set(HDRS
     ./TowerGraphics.h
     ./Builder.h
     
+    ./PlayerInput.h
     ./Player.h
+    ./PlayerPhysics.h
     ./PlayerGraphics.h
     ./PlayerCamera.h
     
@@ -128,7 +130,9 @@ set(SRCS
     ./TowerGraphics.cpp
     ./Builder.cpp
     
+    ./PlayerInput.cpp
     ./Player.cpp
+    ./PlayerPhysics.cpp
     ./PlayerGraphics.cpp
     ./PlayerCamera.cpp
     

@@ -211,25 +211,26 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
     
     if (arg.key == OIS::KC_UP|| arg.key == OIS::KC_W)
 	{
-        player->forward();
+        this->playerInput.signals.move(DIRECTION::FORWARD, true);
 	}
     else if (arg.key == OIS::KC_DOWN || arg.key == OIS::KC_S)
 	{
-        player->back();
+        this->playerInput.signals.move(DIRECTION::BACKWARD, true);
 	}
     else if (arg.key == OIS::KC_LEFT || arg.key == OIS::KC_A)
 	{
-        player->left();
+        this->playerInput.signals.move(DIRECTION::LEFT, true);
 	}
     else if (arg.key == OIS::KC_RIGHT || arg.key == OIS::KC_D)
 	{
-        player->right();
+        this->playerInput.signals.move(DIRECTION::RIGHT, true);
 	}
 	else if (arg.key == OIS::KC_SPACE)
 	{
-        player->jump();
+        this->playerInput.signals.jump(true);
 	}
-	    return true;
+	
+    return true;
 }
 
 bool Game::keyReleased(const OIS::KeyEvent &arg)
@@ -240,19 +241,22 @@ bool Game::keyReleased(const OIS::KeyEvent &arg)
     {
     case OIS::KC_UP:
     case OIS::KC_W:
-        player->stopMovingForward();
+        this->playerInput.signals.move(DIRECTION::FORWARD, false);
         break;
     case OIS::KC_DOWN:
     case OIS::KC_S:
-        player->stopMovingBack();
+        this->playerInput.signals.move(DIRECTION::BACKWARD, false);
         break;
     case OIS::KC_LEFT:
     case OIS::KC_A:
-        player->stopMovingLeft();
+        this->playerInput.signals.move(DIRECTION::LEFT, false);
         break;
     case OIS::KC_RIGHT:
     case OIS::KC_D:
-        player->stopMovingRight();
+        this->playerInput.signals.move(DIRECTION::RIGHT, false);
+        break;
+    case OIS::KC_SPACE:
+        this->playerInput.signals.jump(false);
         break;
     default:
         break;
@@ -265,8 +269,9 @@ bool Game::mouseMoved(const OIS::MouseEvent &arg)
 {
     BaseApplication::mouseMoved(arg);
     const OIS::MouseState &ms = mMouse->getMouseState();
-    player->lookX(ms.X.rel);
-    player->lookY(ms.Y.rel);
+
+    this->playerInput.signals.look(ms.X.rel, ms.Y.rel);
+
     return true;
 }
 
@@ -276,7 +281,7 @@ bool Game::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id)
 
     if (id == OIS::MB_Right)
 	{
-        player->platform();
+        this->playerInput.signals.create(true);
 	}
     else if (id == OIS::MB_Left)
     {
@@ -285,6 +290,7 @@ bool Game::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id)
 #else
         player->shoot();
 #endif
+        this->playerInput.signals.fire(true);
     }
 
     return true;
@@ -293,5 +299,15 @@ bool Game::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id)
 bool Game::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id)
 {
     BaseApplication::mouseReleased(arg, id);
+
+    if (id == OIS::MB_Right)
+	{
+        this->playerInput.signals.create(false);
+	}
+    else if (id == OIS::MB_Left)
+    {
+        this->playerInput.signals.fire(false);
+    }
+
     return true;
 }

@@ -8,6 +8,7 @@
 class TowerOld;
 
 #include "BaseApplication.h"
+#include "PlayerInput.h"
 
 class Updatable;
 class Tower;
@@ -42,6 +43,7 @@ protected:
     virtual void createViewports(void);
 
 private:
+    PlayerInput playerInput;
     Player *player;
     FallingObject *fallingObject;
     btDiscreteDynamicsWorld* dynamicsWorld;

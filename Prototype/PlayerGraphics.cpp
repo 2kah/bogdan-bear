@@ -12,7 +12,7 @@ PlayerGraphics::PlayerGraphics(Player *player, Ogre::SceneManager *sceneManager)
     this->player = player;
     
     this->sceneManager = sceneManager;
-    this->entity = sceneManager->createEntity("Ninja.mesh");
+    this->entity = sceneManager->createEntity("ninja.mesh");
     this->sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode();
     this->sceneNode->attachObject(this->entity);
     

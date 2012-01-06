@@ -11,6 +11,7 @@
 #include "Game.h"
 
 #include "Player.h"
+#include "PlayerPhysics.h"
 #include "PlayerGraphics.h"
 #include "PlayerCamera.h"
 
@@ -30,6 +31,9 @@ GameTestThing::GameTestThing(Game *game)
     this->player = new Player(Ogre::Vector3(0, 0, 1000));
     this->game->player = this->player;
 
+    this->game->player->addInput(this->game->playerInput);
+
+    new PlayerPhysics(this->player, this->game->dynamicsWorld);
     new PlayerGraphics(this->player, this->game->mSceneMgr);
     new PlayerCamera(this->player, this->game->mCamera);
 

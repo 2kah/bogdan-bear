@@ -9,6 +9,9 @@
 class btDiscreteDynamicsWorld;
 class TowerOld;
 
+class PlayerInput;
+enum DIRECTION;
+
 class Player;
 class Platform;
 class Rocket;
@@ -16,6 +19,7 @@ class Rocket;
 namespace {
 struct PlayerSignals {
     boost::signal<void (Player *)> updated;
+
     boost::signal<void (Player *, Rocket *)> fired;
     boost::signal<void (Player *, Platform *)> platform;
 };
@@ -34,26 +38,22 @@ public:
 
     PlayerSignals signals;
 
-    virtual void forward();
-    virtual void back();
-    virtual void left();
-    virtual void right();
+    virtual void addInput(PlayerInput &input);
 
-    virtual void stopMovingForward();
-    virtual void stopMovingBack();
-    virtual void stopMovingLeft();
-    virtual void stopMovingRight();
+    virtual void movement(DIRECTION direction, bool state);
+    virtual void look(int x, int y);
+    
+    virtual void fire(bool state);
+    virtual void create(bool state);
 
-    virtual void jump();
+    virtual void jump(bool state);
+    virtual void use(bool state);
+
 #ifdef __USE_OLD_TOWER__
     virtual void shoot(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld *dynamicsWorld, TowerOld *tower);
 #else
     virtual void shoot();
 #endif
-    virtual void platform();
-
-    virtual void lookX(int dist);
-    virtual void lookY(int dist);
 
     Ogre::Quaternion relativeAim;
 private:
