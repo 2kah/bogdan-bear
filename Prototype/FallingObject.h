@@ -1,20 +1,26 @@
 #ifndef __FallingObject_h_
 #define __FallingObject_h_
 
-#include "SceneObject.h"
+#include <OGRE/OgreSceneManager.h>
+#include <OGRE/OgreSceneNode.h>
+#include <btBulletDynamicsCommon.h>
 
-class FallingObject: public SceneObject
+#include "Updatable.h"
+#include "Object.h"
+
+class FallingObject : public Updatable, public Object
 {
 public:
     FallingObject(Ogre::Vector3 position);
-    virtual ~FallingObject(void);
+    virtual ~FallingObject();
 
     virtual void addToScene(Ogre::SceneManager *sceneMgr);
     virtual void addToPhysics(btDiscreteDynamicsWorld* dynamicsWorld);
-    virtual void update(void);
+    virtual void update();
 
 private:
     btRigidBody* fallRigidBody;
+    Ogre::SceneNode *mSceneNode;
 };
 
 #endif // #ifndef __FallingObject_h_

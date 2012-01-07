@@ -33,7 +33,10 @@ void FallingObject::addToPhysics(btDiscreteDynamicsWorld* dynamicsWorld)
 	//Creates physics collision shape
     btCollisionShape* ogreHead = new btSphereShape(3 * 10 / 16.0);
 	//Gives starting position of object, worth changing this and seeing effects of colliding with Tower, currently (-10,800,0)
-    btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(0, 800 / 16.0, 250 / 16.0)));
+    
+    btVector3 position(this->position.x, this->position.y, this->position.z);
+    
+    btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1), position));
     btScalar mass = 1;
     btVector3 fallInertia(0,0,0);
     ogreHead->calculateLocalInertia(mass,fallInertia);
