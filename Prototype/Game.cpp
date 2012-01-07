@@ -15,7 +15,6 @@
 #include "TowerPhysics.h"
 #include "TowerGraphics.h"
 
-#include "SceneObject.h"
 #include "Player.h"
 #include "FallingObject.h"
 
@@ -66,25 +65,12 @@ void Game::createScene(void)
     btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
     dynamicsWorld->addRigidBody(groundRigidBody); // , 4, 2);
 
-    // Create a list of SceneObjects (one of which is a player) at various positions
-    std::vector<SceneObject *> things;
-
-    fallingObject = new FallingObject(Ogre::Vector3(0, 200 / 16.0, 0));
+    fallingObject = new FallingObject(Ogre::Vector3(0, 64, 16.25));
+    fallingObject->addToScene(mSceneMgr);
+    fallingObject->addToPhysics(dynamicsWorld);
+    objects.insert(fallingObject);
 
     this->gameTestThing = new GameTestThing(this);
-    
-    //things.push_back(player);
-    things.push_back(fallingObject);
-
-    // Add all the scene objects to the scene and list of objects
-    for (std::vector<SceneObject *>::size_type i = 0; i != things.size(); ++i)
-    {
-        SceneObject *thing = things[i];
-
-        thing->addToScene(mSceneMgr);
-        thing->addToPhysics(dynamicsWorld);
-        objects.insert(thing);
-    }
 
     // Set ambient light
     mSceneMgr->setAmbientLight(Ogre::ColourValue(0.9, 0.9, 0.9));
