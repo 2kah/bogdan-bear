@@ -19,6 +19,8 @@ ExplosionPhysics::ExplosionPhysics(Explosion *explosion, btDiscreteDynamicsWorld
     this->explosion->signals.updated.connect(boost::bind(&ExplosionPhysics::explosionUpdated, this, _1));
     this->explosion->signals.finished.connect(boost::bind(&ExplosionPhysics::explosionFinished, this, _1));
 
+    this->dynamicsWorld->getBroadphase()->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
+
     this->ghost = new btGhostObject();
     
     btVector3 position(this->explosion->position.x, this->explosion->position.y, this->explosion->position.z);
@@ -27,7 +29,7 @@ ExplosionPhysics::ExplosionPhysics(Explosion *explosion, btDiscreteDynamicsWorld
     this->ghost->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
     this->ghost->setWorldTransform(btTransform(btMatrix3x3::getIdentity(), position));
 
-    dynamicsWorld->addCollisionObject(this->ghost, btBroadphaseProxy::SensorTrigger, btBroadphaseProxy::AllFilter & ~btBroadphaseProxy::SensorTrigger);
+    this->dynamicsWorld->addCollisionObject(this->ghost, btBroadphaseProxy::SensorTrigger, btBroadphaseProxy::AllFilter & ~btBroadphaseProxy::SensorTrigger);
 
     std::cout << "Explosion destroyed " << this->ghost->getNumOverlappingObjects() << " objects!" << std::endl;
 
@@ -41,6 +43,8 @@ ExplosionPhysics::ExplosionPhysics(Explosion *explosion, btDiscreteDynamicsWorld
             block->tower->blocks[block->layer][block->level][block->sector] = false;
             block->tower->signals.levelUpdated(block->tower, block->level);
         }
+
+        this->dynamicsWorld->removeCollisionObject(blockObject);
     }
 }
 
