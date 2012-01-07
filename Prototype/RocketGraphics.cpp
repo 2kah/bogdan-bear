@@ -16,7 +16,7 @@ RocketGraphics::RocketGraphics(Rocket *rocket, Ogre::SceneManager *sceneManager)
     this->sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode();
     this->sceneNode->attachObject(this->entity);
 
-    this->sceneNode->setScale(2, 10, 2);
+    this->sceneNode->setScale(Ogre::Vector3(2, 10, 2) / 16.0);
 
     this->rocketUpdated(this->rocket);
 

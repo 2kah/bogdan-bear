@@ -6,6 +6,7 @@
 
 #include <btBulletDynamicsCommon.h>
 class TowerOld;
+#include "BtOgreExtras.h"
 
 #include "BaseApplication.h"
 #include "PlayerInput.h"
@@ -49,6 +50,8 @@ private:
     btDiscreteDynamicsWorld* dynamicsWorld;
 
     std::set<Updatable *> objects;
+
+    BtOgre::DebugDrawer *mDebugDrawer;
 
 #ifdef __USE_OLD_TOWER__
     TowerOld *tower;

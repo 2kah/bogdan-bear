@@ -42,12 +42,12 @@ void Game::createScene(void)
  
     dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
  
-    dynamicsWorld->setGravity(btVector3(0,-9.8,0));
+    dynamicsWorld->setGravity(btVector3(0, -9.8, 0));
 
 #ifdef __USE_OLD_TOWER__
     TowerOld *tower = new TowerOld(mSceneMgr, dynamicsWorld);
 #else
-    tower = new Tower(32, 128, 16, 32);
+    tower = new Tower(2.0, 128, 16, 32);
 
     TowerBuilder *builder = new TowerBuilder(tower);
     builder->regenerate();
@@ -58,10 +58,13 @@ void Game::createScene(void)
     TowerPhysics *towerPhysics = new TowerPhysics(tower, dynamicsWorld);
 #endif
 
+    this->mDebugDrawer = new BtOgre::DebugDrawer(mSceneMgr->getRootSceneNode(), dynamicsWorld);
+    this->dynamicsWorld->setDebugDrawer(this->mDebugDrawer);
+
     // Create a list of SceneObjects (one of which is a player) at various positions
     std::vector<SceneObject *> things;
 
-    fallingObject = new FallingObject(Ogre::Vector3(0,200,0));
+    fallingObject = new FallingObject(Ogre::Vector3(0, 200 / 16.0, 0));
 
     this->gameTestThing = new GameTestThing(this);
     
@@ -169,6 +172,7 @@ void Game::run(void)
         }
 
         // Render a frame
+        mDebugDrawer->step();
         if (!mRoot->renderOneFrame())
         {
             break;

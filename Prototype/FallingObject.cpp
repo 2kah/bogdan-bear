@@ -25,21 +25,22 @@ void FallingObject::addToScene(Ogre::SceneManager *sceneMgr)
     mSceneNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
     mSceneNode->attachObject(ogreHead);
     mSceneNode->translate(position);
+    mSceneNode->setScale(Ogre::Vector3::UNIT_SCALE * 10 / 16.0);
 }
 
 void FallingObject::addToPhysics(btDiscreteDynamicsWorld* dynamicsWorld)
 {
 	//Creates physics collision shape
-    btCollisionShape* ogreHead = new btSphereShape(3);
+    btCollisionShape* ogreHead = new btSphereShape(3 * 10 / 16.0);
 	//Gives starting position of object, worth changing this and seeing effects of colliding with Tower, currently (-10,800,0)
-    btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(15,800,0)));
+    btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(0, 800 / 16.0, 250 / 16.0)));
     btScalar mass = 1;
     btVector3 fallInertia(0,0,0);
     ogreHead->calculateLocalInertia(mass,fallInertia);
     btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass, fallMotionState, ogreHead, fallInertia);
     fallRigidBody = new btRigidBody(fallRigidBodyCI);
 	
-    dynamicsWorld->addRigidBody(fallRigidBody, 2, Tower::COLLISION_GROUP & 4);
+    dynamicsWorld->addRigidBody(fallRigidBody); // 2, Tower::COLLISION_GROUP & 4);
 }
 
 void FallingObject::update(void)
