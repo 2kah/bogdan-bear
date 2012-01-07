@@ -5,30 +5,6 @@
 
 #include <boost/signal.hpp>
 
-#include <OgreVector3.h>
-
-#include <OgreSceneManager.h>
-#include <OgreEntity.h>
-
-#include <btBulletDynamicsCommon.h>
-
-///*
-class TowerOld
-{
-public:
-	TowerOld();
-    TowerOld(Ogre::SceneManager *msceneMgr, btDiscreteDynamicsWorld* dynamicsWorld);
-    virtual ~TowerOld(void);
-
-    virtual void update(void);
-
-    virtual void carveSphere(Ogre::Vector3 position, double radius) {};
-protected:
-    Ogre::SceneNode *mSceneNode;
-	btCollisionShape* blockShape;
-};
-//*/
-
 struct BlockPosition
 {
     double x, y, z, angle;
@@ -81,7 +57,6 @@ public:
 
     virtual void update();
 
-    virtual void carveSphere(Ogre::Vector3 position, double radius);
     virtual void rebuild();
     virtual void synchronise();
 

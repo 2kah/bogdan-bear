@@ -151,44 +151,10 @@ void Player::shoot(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld *dynam
             //float impulseStrength = 10.f;
             //impulse *= impulseStrength;
             btVector3 relPos = rayCallback.m_hitPointWorld;// - body->getCenterOfMassPosition();
-            //body->applyImpulse(impulse,relPos);
-            dynamicsWorld->getBroadphase()->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
-            btGhostObject* explosion = new btGhostObject();
-            explosion->setCollisionShape(new btSphereShape(10));
-            explosion->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
-            explosion->setWorldTransform(btTransform(btQuaternion(0,0,0,1),btVector3(relPos.getX(),relPos.getY(),relPos.getZ())));
-            dynamicsWorld->addCollisionObject(explosion,btBroadphaseProxy::SensorTrigger,btBroadphaseProxy::AllFilter & ~btBroadphaseProxy::SensorTrigger);
-            //Ogre::Entity* ogreHead = mSceneMgr->createEntity("explosion", "spheredemo.mesh");
-            //Ogre::SceneNode* mSceneNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-            //mSceneNode->attachObject(ogreHead);
-            //mSceneNode->scale(10,10,10);
-            //mSceneNode->translate(Ogre::Vector3(relPos.getX(),relPos.getY(),relPos.getZ()));
-            printf("Explosion destroyed %i objects\n", explosion->getNumOverlappingObjects());
-            printf("Sphere placed at: %f, %f, %f\n", relPos.getX(),relPos.getY(),relPos.getZ());
-             
-            for(int i = 0; i < explosion->getNumOverlappingObjects(); i++)
-            {
-                btCollisionObject* block = explosion->getOverlappingObject(i);
-                btTransform tran = block->getWorldTransform();
-                dynamicsWorld->removeCollisionObject(block); //Delete the physics object
-                btVector3 pos = tran.getOrigin();
-                double x = pos.getX();
-                double y = pos.getY();
-                double z = pos.getZ();
-                double rads = atan(x/y);
-                int h = ((double)y/15)*2;
-                int r = ((sqrt(pow(x,2)+pow(y,2)))/15)-0.5;
-                int nseg = 12*(pow((double)2,r)); //number of segments in radius r
-                int p = ((rads/PI)-((double)1/nseg))*(nseg/2);
-                printf("%i, %i, %i\n", h, r, p);
-                //Delete graphic meshes h, r and p here. Athough p isn't quite right (
-            }
+            
+            // create explosion here
+            Explosion *explosion = new Explosion(Ogre::Vector3(relPos.x(), relPos.y(), relPos.z());
         }
     }
-
-    Ogre::Quaternion orientation = this->orientation * this->relativeAim;
-    orientation = orientation * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
-
-    this->signals.fired(this, new Rocket(this->position + Ogre::Vector3::UNIT_Y * 180, orientation));
 }
 #endif
