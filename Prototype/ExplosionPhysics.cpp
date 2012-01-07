@@ -21,8 +21,6 @@ ExplosionPhysics::ExplosionPhysics(Explosion *explosion, btDiscreteDynamicsWorld
     this->explosion->signals.updated.connect(boost::bind(&ExplosionPhysics::explosionUpdated, this, _1));
     this->explosion->signals.finished.connect(boost::bind(&ExplosionPhysics::explosionFinished, this, _1));
 
-    this->dynamicsWorld->getBroadphase()->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
-
     this->ghost = new btGhostObject();
     
     btVector3 position(this->explosion->position.x, this->explosion->position.y, this->explosion->position.z);
@@ -55,7 +53,7 @@ ExplosionPhysics::ExplosionPhysics(Explosion *explosion, btDiscreteDynamicsWorld
             destructions.push_back(blockObject);
         }
     }
-
+    
     for(std::vector<btCollisionObject *>::iterator it = destructions.begin(); it != destructions.end(); ++it) {
         btCollisionObject *blockObject = *it;
 

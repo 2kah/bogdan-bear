@@ -30,6 +30,8 @@ public:
     virtual void update();
 
     RocketSignals signals;
+
+    virtual void explode();
 private:
     unsigned timer;
 };
