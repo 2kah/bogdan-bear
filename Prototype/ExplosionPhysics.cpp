@@ -23,28 +23,31 @@ ExplosionPhysics::ExplosionPhysics(Explosion *explosion, btDiscreteDynamicsWorld
     
     btVector3 position(this->explosion->position.x, this->explosion->position.y, this->explosion->position.z);
 
-    this->ghost->setCollisionShape(new btSphereShape(10));
+    this->ghost->setCollisionShape(new btSphereShape(100));
     this->ghost->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
-    this->ghost->setWorldTransform(btTransform(btQuaternion(0, 0, 0, 1), position));
+    this->ghost->setWorldTransform(btTransform(btMatrix3x3::getIdentity(), position));
 
     dynamicsWorld->addCollisionObject(this->ghost, btBroadphaseProxy::SensorTrigger, btBroadphaseProxy::AllFilter & ~btBroadphaseProxy::SensorTrigger);
 
     std::cout << "Explosion destroyed " << this->ghost->getNumOverlappingObjects() << " objects!" << std::endl;
-    std::cout << "Sphere placed at: " << position.x() << ", " << position.y() << ", " << position.z() << std::endl;
-    
+
     for(int i = 0; i < this->ghost->getNumOverlappingObjects(); i++)
     {
         btCollisionObject *blockObject = this->ghost->getOverlappingObject(i);
         
         BlockReference *block = (BlockReference *) blockObject->getUserPointer();
 
-        block->tower->blocks[block->layer][block->level][block->sector] = false;
-        block->tower->signals.levelUpdated(block->tower, block->level);
+        if (block != NULL) {
+            block->tower->blocks[block->layer][block->level][block->sector] = false;
+            block->tower->signals.levelUpdated(block->tower, block->level);
+        }
     }
 }
 
 ExplosionPhysics::~ExplosionPhysics()
 {
+    this->dynamicsWorld->removeCollisionObject(this->ghost);
+
     delete this->ghost;
 }
 

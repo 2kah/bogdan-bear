@@ -120,6 +120,10 @@ set(HDRS
     ./FallingObject.h
     
     ./BaseApplication.h
+    
+    ./BtOgreGP.h
+    ./BtOgrePG.h
+    ./BtOgreExtras.h
 )
  
 set(SRCS
@@ -153,6 +157,8 @@ set(SRCS
     ./FallingObject.cpp
     
     ./BaseApplication.cpp
+    
+    ./BtOgre.cpp
 )
 
 find_package(Boost 1.47 REQUIRED)

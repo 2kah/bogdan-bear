@@ -80,7 +80,7 @@ TowerPhysics::TowerPhysics(Tower *tower, btDiscreteDynamicsWorld* dynamicsWorld)
                     // Generated block physics:
                     ///*
                     {
-                    /*
+                    ///*
                     BlockPoints points = this->tower->getBlockPoints(height, radius, position);
 
                     btConvexHullShape *blockShape = new btConvexHullShape();
@@ -94,13 +94,17 @@ TowerPhysics::TowerPhysics(Tower *tower, btDiscreteDynamicsWorld* dynamicsWorld)
                     blockShape->addPoint(btVector3(points.b2.x, points.b2.y, points.b2.z));
                     blockShape->addPoint(btVector3(points.c2.x, points.c2.y, points.c2.z));
                     blockShape->addPoint(btVector3(points.d2.x, points.d2.y, points.d2.z));
-                    */
+
+                    btDefaultMotionState* blockMotionState = new btDefaultMotionState(btTransform(btMatrix3x3::getIdentity(), btVector3(0, 0, 0)));
+                    //*/
 
                     BlockPosition position_ = this->tower->getBlockPosition(height, radius, position);
 
-                    btDefaultMotionState* blockMotionState = new btDefaultMotionState(btTransform(btQuaternion(btVector3(0, 1, 0), btScalar(-position_.angle))));
-                    
-                    btRigidBody::btRigidBodyConstructionInfo blockRigidBodyCI(0, blockMotionState, blockShapes[radius], btVector3(0, 0, 0));
+                    //btDefaultMotionState* blockMotionState = new btDefaultMotionState(btTransform(btQuaternion(btVector3(0, 1, 0), btScalar(-position_.angle)), btVector3(0, height * this->tower->blocksize, 0)));
+                    btRigidBody::btRigidBodyConstructionInfo blockRigidBodyCI(0, blockMotionState, blockShape, btVector3(0, 0, 0));
+
+                    //btRigidBody::btRigidBodyConstructionInfo blockRigidBodyCI(0, blockMotionState, blockShapes[radius], btVector3(0, 0, 0));
+
                     btRigidBody *blockRigidBody = new btRigidBody(blockRigidBodyCI);
 
                     blockRigidBody->setUserPointer(new BlockReference(this->tower, height, radius, position));
@@ -121,7 +125,7 @@ TowerPhysics::TowerPhysics(Tower *tower, btDiscreteDynamicsWorld* dynamicsWorld)
     btRigidBody::btRigidBodyConstructionInfo
                 groundRigidBodyCI(0,groundMotionState,groundShape,btVector3(0,0,0));
     btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
-    dynamicsWorld->addRigidBody(groundRigidBody, 4, 2);
+    dynamicsWorld->addRigidBody(groundRigidBody); // , 4, 2);
 	//DebugDraw->DebugDraw(mSceneMgr, dynamicsWorld);
 }
 

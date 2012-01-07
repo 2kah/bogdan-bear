@@ -15,7 +15,8 @@ PlayerGraphics::PlayerGraphics(Player *player, Ogre::SceneManager *sceneManager)
     this->entity = sceneManager->createEntity("ninja.mesh");
     this->sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode();
     this->sceneNode->attachObject(this->entity);
-    
+    this->sceneNode->setScale(Ogre::Vector3::UNIT_SCALE / 16.0);
+
     this->playerUpdated(this->player);
 
     this->player->signals.updated.connect(boost::bind(&PlayerGraphics::playerUpdated, this, _1));

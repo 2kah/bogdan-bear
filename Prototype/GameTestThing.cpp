@@ -29,7 +29,7 @@ GameTestThing::GameTestThing(Game *game)
 {
     this->game = game;
     
-    this->player = new Player(Ogre::Vector3(0, 0, 1000));
+    this->player = new Player(Ogre::Vector3(0, 0, 1000 / 16.0));
     this->game->player = this->player;
 
     this->game->player->addInput(this->game->playerInput);

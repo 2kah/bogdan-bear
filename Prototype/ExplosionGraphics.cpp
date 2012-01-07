@@ -16,8 +16,6 @@ ExplosionGraphics::ExplosionGraphics(Explosion *explosion, Ogre::SceneManager *s
     this->sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode();
     this->sceneNode->attachObject(this->entity);
 
-    this->sceneNode->setScale(2, 10, 2);
-
     this->explosionUpdated(this->explosion);
 
     this->explosion->signals.finished.connect(boost::bind(&ExplosionGraphics::explosionFinished, this, _1));
@@ -34,7 +32,7 @@ void ExplosionGraphics::explosionUpdated(Explosion *explosion)
 {
     this->sceneNode->setPosition(this->explosion->position);
     this->sceneNode->setOrientation(this->explosion->orientation);
-    this->sceneNode->setScale(Ogre::Vector3::UNIT_SCALE * (this->explosion->size / 100.0));
+    this->sceneNode->setScale(Ogre::Vector3::UNIT_SCALE * (this->explosion->size / 100.0 / 16.0));
 }
 
 void ExplosionGraphics::explosionFinished(Explosion *explosion)

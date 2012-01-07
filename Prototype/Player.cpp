@@ -20,7 +20,7 @@
 
 #define PI 3.14159265
 
-const double Player::MOVEMENT_SPEED = 5;
+const double Player::MOVEMENT_SPEED = 5 / 16.0;
 const double Player::ROTATION_SPEED = 0.05;
 
 Player::Player(Ogre::Vector3 position)
@@ -91,7 +91,7 @@ void Player::fire(bool state)
         Ogre::Quaternion orientation = this->orientation * this->relativeAim;
         orientation = orientation * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
 
-        this->signals.fired(this, new Rocket(this->position + Ogre::Vector3::UNIT_Y * 180, orientation));
+        this->signals.fired(this, new Rocket(this->position + Ogre::Vector3::UNIT_Y * 180 / 16.0, orientation));
     }
 }
 
