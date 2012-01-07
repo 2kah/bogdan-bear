@@ -1,5 +1,3 @@
-//#define __USE_OLD_TOWER__
-
 #include <iostream>
 #include <vector>
 
@@ -43,10 +41,7 @@ void Game::createScene(void)
     dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
  
     dynamicsWorld->setGravity(btVector3(0, -9.8, 0));
-
-#ifdef __USE_OLD_TOWER__
-    TowerOld *tower = new TowerOld(mSceneMgr, dynamicsWorld);
-#else
+    
     tower = new Tower(2.0, 128, 16, 32);
 
     TowerBuilder *builder = new TowerBuilder(tower);
@@ -56,7 +51,6 @@ void Game::createScene(void)
 
     TowerGraphics *towerGraphics = new TowerGraphics(tower, mSceneMgr);
     TowerPhysics *towerPhysics = new TowerPhysics(tower, dynamicsWorld);
-#endif
 
     this->mDebugDrawer = new BtOgre::DebugDrawer(mSceneMgr->getRootSceneNode(), dynamicsWorld);
     this->dynamicsWorld->setDebugDrawer(this->mDebugDrawer);
@@ -204,8 +198,6 @@ void Game::createViewports(void)
 void Game::carveSphere(Ogre::Vector3 position, double radius)
 {
     std::cout << "(Game) Carving sphere at " << position << " of radius " << radius << std::endl;
-
-    this->tower->carveSphere(position, radius);
 }
 
 bool Game::keyPressed(const OIS::KeyEvent &arg)
@@ -290,9 +282,6 @@ bool Game::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id)
 	}
     else if (id == OIS::MB_Left)
     {
-#ifdef __USE_OLD_TOWER__
-        player->shoot(mSceneMgr, dynamicsWorld, this->tower);
-#endif
         this->playerInput.signals.fire(true);
     }
 

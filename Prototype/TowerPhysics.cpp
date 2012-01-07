@@ -23,7 +23,7 @@ TowerPhysics::TowerPhysics(Tower *tower, btDiscreteDynamicsWorld* dynamicsWorld)
     std::vector<btCollisionShape *> blockShapes;
     //blockShapes.push_back(NULL);
 
-    for (unsigned radius = 0; radius < this->tower->layers; radius++)
+    for (unsigned radius = 0; radius < this->tower->layers; ++radius)
     {
         {
         BlockPoints points = this->tower->getBlockPoints(0, radius, 0);
@@ -43,9 +43,9 @@ TowerPhysics::TowerPhysics(Tower *tower, btDiscreteDynamicsWorld* dynamicsWorld)
         blockShapes.push_back(blockShape);
         }
 
-        for (unsigned height = 0; height < 10 /*this->tower->levels*/; height++)
+        for (unsigned height = 0; height < 10 /*this->tower->levels*/; ++height)
         {
-            for (unsigned position = 0; position < this->tower->sectors; position++)
+            for (unsigned position = 0; position < this->tower->sectors; ++position)
             {
                 //Generates random segments
                 if (this->tower->blocks[height][radius][position] == 1)

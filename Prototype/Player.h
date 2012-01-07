@@ -49,9 +49,8 @@ public:
     virtual void jump(bool state);
     virtual void use(bool state);
 
-#ifdef __USE_OLD_TOWER__
-    virtual void shoot(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld *dynamicsWorld, TowerOld *tower);
-#endif
+    // old tower, contains physics
+    //virtual void shoot(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld *dynamicsWorld, TowerOld *tower);
 
     Ogre::Quaternion relativeAim;
 private:
