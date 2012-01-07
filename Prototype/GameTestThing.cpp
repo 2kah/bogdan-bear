@@ -10,6 +10,9 @@
 
 #include "Game.h"
 
+#include "Turret.h"
+#include "TurretGraphics.h"
+
 #include "Player.h"
 #include "PlayerPhysics.h"
 #include "PlayerGraphics.h"
@@ -44,6 +47,12 @@ GameTestThing::GameTestThing(Game *game)
     this->game->objects.insert(this->player);
     this->game->objects.insert(enemy);
 
+    Turret *turret = new Turret(Ogre::Vector3(0, 0, 256), Ogre::Quaternion::IDENTITY);
+    new TurretGraphics(turret, this->game->mSceneMgr);
+    this->game->objects.insert(turret);
+
+    turret->signals.fired.connect(boost::bind(&GameTestThing::turretFired, this, _1, _2));
+
     this->player->signals.fired.connect(boost::bind(&GameTestThing::playerFired, this, _1, _2));
     this->player->signals.platform.connect(boost::bind(&GameTestThing::platformCreated, this, _1, _2));
 
@@ -65,6 +74,15 @@ void GameTestThing::update()
     }
 
     this->removeQueue.clear();
+}
+
+void GameTestThing::turretFired(Turret *turret, Rocket *rocket)
+{
+    this->game->objects.insert(rocket);
+
+    RocketGraphics *rocketGraphics = new RocketGraphics(rocket, this->game->mSceneMgr);
+
+    rocket->signals.exploded.connect(boost::bind(&GameTestThing::rocketExploded, this, _1, _2));
 }
 
 void GameTestThing::playerFired(Player *player, Rocket *rocket)

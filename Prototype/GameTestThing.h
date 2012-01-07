@@ -6,6 +6,7 @@
 #include "Updatable.h"
 
 class Game;
+class Turret;
 class Player;
 class Platform;
 class Rocket;
@@ -22,6 +23,7 @@ protected:
     Game *game;
     Player *player;
 private:
+    void turretFired(Turret *turret, Rocket *rocket);
     void playerFired(Player *player, Rocket *rocket);
     void rocketExploded(Rocket *rocket, Explosion *explosion);
     void explosionFinished(Explosion *explosion);
