@@ -36,7 +36,7 @@ Player::~Player()
 
 void Player::update()
 {
-    this->orientation = this->orientation * Ogre::Quaternion(Ogre::Radian(rotX), Ogre::Vector3::UNIT_Y);
+	this->orientation = this->orientation * Ogre::Quaternion(Ogre::Radian(rotX), Ogre::Vector3::UNIT_Y);
     this->relativeAim = this->relativeAim * Ogre::Quaternion(Ogre::Radian(rotY), Ogre::Vector3::UNIT_X);
 
     rotX = 0;
@@ -49,7 +49,7 @@ void Player::update()
 
 void Player::addInput(PlayerInput &input)
 {
-    input.signals.move.connect(boost::bind(&Player::movement, this, _1, _2));
+    //input.signals.move.connect(boost::bind(&Player::movement, this, _1, _2));
     input.signals.look.connect(boost::bind(&Player::look, this, _1, _2));
 
     input.signals.fire.connect(boost::bind(&Player::fire, this, _1));
