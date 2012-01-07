@@ -15,7 +15,7 @@ PlatformGraphics::PlatformGraphics(Platform *platform, Ogre::SceneManager *scene
     this->sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode();
     this->sceneNode->attachObject(this->entity);
 
-    this->sceneNode->setScale(Ogre::Vector3::UNIT_SCALE * 10);
+    this->sceneNode->setScale(Ogre::Vector3::UNIT_SCALE / 2);
 
     this->platformUpdated(this->platform);
 
