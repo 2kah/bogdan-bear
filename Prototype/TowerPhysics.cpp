@@ -3,25 +3,15 @@
 #include <vector>
 
 #include <btBulletDynamicsCommon.h>
-#include <btBulletWorldImporter.h>
 #include <btBulletCollisionCommon.h>
 
 #include "Tower.h"
 
-// Tower Physics
 TowerPhysics::TowerPhysics(Tower *tower, btDiscreteDynamicsWorld* dynamicsWorld)
 {
     this->tower = tower;
     
-	btRigidBody* blockRigidBody;// [50][8][84];
-	btCollisionObject* blockObject;
-
-    btBulletWorldImporter* fileLoader = new btBulletWorldImporter(dynamicsWorld);
-
-    btCollisionShape* blockShape;
-    
     std::vector<btCollisionShape *> blockShapes;
-    //blockShapes.push_back(NULL);
 
     for (unsigned radius = 0; radius < this->tower->layers; ++radius)
     {
@@ -50,33 +40,6 @@ TowerPhysics::TowerPhysics(Tower *tower, btDiscreteDynamicsWorld* dynamicsWorld)
                 //Generates random segments
                 if (this->tower->blocks[height][radius][position] == 1)
                 {
-                    /*
-                    BlockPosition position_ = this->tower->getBlockPosition(height, radius, position);
-                    double degs = 360 / ((double) nseg);
-
-					//Adds bullet mesh to object
-
-                    printf("NumCollisionObjects()-1 = %d\n", (dynamicsWorld->getNumCollisionObjects())-1);
-
-			        blockObject = dynamicsWorld->getCollisionObjectArray()[(dynamicsWorld->getNumCollisionObjects()-1)];//
-					blockShape = blockObject->getCollisionShape();
-
-                    printf("%s\n", blockShape->getName());
-
-					//Scale bullet mesh to appropriate size
-					//THIS MAKES IT -LOOK- RIGHT, DON'T KNOW IF IT IS RIGHT, PLEASE EXPLORE FURTHER
-					blockShape->setLocalScaling(btVector3(1,1,1));
-								
-					btQuaternion qRot(0,0,0,1);
-					qRot.setRotation(btVector3(0,1,0), ((-PI/(9.5*radius))-position_.angle));
-					btDefaultMotionState* blockMotionState = new btDefaultMotionState(btTransform(qRot,btVector3(position_.x, position_.y, position_.z)));
-					btRigidBody::btRigidBodyConstructionInfo blockRigidBodyCI(0,blockMotionState,blockShape,btVector3(0,0,0));
-				    blockRigidBody= new btRigidBody(blockRigidBodyCI);
-					blockRigidBody->setCenterOfMassTransform(btTransform(qRot,btVector3(position_.x, position_.y, position_.z)));
-
-                    dynamicsWorld->addRigidBody(blockRigidBody, Tower::COLLISION_GROUP, Tower::COLLISION_MASK);
-                    */
-
                     // Generated block physics:
                     ///*
                     {
@@ -109,7 +72,7 @@ TowerPhysics::TowerPhysics(Tower *tower, btDiscreteDynamicsWorld* dynamicsWorld)
 
                     blockRigidBody->setUserPointer(new BlockReference(this->tower, height, radius, position));
 
-                    //blockRigidBody->setActivationState(ISLAND_SLEEPING); // no benefit?
+                    blockRigidBody->setActivationState(ISLAND_SLEEPING); // no benefit?
 
                     dynamicsWorld->addRigidBody(blockRigidBody); // , 1, 2);
                     }
@@ -118,15 +81,6 @@ TowerPhysics::TowerPhysics(Tower *tower, btDiscreteDynamicsWorld* dynamicsWorld)
             }
         }
     }
-
-	btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0,1,0),1);
-    
-	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(0,-1,0)));
-    btRigidBody::btRigidBodyConstructionInfo
-                groundRigidBodyCI(0,groundMotionState,groundShape,btVector3(0,0,0));
-    btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
-    dynamicsWorld->addRigidBody(groundRigidBody); // , 4, 2);
-	//DebugDraw->DebugDraw(mSceneMgr, dynamicsWorld);
 }
 
 TowerPhysics::~TowerPhysics()

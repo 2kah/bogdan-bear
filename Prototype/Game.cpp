@@ -5,6 +5,7 @@
 
 #include <OGRE/OgreTimer.h>
 #include <btBulletDynamicsCommon.h>
+#include <BulletCollision/CollisionDispatch/btGhostObject.h>
 
 #include "Game.h"
 #include "Updatable.h"
@@ -42,6 +43,8 @@ void Game::createScene(void)
  
     dynamicsWorld->setGravity(btVector3(0, -9.8, 0));
     
+    this->dynamicsWorld->getPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
+
     tower = new Tower(2.0, 128, 16, 32);
 
     TowerBuilder *builder = new TowerBuilder(tower);
@@ -54,6 +57,14 @@ void Game::createScene(void)
 
     this->mDebugDrawer = new BtOgre::DebugDrawer(mSceneMgr->getRootSceneNode(), dynamicsWorld);
     this->dynamicsWorld->setDebugDrawer(this->mDebugDrawer);
+
+    btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0,1,0),1);
+    
+	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(0,-1,0)));
+    btRigidBody::btRigidBodyConstructionInfo
+                groundRigidBodyCI(0,groundMotionState,groundShape,btVector3(0,0,0));
+    btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
+    dynamicsWorld->addRigidBody(groundRigidBody); // , 4, 2);
 
     // Create a list of SceneObjects (one of which is a player) at various positions
     std::vector<SceneObject *> things;

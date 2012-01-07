@@ -28,10 +28,15 @@ void Rocket::update()
     {
         this->timer = 0;
 
-        this->signals.exploded(this, new Explosion(this->position));
+        this->explode();
     }
     else
     {
         ++this->timer;
     }
+}
+
+void Rocket::explode()
+{
+    this->signals.exploded(this, new Explosion(this->position));
 }
