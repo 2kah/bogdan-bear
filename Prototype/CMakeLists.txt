@@ -99,6 +99,9 @@ set(HDRS
     ./TowerBuilder.h
     ./TowerPhysics.h
     ./TowerGraphics.h
+
+    ./Turret.h
+    ./TurretGraphics.h
     
     ./PlayerInput.h
     ./Player.h
@@ -136,6 +139,9 @@ set(SRCS
     ./TowerBuilder.cpp
     ./TowerPhysics.cpp
     ./TowerGraphics.cpp
+    
+    ./Turret.cpp
+    ./TurretGraphics.cpp
     
     ./PlayerInput.cpp
     ./Player.cpp
