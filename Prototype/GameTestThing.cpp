@@ -37,11 +37,14 @@ GameTestThing::GameTestThing(Game *game)
 
     this->game->player->addInput(this->game->playerInput);
 
-    new PlayerPhysics(this->player, this->game->dynamicsWorld);
+    PlayerPhysics* playerPhysics = new PlayerPhysics(this->player, this->game->dynamicsWorld);
+	playerPhysics->addInput(this->game->playerInput);
+
     new PlayerGraphics(this->player, this->game->mSceneMgr);
     new PlayerCamera(this->player, this->game->mCamera);
 
     Player *enemy = new Player(Ogre::Vector3(1000 / 16.0, 0, 1000 / 16.0));
+	//new PlayerPhysics(enemy, this->game->dynamicsWorld);
     new PlayerGraphics(enemy, this->game->mSceneMgr);
 
     this->game->objects.insert(this->player);
