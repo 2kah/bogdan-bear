@@ -38,7 +38,7 @@ GameTestThing::GameTestThing(Game *game)
     new PlayerGraphics(this->player, this->game->mSceneMgr);
     new PlayerCamera(this->player, this->game->mCamera);
 
-    Player *enemy = new Player(Ogre::Vector3(1000, 0, 1000));
+    Player *enemy = new Player(Ogre::Vector3(1000 / 16.0, 0, 1000 / 16.0));
     new PlayerGraphics(enemy, this->game->mSceneMgr);
 
     this->game->objects.insert(this->player);
