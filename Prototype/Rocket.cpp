@@ -24,7 +24,7 @@ void Rocket::update()
     this->position = this->position + this->orientation * Ogre::Vector3(Rocket::SPEED, 0, 0);
     this->signals.updated(this);
 
-    if (this->timer >= 100)
+    if (this->timer >= 1000)
     {
         this->timer = 0;
 

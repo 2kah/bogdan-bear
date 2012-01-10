@@ -28,8 +28,12 @@ public:
     virtual void update();
 
     TurretSignals signals;
+
+    virtual void setTarget(Object *target);
 protected:
     unsigned timer;
+
+    Object *target;
 };
 
 #endif // #ifndef __Turret_h_

@@ -19,9 +19,13 @@ Turret::~Turret()
 
 void Turret::update()
 {
+    if (this->target != NULL) {
+        this->orientation = this->position.getRotationTo(this->target->position - this->position, Ogre::Vector3::UNIT_Y) * Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y);
+    }
+    
     this->signals.updated(this);
 
-    if (this->timer >= 500)
+    if (this->timer >= 300)
     {
         this->timer = 0;
 
@@ -31,4 +35,9 @@ void Turret::update()
     {
         ++this->timer;
     }
+}
+
+void Turret::setTarget(Object *target)
+{
+    this->target = target;
 }
