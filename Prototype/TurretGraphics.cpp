@@ -31,8 +31,8 @@ TurretGraphics::~TurretGraphics()
 
 void TurretGraphics::turretUpdated(Turret *turret)
 {
-    this->sceneNode->setPosition(this->turret->position);
-    this->sceneNode->setOrientation(this->turret->orientation);
+    this->sceneNode->setPosition(this->turret->position - Ogre::Vector3::UNIT_Y * 11);
+    this->sceneNode->setOrientation(this->turret->orientation * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_Y));
 }
 
 void TurretGraphics::turretFired(Turret *turret, Rocket *rocket)

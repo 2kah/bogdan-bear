@@ -16,7 +16,7 @@ protected:
     virtual void rocketUpdated(Rocket *rocket);
     virtual void rocketExploded(Rocket *rocket, Explosion *explosion);
 
-    Rocket *explosion;
+    Rocket *rocket;
     btDiscreteDynamicsWorld *dynamicsWorld;
     
     btGhostObject *ghost;

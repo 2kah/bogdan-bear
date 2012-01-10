@@ -23,6 +23,7 @@
 
 #include "Rocket.h"
 #include "RocketGraphics.h"
+#include "RocketPhysics.h"
 
 #include "Explosion.h"
 #include "ExplosionPhysics.h"
@@ -44,15 +45,17 @@ GameTestThing::GameTestThing(Game *game)
     new PlayerCamera(this->player, this->game->mCamera);
 
     Player *enemy = new Player(Ogre::Vector3(1000 / 16.0, 0, 1000 / 16.0));
-	//new PlayerPhysics(enemy, this->game->dynamicsWorld);
+	new PlayerPhysics(enemy, this->game->dynamicsWorld);
     new PlayerGraphics(enemy, this->game->mSceneMgr);
 
     this->game->objects.insert(this->player);
     this->game->objects.insert(enemy);
 
-    Turret *turret = new Turret(Ogre::Vector3(0, 0, 256), Ogre::Quaternion::IDENTITY);
+    Turret *turret = new Turret(Ogre::Vector3(0, 2, 256), Ogre::Quaternion::IDENTITY);
     new TurretGraphics(turret, this->game->mSceneMgr);
     this->game->objects.insert(turret);
+
+    turret->setTarget(this->game->player);
 
     turret->signals.fired.connect(boost::bind(&GameTestThing::turretFired, this, _1, _2));
 
@@ -83,7 +86,8 @@ void GameTestThing::turretFired(Turret *turret, Rocket *rocket)
 {
     this->game->objects.insert(rocket);
 
-    RocketGraphics *rocketGraphics = new RocketGraphics(rocket, this->game->mSceneMgr);
+    new RocketGraphics(rocket, this->game->mSceneMgr);
+    new RocketPhysics(rocket, this->game->dynamicsWorld);
 
     rocket->signals.exploded.connect(boost::bind(&GameTestThing::rocketExploded, this, _1, _2));
 }
@@ -92,7 +96,8 @@ void GameTestThing::playerFired(Player *player, Rocket *rocket)
 {
     this->game->objects.insert(rocket);
 
-    RocketGraphics *rocketGraphics = new RocketGraphics(rocket, this->game->mSceneMgr);
+    new RocketGraphics(rocket, this->game->mSceneMgr);
+    new RocketPhysics(rocket, this->game->dynamicsWorld);
 
     rocket->signals.exploded.connect(boost::bind(&GameTestThing::rocketExploded, this, _1, _2));
 }
