@@ -27,6 +27,7 @@ PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWo
     btDefaultMotionState* playerMotionState = new btDefaultMotionState(playerTransform);
     btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, playerMotionState, capsule, localInertia);
     playerRigidBody = new btRigidBody(rbInfo);
+	playerRigidBody->setActivationState(DISABLE_DEACTIVATION);
 
     dynamicsWorld->addRigidBody(playerRigidBody);
 
@@ -45,7 +46,16 @@ void PlayerPhysics::addInput(PlayerInput &input)
 
 void PlayerPhysics::playerUpdated(Player *player)
 {
-	
+	btTransform trans;
+	playerRigidBody->getMotionState()->getWorldTransform(trans);
+
+	trans.setRotation(btQuaternion(btVector3(0, 1, 0), 0));
+
+	Ogre::Vector3 oPosition(trans.getOrigin().x(), trans.getOrigin().y() - 5, trans.getOrigin().z());
+	this->player->position = oPosition;
+
+	playerRigidBody->setCenterOfMassTransform(trans);
+
 
 	Ogre::Vector3 move = this->player->orientation * Ogre::Vector3(walkDirection.x(), walkDirection.y(), walkDirection.z());
 
@@ -59,9 +69,9 @@ void PlayerPhysics::playerUpdated(Player *player)
 
 	//std::cout << walk.getX() << " " << walk.getY() << " " << walk.getZ() << std::endl;
 	btVector3 currentVelocity = playerRigidBody->getLinearVelocity();
-	btScalar speed = currentVelocity.length();
 	//std::cout << currentVelocity.getX() << " " << currentVelocity.getY() << " " << currentVelocity.getZ() << std::endl;
 	btVector3 newVelocity = currentVelocity + (walk * 50);
+	btScalar speed = newVelocity.length();
 	//std::cout << newVelocity.getX() << " " << newVelocity.getY() << " " << newVelocity.getZ() << std::endl;
 
 	if(walkDirection.length() == 0)
@@ -76,16 +86,6 @@ void PlayerPhysics::playerUpdated(Player *player)
 			playerRigidBody->setLinearVelocity(newVelocity);
 		}
 	}
-
-	btTransform trans;
-	playerRigidBody->getMotionState()->getWorldTransform(trans);
-
-	trans.setRotation(btQuaternion(btVector3(0, 1, 0), 0));
-
-	Ogre::Vector3 oPosition(trans.getOrigin().x(), trans.getOrigin().y() - 5, trans.getOrigin().z());
-	this->player->position = oPosition;
-
-	playerRigidBody->setCenterOfMassTransform(trans);
 }
 
 void PlayerPhysics::movement(DIRECTION direction, bool state)
