@@ -5,20 +5,12 @@
 
 #include <boost/bind.hpp>
 
-#include <OGRE/OgreSceneManager.h>
-#include <OGRE/OgreEntity.h>
-
-#include <btBulletDynamicsCommon.h>
-#include <BulletCollision/CollisionDispatch/btGhostObject.h>
-
 #include "PlayerInput.h"
 
 #include "Platform.h"
 #include "Rocket.h"
 
 #include "Tower.h"
-
-#define PI 3.14159265
 
 const double Player::MOVEMENT_SPEED = 5 / 16.0;
 const double Player::ROTATION_SPEED = 0.05;
@@ -110,51 +102,3 @@ void Player::jump(bool state)
 void Player::use(bool state)
 {
 }
-
-#ifdef __USE_OLD_TOWER__
-void Player::shoot(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld *dynamicsWorld, TowerOld *tower)
-{
-    double l = 1000;
-	double X = this->position.x;
-	double Y = this->position.y + 180;
-    double Z = this->position.z;
-
-    btVector3 rayFrom(X,Y,Z);
-    printf("%f, %f, %f\n", X,Y,Z);
-    printf("%f, %f\n", this->orientation.getYaw().valueDegrees(), this->relativeAim.getPitch().valueDegrees());
-    double camX1 = 0;
-	double camY1 = (-1)*-sin(this->relativeAim.getPitch().valueRadians());
-	double camZ1 = (-1)*cos(this->relativeAim.getPitch().valueRadians());
-    printf("%f, %f, %f\n", camX1,camY1,camZ1);
-	double camX = camZ1*sin(this->orientation.getYaw().valueRadians());
-    double camY = camY1;
-	double camZ = camZ1*cos(this->orientation.getYaw().valueRadians());
-    printf("%f, %f, %f\n", camX,camY,camZ);
-    double dirX = X+(l*camX);
-    double dirY = Y+(l*camY);
-    double dirZ = Z+(l*camZ);
-    btVector3 rayTo(dirX,dirY,dirZ);
-    printf("%f, %f, %f\n", dirX,dirY,dirZ);
-    //btCollisionWorld collisionWorld  = *dynamicsWorld->getCollisionWorld();
-    btCollisionWorld::ClosestRayResultCallback rayCallback(rayFrom, rayTo);
- 
-    dynamicsWorld->rayTest(rayFrom,rayTo,rayCallback);
-    if (rayCallback.hasHit())
-    {
-        printf("hit!\n");
-        btRigidBody* body = btRigidBody::upcast(rayCallback.m_collisionObject);
-        if (body)
-        {
-            body->setActivationState(ACTIVE_TAG);
-            //btVector3 impulse = rayTo;
-            //impulse.normalize();
-            //float impulseStrength = 10.f;
-            //impulse *= impulseStrength;
-            btVector3 relPos = rayCallback.m_hitPointWorld;// - body->getCenterOfMassPosition();
-            
-            // create explosion here
-            Explosion *explosion = new Explosion(Ogre::Vector3(relPos.x(), relPos.y(), relPos.z());
-        }
-    }
-}
-#endif
