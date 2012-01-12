@@ -5,7 +5,6 @@
 #include <set>
 
 #include <btBulletDynamicsCommon.h>
-class TowerOld;
 #include "BtOgreExtras.h"
 
 #include "BaseApplication.h"
@@ -24,13 +23,9 @@ class GameTestThing;
 class Game : public BaseApplication
 {
 public:
-    Game(void);
     virtual ~Game(void);
 
     virtual void run(void);
-
-    virtual void carveSphere(Ogre::Vector3 position, double radius);
-
 protected:
     virtual void createScene(void);
 
@@ -53,11 +48,7 @@ private:
 
     BtOgre::DebugDrawer *mDebugDrawer;
 
-#ifdef __USE_OLD_TOWER__
-    TowerOld *tower;
-#else
     Tower* tower;
-#endif  
 
     Ogre::Camera* mCamera;
 
