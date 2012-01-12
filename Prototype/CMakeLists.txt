@@ -85,6 +85,9 @@ include_directories(${Boost_INCLUDE_DIR})
 add_definitions(-DBOOST_ALL) # _NO_LIB)
 set(OGRE_LIBRARIES ${OGRE_LIBRARIES} ${Boost_LIBRARIES})
  
+# raknet maybe
+include_directories("raknet/Source")
+ 
 set(HDRS
     ./Refactor.h
 	./Game.h
@@ -165,6 +168,8 @@ set(SRCS
     ./BaseApplication.cpp
     
     ./BtOgre.cpp
+    
+    ./Ping.cpp
 )
 
 find_package(Boost 1.47 REQUIRED)
@@ -182,6 +187,7 @@ include_directories(
     ${Prototype_SOURCE_DIR}/bullet/Extras/Serialize/BulletFileLoader
 )
  
+subdirs(raknet)
 subdirs(bullet)
  
 add_executable(Prototype ${HDRS} ${SRCS})
