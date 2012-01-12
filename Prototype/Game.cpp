@@ -20,17 +20,13 @@
 
 #include "GameTestThing.h"
 
-Game::Game(void)
-{
-}
-
 Game::~Game(void)
 {
 }
 
 void Game::createScene(void)
 {    
-    //this code is in wrong place
+    // Create and initialise the dynamics world
     btBroadphaseInterface* broadphase = new btDbvtBroadphase();
  
     btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
@@ -44,19 +40,10 @@ void Game::createScene(void)
     
     this->dynamicsWorld->getPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 
-    tower = new Tower(2.0, 128, 16, 32);
-
-    TowerBuilder *builder = new TowerBuilder(tower);
-    builder->regenerate();
-
-    this->objects.insert(builder);
-
-    TowerGraphics *towerGraphics = new TowerGraphics(tower, mSceneMgr);
-    TowerPhysics *towerPhysics = new TowerPhysics(tower, dynamicsWorld);
-
     this->mDebugDrawer = new BtOgre::DebugDrawer(mSceneMgr->getRootSceneNode(), dynamicsWorld);
     this->dynamicsWorld->setDebugDrawer(this->mDebugDrawer);
 
+    // Create and add the ground plane
     btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0,1,0),1);
     
 	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(0,-1,0)));
@@ -64,29 +51,24 @@ void Game::createScene(void)
                 groundRigidBodyCI(0,groundMotionState,groundShape,btVector3(0,0,0));
     btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
     dynamicsWorld->addRigidBody(groundRigidBody); // , 4, 2);
-
+    
+    // Create and add a falling object
     fallingObject = new FallingObject(Ogre::Vector3(1, 64, 16.25));
     fallingObject->addToScene(mSceneMgr);
     fallingObject->addToPhysics(dynamicsWorld);
     objects.insert(fallingObject);
 
+    // Add test entities (tower, player, turret, rocket/explosion handlers)
     this->gameTestThing = new GameTestThing(this);
 
-    // Set ambient light
+    // Add lighting
     mSceneMgr->setAmbientLight(Ogre::ColourValue(0.9, 0.9, 0.9));
-	    //TODO: replace with actual lighting
     Ogre::Light* pointlight1 = mSceneMgr->createLight("pointlight1");
     pointlight1->setType(Ogre::Light::LT_POINT);
     pointlight1->setPosition(Ogre::Vector3(500, 150, 0));
     Ogre::Light* pointlight2 = mSceneMgr->createLight("pointlight2");
     pointlight2->setType(Ogre::Light::LT_POINT);
     pointlight2->setPosition(Ogre::Vector3(-500, 150, 0));
- 
- 
-    // Create a light
-    //Ogre::Light* l = mSceneMgr->createLight("MainLight");
-    //l->setPosition(20,80,50);
-
 }
 
 void Game::run(void)
@@ -190,11 +172,6 @@ void Game::createViewports(void)
 
     // Alter the camera aspect ratio to match the viewport
     mCamera->setAspectRatio(Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
-}
-
-void Game::carveSphere(Ogre::Vector3 position, double radius)
-{
-    std::cout << "(Game) Carving sphere at " << position << " of radius " << radius << std::endl;
 }
 
 bool Game::keyPressed(const OIS::KeyEvent &arg)
