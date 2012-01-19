@@ -5,6 +5,9 @@
 
 #include <boost/signal.hpp>
 
+#include <OGRE/OgreVector3.h>
+#include <OGRE/OgreColourValue.h>
+
 struct BlockPosition
 {
     double x, y, z, angle;
@@ -52,6 +55,7 @@ public:
     static const short COLLISION_GROUP = 1; // 0000 0001
     static const short COLLISION_MASK  = 2; // 0000 0010
 
+    Tower() {};
     Tower(double blocksize, unsigned levels, unsigned layers, unsigned sectors);
     virtual ~Tower();
 
@@ -72,6 +76,31 @@ public:
     unsigned sectors;
 
     std::vector<std::vector<std::vector<bool> > > blocks;
+};
+
+struct ComplexPoints {
+    Ogre::Vector3 a1, b1, c1, d1;
+    Ogre::Vector3 a2, b2, c2, d2;
+    Ogre::Vector3 e1, e2;
+};
+
+struct BlockTriangle {
+    std::vector<Ogre::Vector3> points;
+    std::vector<Ogre::Vector3> normals;
+    std::vector<Ogre::ColourValue> colours;
+};
+
+class ComplexTower : public Tower
+{
+public:
+    ComplexTower(double blocksize, unsigned levels, std::vector<unsigned> structure);
+
+    ComplexPoints getComplexPoints(unsigned level, unsigned layer, unsigned sector);
+    std::vector<BlockTriangle> getBlockTriangles(unsigned level, unsigned layer, unsigned sector);
+
+    std::vector<bool> subdivide; // subdivide[layer] = does next layer subdivide?
+    std::vector<double> radii;   //     radii[layer] = distance of blocks in layer from centre
+    std::vector<double> heights; //   heights[layer] = how big is a block in this layer
 };
 
 #endif // #ifndef __Tower_h_
