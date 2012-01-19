@@ -169,7 +169,7 @@ set(SRCS
     
     ./BtOgre.cpp
     
-    ./Ping.cpp
+    #./Ping.cpp
 )
 
 find_package(Boost 1.47 REQUIRED)

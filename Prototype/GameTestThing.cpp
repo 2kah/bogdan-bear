@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include <boost/signal.hpp>
 #include <boost/bind.hpp>
@@ -39,8 +40,14 @@ GameTestThing::GameTestThing(Game *game)
     this->game = game;
     
     // Create an empty tower
+    //unsigned divisions[] = {9, 18, 18, 36, 36, 36, 72, 72, 72, 72, 72, 72, 72, 72};
+    //std::vector<unsigned> structure(divisions, divisions + 14);
+    //unsigned divisions[] = {32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32};
+    //std::vector<unsigned> structure(divisions, divisions + 14);
+
     this->game->tower = new Tower(2.0, 128, 16, 32);
-    
+    //this->game->tower = new ComplexTower(2.0, 128, structure);
+
     // Create a tower builder and generate the tower with it
     TowerBuilder *builder = new TowerBuilder(this->game->tower);
     builder->regenerate();
