@@ -54,6 +54,11 @@ TowerGraphics::TowerGraphics(Tower *tower, Ogre::SceneManager *sceneManager)
     }
 
     this->sceneManager->getRootSceneNode()->attachObject(this->wholething);
+
+    Ogre::Entity *bowl = sceneManager->createEntity("Bowl.mesh");
+    Ogre::SceneNode *sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode();
+    sceneNode->attachObject(bowl);
+    sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
 }
 
 TowerGraphics::~TowerGraphics()

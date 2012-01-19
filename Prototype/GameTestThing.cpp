@@ -84,7 +84,7 @@ GameTestThing::GameTestThing(Game *game)
     this->game->objects.insert(enemy);
 
     // Create a turret with graphics and add it to the list of things to update
-    Turret *turret = new Turret(Ogre::Vector3(0, 2, 256), Ogre::Quaternion::IDENTITY);
+    Turret *turret = new Turret(Ogre::Vector3(0, 2, 100), Ogre::Quaternion::IDENTITY);
     new TurretGraphics(turret, this->game->mSceneMgr);
     this->game->objects.insert(turret);
     

@@ -69,6 +69,12 @@ void Game::createScene(void)
     Ogre::Light* pointlight2 = mSceneMgr->createLight("pointlight2");
     pointlight2->setType(Ogre::Light::LT_POINT);
     pointlight2->setPosition(Ogre::Vector3(-500, 150, 0));
+	Ogre::Light* pointlight3 = mSceneMgr->createLight("pointlight3");
+    pointlight3->setType(Ogre::Light::LT_POINT);
+    pointlight3->setPosition(Ogre::Vector3(-1000, 150, 0));
+	Ogre::Light* pointlight4 = mSceneMgr->createLight("pointlight4");
+    pointlight4->setType(Ogre::Light::LT_POINT);
+    pointlight4->setPosition(Ogre::Vector3(-800, 100, 0));
 }
 
 void Game::run(void)
