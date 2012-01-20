@@ -7,10 +7,12 @@
 #include <OGRE/OgreMeshSerializer.h>
 
 class Tower;
+class ComplexTower;
 
 class TowerGraphics
 {
 public:
+    TowerGraphics() {};
     TowerGraphics(Tower *tower, Ogre::SceneManager *sceneManager);
     virtual ~TowerGraphics();
 
@@ -29,6 +31,16 @@ protected:
 
     virtual void createBlockEntities(void);
     virtual void rebuildStaticGeometry(void);
+};
+
+class ComplexTowerGraphics : public TowerGraphics
+{
+public:
+    ComplexTowerGraphics(ComplexTower *tower, Ogre::SceneManager *sceneManager);
+
+    virtual void rebuildTowerObject(unsigned level, bool first);
+
+    ComplexTower *tower;
 };
 
 #endif // #ifndef __TowerGraphics_h_

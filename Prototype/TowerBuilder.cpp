@@ -28,7 +28,7 @@ void TowerBuilder::update(void)
 
         for (unsigned layer = 0; layer < this->tower->layers; ++layer)
         {
-            for (unsigned sector = 0; sector < this->tower->sectors; ++sector)
+            for (unsigned sector = 0; sector < this->tower->blocks[level][layer].size(); ++sector)
             {
                 this->tower->blocks[this->level][layer][sector] = (rand() % (layer + 1) <= 1);
             }
@@ -50,18 +50,35 @@ void TowerBuilder::regenerate(void)
 {    
 //#define USE_OLD_GENERATOR
 #ifndef USE_OLD_GENERATOR
+    /*
+    for (unsigned level = 0; level < 1; ++level)
+    {
+        for (unsigned layer = 0; layer < this->tower->layers; ++layer)
+        {
+            for (unsigned sector = 0; sector < this->tower->blocks[level][layer].size(); ++sector)
+            {
+                this->tower->blocks[level][layer][sector] = (rand() % 2 == 1);
+            }
+        }
+    }
+
+    return;
+    */
+
     for (unsigned level = 0; level < this->tower->levels; ++level)
     {
         for (unsigned layer = 0; layer < this->tower->layers; ++layer)
         {
-            unsigned stair_sector = level % this->tower->sectors;
-            unsigned rail_sector = (level + 1) % this->tower->sectors;
+            unsigned sectors = this->tower->blocks[level][layer].size();
+
+            unsigned stair_sector = level % sectors;
+            unsigned rail_sector = (level + 1) % sectors;
             
             this->tower->blocks[level][layer][stair_sector] = true;
             this->tower->blocks[level][layer][rail_sector] = true;
             this->tower->blocks[(level + 1) % this->tower->levels][this->tower->layers - 1][stair_sector] = true;
 
-            for (unsigned sector = 0; sector < this->tower->sectors; ++sector)
+            for (unsigned sector = 0; sector < sectors; ++sector)
             {
                 if (layer < 8) {
                     this->tower->blocks[level][layer][sector] = (rand() % (layer + 1) <= 1); // || (level < 10);

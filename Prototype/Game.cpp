@@ -62,6 +62,7 @@ void Game::createScene(void)
     this->gameTestThing = new GameTestThing(this);
 
     // Add lighting
+    /*
     mSceneMgr->setAmbientLight(Ogre::ColourValue(0.9, 0.9, 0.9));
     Ogre::Light* pointlight1 = mSceneMgr->createLight("pointlight1");
     pointlight1->setType(Ogre::Light::LT_POINT);
@@ -75,6 +76,14 @@ void Game::createScene(void)
 	Ogre::Light* pointlight4 = mSceneMgr->createLight("pointlight4");
     pointlight4->setType(Ogre::Light::LT_POINT);
     pointlight4->setPosition(Ogre::Vector3(-800, 100, 0));
+    */
+
+    mSceneMgr->setAmbientLight(Ogre::ColourValue::Red);
+    
+    Ogre::Light* pointlight1 = mSceneMgr->createLight("pointlight1");
+    pointlight1->setType(Ogre::Light::LT_POINT);
+    pointlight1->setPosition(Ogre::Vector3(500, 150, 0));
+    pointlight1->setDiffuseColour(Ogre::ColourValue::White);
 }
 
 void Game::run(void)

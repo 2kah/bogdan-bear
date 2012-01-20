@@ -15,7 +15,7 @@ TowerPhysics::TowerPhysics(Tower *tower, btDiscreteDynamicsWorld* dynamicsWorld)
     {
         for (unsigned layer = 0; layer < this->tower->layers; ++layer)
         {
-            for (unsigned sector = 0; sector < this->tower->sectors; ++sector)
+            for (unsigned sector = 0; sector < this->tower->blocks[level][layer].size(); ++sector)
             {
                 if (this->tower->blocks[level][layer][sector] == 1)
                 {

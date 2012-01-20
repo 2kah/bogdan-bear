@@ -40,24 +40,27 @@ GameTestThing::GameTestThing(Game *game)
     this->game = game;
     
     // Create an empty tower
-    //unsigned divisions[] = {9, 18, 18, 36, 36, 36, 72, 72, 72, 72, 72, 72, 72, 72};
-    //std::vector<unsigned> structure(divisions, divisions + 14);
+    unsigned divisions[] = {9, 18, 18, 36, 36, 36, 72, 72, 72, 72, 72, 72, 72, 72};
+    std::vector<unsigned> structure(divisions, divisions + 14);
     //unsigned divisions[] = {32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32};
     //std::vector<unsigned> structure(divisions, divisions + 14);
 
-    this->game->tower = new Tower(2.0, 128, 16, 32);
-    //this->game->tower = new ComplexTower(2.0, 128, structure);
+    ComplexTower *tower = new ComplexTower(2.0, 32, structure);
+
+    //this->game->tower = new Tower(2.0, 128, 16, 32);
+    this->game->tower = tower;
 
     // Create a tower builder and generate the tower with it
     TowerBuilder *builder = new TowerBuilder(this->game->tower);
     builder->regenerate();
 
     // Add the tower builder to the set of things to update
-    this->game->objects.insert(builder);
+    //this->game->objects.insert(builder);
 
     // Add tower graphics and physics
-    new TowerGraphics(this->game->tower, this->game->mSceneMgr);
-    new TowerPhysics(this->game->tower, this->game->dynamicsWorld);
+    //new TowerGraphics(this->game->tower, this->game->mSceneMgr);
+    new ComplexTowerGraphics(tower, this->game->mSceneMgr);
+    //new TowerPhysics(this->game->tower, this->game->dynamicsWorld);
 
     // Add a player
     this->player = new Player(Ogre::Vector3(0, 0, 1000 / 16.0));
