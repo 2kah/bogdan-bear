@@ -78,7 +78,7 @@ void Game::createScene(void)
     pointlight4->setPosition(Ogre::Vector3(-800, 100, 0));
     */
 
-    mSceneMgr->setAmbientLight(Ogre::ColourValue::Red);
+    mSceneMgr->setAmbientLight(Ogre::ColourValue(0.3, 0.3, 0.3));
     
     Ogre::Light* pointlight1 = mSceneMgr->createLight("pointlight1");
     pointlight1->setType(Ogre::Light::LT_POINT);

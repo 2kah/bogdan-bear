@@ -107,7 +107,7 @@ ComplexTower::ComplexTower(double blocksize, unsigned levels, std::vector<unsign
     this->radii = std::vector<double>(this->layers, 0);
     this->heights = std::vector<double>(this->layers, 0);
 
-    this->radii[0] = 2.5;
+    this->radii[0] = 5;
 
     for (unsigned layer = 1; layer < this->layers; ++layer)
     {
@@ -138,6 +138,8 @@ ComplexPoints ComplexTower::getComplexPoints(unsigned level, unsigned layer, uns
 
     double angle = ((2*PI) / this->blocks[level][layer].size());
     double offset = angle * sector;
+
+    blockheight *= 2 * PI * this->radii[this->layers - 1] / this->sectors / 2;
 
     double bottom = blockheight * level;
     double top = blockheight * (level + 1);
