@@ -20,7 +20,7 @@ Turret::~Turret()
 void Turret::update()
 {
     if (this->target != NULL) {
-        this->orientation = this->position.getRotationTo(this->target->position - this->position, Ogre::Vector3::UNIT_Y) * Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y);
+        this->orientation = this->position.getRotationTo((this->target->position + Ogre::Vector3::UNIT_Y * 4) - this->position, Ogre::Vector3::UNIT_Y) * Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y);
     }
     
     this->signals.updated(this);

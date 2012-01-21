@@ -40,7 +40,7 @@ void RocketPhysics::rocketUpdated(Rocket *rocket)
 
     this->ghost->setWorldTransform(btTransform(orientation, position));
 
-    if (this->ghost->getNumOverlappingObjects() > 2) {
+    if (this->ghost->getNumOverlappingObjects() > 1) {
         this->rocket->explode();
     }
 }
