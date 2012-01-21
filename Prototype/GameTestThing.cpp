@@ -45,10 +45,8 @@ GameTestThing::GameTestThing(Game *game)
     //unsigned divisions[] = {32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32};
     //std::vector<unsigned> structure(divisions, divisions + 14);
 
-    Tower *tower = new Tower(1.0, 48, structure);
-
+    this->game->tower = new Tower(1.0, 48, structure);
     //this->game->tower = new Tower(2.0, 128, 16, 32);
-    this->game->tower = tower;
 
     // Create a tower builder and generate the tower with it
     TowerBuilder *builder = new TowerBuilder(this->game->tower);
@@ -58,9 +56,8 @@ GameTestThing::GameTestThing(Game *game)
     //this->game->objects.insert(builder);
 
     // Add tower graphics and physics
-    //new TowerGraphics(this->game->tower, this->game->mSceneMgr);
-    new ComplexTowerGraphics(tower, this->game->mSceneMgr);
-    new TowerPhysics(tower, this->game->dynamicsWorld);
+    new TowerGraphics(this->game->tower, this->game->mSceneMgr);
+    new TowerPhysics(this->game->tower, this->game->dynamicsWorld);
 
     // Add a player
     this->player = new Player(Ogre::Vector3(0, 0, 1000 / 16.0));

@@ -21,25 +21,8 @@ protected:
     Tower *tower;
     Ogre::SceneManager *sceneManager;
 
-    std::vector<Ogre::Entity *> blockEntities;
-
-    Ogre::StaticGeometry *geometry;
-
     Ogre::ManualObject *wholething; // TODO: temporary
     virtual void rebuildTowerObject(unsigned level, bool first);
-
-    virtual void createBlockEntities(void);
-    virtual void rebuildStaticGeometry(void);
-};
-
-class ComplexTowerGraphics : public TowerGraphics
-{
-public:
-    ComplexTowerGraphics(Tower *tower, Ogre::SceneManager *sceneManager);
-
-    virtual void rebuildTowerObject(unsigned level, bool first);
-
-    Tower *tower;
 };
 
 #endif // #ifndef __TowerGraphics_h_
