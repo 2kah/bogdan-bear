@@ -22,10 +22,17 @@ struct Point
 // Points as shown in http://you.mongle.me/tower/circles/gamesproject.png
 // base: a1, b1, c1, d1
 //  top: a2, b2, c2, d2
-struct BlockPoints
-{
-    Point a1, b1, c1, d1;
-    Point a2, b2, c2, d2;
+// pent: e1, e2
+struct BlockPoints {
+    Ogre::Vector3 a1, b1, c1, d1;
+    Ogre::Vector3 a2, b2, c2, d2;
+    Ogre::Vector3 e1, e2;
+};
+
+struct BlockTriangle {
+    Ogre::Vector3 points[3];
+    Ogre::Vector3 normals[3];
+    Ogre::ColourValue colours[3];
 };
 
 class Tower;
@@ -55,8 +62,7 @@ public:
     static const short COLLISION_GROUP = 1; // 0000 0001
     static const short COLLISION_MASK  = 2; // 0000 0010
 
-    Tower() {};
-    Tower(double blocksize, unsigned levels, unsigned layers, unsigned sectors);
+    Tower(double blocksize, unsigned levels, std::vector<unsigned> structure);
     virtual ~Tower();
 
     virtual void update();
@@ -66,6 +72,8 @@ public:
 
     virtual BlockPosition getBlockPosition(unsigned level, unsigned layer, unsigned sector);
     virtual BlockPoints getBlockPoints(unsigned level, unsigned layer, unsigned sector);
+    virtual std::vector<BlockTriangle> getBlockTriangles(unsigned level, unsigned layer, unsigned sector);
+
 
     TowerSignals signals;
 
@@ -76,27 +84,6 @@ public:
     unsigned sectors;
 
     std::vector<std::vector<std::vector<bool> > > blocks;
-};
-
-struct ComplexPoints {
-    Ogre::Vector3 a1, b1, c1, d1;
-    Ogre::Vector3 a2, b2, c2, d2;
-    Ogre::Vector3 e1, e2;
-};
-
-struct BlockTriangle {
-    Ogre::Vector3 points[3];
-    Ogre::Vector3 normals[3];
-    Ogre::ColourValue colours[3];
-};
-
-class ComplexTower : public Tower
-{
-public:
-    ComplexTower(double blocksize, unsigned levels, std::vector<unsigned> structure);
-
-    ComplexPoints getComplexPoints(unsigned level, unsigned layer, unsigned sector);
-    std::vector<BlockTriangle> getBlockTriangles(unsigned level, unsigned layer, unsigned sector);
 
     std::vector<bool> subdivide; // subdivide[layer] = does next layer subdivide?
     std::vector<double> radii;   //     radii[layer] = distance of blocks in layer from centre
