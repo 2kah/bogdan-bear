@@ -47,11 +47,9 @@ void TowerBuilder::blocksUpdated(Tower *tower, unsigned level)
 }
 
 void TowerBuilder::regenerate(void)
-{    
-//#define USE_OLD_GENERATOR
-#ifndef USE_OLD_GENERATOR
+{
     /*
-    for (unsigned level = 0; level < 1; ++level)
+    for (unsigned level = 9; level < 10; ++level)
     {
         for (unsigned layer = 0; layer < this->tower->layers; ++layer)
         {
@@ -86,27 +84,4 @@ void TowerBuilder::regenerate(void)
             }
         }
     }
-#else
-    //Loop through 3D array, filling with random 0's and 1's
-    for (unsigned height = 0; height < this->tower->levels; ++height)
-    {
-        for (unsigned radius = 0; radius < this->tower->layers; ++radius)
-        {
-            for (unsigned position = 0; position < this->tower->sectors; ++position)
-            {
-                //Worth looking at different seeds for this
-                unsigned x = rand() % this->tower->levels; 
-
-                //Makes the tower more sparse at the top - Larger the height, less likely the blocks
-                bool block = x >= (height - 2);
-
-                //Makes the tower taper at the top - Bigger radiuses at top are cut off
-                block = block && !((floor((double)(this->tower->levels-height)/radius)) <= radius);
-                //if (height == (h-1)) x = 1;
-
-                this->tower->blocks[height][radius][position] = block;
-            }
-        }
-    }
-#endif
 }

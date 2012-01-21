@@ -119,11 +119,16 @@ BlockPoints Tower::getBlockPoints(unsigned level, unsigned layer, unsigned secto
     return points;
 }
 
-std::vector<BlockTriangle> Tower::getBlockTriangles(unsigned level, unsigned layer, unsigned sector)
+void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned level, unsigned layer, unsigned sector)
 {
-    std::vector<BlockTriangle> triangles;
-
     BlockPoints points = this->getBlockPoints(level, layer, sector);
+
+    // Which faces are actually visible?
+    bool back = !(layer != 0 && this->blocks[level][layer-1][this->sectorParent(layer, sector)]);
+    bool clock = !this->blocks[level][layer][(sector - 1) % this->blocks[level][layer].size()];
+    bool anti = !this->blocks[level][layer][(sector + 1) % this->blocks[level][layer].size()];
+    bool top = !(level < this->blocks.size()-1 && this->blocks[level+1][layer][sector]);
+    bool bottom = !(level != 0 && this->blocks[level-1][layer][sector]);
 
     // back face
     Ogre::Vector3 inner_clock_normal = points.c2 - points.b2;
@@ -132,37 +137,39 @@ std::vector<BlockTriangle> Tower::getBlockTriangles(unsigned level, unsigned lay
     inner_clock_normal.normalise();
     inner_anti_normal.normalise();
 
-    BlockTriangle back1;
-    back1.points[0] = points.b2;
-    back1.points[1] = points.b1;
-    back1.points[2] = points.d1;
+    if (back) {
+        BlockTriangle back1;
+        back1.points[0] = points.b2;
+        back1.points[1] = points.b1;
+        back1.points[2] = points.d1;
 
-    back1.colours[0] = Ogre::ColourValue::Blue;
-    back1.colours[1] = Ogre::ColourValue::Green;
-    back1.colours[2] = Ogre::ColourValue::White;
+        back1.colours[0] = Ogre::ColourValue::Blue;
+        back1.colours[1] = Ogre::ColourValue::Green;
+        back1.colours[2] = Ogre::ColourValue::White;
 
-    back1.normals[0] = inner_clock_normal;
-    back1.normals[1] = inner_clock_normal;
-    back1.normals[2] = inner_anti_normal;
+        back1.normals[0] = inner_clock_normal;
+        back1.normals[1] = inner_clock_normal;
+        back1.normals[2] = inner_anti_normal;
 
-    BlockTriangle back2;
-    back2.points[0] = points.d1;
-    back2.points[1] = points.d2;
-    back2.points[2] = points.b2;
+        BlockTriangle back2;
+        back2.points[0] = points.d1;
+        back2.points[1] = points.d2;
+        back2.points[2] = points.b2;
 
-    back2.colours[0] = Ogre::ColourValue::White;
-    back2.colours[1] = Ogre::ColourValue::Red;
-    back2.colours[2] = Ogre::ColourValue::Blue;
+        back2.colours[0] = Ogre::ColourValue::White;
+        back2.colours[1] = Ogre::ColourValue::Red;
+        back2.colours[2] = Ogre::ColourValue::Blue;
 
-    back2.normals[0] = inner_anti_normal;
-    back2.normals[1] = inner_anti_normal;
-    back2.normals[2] = inner_clock_normal;
+        back2.normals[0] = inner_anti_normal;
+        back2.normals[1] = inner_anti_normal;
+        back2.normals[2] = inner_clock_normal;
 
-    triangles.push_back(back1);
-    triangles.push_back(back2);
+        triangles.push_back(back1);
+        triangles.push_back(back2);
+    }
 
     // clockwise face
-    if (!this->blocks[level][layer][(sector - 1) % this->blocks[level][layer].size()]) {
+    if (clock) {
         Ogre::Vector3 clock_normal = points.b2 - points.b1;
         clock_normal = clock_normal.crossProduct(points.b2 - points.c2);
         clock_normal.normalise();
@@ -198,7 +205,7 @@ std::vector<BlockTriangle> Tower::getBlockTriangles(unsigned level, unsigned lay
     }
 
     // anticlockwise face
-    if (!this->blocks[level][layer][(sector + 1) % this->blocks[level][layer].size()]) {
+    if (anti) {
         Ogre::Vector3 anti_normal = points.d2 - points.a2;
         anti_normal = anti_normal.crossProduct(points.d2 - points.d1);
         anti_normal.normalise();
@@ -234,68 +241,72 @@ std::vector<BlockTriangle> Tower::getBlockTriangles(unsigned level, unsigned lay
     }
 
     // wrong up face
-    Ogre::Vector3 up_normal(Ogre::Vector3::UNIT_Y);
+    if (top) {
+        Ogre::Vector3 up_normal(Ogre::Vector3::UNIT_Y);
 
-    BlockTriangle up_1;
-    up_1.points[0] = points.c2;
-    up_1.points[1] = points.b2;
-    up_1.points[2] = points.d2;
+        BlockTriangle up_1;
+        up_1.points[0] = points.c2;
+        up_1.points[1] = points.b2;
+        up_1.points[2] = points.d2;
 
-    up_1.colours[0] = Ogre::ColourValue::Green;
-    up_1.colours[1] = Ogre::ColourValue::Blue;
-    up_1.colours[2] = Ogre::ColourValue::Red;
+        up_1.colours[0] = Ogre::ColourValue::Green;
+        up_1.colours[1] = Ogre::ColourValue::Blue;
+        up_1.colours[2] = Ogre::ColourValue::Red;
 
-    up_1.normals[0] = up_normal;
-    up_1.normals[1] = up_normal;
-    up_1.normals[2] = up_normal;
+        up_1.normals[0] = up_normal;
+        up_1.normals[1] = up_normal;
+        up_1.normals[2] = up_normal;
 
-    BlockTriangle up_2;
-    up_2.points[0] = points.d2;
-    up_2.points[1] = points.a2;
-    up_2.points[2] = points.c2;
+        BlockTriangle up_2;
+        up_2.points[0] = points.d2;
+        up_2.points[1] = points.a2;
+        up_2.points[2] = points.c2;
 
-    up_2.colours[0] = Ogre::ColourValue::Red;
-    up_2.colours[1] = Ogre::ColourValue::White;
-    up_2.colours[2] = Ogre::ColourValue::Green;
+        up_2.colours[0] = Ogre::ColourValue::Red;
+        up_2.colours[1] = Ogre::ColourValue::White;
+        up_2.colours[2] = Ogre::ColourValue::Green;
 
-    up_2.normals[0] = up_normal;
-    up_2.normals[1] = up_normal;
-    up_2.normals[2] = up_normal;
+        up_2.normals[0] = up_normal;
+        up_2.normals[1] = up_normal;
+        up_2.normals[2] = up_normal;
 
-    triangles.push_back(up_1);
-    triangles.push_back(up_2);
+        triangles.push_back(up_1);
+        triangles.push_back(up_2);
+    }
 
     // wrong down face
-    Ogre::Vector3 down_normal(-Ogre::Vector3::UNIT_Y);
+    if (bottom) {
+        Ogre::Vector3 down_normal(-Ogre::Vector3::UNIT_Y);
 
-    BlockTriangle down_1;
-    down_1.points[0] = points.d1;
-    down_1.points[1] = points.b1;
-    down_1.points[2] = points.c1;
+        BlockTriangle down_1;
+        down_1.points[0] = points.d1;
+        down_1.points[1] = points.b1;
+        down_1.points[2] = points.c1;
 
-    down_1.colours[0] = Ogre::ColourValue::White;
-    down_1.colours[1] = Ogre::ColourValue::Green;
-    down_1.colours[2] = Ogre::ColourValue::Blue;
+        down_1.colours[0] = Ogre::ColourValue::White;
+        down_1.colours[1] = Ogre::ColourValue::Green;
+        down_1.colours[2] = Ogre::ColourValue::Blue;
 
-    down_1.normals[0] = down_normal;
-    down_1.normals[1] = down_normal;
-    down_1.normals[2] = down_normal;
+        down_1.normals[0] = down_normal;
+        down_1.normals[1] = down_normal;
+        down_1.normals[2] = down_normal;
 
-    BlockTriangle down_2;
-    down_2.points[0] = points.c1;
-    down_2.points[1] = points.a1;
-    down_2.points[2] = points.d1;
+        BlockTriangle down_2;
+        down_2.points[0] = points.c1;
+        down_2.points[1] = points.a1;
+        down_2.points[2] = points.d1;
 
-    down_2.colours[0] = Ogre::ColourValue::Blue;
-    down_2.colours[1] = Ogre::ColourValue::Red;
-    down_2.colours[2] = Ogre::ColourValue::White;
+        down_2.colours[0] = Ogre::ColourValue::Blue;
+        down_2.colours[1] = Ogre::ColourValue::Red;
+        down_2.colours[2] = Ogre::ColourValue::White;
 
-    down_2.normals[0] = down_normal;
-    down_2.normals[1] = down_normal;
-    down_2.normals[2] = down_normal;
+        down_2.normals[0] = down_normal;
+        down_2.normals[1] = down_normal;
+        down_2.normals[2] = down_normal;
 
-    triangles.push_back(down_1);
-    triangles.push_back(down_2);
+        triangles.push_back(down_1);
+        triangles.push_back(down_2);
+    }
 
     // wrong forward face
     Ogre::Vector3 outer_clock_normal = -inner_clock_normal;
@@ -338,6 +349,13 @@ std::vector<BlockTriangle> Tower::getBlockTriangles(unsigned level, unsigned lay
     else
     {
     }
+}
 
-    return triangles;
+unsigned Tower::sectorParent(unsigned layer, unsigned sector)
+{
+    if (this->subdivide[layer-1]) {
+        return sector / 2;
+    } else {
+        return sector;
+    }
 }
