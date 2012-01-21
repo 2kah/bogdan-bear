@@ -53,7 +53,7 @@ void Game::createScene(void)
     dynamicsWorld->addRigidBody(groundRigidBody); // , 4, 2);
     
     // Create and add a falling object
-    fallingObject = new FallingObject(Ogre::Vector3(1, 64, 16.25));
+    fallingObject = new FallingObject(Ogre::Vector3(32.5, 64, 32.15));
     fallingObject->addToScene(mSceneMgr);
     fallingObject->addToPhysics(dynamicsWorld);
     objects.insert(fallingObject);
