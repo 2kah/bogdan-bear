@@ -9,13 +9,45 @@
 
 #define PI 3.14159265
 
-Tower::Tower(double blocksize, unsigned levels, unsigned layers, unsigned sectors)
-    : blocksize(blocksize),
-    levels(levels),
-    layers(layers),
-    sectors(sectors),
-    blocks(std::vector<std::vector<std::vector<bool> > >(levels, std::vector<std::vector<bool> >(layers, std::vector<bool>(sectors, false))))
+Tower::Tower(double blocksize, unsigned levels, std::vector<unsigned> structure)
 {
+    this->blocksize = blocksize;
+    this->levels = levels;
+    this->layers = structure.size();
+    this->sectors = structure[structure.size()-1];
+
+    this->blocks = std::vector<std::vector<std::vector<bool> > >(levels, std::vector<std::vector<bool> >(layers, std::vector<bool>(1, false)));
+
+    // Fill each layer in the blocks with a vector of missing blocks of the right size
+    for (unsigned level = 0; level < this->levels; ++level)
+    {
+        for (unsigned layer = 0; layer < this->layers; ++layer)
+        {
+            this->blocks[level][layer] = std::vector<bool>(structure[layer], false);
+        }
+    }
+
+    this->subdivide = std::vector<bool>(this->layers, false);
+    this->radii = std::vector<double>(this->layers, 0);
+    this->heights = std::vector<double>(this->layers, 0);
+
+    this->radii[0] = 5;
+
+    for (unsigned layer = 1; layer < this->layers; ++layer)
+    {
+        this->subdivide[layer-1] = structure[layer-1] != structure[layer];
+
+        // magic formula to give square shaped blocks
+        // (inner circumference of ring) / (number of blocks in this ring - pi)
+        this->heights[layer-1] = (2 * PI * this->radii[layer-1]) / (structure[layer-1] - PI);
+        
+        this->radii[layer] = this->radii[layer-1] + this->heights[layer-1];
+    }
+
+    this->subdivide[this->layers-1] = false;
+    this->heights[this->layers-1] = (2 * PI * this->radii[this->layers-1]) / (structure[this->layers-1] - PI);;
+
+    std::cout << std::endl;
 }
 
 Tower::~Tower()
@@ -58,81 +90,6 @@ BlockPosition Tower::getBlockPosition(unsigned level, unsigned layer, unsigned s
 BlockPoints Tower::getBlockPoints(unsigned level, unsigned layer, unsigned sector)
 {
     double blockheight = this->blocksize;
-    double size = this->blocksize;
-    double radius = size * layer;
-
-    double angle = ((2*PI) / this->sectors);
-    double offset = angle * sector;
-
-    double bottom = blockheight * level;
-    double top = blockheight * (level + 1);
-
-    Point a1 = {(radius + size) * cos(offset + angle), bottom, (radius + size) * sin(offset + angle)};
-    Point a2 = {(radius + size) * cos(offset + angle),    top, (radius + size) * sin(offset + angle)};
-
-    Point d1 = {(radius) * cos(offset + angle), bottom, (radius) * sin(offset + angle)};
-    Point d2 = {(radius) * cos(offset + angle),    top, (radius) * sin(offset + angle)};
-
-    Point b1 = {(radius) * cos(offset), bottom, (radius) * sin(offset)};
-    Point b2 = {(radius) * cos(offset),    top, (radius) * sin(offset)};
-
-    Point c1 = {(radius + size) * cos(offset), bottom, (radius + size) * sin(offset)};
-    Point c2 = {(radius + size) * cos(offset),    top, (radius + size) * sin(offset)};
-
-    BlockPoints points = {a1, b1, c1, d1,
-                          a2, b2, c2, d2};
-
-    return points;
-}
-
-ComplexTower::ComplexTower(double blocksize, unsigned levels, std::vector<unsigned> structure)
-{
-    this->blocksize = blocksize;
-    this->levels = levels;
-    this->layers = structure.size();
-    this->sectors = structure[structure.size()-1];
-
-    this->blocks = std::vector<std::vector<std::vector<bool> > >(levels, std::vector<std::vector<bool> >(layers, std::vector<bool>(1, false)));
-
-    // Fill each layer in the blocks with a vector of missing blocks of the right size
-    for (unsigned level = 0; level < this->levels; ++level)
-    {
-        for (unsigned layer = 0; layer < this->layers; ++layer)
-        {
-            this->blocks[level][layer] = std::vector<bool>(structure[layer], false);
-        }
-    }
-
-    this->subdivide = std::vector<bool>(this->layers, false);
-    this->radii = std::vector<double>(this->layers, 0);
-    this->heights = std::vector<double>(this->layers, 0);
-
-    this->radii[0] = 5;
-
-    for (unsigned layer = 1; layer < this->layers; ++layer)
-    {
-        this->subdivide[layer-1] = structure[layer-1] != structure[layer];
-
-        // magic formula to give square shaped blocks
-        // (inner circumference of ring) / (number of blocks in this ring - pi)
-        this->heights[layer-1] = (2 * PI * this->radii[layer-1]) / (structure[layer-1] - PI);
-        
-        this->radii[layer] = this->radii[layer-1] + this->heights[layer-1];
-    }
-
-    this->subdivide[this->layers-1] = false;
-    this->heights[this->layers-1] = (2 * PI * this->radii[this->layers-1]) / (structure[this->layers-1] - PI);;
-
-    std::cout << std::endl;
-}
-
-// These are not the points of the non-generated models
-// Points as shown in http://you.mongle.me/tower/circles/gamesproject.png
-// base: a1, b1, c1, d1
-//  top: a2, b2, c2, d2
-ComplexPoints ComplexTower::getComplexPoints(unsigned level, unsigned layer, unsigned sector)
-{
-    double blockheight = this->blocksize;
     double size = this->heights[layer];
     double radius = this->radii[layer];
 
@@ -156,17 +113,17 @@ ComplexPoints ComplexTower::getComplexPoints(unsigned level, unsigned layer, uns
     Ogre::Vector3 c1((radius + size) * cos(offset), bottom, (radius + size) * sin(offset));
     Ogre::Vector3 c2((radius + size) * cos(offset),    top, (radius + size) * sin(offset));
 
-    ComplexPoints points = {a1, b1, c1, d1,
-                            a2, b2, c2, d2};
+    BlockPoints points = {a1, b1, c1, d1,
+                          a2, b2, c2, d2};
 
     return points;
 }
 
-std::vector<BlockTriangle> ComplexTower::getBlockTriangles(unsigned level, unsigned layer, unsigned sector)
+std::vector<BlockTriangle> Tower::getBlockTriangles(unsigned level, unsigned layer, unsigned sector)
 {
     std::vector<BlockTriangle> triangles;
 
-    ComplexPoints points = this->getComplexPoints(level, layer, sector);
+    BlockPoints points = this->getBlockPoints(level, layer, sector);
 
     // back face
     Ogre::Vector3 inner_clock_normal = points.c2 - points.b2;

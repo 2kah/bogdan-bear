@@ -45,7 +45,7 @@ GameTestThing::GameTestThing(Game *game)
     //unsigned divisions[] = {32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32};
     //std::vector<unsigned> structure(divisions, divisions + 14);
 
-    ComplexTower *tower = new ComplexTower(1.0, 48, structure);
+    Tower *tower = new Tower(1.0, 48, structure);
 
     //this->game->tower = new Tower(2.0, 128, 16, 32);
     this->game->tower = tower;

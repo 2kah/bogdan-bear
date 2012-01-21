@@ -350,7 +350,7 @@ void TowerGraphics::rebuildStaticGeometry(void)
     this->geometry->build();
 }
 
-ComplexTowerGraphics::ComplexTowerGraphics(ComplexTower *tower, Ogre::SceneManager *sceneManager)
+ComplexTowerGraphics::ComplexTowerGraphics(Tower *tower, Ogre::SceneManager *sceneManager)
 {
     this->tower = tower;
     this->sceneManager = sceneManager;
