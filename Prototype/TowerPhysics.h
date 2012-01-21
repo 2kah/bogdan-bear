@@ -3,15 +3,15 @@
 
 class btDiscreteDynamicsWorld;
 
-class Tower;
+class ComplexTower;
 
 class TowerPhysics
 {
 public:
-    TowerPhysics(Tower *tower, btDiscreteDynamicsWorld *dynamicsWorld);
+    TowerPhysics(ComplexTower *tower, btDiscreteDynamicsWorld *dynamicsWorld);
     virtual ~TowerPhysics();
 protected:
-    Tower *tower;
+    ComplexTower *tower;
 };
 
 #endif // #ifndef __TowerPhysics_h_

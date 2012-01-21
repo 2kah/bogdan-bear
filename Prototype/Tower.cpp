@@ -235,8 +235,10 @@ std::vector<BlockTriangle> ComplexTower::getBlockTriangles(unsigned level, unsig
     clock_2.normals.push_back(clock_normal);
     clock_2.normals.push_back(clock_normal);
 
-    triangles.push_back(clock_1);
-    triangles.push_back(clock_2);
+    if (!this->blocks[level][layer][(sector - 1) % this->blocks[level][layer].size()]) {
+        triangles.push_back(clock_1);
+        triangles.push_back(clock_2);
+    }
 
     // anticlockwise face
     Ogre::Vector3 anti_normal = points.d2 - points.a2;
@@ -269,8 +271,10 @@ std::vector<BlockTriangle> ComplexTower::getBlockTriangles(unsigned level, unsig
     anti_2.normals.push_back(anti_normal);
     anti_2.normals.push_back(anti_normal);
 
-    triangles.push_back(anti_1);
-    triangles.push_back(anti_2);
+    if (!this->blocks[level][layer][(sector + 1) % this->blocks[level][layer].size()]) {
+        triangles.push_back(anti_1);
+        triangles.push_back(anti_2);
+    }
 
     // wrong up face
     Ogre::Vector3 up_normal(Ogre::Vector3::UNIT_Y);
