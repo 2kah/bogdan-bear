@@ -85,9 +85,9 @@ struct ComplexPoints {
 };
 
 struct BlockTriangle {
-    std::vector<Ogre::Vector3> points;
-    std::vector<Ogre::Vector3> normals;
-    std::vector<Ogre::ColourValue> colours;
+    Ogre::Vector3 points[3];
+    Ogre::Vector3 normals[3];
+    Ogre::ColourValue colours[3];
 };
 
 class ComplexTower : public Tower
