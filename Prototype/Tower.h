@@ -72,10 +72,11 @@ public:
 
     virtual BlockPosition getBlockPosition(unsigned level, unsigned layer, unsigned sector);
     virtual BlockPoints getBlockPoints(unsigned level, unsigned layer, unsigned sector);
-    virtual std::vector<BlockTriangle> getBlockTriangles(unsigned level, unsigned layer, unsigned sector);
-
+    virtual void getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned level, unsigned layer, unsigned sector);
 
     TowerSignals signals;
+
+    inline unsigned sectorParent(unsigned layer, unsigned sector);
 
 //protected:
     double blocksize;

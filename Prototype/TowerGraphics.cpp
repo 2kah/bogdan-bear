@@ -90,6 +90,8 @@ void TowerGraphics::rebuildTowerObject(unsigned level, bool first)
         this->wholething->beginUpdate(section);
     }
 
+    std::vector<BlockTriangle> triangles;
+
     for (unsigned l = 0; l < 4; ++l)
     {
         for (unsigned layer = 0; layer < this->tower->layers; ++layer)
@@ -98,26 +100,26 @@ void TowerGraphics::rebuildTowerObject(unsigned level, bool first)
             {
                 if (this->tower->blocks[baselevel + l][layer][sector])
                 {
-                    std::vector<BlockTriangle> triangles = this->tower->getBlockTriangles(baselevel + l, layer, sector);
-
-                    for(std::vector<BlockTriangle>::iterator i = triangles.begin(); i != triangles.end(); ++i)
-                    {
-                        BlockTriangle triangle = *i;
-
-                        for (unsigned point = 0; point < 3; ++point)
-                        {
-                            this->wholething->position(triangle.points[point]);
-                            this->wholething->normal(triangle.normals[point]);
-                            this->wholething->colour(triangle.colours[point]);
-                        }
-
-                        this->wholething->triangle(index, index + 1, index + 2);
-
-                        index += 3;
-                    }
+                    this->tower->getBlockTriangles(triangles, baselevel + l, layer, sector);
                 }
             }
         }
+    }
+
+    for(std::vector<BlockTriangle>::iterator i = triangles.begin(); i != triangles.end(); ++i)
+    {
+        BlockTriangle triangle = *i;
+
+        for (unsigned point = 0; point < 3; ++point)
+        {
+            this->wholething->position(triangle.points[point]);
+            this->wholething->normal(triangle.normals[point]);
+            this->wholething->colour(triangle.colours[point]);
+        }
+
+        this->wholething->triangle(index, index + 1, index + 2);
+
+        index += 3;
     }
 
     this->wholething->end();
