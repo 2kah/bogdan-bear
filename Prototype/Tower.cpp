@@ -162,73 +162,73 @@ std::vector<BlockTriangle> Tower::getBlockTriangles(unsigned level, unsigned lay
     triangles.push_back(back2);
 
     // clockwise face
-    Ogre::Vector3 clock_normal = points.b2 - points.b1;
-    clock_normal = clock_normal.crossProduct(points.b2 - points.c2);
-    clock_normal.normalise();
-
-    BlockTriangle clock_1;
-    clock_1.points[0] = points.c2;
-    clock_1.points[1] = points.c1;
-    clock_1.points[2] = points.b1;
-
-    clock_1.colours[0] = Ogre::ColourValue::Red;
-    clock_1.colours[1] = Ogre::ColourValue::Blue;
-    clock_1.colours[2] = Ogre::ColourValue::Green;
-
-    clock_1.normals[0] = clock_normal;
-    clock_1.normals[1] = clock_normal;
-    clock_1.normals[2] = clock_normal;
-
-    BlockTriangle clock_2;
-    clock_2.points[0] = points.b1;
-    clock_2.points[1] = points.b2;
-    clock_2.points[2] = points.c2;
-
-    clock_2.colours[0] = Ogre::ColourValue::Red;
-    clock_2.colours[1] = Ogre::ColourValue::Blue;
-    clock_2.colours[2] = Ogre::ColourValue::Green;
-
-    clock_2.normals[0] = clock_normal;
-    clock_2.normals[1] = clock_normal;
-    clock_2.normals[2] = clock_normal;
-
     if (!this->blocks[level][layer][(sector - 1) % this->blocks[level][layer].size()]) {
+        Ogre::Vector3 clock_normal = points.b2 - points.b1;
+        clock_normal = clock_normal.crossProduct(points.b2 - points.c2);
+        clock_normal.normalise();
+
+        BlockTriangle clock_1;
+        clock_1.points[0] = points.c2;
+        clock_1.points[1] = points.c1;
+        clock_1.points[2] = points.b1;
+
+        clock_1.colours[0] = Ogre::ColourValue::Red;
+        clock_1.colours[1] = Ogre::ColourValue::Blue;
+        clock_1.colours[2] = Ogre::ColourValue::Green;
+
+        clock_1.normals[0] = clock_normal;
+        clock_1.normals[1] = clock_normal;
+        clock_1.normals[2] = clock_normal;
+
+        BlockTriangle clock_2;
+        clock_2.points[0] = points.b1;
+        clock_2.points[1] = points.b2;
+        clock_2.points[2] = points.c2;
+
+        clock_2.colours[0] = Ogre::ColourValue::Red;
+        clock_2.colours[1] = Ogre::ColourValue::Blue;
+        clock_2.colours[2] = Ogre::ColourValue::Green;
+
+        clock_2.normals[0] = clock_normal;
+        clock_2.normals[1] = clock_normal;
+        clock_2.normals[2] = clock_normal;
+
         triangles.push_back(clock_1);
         triangles.push_back(clock_2);
     }
 
     // anticlockwise face
-    Ogre::Vector3 anti_normal = points.d2 - points.a2;
-    anti_normal = anti_normal.crossProduct(points.d2 - points.d1);
-    anti_normal.normalise();
-
-    BlockTriangle anti_1;
-    anti_1.points[0] = points.d2;
-    anti_1.points[1] = points.d1;
-    anti_1.points[2] = points.a1;
-
-    anti_1.colours[0] = Ogre::ColourValue::Red;
-    anti_1.colours[1] = Ogre::ColourValue::White;
-    anti_1.colours[2] = Ogre::ColourValue::Red;
-
-    anti_1.normals[0] = anti_normal;
-    anti_1.normals[1] = anti_normal;
-    anti_1.normals[2] = anti_normal;
-
-    BlockTriangle anti_2;
-    anti_2.points[0] = points.a1;
-    anti_2.points[1] = points.a2;
-    anti_2.points[2] = points.d2;
-
-    anti_2.colours[0] = Ogre::ColourValue::Red;
-    anti_2.colours[1] = Ogre::ColourValue::White;
-    anti_2.colours[2] = Ogre::ColourValue::Red;
-
-    anti_2.normals[0] = anti_normal;
-    anti_2.normals[1] = anti_normal;
-    anti_2.normals[2] = anti_normal;
-
     if (!this->blocks[level][layer][(sector + 1) % this->blocks[level][layer].size()]) {
+        Ogre::Vector3 anti_normal = points.d2 - points.a2;
+        anti_normal = anti_normal.crossProduct(points.d2 - points.d1);
+        anti_normal.normalise();
+
+        BlockTriangle anti_1;
+        anti_1.points[0] = points.d2;
+        anti_1.points[1] = points.d1;
+        anti_1.points[2] = points.a1;
+
+        anti_1.colours[0] = Ogre::ColourValue::Red;
+        anti_1.colours[1] = Ogre::ColourValue::White;
+        anti_1.colours[2] = Ogre::ColourValue::Red;
+
+        anti_1.normals[0] = anti_normal;
+        anti_1.normals[1] = anti_normal;
+        anti_1.normals[2] = anti_normal;
+
+        BlockTriangle anti_2;
+        anti_2.points[0] = points.a1;
+        anti_2.points[1] = points.a2;
+        anti_2.points[2] = points.d2;
+
+        anti_2.colours[0] = Ogre::ColourValue::Red;
+        anti_2.colours[1] = Ogre::ColourValue::White;
+        anti_2.colours[2] = Ogre::ColourValue::Red;
+
+        anti_2.normals[0] = anti_normal;
+        anti_2.normals[1] = anti_normal;
+        anti_2.normals[2] = anti_normal;
+
         triangles.push_back(anti_1);
         triangles.push_back(anti_2);
     }
