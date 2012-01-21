@@ -7,7 +7,7 @@
 
 #include "Tower.h"
 
-TowerPhysics::TowerPhysics(Tower *tower, btDiscreteDynamicsWorld* dynamicsWorld)
+TowerPhysics::TowerPhysics(ComplexTower *tower, btDiscreteDynamicsWorld* dynamicsWorld)
 {
     this->tower = tower;
     
@@ -19,7 +19,7 @@ TowerPhysics::TowerPhysics(Tower *tower, btDiscreteDynamicsWorld* dynamicsWorld)
             {
                 if (this->tower->blocks[level][layer][sector] == 1)
                 {
-                    BlockPoints points = this->tower->getBlockPoints(level, layer, sector);
+                    ComplexPoints points = this->tower->getComplexPoints(level, layer, sector);
 
                     btConvexHullShape *blockShape = new btConvexHullShape();
 

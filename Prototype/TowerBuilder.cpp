@@ -57,7 +57,7 @@ void TowerBuilder::regenerate(void)
         {
             for (unsigned sector = 0; sector < this->tower->blocks[level][layer].size(); ++sector)
             {
-                this->tower->blocks[level][layer][sector] = (rand() % 2 == 1);
+                this->tower->blocks[level][layer][sector] = (rand() % 3 != 1);
             }
         }
     }
@@ -80,7 +80,7 @@ void TowerBuilder::regenerate(void)
 
             for (unsigned sector = 0; sector < sectors; ++sector)
             {
-                if (layer < 1) {
+                if (layer < 8) {
                     this->tower->blocks[level][layer][sector] = (rand() % (layer + 1) <= 1); // || (level < 10);
                 }
             }

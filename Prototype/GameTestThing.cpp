@@ -60,7 +60,7 @@ GameTestThing::GameTestThing(Game *game)
     // Add tower graphics and physics
     //new TowerGraphics(this->game->tower, this->game->mSceneMgr);
     new ComplexTowerGraphics(tower, this->game->mSceneMgr);
-    //new TowerPhysics(this->game->tower, this->game->dynamicsWorld);
+    new TowerPhysics(tower, this->game->dynamicsWorld);
 
     // Add a player
     this->player = new Player(Ogre::Vector3(0, 0, 1000 / 16.0));
