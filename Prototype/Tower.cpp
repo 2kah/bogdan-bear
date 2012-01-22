@@ -81,8 +81,8 @@ void Tower::carveSphere(Ogre::Vector3 position, unsigned radius)
         // stuff
     }
 
-    layer_inner = std::min(layer_inner, this->layers - 1);
-    layer_outer = std::min(layer_outer, this->layers - 1);
+    layer_inner = std::min<int>(layer_inner, this->layers - 1);
+    layer_outer = std::min<int>(layer_outer, this->layers - 1);
     
     // narrow down relevant sectors (if possible)
     double sector_angle = boost::math::constants::two_pi<double>() / this->sectors;
