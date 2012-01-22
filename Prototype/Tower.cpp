@@ -4,6 +4,9 @@
 
 #include <iostream>
 #include <vector>
+#include <algorithm>
+
+#include <boost/math/constants/constants.hpp>
 
 #include <OGRE/OgreVector3.h>
 
@@ -56,6 +59,71 @@ Tower::~Tower()
 
 void Tower::update()
 {
+}
+
+void Tower::carveSphere(Ogre::Vector3 position, unsigned radius)
+{
+    int level_bottom, level_top;
+    int layer_inner, layer_outer;
+    int sector_left, sector_right;
+
+    double point_distance = std::sqrt(position.x*position.x - position.z*position.z);
+    
+    // narrow down relevant levels
+    level_bottom = std::max<int>(0, (position.y - radius) / this->blocksize);
+    level_top = std::min<int>(this->levels, (position.y + radius) / this->blocksize);
+
+    // narrow down relevant layers
+    for (unsigned layer = 0; layer < this->layers; ++layer)
+    {
+        double layer_radius = this->radii[layer];
+
+        // stuff
+    }
+
+    layer_inner = std::min(layer_inner, this->layers - 1);
+    layer_outer = std::min(layer_outer, this->layers - 1);
+    
+    // narrow down relevant sectors (if possible)
+    double sector_angle = boost::math::constants::two_pi<double>() / this->sectors;
+    double point_angle = std::atan2(position.z, position.x); // this could be backwards, and possible offset by 1/4 circle too... confusing!
+
+    // sector can be narrowed down only if the circle isn't over the centre
+    if (point_distance >= radius)
+    {
+        double circle_arc = std::asin(radius / point_distance); // the angle of a sector (from the origin) passing through the point and at a tangent to the circle
+
+        // point_angle (mod 2 * pi)
+        if (point_angle < 0) {
+            point_angle += boost::math::constants::two_pi<double>();
+        }
+
+        sector_left = (point_angle + circle_arc) / sector_angle;
+        sector_left = sector_left % this->sectors;
+
+        if (point_angle - circle_arc < 0) {
+            point_angle -= boost::math::constants::two_pi<double>();
+        }
+
+        sector_right = (point_angle - circle_arc) / sector_angle;
+        sector_right = sector_right % this->sectors;
+    }
+    else
+    {
+        sector_left = 0;
+        sector_right = this->sectors - 1;
+    }
+
+    for (unsigned level = level_bottom; level < level_top; ++level)
+    {
+        for (unsigned layer = 0; layer < this->layers; ++layer)
+        {
+            for (unsigned sector = 0; sector < this->blocks[level][layer].size(); ++sector)
+            {
+                this->blocks[level][layer][sector] = false;
+            }
+        }
+    }
 }
 
 void Tower::rebuild()

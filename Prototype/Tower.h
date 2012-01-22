@@ -67,6 +67,7 @@ public:
 
     virtual void update();
 
+    virtual void carveSphere(Ogre::Vector3 position, unsigned radius);
     virtual void rebuild();
     virtual void synchronise();
 
