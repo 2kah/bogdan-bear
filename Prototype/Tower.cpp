@@ -153,16 +153,16 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
             if (left < right) {
                 for (int sector = left; sector < right; ++sector)
                 {
-                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && (this->getBlockPosition(level, layer, sector) - position).length() > radius;
+                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && (this->getBlockPosition(level, layer, sector) - position).length() > radius + this->block_height / 2;
                 }
             } else {
                 for (int sector = left; sector < divisions; ++sector)
                 {
-                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && (this->getBlockPosition(level, layer, sector) - position).length() > radius;
+                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && (this->getBlockPosition(level, layer, sector) - position).length() > radius + this->block_height / 2;
                 }
                 for (int sector = 0; sector < right; ++sector)
                 {
-                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && (this->getBlockPosition(level, layer, sector) - position).length() > radius;
+                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && (this->getBlockPosition(level, layer, sector) - position).length() > radius + this->block_height / 2;
                 }
             }
         }
