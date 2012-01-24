@@ -28,8 +28,11 @@ PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWo
 
 	m_character = new btKinematicCharacterController(m_ghostObject, capsule, stepHeight);
 
-	//m_character->setFallSpeed(btScalar(50.0));
-	//m_character->setGravity(btScalar(50.0));
+	//TODO: make these both cvars
+	//Terminal velocity for falling
+	m_character->setFallSpeed(btScalar(60.0));
+	//Defines how quickly terminal velocity is reached
+	m_character->setGravity(btScalar(100.0));
 
 	dynamicsWorld->addCollisionObject(m_ghostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);
 	dynamicsWorld->addAction(m_character);
