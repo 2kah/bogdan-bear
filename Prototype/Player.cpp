@@ -47,7 +47,7 @@ void Player::addInput(PlayerInput &input)
     input.signals.fire.connect(boost::bind(&Player::fire, this, _1));
     input.signals.create.connect(boost::bind(&Player::create, this, _1));
 
-    input.signals.jump.connect(boost::bind(&Player::jump, this, _1));
+    //input.signals.jump.connect(boost::bind(&Player::jump, this, _1));
     input.signals.use.connect(boost::bind(&Player::use, this, _1));
 }
 

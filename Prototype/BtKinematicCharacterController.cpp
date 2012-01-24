@@ -13,6 +13,7 @@ subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+#include "btBulletDynamicsCommon.h"
 
 #include "LinearMath/btIDebugDraw.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
@@ -127,8 +128,10 @@ btVector3 btKinematicCharacterController::perpindicularComponent (const btVector
 	return direction - parallelComponent(direction, normal);
 }
 
-btKinematicCharacterController::btKinematicCharacterController (btPairCachingGhostObject* ghostObject,btConvexShape* convexShape,btScalar stepHeight, int upAxis)
+btKinematicCharacterController::btKinematicCharacterController (btPairCachingGhostObject* ghostObject,btConvexShape* convexShape,btScalar stepHeight,btDiscreteDynamicsWorld *dynamicsWorld, int upAxis)
 {
+	this->dynamicsWorld = dynamicsWorld;
+
 	m_upAxis = upAxis;
 	m_addedMargin = 0.02;
 	m_walkDirection.setValue(0,0,0);
@@ -626,7 +629,28 @@ btScalar btKinematicCharacterController::getMaxSlope() const
 
 bool btKinematicCharacterController::onGround () const
 {
-	return m_verticalVelocity == 0.0 && m_verticalOffset == 0.0;
+	//return m_verticalVelocity == 0.0 && m_verticalOffset == 0.0;
+
+	btTransform start, end;
+    btVector3 startpos = m_ghostObject->getWorldTransform().getOrigin();
+    btVector3 direction(0,-1,0);
+    start.setIdentity();
+    end.setIdentity();
+    btScalar radius, height;
+    radius = static_cast<btCapsuleShape*>(m_ghostObject->getCollisionShape())->getRadius();
+    height = static_cast<btCapsuleShape*>(m_ghostObject->getCollisionShape())->getHalfHeight();
+    btDynamicsWorld* world = dynamicsWorld;
+
+    start.setOrigin(startpos);
+    end.setOrigin(startpos + (direction * (radius + height)));
+
+    btCollisionWorld::ClosestConvexResultCallback callback(btVector3(0.0, 0.0, 0.0), btVector3(0.0, 0.0, 0.0));
+    callback.m_collisionFilterGroup = m_ghostObject->getBroadphaseHandle()->m_collisionFilterGroup;
+    callback.m_collisionFilterMask = m_ghostObject->getBroadphaseHandle()->m_collisionFilterMask;
+
+    m_ghostObject->convexSweepTest(m_convexShape, start, end, callback, world->getDispatchInfo().m_allowedCcdPenetration);
+
+    return callback.hasHit();
 }
 
 
