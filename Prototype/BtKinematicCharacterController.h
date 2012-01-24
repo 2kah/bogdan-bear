@@ -36,6 +36,7 @@ class btPairCachingGhostObject;
 class btKinematicCharacterController : public btCharacterControllerInterface
 {
 protected:
+	btDiscreteDynamicsWorld *dynamicsWorld;
 
 	btScalar m_halfHeight;
 	
@@ -91,7 +92,7 @@ protected:
 	void stepForwardAndStrafe (btCollisionWorld* collisionWorld, const btVector3& walkMove);
 	void stepDown (btCollisionWorld* collisionWorld, btScalar dt);
 public:
-	btKinematicCharacterController (btPairCachingGhostObject* ghostObject,btConvexShape* convexShape,btScalar stepHeight, int upAxis = 1);
+	btKinematicCharacterController (btPairCachingGhostObject* ghostObject,btConvexShape* convexShape,btScalar stepHeight,btDiscreteDynamicsWorld *dynamicsWorld, int upAxis = 1);
 	~btKinematicCharacterController ();
 	
 

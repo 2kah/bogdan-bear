@@ -26,13 +26,16 @@ PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWo
 	//TODO: make this sensible, this is the max metres a player can step up (0.35 is recommended)
 	btScalar stepHeight = btScalar(2.5);
 
-	m_character = new btKinematicCharacterController(m_ghostObject, capsule, stepHeight);
+	m_character = new btKinematicCharacterController(m_ghostObject, capsule, stepHeight, dynamicsWorld);
 
 	//TODO: make these both cvars
 	//Terminal velocity for falling
 	m_character->setFallSpeed(btScalar(60.0));
 	//Defines how quickly terminal velocity is reached
 	m_character->setGravity(btScalar(100.0));
+
+	//TODO: make this a cvar
+	m_character->setJumpSpeed(btScalar(50.0));
 
 	dynamicsWorld->addCollisionObject(m_ghostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);
 	dynamicsWorld->addAction(m_character);
@@ -73,6 +76,8 @@ PlayerPhysics::~PlayerPhysics()
 void PlayerPhysics::addInput(PlayerInput &input)
 {
 	input.signals.move.connect(boost::bind(&PlayerPhysics::movement, this, _1, _2));
+
+	input.signals.jump.connect(boost::bind(&PlayerPhysics::jump, this, _1));
 }
 
 void PlayerPhysics::playerUpdated(Player *player)
@@ -160,4 +165,12 @@ void PlayerPhysics::movement(DIRECTION direction, bool state)
     {
         walkDirection.setX(Player::MOVEMENT_SPEED * state);
     }
+}
+
+void PlayerPhysics::jump(bool state)
+{
+	if(state)
+	{
+		m_character->jump();
+	}
 }

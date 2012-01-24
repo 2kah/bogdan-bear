@@ -22,6 +22,7 @@ public:
 	virtual void addInput(PlayerInput &input);
 
 	virtual void movement(DIRECTION direction, bool state);
+	virtual void jump(bool state);
 
 	btKinematicCharacterController* m_character;
 	class btPairCachingGhostObject* m_ghostObject;
