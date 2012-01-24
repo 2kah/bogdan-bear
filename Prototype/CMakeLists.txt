@@ -111,6 +111,7 @@ set(HDRS
     ./PlayerPhysics.h
     ./PlayerGraphics.h
     ./PlayerCamera.h
+    ./BtKinematicCharacterController.h
     
     ./Platform.h
     ./PlatformGraphics.h
@@ -151,6 +152,7 @@ set(SRCS
     ./PlayerPhysics.cpp
     ./PlayerGraphics.cpp
     ./PlayerCamera.cpp
+    ./BtKinematicCharacterController.cpp
     
     ./Platform.cpp
     ./PlatformGraphics.cpp
