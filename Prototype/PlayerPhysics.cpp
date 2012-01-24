@@ -2,8 +2,8 @@
 
 #include <btBulletDynamicsCommon.h>
 #include <BulletCollision\CollisionDispatch\btGhostObject.h>
-#include <BulletDynamics\Character\btKinematicCharacterController.h>
 
+#include "BtKinematicCharacterController.h"
 #include "Player.h"
 #include "PlayerInput.h"
 
@@ -27,6 +27,9 @@ PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWo
 	btScalar stepHeight = btScalar(2.5);
 
 	m_character = new btKinematicCharacterController(m_ghostObject, capsule, stepHeight);
+
+	//m_character->setFallSpeed(btScalar(50.0));
+	//m_character->setGravity(btScalar(50.0));
 
 	dynamicsWorld->addCollisionObject(m_ghostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);
 	dynamicsWorld->addAction(m_character);
