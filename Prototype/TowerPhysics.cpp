@@ -35,8 +35,6 @@ TowerPhysics::TowerPhysics(Tower *tower, btDiscreteDynamicsWorld* dynamicsWorld)
 
                     btDefaultMotionState* blockMotionState = new btDefaultMotionState(btTransform(btMatrix3x3::getIdentity(), btVector3(0, 0, 0)));
 
-                    BlockPosition sector_ = this->tower->getBlockPosition(level, layer, sector);
-
                     btRigidBody::btRigidBodyConstructionInfo blockRigidBodyCI(0, blockMotionState, blockShape, btVector3(0, 0, 0));
                     
                     btRigidBody *blockRigidBody = new btRigidBody(blockRigidBodyCI);

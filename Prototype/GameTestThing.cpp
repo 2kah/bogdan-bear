@@ -45,8 +45,8 @@ GameTestThing::GameTestThing(Game *game)
     //unsigned divisions[] = {32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32};
     //std::vector<unsigned> structure(divisions, divisions + 14);
 
-    this->game->tower = new Tower(1.0, 64, structure);
-    //this->game->tower = new Tower(2.0, 128, 16, 32);
+    this->game->tower = new Tower(64, structure);
+    //this->game->tower = new Tower(128, 16, 32);
 
     // Create a tower builder and generate the tower with it
     TowerBuilder *builder = new TowerBuilder(this->game->tower);
@@ -60,7 +60,7 @@ GameTestThing::GameTestThing(Game *game)
     new TowerPhysics(this->game->tower, this->game->dynamicsWorld);
 
     // Add a player
-    this->player = new Player(Ogre::Vector3(0, 0, 1000 / 16.0));
+    this->player = new Player(Ogre::Vector3(0, 10, 500 / 8.0));
     this->game->player = this->player;
 
     // Link local input to the player
@@ -83,6 +83,7 @@ GameTestThing::GameTestThing(Game *game)
     this->game->objects.insert(this->player);
     this->game->objects.insert(enemy);
 
+    /*
     // Create a turret with graphics and add it to the list of things to update
     Turret *turret = new Turret(Ogre::Vector3(0, 2, 100), Ogre::Quaternion::IDENTITY);
     new TurretGraphics(turret, this->game->mSceneMgr);
@@ -93,6 +94,7 @@ GameTestThing::GameTestThing(Game *game)
 
     // Listen for when the turret fires
     turret->signals.fired.connect(boost::bind(&GameTestThing::turretFired, this, _1, _2));
+    */
 
     // Listen for when the players fire or create platforms
     this->player->signals.fired.connect(boost::bind(&GameTestThing::playerFired, this, _1, _2));

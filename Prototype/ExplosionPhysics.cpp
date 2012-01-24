@@ -24,19 +24,19 @@ ExplosionPhysics::ExplosionPhysics(Explosion *explosion, btDiscreteDynamicsWorld
     this->ghost = new btGhostObject();
     
     btVector3 position(this->explosion->position.x, this->explosion->position.y, this->explosion->position.z);
-    this->ghost->setCollisionShape(new btSphereShape(100 / 16.0));
+    this->ghost->setCollisionShape(new btSphereShape(Explosion::SIZE));
 
     this->ghost->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
     this->ghost->setWorldTransform(btTransform(btMatrix3x3::getIdentity(), position));
 
     this->dynamicsWorld->addCollisionObject(this->ghost, btBroadphaseProxy::SensorTrigger, btBroadphaseProxy::AllFilter & ~btBroadphaseProxy::SensorTrigger);
 
-    std::cout << "Explosion destroyed " << this->ghost->getNumOverlappingObjects() << " objects!" << std::endl;
+    //std::cout << "Explosion destroyed " << this->ghost->getNumOverlappingObjects() << " objects!" << std::endl;
 
     std::vector<btCollisionObject *> destructions;
     std::set<unsigned> levels;
 
-    Tower *tower;
+    Tower *tower = NULL;
 
     for(int i = 0; i < this->ghost->getNumOverlappingObjects(); i++)
     {
@@ -45,7 +45,7 @@ ExplosionPhysics::ExplosionPhysics(Explosion *explosion, btDiscreteDynamicsWorld
         BlockReference *block = (BlockReference *) blockObject->getUserPointer();
 
         if (block != NULL) {
-            block->tower->blocks[block->level][block->layer][block->sector] = false;
+            //block->tower->blocks[block->level][block->layer][block->sector] = false;
             levels.insert((block->level / 4) * 4);
 
             tower = block->tower;
@@ -58,6 +58,10 @@ ExplosionPhysics::ExplosionPhysics(Explosion *explosion, btDiscreteDynamicsWorld
         btCollisionObject *blockObject = *it;
 
         this->dynamicsWorld->removeCollisionObject(blockObject);
+    }
+
+    if (tower != NULL) {
+        tower->carveSphere(this->explosion->position, Explosion::SIZE);
     }
 
     for(std::set<unsigned>::iterator i = levels.begin(); i != levels.end(); ++i) {

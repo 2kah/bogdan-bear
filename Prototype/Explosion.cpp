@@ -5,6 +5,8 @@
 
 #include "Explosion.h"
 
+const double Explosion::SIZE = 15.0;
+
 Explosion::Explosion(Ogre::Vector3 position): size(0)
 {
     this->position = position;

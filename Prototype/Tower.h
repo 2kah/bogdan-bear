@@ -8,17 +8,6 @@
 #include <OGRE/OgreVector3.h>
 #include <OGRE/OgreColourValue.h>
 
-struct BlockPosition
-{
-    double x, y, z, angle;
-};
-
-// Because we don't have a unified vector3, not sure what's best
-struct Point
-{
-    double x, y, z;
-};
-
 // Points as shown in http://you.mongle.me/tower/circles/gamesproject.png
 // base: a1, b1, c1, d1
 //  top: a2, b2, c2, d2
@@ -62,16 +51,16 @@ public:
     static const short COLLISION_GROUP = 1; // 0000 0001
     static const short COLLISION_MASK  = 2; // 0000 0010
 
-    Tower(double blocksize, unsigned levels, std::vector<unsigned> structure);
+    Tower(unsigned levels, std::vector<unsigned> structure);
     virtual ~Tower();
 
     virtual void update();
 
-    virtual void carveSphere(Ogre::Vector3 position, unsigned radius);
+    virtual void carveSphere(Ogre::Vector3 position, double radius);
     virtual void rebuild();
     virtual void synchronise();
 
-    virtual BlockPosition getBlockPosition(unsigned level, unsigned layer, unsigned sector);
+    virtual Ogre::Vector3 getBlockPosition(unsigned level, unsigned layer, unsigned sector);
     virtual BlockPoints getBlockPoints(unsigned level, unsigned layer, unsigned sector);
     virtual void getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned level, unsigned layer, unsigned sector);
 
@@ -80,10 +69,11 @@ public:
     inline unsigned sectorParent(unsigned layer, unsigned sector);
 
 //protected:
-    double blocksize;
     unsigned levels;
     unsigned layers;
     unsigned sectors;
+
+    double block_height;
 
     std::vector<std::vector<std::vector<bool> > > blocks;
 
