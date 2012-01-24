@@ -90,7 +90,6 @@ void PlayerPhysics::playerUpdated(Player *player)
 
 void PlayerPhysics::movement(DIRECTION direction, bool state)
 {
-	std::cout << "Movement" << std::endl;
     if (direction == DIRECTION::FORWARD)
     {
 		walkDirection.setZ(-Player::MOVEMENT_SPEED * state);

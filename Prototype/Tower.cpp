@@ -12,9 +12,8 @@
 
 #define PI 3.14159265
 
-Tower::Tower(double blocksize, unsigned levels, std::vector<unsigned> structure)
+Tower::Tower(unsigned levels, std::vector<unsigned> structure)
 {
-    this->blocksize = blocksize;
     this->levels = levels;
     this->layers = structure.size();
     this->sectors = structure[structure.size()-1];
@@ -50,6 +49,8 @@ Tower::Tower(double blocksize, unsigned levels, std::vector<unsigned> structure)
     this->subdivide[this->layers-1] = false;
     this->heights[this->layers-1] = (2 * PI * this->radii[this->layers-1]) / (structure[this->layers-1] - PI);;
 
+    this->block_height = boost::math::constants::two_pi<double>() * this->radii[this->layers - 1] / this->sectors / 2;
+
     std::cout << std::endl;
 }
 
@@ -61,29 +62,46 @@ void Tower::update()
 {
 }
 
-void Tower::carveSphere(Ogre::Vector3 position, unsigned radius)
+void Tower::carveSphere(Ogre::Vector3 position, double radius)
 {
-    int level_bottom, level_top;
-    int layer_inner, layer_outer;
-    int sector_left, sector_right;
+    int level_bottom = 0, level_top = this->levels - 1;
+    int layer_inner = 0, layer_outer = this->layers;
+    int sector_left = 0, sector_right = this->sectors - 1;
 
-    double point_distance = std::sqrt(position.x*position.x - position.z*position.z);
-    
+    double point_distance = std::sqrt(position.x*position.x + position.z*position.z);
+
     // narrow down relevant levels
-    level_bottom = std::max<int>(0, (position.y - radius) / this->blocksize);
-    level_top = std::min<int>(this->levels, (position.y + radius) / this->blocksize);
+    level_bottom = std::max<int>(0, (position.y - radius) / this->block_height);
+    level_top = std::min<int>(this->levels, (position.y + radius) / this->block_height);
 
     // narrow down relevant layers
-    for (unsigned layer = 0; layer < this->layers; ++layer)
+    double inner_radius = point_distance - radius;
+    double outer_radius = point_distance + radius;
+
+    double best_inner_distance = this->radii[this->layers - 1];
+    double best_outer_distance = this->radii[this->layers - 1];
+
+    for (int layer = 0; layer < this->layers; ++layer)
     {
         double layer_radius = this->radii[layer];
 
-        // stuff
-    }
+        double inner_distance = inner_radius - layer_radius;
+        double outer_distance = layer_radius - outer_radius;
+        
+        std::cout << "inner/best: " << inner_distance << ", " << best_inner_distance << std::endl;
 
-    layer_inner = std::min<int>(layer_inner, this->layers - 1);
-    layer_outer = std::min<int>(layer_outer, this->layers - 1);
+        if (inner_distance > 0 && best_inner_distance > inner_distance) {
+            best_inner_distance = inner_distance;
+            layer_inner = layer;
+        }
+
+        if (outer_distance > 0 && best_outer_distance > outer_distance) {
+            best_outer_distance = outer_distance;
+            layer_outer = layer;
+        }
+    }
     
+    ///*
     // narrow down relevant sectors (if possible)
     double sector_angle = boost::math::constants::two_pi<double>() / this->sectors;
     double point_angle = std::atan2(position.z, position.x); // this could be backwards, and possible offset by 1/4 circle too... confusing!
@@ -99,7 +117,7 @@ void Tower::carveSphere(Ogre::Vector3 position, unsigned radius)
         }
 
         sector_left = (point_angle + circle_arc) / sector_angle;
-        sector_left = sector_left % this->sectors;
+        sector_left = (sector_left + 1) % this->sectors;
 
         if (point_angle - circle_arc < 0) {
             point_angle -= boost::math::constants::two_pi<double>();
@@ -113,14 +131,39 @@ void Tower::carveSphere(Ogre::Vector3 position, unsigned radius)
         sector_left = 0;
         sector_right = this->sectors - 1;
     }
+    //*/
 
-    for (unsigned level = level_bottom; level < level_top; ++level)
+    std::cout << layer_inner << ", " << layer_outer << std::endl;
+    std::cout << sector_left << ", " << sector_right << std::endl;
+
+    for (unsigned level = level_bottom; level <= level_top; ++level)
     {
-        for (unsigned layer = 0; layer < this->layers; ++layer)
+        for (unsigned layer = layer_inner; layer < layer_outer; ++layer)
         {
-            for (unsigned sector = 0; sector < this->blocks[level][layer].size(); ++sector)
-            {
-                this->blocks[level][layer][sector] = false;
+            // all goes a bit wrong here...
+
+            unsigned divisions = this->blocks[level][layer].size();
+
+            double ratio = divisions / (double) this->sectors;
+            int right = ((int) (sector_left * ratio) + 1) % divisions;
+            int left = ((int) (sector_right * ratio)) % divisions;
+
+            std::cout << left << ", " << right << std::endl;
+
+            if (left < right) {
+                for (int sector = left; sector < right; ++sector)
+                {
+                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && (this->getBlockPosition(level, layer, sector) - position).length() > radius;
+                }
+            } else {
+                for (int sector = left; sector < divisions; ++sector)
+                {
+                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && (this->getBlockPosition(level, layer, sector) - position).length() > radius;
+                }
+                for (int sector = 0; sector < right; ++sector)
+                {
+                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && (this->getBlockPosition(level, layer, sector) - position).length() > radius;
+                }
             }
         }
     }
@@ -134,19 +177,18 @@ void Tower::synchronise()
 {
 }
 
-BlockPosition Tower::getBlockPosition(unsigned level, unsigned layer, unsigned sector)
+Ogre::Vector3 Tower::getBlockPosition(unsigned level, unsigned layer, unsigned sector)
 {
-    BlockPosition position;
+    Ogre::Vector3 position;
     
-    double nseg = this->sectors; //layer * 12;
+    double divisions = this->blocks[level][layer].size();
 
-    double angle = ((2*PI) / nseg) * (sector + 0.5);
-    double radius = this->blocksize * (layer + 0.5);
-
-    position.angle = angle;
-    position.x = radius * cos(angle);
-    position.y = (this->blocksize / 2) * (level + 0.5); // is vertical scale half?
-    position.z = radius * sin(angle);
+    double angle = (boost::math::constants::two_pi<double>() / divisions) * (sector + 0.5);
+    double radius = this->radii[layer] + this->heights[layer] / 2;
+    
+    position.x = radius * std::cos(angle);
+    position.y = (this->block_height / 2) * (level + 0.5);
+    position.z = radius * std::sin(angle);
 
     return position;
 }
@@ -157,17 +199,14 @@ BlockPosition Tower::getBlockPosition(unsigned level, unsigned layer, unsigned s
 //  top: a2, b2, c2, d2
 BlockPoints Tower::getBlockPoints(unsigned level, unsigned layer, unsigned sector)
 {
-    double blockheight = this->blocksize;
     double size = this->heights[layer];
     double radius = this->radii[layer];
 
     double angle = ((2*PI) / this->blocks[level][layer].size());
     double offset = angle * sector;
 
-    blockheight *= 2 * PI * this->radii[this->layers - 1] / this->sectors / 2;
-
-    double bottom = blockheight * level;
-    double top = blockheight * (level + 1);
+    double bottom = this->block_height * level;
+    double top = this->block_height * (level + 1);
 
     Ogre::Vector3 a1((radius + size) * cos(offset + angle), bottom, (radius + size) * sin(offset + angle));
     Ogre::Vector3 a2((radius + size) * cos(offset + angle),    top, (radius + size) * sin(offset + angle));

@@ -20,6 +20,8 @@ struct ExplosionSignals {
 class Explosion: public Updatable, public Object
 {
 public:
+    static const double SIZE;
+
     Explosion(Ogre::Vector3 position);
     virtual ~Explosion();
 

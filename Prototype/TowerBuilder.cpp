@@ -49,13 +49,13 @@ void TowerBuilder::blocksUpdated(Tower *tower, unsigned level)
 void TowerBuilder::regenerate(void)
 {
     /*
-    for (unsigned level = 9; level < 10; ++level)
+    for (unsigned level = 0; level < 1; ++level)
     {
         for (unsigned layer = 0; layer < this->tower->layers; ++layer)
         {
             for (unsigned sector = 0; sector < this->tower->blocks[level][layer].size(); ++sector)
             {
-                this->tower->blocks[level][layer][sector] = (rand() % 3 != 1);
+                this->tower->blocks[level][layer][sector] = true; //(rand() % 3 != 1);
             }
         }
     }
