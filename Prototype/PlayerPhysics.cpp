@@ -23,7 +23,8 @@ PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWo
 	m_ghostObject->setCollisionShape(capsule);
 	m_ghostObject->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
 
-	btScalar stepHeight = btScalar(0.35);
+	//TODO: make this sensible, this is the max metres a player can step up (0.35 is recommended)
+	btScalar stepHeight = btScalar(2.5);
 
 	m_character = new btKinematicCharacterController(m_ghostObject, capsule, stepHeight);
 
@@ -83,8 +84,8 @@ void PlayerPhysics::playerUpdated(Player *player)
 	upDir.normalize ();
 	strafeDir.normalize ();*/
 
-	//TODO: make a cvar
-	btScalar walkVelocity = btScalar(4.0);
+	//TODO: make this a cvar
+	btScalar walkVelocity = btScalar(2.0);
 
 	Ogre::Vector3 movement = this->player->orientation * Ogre::Vector3(walkDirection.x(), walkDirection.y(), walkDirection.z());
 	btVector3 walk(movement.x, movement.y, movement.z);
