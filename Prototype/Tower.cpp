@@ -50,8 +50,6 @@ Tower::Tower(unsigned levels, std::vector<unsigned> structure)
     this->heights[this->layers-1] = (2 * PI * this->radii[this->layers-1]) / (structure[this->layers-1] - PI);;
 
     this->block_height = boost::math::constants::two_pi<double>() * this->radii[this->layers - 1] / this->sectors / 2;
-
-    std::cout << std::endl;
 }
 
 Tower::~Tower()
@@ -133,8 +131,8 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
     }
     //*/
 
-    std::cout << layer_inner << ", " << layer_outer << std::endl;
-    std::cout << sector_left << ", " << sector_right << std::endl;
+    //std::cout << layer_inner << ", " << layer_outer << std::endl;
+    //std::cout << sector_left << ", " << sector_right << std::endl;
 
     for (unsigned level = level_bottom; level <= level_top; ++level)
     {
@@ -230,10 +228,12 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
 {
     BlockPoints points = this->getBlockPoints(level, layer, sector);
 
+    unsigned divisions = this->blocks[level][layer].size();
+
     // Which faces are actually visible?
     bool back = !(layer != 0 && this->blocks[level][layer-1][this->sectorParent(layer, sector)]);
-    bool clock = !this->blocks[level][layer][(sector - 1) % this->blocks[level][layer].size()];
-    bool anti = !this->blocks[level][layer][(sector + 1) % this->blocks[level][layer].size()];
+    bool clock = !(this->blocks[level][layer][(sector - 1 + divisions) % divisions]);
+    bool anti = !(this->blocks[level][layer][(sector + 1) % divisions]);
     bool top = !(level < this->blocks.size()-1 && this->blocks[level+1][layer][sector]);
     bool bottom = !(level != 0 && this->blocks[level-1][layer][sector]);
 
