@@ -197,19 +197,19 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
     
     if (arg.key == OIS::KC_UP|| arg.key == OIS::KC_W)
 	{
-        this->playerInput.signals.move(DIRECTION::FORWARD, true);
+        this->playerInput.signals.move(FORWARD, true);
 	}
     else if (arg.key == OIS::KC_DOWN || arg.key == OIS::KC_S)
 	{
-        this->playerInput.signals.move(DIRECTION::BACKWARD, true);
+        this->playerInput.signals.move(BACKWARD, true);
 	}
     else if (arg.key == OIS::KC_LEFT || arg.key == OIS::KC_A)
 	{
-        this->playerInput.signals.move(DIRECTION::LEFT, true);
+        this->playerInput.signals.move(LEFT, true);
 	}
     else if (arg.key == OIS::KC_RIGHT || arg.key == OIS::KC_D)
 	{
-        this->playerInput.signals.move(DIRECTION::RIGHT, true);
+        this->playerInput.signals.move(RIGHT, true);
 	}
 	else if (arg.key == OIS::KC_SPACE)
 	{
@@ -227,19 +227,19 @@ bool Game::keyReleased(const OIS::KeyEvent &arg)
     {
     case OIS::KC_UP:
     case OIS::KC_W:
-        this->playerInput.signals.move(DIRECTION::FORWARD, false);
+        this->playerInput.signals.move(FORWARD, false);
         break;
     case OIS::KC_DOWN:
     case OIS::KC_S:
-        this->playerInput.signals.move(DIRECTION::BACKWARD, false);
+        this->playerInput.signals.move(BACKWARD, false);
         break;
     case OIS::KC_LEFT:
     case OIS::KC_A:
-        this->playerInput.signals.move(DIRECTION::LEFT, false);
+        this->playerInput.signals.move(LEFT, false);
         break;
     case OIS::KC_RIGHT:
     case OIS::KC_D:
-        this->playerInput.signals.move(DIRECTION::RIGHT, false);
+        this->playerInput.signals.move(RIGHT, false);
         break;
     case OIS::KC_SPACE:
         this->playerInput.signals.jump(false);

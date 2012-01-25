@@ -53,19 +53,19 @@ void Player::addInput(PlayerInput &input)
 
 void Player::movement(DIRECTION direction, bool state)
 {
-    if (direction == DIRECTION::FORWARD)
+    if (direction == FORWARD)
     {
         this->velocity.z = -Player::MOVEMENT_SPEED * state;
     }
-    else if (direction == DIRECTION::BACKWARD)
+    else if (direction == BACKWARD)
     {
         this->velocity.z = Player::MOVEMENT_SPEED * state;
     }
-    else if (direction == DIRECTION::LEFT)
+    else if (direction == LEFT)
     {
         this->velocity.x = -Player::MOVEMENT_SPEED * state;
     }
-    else if (direction == DIRECTION::RIGHT)
+    else if (direction == RIGHT)
     {
         this->velocity.x = Player::MOVEMENT_SPEED * state;
     }
