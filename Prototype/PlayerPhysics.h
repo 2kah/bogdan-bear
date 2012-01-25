@@ -30,8 +30,11 @@ protected:
     virtual void playerUpdated(Player *player);
 
     Player *player;
-	//btRigidBody* playerRigidBody;
+
+	btScalar walkSpeed;
 	btVector3 walkDirection;
+	btVector3 oldWalkDirection;
+	btScalar airMovementSpeed;
 };
 
 #endif // #ifndef __PlayerPhysics_h_
