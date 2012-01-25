@@ -10,6 +10,13 @@ TowerBuilder::TowerBuilder(Tower *tower)
 
     this->timer = 0;
     this->level = this->tower->levels - 1;
+
+	/*
+	//TODO: set to max number of blocks
+	blocksAvailable = 1000;
+	//TODO: make cvar
+	maxRegeneratingMetaShapes = 5;
+	regeneratingMetaShapes = 0;*/
 }
 
 TowerBuilder::~TowerBuilder(void)
@@ -48,6 +55,38 @@ void TowerBuilder::blocksUpdated(Tower *tower, unsigned level)
 
 void TowerBuilder::regenerate(void)
 {
+	/*
+	//Only proceed if there are actually any missing blocks to regenerate
+	if(blocksAvailable == 0)
+	{
+		return;
+	}
+
+	//first work out whether to start a new meta shape or not, currently can only start 1 new meta shape per frame
+	//if max regnerating then obviously don't start any more
+	if(regeneratingMetaShapes < maxRegeneratingMetaShapes)
+	{
+		//if no meta shapes or a lot of blocks available (given the number of meta shapes already regenerating then start a new meta shape
+		//TODO: tweak the value (currently 30) defining how many blocks per meta shape is a lot
+		if(regeneratingMetaShapes == 0 || (blocksAvailable / regeneratingMetaShapes) > 30)
+		{
+			//start a new meta shape
+			regeneratingMetaShapes++;
+			//find a relatively empty chunk (high probability of an 'open contact')
+			//randomly pick which meta shape to generate (if 'open contact' then one which fits)
+			//decide the size
+			//store which blocks would be filled by the meta shape if it were complete
+		}
+	}
+
+	//iterate over all currently regenerating meta shapes
+	for(int i = 0; i < regeneratingMetaShapes; i++)
+	{
+		//distribute some of the available blocks (randomly?) over the regenerating meta shapes
+		//if a meta shape is finished then regeneratingMetaShapes--;
+	}*/
+
+
     /*
     for (unsigned level = 0; level < 1; ++level)
     {
