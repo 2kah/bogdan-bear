@@ -23,6 +23,9 @@ if(WIN32)
 	set(OGRE_SAMPLES_INCLUDEPATH
 		$ENV{OGRE_HOME}/Samples/include
 	)
+  
+  set(${BULLET_PHYSICS_SOURCE_DIR}/bullet)
+  set(BULLET_LIBS BulletDynamics BulletCollision LinearMath BulletWorldImporter BulletFileLoader)
 endif(WIN32)
  
 if(UNIX)
@@ -39,6 +42,8 @@ if(UNIX)
 	else ()
 	  message(SEND_ERROR "Failed to find module path.")
 	endif(EXISTS "/usr/local/lib/OGRE/cmake")
+  
+  find_package(Bullet REQUIRED)
 endif(UNIX)
  
 if (CMAKE_BUILD_TYPE STREQUAL "")
@@ -57,7 +62,7 @@ set(CMAKE_INSTALL_PREFIX "$ENV{OGRE_HOME}/boost_1_44")
 #set(BULLET_LIBS BulletDynamics BulletCollision LinearMath BulletWorldImporter BulletFileLoader)
 set(BULLET_INCLUDE ${Prototype_SOURCE_DIR}/bullet/src)
 
-find_package(Bullet REQUIRED)
+#find_package(Bullet REQUIRED)
 find_package(OGRE REQUIRED)
 find_package(OIS REQUIRED)
 
