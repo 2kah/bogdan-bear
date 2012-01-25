@@ -53,10 +53,11 @@ set(CMAKE_INSTALL_PREFIX "$ENV{OGRE_HOME}/boost_1_44")
 
 #set(BULLET_LIBS ${Prototype_SOURCE_DIR}/bullet/lib/BulletDynamics ${Prototype_SOURCE_DIR}/bullet/lib/BulletCollision ${Prototype_SOURCE_DIR}/bullet/lib/LinearMath)
 
-set(${BULLET_PHYSICS_SOURCE_DIR}/bullet)
-set(BULLET_LIBS BulletDynamics BulletCollision LinearMath BulletWorldImporter BulletFileLoader)
+#set(${BULLET_PHYSICS_SOURCE_DIR}/bullet)
+#set(BULLET_LIBS BulletDynamics BulletCollision LinearMath BulletWorldImporter BulletFileLoader)
 set(BULLET_INCLUDE ${Prototype_SOURCE_DIR}/bullet/src)
- 
+
+find_package(Bullet REQUIRED)
 find_package(OGRE REQUIRED)
 find_package(OIS REQUIRED)
 
