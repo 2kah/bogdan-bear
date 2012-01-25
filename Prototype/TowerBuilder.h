@@ -20,6 +20,10 @@ public:
 protected:
     unsigned timer;
     unsigned level;
+
+	int blocksAvailable;
+	int maxRegeneratingMetaShapes;
+	int regeneratingMetaShapes;
 };
 
 #endif // #ifndef __TowerBuilder_h_
