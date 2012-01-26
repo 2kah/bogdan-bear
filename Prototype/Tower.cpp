@@ -128,6 +128,8 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
     {
         sector_left = 0;
         sector_right = this->sectors - 1;
+
+        std::cout << "CENTRE" << std::endl;
     }
     //*/
 
@@ -140,6 +142,11 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
         {
             // all goes a bit wrong here...
 
+            for (unsigned sector = 0; sector < this->blocks[level][layer].size(); ++sector) { 
+                this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && (this->getBlockPosition(level, layer, sector) - position).length() > radius + this->block_height / 2;
+            }
+
+            /*
             unsigned divisions = this->blocks[level][layer].size();
 
             double ratio = divisions / (double) this->sectors;
@@ -148,21 +155,23 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
 
             std::cout << left << ", " << right << std::endl;
 
+            // TODO: cynlindrical collisions?
             if (left < right) {
                 for (int sector = left; sector < right; ++sector)
                 {
-                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && (this->getBlockPosition(level, layer, sector) - position).length() > radius + this->block_height / 2;
+                    this->blocks[level][layer][sector] = false; //this->blocks[level][layer][sector] && (this->getBlockPosition(level, layer, sector) - position).length() > radius + this->block_height / 2;
                 }
             } else {
                 for (int sector = left; sector < divisions; ++sector)
                 {
-                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && (this->getBlockPosition(level, layer, sector) - position).length() > radius + this->block_height / 2;
+                    this->blocks[level][layer][sector] = false; //this->blocks[level][layer][sector] && (this->getBlockPosition(level, layer, sector) - position).length() > radius + this->block_height / 2;
                 }
                 for (int sector = 0; sector < right; ++sector)
                 {
-                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && (this->getBlockPosition(level, layer, sector) - position).length() > radius + this->block_height / 2;
+                    this->blocks[level][layer][sector] = false; //this->blocks[level][layer][sector] && (this->getBlockPosition(level, layer, sector) - position).length() > radius + this->block_height / 2;
                 }
             }
+            */
         }
     }
 }
