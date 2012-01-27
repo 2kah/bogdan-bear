@@ -62,7 +62,7 @@ void Tower::update()
 
 void Tower::carveSphere(Ogre::Vector3 position, double radius)
 {
-    int level_bottom = 0, level_top = this->levels - 1;
+    int level_bottom = 0, level_top = this->levels;
     int layer_inner = 0, layer_outer = this->layers;
     int sector_left = 0, sector_right = this->sectors - 1;
 
@@ -70,7 +70,7 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
 
     // narrow down relevant levels
     level_bottom = std::max<int>(0, (position.y - radius) / this->block_height);
-    level_top = std::min<int>(this->levels, (position.y + radius) / this->block_height);
+    level_top = std::min<int>(this->levels, (position.y + radius) / this->block_height + 1);
 
     // narrow down relevant layers
     double inner_radius = point_distance - radius;
@@ -85,8 +85,6 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
 
         double inner_distance = inner_radius - layer_radius;
         double outer_distance = layer_radius - outer_radius;
-        
-        std::cout << "inner/best: " << inner_distance << ", " << best_inner_distance << std::endl;
 
         if (inner_distance > 0 && best_inner_distance > inner_distance) {
             best_inner_distance = inner_distance;
@@ -133,17 +131,24 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
     }
     //*/
 
-    //std::cout << layer_inner << ", " << layer_outer << std::endl;
-    //std::cout << sector_left << ", " << sector_right << std::endl;
+    std::set<unsigned> levels;
 
-    for (unsigned level = level_bottom; level <= level_top; ++level)
+    //std::cout << layer_inner << ", " << layer_outer << std::endl;
+    //std::cout << sector_left << ", " << sector_right << std::endl;    
+
+    for (unsigned level = level_bottom; level < level_top; ++level)
     {
+        levels.insert((level / 4) * 4);
+
         for (unsigned layer = layer_inner; layer < layer_outer; ++layer)
         {
             // all goes a bit wrong here...
 
             for (unsigned sector = 0; sector < this->blocks[level][layer].size(); ++sector) { 
-                this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && (this->getBlockPosition(level, layer, sector) - position).length() > radius + this->block_height / 2;
+                Ogre::Vector3 difference = this->getBlockPosition(level, layer, sector) - position;
+                double distance = difference.length();
+
+                this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && distance > radius + this->block_height / 2;
             }
 
             /*
@@ -174,6 +179,13 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
             */
         }
     }
+
+    for(std::set<unsigned>::iterator i = levels.begin(); i != levels.end(); ++i)
+    {
+        unsigned level = *i;
+        
+        this->signals.levelUpdated(this, level);
+    }
 }
 
 void Tower::rebuild()
@@ -194,7 +206,7 @@ Ogre::Vector3 Tower::getBlockPosition(unsigned level, unsigned layer, unsigned s
     double radius = this->radii[layer] + this->heights[layer] / 2;
     
     position.x = radius * std::cos(angle);
-    position.y = (this->block_height / 2) * (level + 0.5);
+    position.y = this->block_height * (level + 0.5);
     position.z = radius * std::sin(angle);
 
     return position;

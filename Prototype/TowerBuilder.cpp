@@ -88,11 +88,11 @@ void TowerBuilder::regenerate(void)
 
 
     /*
-    for (unsigned level = 0; level < 2; ++level)
+    for (unsigned level = 0; level < 20; ++level)
     {
         for (unsigned layer = 0; layer < this->tower->layers; ++layer)
         {
-            for (unsigned sector = 0; sector < this->tower->blocks[level][layer].size(); ++sector)
+            for (unsigned sector = 0; sector < this->tower->blocks[level][layer].size() / 16; ++sector)
             {
                 this->tower->blocks[level][layer][sector] = true; //(rand() % 3 != 1);
             }
