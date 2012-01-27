@@ -18,9 +18,10 @@ public:
     virtual ~PhysicsChunk();
 
     virtual void rebuild();
+
+    BoundingVolume bounds;
 protected:
     Tower *tower;
-    BoundingVolume bounds;
     btDiscreteDynamicsWorld *dynamicsWorld;
     btRigidBody *body;
 };

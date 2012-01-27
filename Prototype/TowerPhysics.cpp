@@ -136,6 +136,8 @@ void TowerPhysics::towerUpdated(Tower *tower, BoundingVolume bounds)
     {
         PhysicsChunk *chunk = *it;
         
-        chunk->rebuild();
+        if (chunk->bounds.collides(bounds)) {
+            chunk->rebuild();
+        }
     }
 }
