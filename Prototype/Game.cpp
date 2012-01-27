@@ -189,6 +189,7 @@ void Game::createViewports(void)
     mCamera->setAspectRatio(Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
 }
 
+//TODO: make this use changeable key bindings (not hard coded)
 bool Game::keyPressed(const OIS::KeyEvent &arg)
 {
     BaseApplication::keyPressed(arg);
