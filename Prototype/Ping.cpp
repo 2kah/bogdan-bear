@@ -17,13 +17,15 @@
 #include <stdlib.h>
 #include "Gets.h"
 
+#include "Ping.h"
+
 #ifdef WIN32
 #include "Kbhit.h"
 #else
 #include "Kbhit.h"
 #endif
 
-int main(void)
+int dicksmain(void)
 {
 	// Pointers to the interfaces of our server and client.
 	// Note we can easily have both in the same program

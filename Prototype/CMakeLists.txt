@@ -26,6 +26,9 @@ if(WIN32)
   
   set(${BULLET_PHYSICS_SOURCE_DIR}/bullet)
   set(BULLET_LIBS BulletDynamics BulletCollision LinearMath BulletWorldImporter BulletFileLoader)
+  
+  set(${RAKNET_SOURCE_DIR}/raknet)
+  set(RAKNET_LIBS RakNetDLL RakNetStatic)
 endif(WIN32)
  
 if(UNIX)
@@ -45,7 +48,7 @@ if(UNIX)
   
   find_package(Bullet REQUIRED)
 endif(UNIX)
- 
+
 if (CMAKE_BUILD_TYPE STREQUAL "")
   # CMake defaults to leaving CMAKE_BUILD_TYPE empty. This screws up
   # differentiation between debug and release builds.
@@ -90,6 +93,7 @@ find_package(Boost REQUIRED)
 include_directories(${Boost_INCLUDE_DIR})
 add_definitions(-DBOOST_ALL) # _NO_LIB)
 set(OGRE_LIBRARIES ${OGRE_LIBRARIES} ${Boost_LIBRARIES})
+set(RAKNET_LIBRARIES)
  
 # raknet maybe
 include_directories("raknet/Source")
@@ -177,7 +181,7 @@ set(SRCS
     
     ./BtOgre.cpp
     
-    #./Ping.cpp
+    ./Ping.cpp
 )
 
 find_package(Boost 1.47 REQUIRED)
@@ -207,6 +211,7 @@ target_link_libraries(
     ${OGRE_LIBRARIES}
     ${OIS_LIBRARIES}
     ${BULLET_LIBS}
+    ${RAKNET_LIBS}
     ${BOOST_LIBRARIES}
 )
  
