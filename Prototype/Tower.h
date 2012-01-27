@@ -9,6 +9,15 @@
 #include <OGRE/OgreColourValue.h>
 
 struct BoundingVolume {
+    BoundingVolume() {};
+    BoundingVolume(unsigned level_bottom, unsigned level_top,
+                   unsigned layer_inner,  unsigned layer_outer,
+                   unsigned sector_left,  unsigned sector_right)
+    : level_bottom(level_bottom), level_top(level_top),
+    layer_inner(layer_inner), layer_outer(layer_outer),
+    sector_left(sector_left), sector_right(sector_right)
+    {};
+
     unsigned level_bottom, level_top;
     unsigned layer_inner, layer_outer;
     unsigned sector_left, sector_right;

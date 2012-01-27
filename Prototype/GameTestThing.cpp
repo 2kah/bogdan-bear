@@ -60,7 +60,7 @@ GameTestThing::GameTestThing(Game *game)
     new TowerPhysics(this->game->tower, this->game->dynamicsWorld);
 
     // Add a player
-    this->player = new Player(Ogre::Vector3(0, 10, 500));
+    this->player = new Player(Ogre::Vector3(0, 10, 250));
     this->game->player = this->player;
 
     // Link local input to the player
