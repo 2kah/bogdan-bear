@@ -99,8 +99,25 @@ void TowerBuilder::regenerate(void)
         }
     }
 
-    return;
+    //return;
     //*/
+
+    for (unsigned level = 0; level < this->tower->levels; ++level)
+    {
+        for (unsigned layer = 9; layer < this->tower->layers; ++layer)
+        {
+            unsigned sectors = this->tower->blocks[level][layer].size();
+
+            unsigned stair_sector = level % sectors;
+
+            for (unsigned height = 0; height < 16; ++height)
+            {
+                this->tower->blocks[(level + height) % this->tower->levels][layer][stair_sector] = false;
+            }
+        }
+    }
+
+    return;
 
     for (unsigned level = 0; level < this->tower->levels; ++level)
     {

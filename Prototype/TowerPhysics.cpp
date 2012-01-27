@@ -81,7 +81,7 @@ TowerPhysics::TowerPhysics(Tower *tower, btDiscreteDynamicsWorld *dynamicsWorld)
     
     for (unsigned level = 0; level < this->tower->levels / 4; ++level)
     {
-        this->chunks.push_back(new PhysicsChunk(tower, BoundingVolume(level * 4, (level + 1) * 4 - 1, 0, this->tower->layers, 0, 0), dynamicsWorld));
+        this->chunks.push_back(new PhysicsChunk(tower, BoundingVolume(level * 4, (level + 1) * 4, 0, this->tower->layers, 0, 0), dynamicsWorld));
     }
 
     //*/
