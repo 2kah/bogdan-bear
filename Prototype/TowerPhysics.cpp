@@ -4,14 +4,58 @@
 
 #include <btBulletDynamicsCommon.h>
 #include <btBulletCollisionCommon.h>
+#include <BulletCollision/CollisionShapes/btTriangleMeshShape.h>
+#include <BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h>
+
+#include "BtOgreExtras.h"
 
 #include "Tower.h"
 
 TowerPhysics::TowerPhysics(Tower *tower, btDiscreteDynamicsWorld* dynamicsWorld)
 {
     this->tower = tower;
+
+    ///*
+    btTriangleMesh *data = new btTriangleMesh();
+
+    std::vector<BlockTriangle> triangles;
+
+    for (unsigned level = 0; level < this->tower->levels; ++level)
+    {
+        for (unsigned layer = 0; layer < this->tower->layers; ++layer)
+        {
+            for (unsigned sector = 0; sector < this->tower->blocks[level][layer].size(); ++sector)
+            {
+                if (this->tower->blocks[level][layer][sector])
+                {
+                    this->tower->getBlockTriangles(triangles, level, layer, sector);
+                }
+            }
+        }
+    }
+
+    for(std::vector<BlockTriangle>::iterator i = triangles.begin(); i != triangles.end(); ++i)
+    {
+        BlockTriangle triangle = *i;
+
+        data->addTriangle(BtOgre::Convert::toBullet(triangle.points[0]),
+                          BtOgre::Convert::toBullet(triangle.points[1]),
+                          BtOgre::Convert::toBullet(triangle.points[2]));
+    }
+
+    btBvhTriangleMeshShape *shape = new btBvhTriangleMeshShape(data, false, true);
     
-    for (unsigned level = 0; level < 10 /*this->tower->levels*/; ++level)
+    btDefaultMotionState* blockMotionState = new btDefaultMotionState(btTransform(btMatrix3x3::getIdentity(), btVector3(0, 0, 0)));
+    btRigidBody::btRigidBodyConstructionInfo blockRigidBodyCI(0, blockMotionState, shape, btVector3(0, 0, 0));           
+    btRigidBody *blockRigidBody = new btRigidBody(blockRigidBodyCI);
+    blockRigidBody->setUserPointer(this->tower);
+    blockRigidBody->setActivationState(ISLAND_SLEEPING);
+    dynamicsWorld->addRigidBody(blockRigidBody);
+
+    return;
+    //*/
+
+    for (unsigned level = 0; level < this->tower->levels; ++level)
     {
         for (unsigned layer = 0; layer < this->tower->layers; ++layer)
         {
@@ -24,14 +68,14 @@ TowerPhysics::TowerPhysics(Tower *tower, btDiscreteDynamicsWorld* dynamicsWorld)
                     btConvexHullShape *blockShape = new btConvexHullShape();
 
                     // ugly
-                    blockShape->addPoint(btVector3(points.a1.x, points.a1.y, points.a1.z));
-                    blockShape->addPoint(btVector3(points.b1.x, points.b1.y, points.b1.z));
-                    blockShape->addPoint(btVector3(points.c1.x, points.c1.y, points.c1.z));
-                    blockShape->addPoint(btVector3(points.d1.x, points.d1.y, points.d1.z));
-                    blockShape->addPoint(btVector3(points.a2.x, points.a2.y, points.a2.z));
-                    blockShape->addPoint(btVector3(points.b2.x, points.b2.y, points.b2.z));
-                    blockShape->addPoint(btVector3(points.c2.x, points.c2.y, points.c2.z));
-                    blockShape->addPoint(btVector3(points.d2.x, points.d2.y, points.d2.z));
+                    blockShape->addPoint(BtOgre::Convert::toBullet(points.a1));
+                    blockShape->addPoint(BtOgre::Convert::toBullet(points.b1));
+                    blockShape->addPoint(BtOgre::Convert::toBullet(points.c1));
+                    blockShape->addPoint(BtOgre::Convert::toBullet(points.d1));
+                    blockShape->addPoint(BtOgre::Convert::toBullet(points.a2));
+                    blockShape->addPoint(BtOgre::Convert::toBullet(points.b2));
+                    blockShape->addPoint(BtOgre::Convert::toBullet(points.c2));
+                    blockShape->addPoint(BtOgre::Convert::toBullet(points.d2));
 
                     btDefaultMotionState* blockMotionState = new btDefaultMotionState(btTransform(btMatrix3x3::getIdentity(), btVector3(0, 0, 0)));
 
@@ -39,7 +83,7 @@ TowerPhysics::TowerPhysics(Tower *tower, btDiscreteDynamicsWorld* dynamicsWorld)
                     
                     btRigidBody *blockRigidBody = new btRigidBody(blockRigidBodyCI);
 
-                    blockRigidBody->setUserPointer(new BlockReference(this->tower, level, layer, sector));
+                    blockRigidBody->setUserPointer(this->tower);
 
                     blockRigidBody->setActivationState(ISLAND_SLEEPING); // no benefit?
 
@@ -52,4 +96,9 @@ TowerPhysics::TowerPhysics(Tower *tower, btDiscreteDynamicsWorld* dynamicsWorld)
 
 TowerPhysics::~TowerPhysics()
 {
+}
+
+void TowerPhysics::towerUpdated(Tower *tower, BoundingVolume bounds)
+{
+
 }

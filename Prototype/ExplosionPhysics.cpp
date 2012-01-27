@@ -35,31 +35,36 @@ ExplosionPhysics::ExplosionPhysics(Explosion *explosion, btDiscreteDynamicsWorld
 
     std::vector<btCollisionObject *> destructions;
     
-
-    Tower *tower = NULL;
+    this->tower = NULL;
 
     for(int i = 0; i < this->ghost->getNumOverlappingObjects(); i++)
     {
         btCollisionObject *blockObject = this->ghost->getOverlappingObject(i);
         
-        BlockReference *block = (BlockReference *) blockObject->getUserPointer();
+        Tower *tower = (Tower *) blockObject->getUserPointer();
 
-        if (block != NULL) {
+        if (tower != NULL) {
             //block->tower->blocks[block->level][block->layer][block->sector] = false;
-            tower = block->tower;
+            this->tower = tower;
 
-            destructions.push_back(blockObject);
+            //destructions.push_back(blockObject);
         }
     }
     
     for(std::vector<btCollisionObject *>::iterator it = destructions.begin(); it != destructions.end(); ++it) {
         btCollisionObject *blockObject = *it;
-
-        this->dynamicsWorld->removeCollisionObject(blockObject);
+    
+       this->dynamicsWorld->removeCollisionObject(blockObject);
     }
 
+    /*
     if (tower != NULL) {
         tower->carveSphere(this->explosion->position, Explosion::SIZE);
+    }
+    */
+    
+    if (this->tower != NULL) {
+        this->tower->carveSphere(this->explosion->position, Explosion::SIZE);
     }
 }
 

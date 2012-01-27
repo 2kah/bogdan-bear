@@ -6,6 +6,8 @@ class btGhostObject;
 
 class Explosion;
 
+class Tower;
+
 class ExplosionPhysics
 {
 public:
@@ -19,6 +21,8 @@ protected:
     btDiscreteDynamicsWorld *dynamicsWorld;
     
     btGhostObject *ghost;
+
+    Tower *tower;
 };
 
 #endif // #ifndef __ExplosionPhysics_h_

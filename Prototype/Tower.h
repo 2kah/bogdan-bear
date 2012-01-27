@@ -8,6 +8,12 @@
 #include <OGRE/OgreVector3.h>
 #include <OGRE/OgreColourValue.h>
 
+struct BoundingVolume {
+    unsigned level_bottom, level_top;
+    unsigned layer_inner, layer_outer;
+    unsigned sector_left, sector_right;
+};
+
 // Points as shown in http://you.mongle.me/tower/circles/gamesproject.png
 // base: a1, b1, c1, d1
 //  top: a2, b2, c2, d2
@@ -42,6 +48,7 @@ struct BlockReference
 namespace {
 struct TowerSignals {
     boost::signal<void (Tower *, unsigned level)> levelUpdated;
+    boost::signal<void (Tower *, BoundingVolume bounds)> updated;
 };
 }
 

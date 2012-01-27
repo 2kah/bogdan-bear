@@ -136,6 +136,10 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
     //std::cout << layer_inner << ", " << layer_outer << std::endl;
     //std::cout << sector_left << ", " << sector_right << std::endl;    
 
+    BoundingVolume bounds = {level_bottom, level_top,
+                             layer_inner,  layer_outer,
+                             sector_left,  sector_right};
+
     for (unsigned level = level_bottom; level < level_top; ++level)
     {
         levels.insert((level / 4) * 4);
@@ -186,6 +190,8 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
         
         this->signals.levelUpdated(this, level);
     }
+
+    this->signals.updated(this, bounds);
 }
 
 void Tower::rebuild()
@@ -298,8 +304,7 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
 
     // clockwise face
     if (clock) {
-        Ogre::Vector3 clock_normal = points.b2 - points.b1;
-        clock_normal = clock_normal.crossProduct(points.b2 - points.c2);
+        Ogre::Vector3 clock_normal = Ogre::Vector3::UNIT_Y.crossProduct(points.b2 - points.c2);
         clock_normal.normalise();
 
         BlockTriangle clock_1;
@@ -334,8 +339,7 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
 
     // anticlockwise face
     if (anti) {
-        Ogre::Vector3 anti_normal = points.d2 - points.a2;
-        anti_normal = anti_normal.crossProduct(points.d2 - points.d1);
+        Ogre::Vector3 anti_normal = (points.d2 - points.a2).crossProduct(Ogre::Vector3::UNIT_Y);
         anti_normal.normalise();
 
         BlockTriangle anti_1;
