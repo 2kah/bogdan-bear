@@ -99,20 +99,49 @@ void PlayerPhysics::playerUpdated(Player *player)
 void PlayerPhysics::movement(DIRECTION direction, bool state)
 {
     if (direction == FORWARD)
-    {
-		walkDirection.setZ(-Player::MOVEMENT_SPEED * state);
+	{
+		//there must be a nicer way of doing this surely
+		if(state)
+		{
+			walkDirection.setZ(walkDirection.z() - Player::MOVEMENT_SPEED);
+		}
+		else
+		{
+			walkDirection.setZ(walkDirection.z() + Player::MOVEMENT_SPEED);
+		}
     }
     else if (direction == BACKWARD)
     {
-        walkDirection.setZ(Player::MOVEMENT_SPEED * state);
+		if(state)
+		{
+			walkDirection.setZ(walkDirection.z() + Player::MOVEMENT_SPEED);
+		}
+		else
+		{
+			walkDirection.setZ(walkDirection.z() - Player::MOVEMENT_SPEED);
+		}
     }
     else if (direction == LEFT)
     {
-        walkDirection.setX(-Player::MOVEMENT_SPEED * state);
+		if(state)
+		{
+			walkDirection.setX(walkDirection.x() - Player::MOVEMENT_SPEED);
+		}
+		else
+		{
+			walkDirection.setX(walkDirection.x() + Player::MOVEMENT_SPEED);
+		}
     }
     else if (direction == RIGHT)
     {
-        walkDirection.setX(Player::MOVEMENT_SPEED * state);
+		if(state)
+		{
+			walkDirection.setX(walkDirection.x() + Player::MOVEMENT_SPEED);
+		}
+		else
+		{
+			walkDirection.setX(walkDirection.x() - Player::MOVEMENT_SPEED);
+		}
     }
 }
 
