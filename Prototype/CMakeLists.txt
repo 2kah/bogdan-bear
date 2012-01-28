@@ -125,6 +125,7 @@ set(HDRS
     ./BtKinematicCharacterController.h
     
     ./Platform.h
+    ./PlatformPhysics.h
     ./PlatformGraphics.h
     
     ./Rocket.h
@@ -166,6 +167,7 @@ set(SRCS
     ./BtKinematicCharacterController.cpp
     
     ./Platform.cpp
+    ./PlatformPhysics.cpp
     ./PlatformGraphics.cpp
     
     ./Rocket.cpp
