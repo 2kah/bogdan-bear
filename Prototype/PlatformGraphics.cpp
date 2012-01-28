@@ -20,8 +20,8 @@ PlatformGraphics::PlatformGraphics(Platform *platform, Ogre::SceneManager *scene
     this->platformUpdated(this->platform);
 
     this->platform->signals.expired.connect(boost::bind(&PlatformGraphics::platformExpired, this, _1));
-    //this->platform->signals.destroyed.connect(boost::bind(&PlatformGraphics::platformExpired, this, _1));
-    this->platform->signals.updated.connect(boost::bind(&PlatformGraphics::platformUpdated, this, _1));
+    this->platform->signals.destroyed.connect(boost::bind(&PlatformGraphics::platformExpired, this, _1));
+    //this->platform->signals.updated.connect(boost::bind(&PlatformGraphics::platformUpdated, this, _1)); // WARNING: this can be called after the graphics deletes itself atm!
 }
 
 PlatformGraphics::~PlatformGraphics()
