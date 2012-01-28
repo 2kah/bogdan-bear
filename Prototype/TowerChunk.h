@@ -31,7 +31,12 @@ class TowerChunk
 public:
     TowerChunk()
         : tower(NULL),
-        bounds(0, 0, 0, 0, 0, 0) {}
+        bounds(0, 0, 0, 0, 0, 0)
+    {}
+    TowerChunk(Tower *tower, BoundingVolume bounds)
+        : tower(tower),
+        bounds(bounds)
+    {}
 
     Tower *tower;
     BoundingVolume bounds;

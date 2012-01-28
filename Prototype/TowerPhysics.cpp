@@ -12,11 +12,9 @@
 #include "Tower.h"
 
 PhysicsChunk::PhysicsChunk(Tower *tower, BoundingVolume bounds, btDiscreteDynamicsWorld *dynamicsWorld)
+    : TowerChunk(tower, bounds),
+    dynamicsWorld(dynamicsWorld)
 {
-    this->tower = tower;
-    this->bounds = bounds;
-    this->dynamicsWorld = dynamicsWorld;
-
     this->body = NULL;
 
     this->rebuild();
