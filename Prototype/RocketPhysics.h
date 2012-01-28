@@ -2,7 +2,7 @@
 #define __RocketPhysics_h_
 
 class btDiscreteDynamicsWorld;
-class btGhostObject;
+class btPairCachingGhostObject;
 
 class Rocket;
 class Explosion;
@@ -19,7 +19,7 @@ protected:
     Rocket *rocket;
     btDiscreteDynamicsWorld *dynamicsWorld;
     
-    btGhostObject *ghost;
+    btPairCachingGhostObject *ghost;
 };
 
 #endif // #ifndef __RocketPhysics_h_
