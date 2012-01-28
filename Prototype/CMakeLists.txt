@@ -109,6 +109,7 @@ set(HDRS
     ./Object.h
     
     ./Tower.h
+    ./TowerChunk.h
     ./TowerBuilder.h
     ./TowerPhysics.h
     ./TowerGraphics.h
