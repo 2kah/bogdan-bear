@@ -40,12 +40,12 @@ GameTestThing::GameTestThing(Game *game)
     this->game = game;
     
     // Create an empty tower
-    unsigned divisions[] = {9, 18, 18, 36, 36, 36, 72, 72, 72, 72, 72, 72, 72, 72};
-    std::vector<unsigned> structure(divisions, divisions + 14);
+    unsigned divisions[] = {9, 18, 18, 36, 36, 36, 72, 72, 72, 72, 72, 72, 72, 72, 72, 144, 144, 144, 144, 144, 144, 144};
+    std::vector<unsigned> structure(divisions, divisions + 14 + 8);
     //unsigned divisions[] = {32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32};
     //std::vector<unsigned> structure(divisions, divisions + 14);
 
-    this->game->tower = new Tower(64, structure);
+    this->game->tower = new Tower(1024, structure);
     //this->game->tower = new Tower(128, 16, 32);
 
     // Create a tower builder and generate the tower with it
@@ -60,7 +60,7 @@ GameTestThing::GameTestThing(Game *game)
     new TowerPhysics(this->game->tower, this->game->dynamicsWorld);
 
     // Add a player
-    this->player = new Player(Ogre::Vector3(0, 10, 250));
+    this->player = new Player(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height + 10, 10));
     this->game->player = this->player;
 
     // Link local input to the player
