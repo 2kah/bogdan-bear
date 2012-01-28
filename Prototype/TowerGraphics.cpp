@@ -40,7 +40,7 @@ TowerGraphics::TowerGraphics(Tower *tower, Ogre::SceneManager *sceneManager)
         this->wholething->begin("BOGDANTower", Ogre::RenderOperation::OT_TRIANGLE_LIST);
         this->wholething->position(0, 0, 0);
         this->wholething->normal(Ogre::Vector3::UNIT_SCALE);
-        //this->wholething->colour(Ogre::ColourValue::White);
+        this->wholething->colour(Ogre::ColourValue::White);
         this->wholething->triangle(0, 0, 0);
         this->wholething->end();
 

@@ -238,8 +238,12 @@ BlockPoints Tower::getBlockPoints(unsigned level, unsigned layer, unsigned secto
     Ogre::Vector3 c1((radius + size) * cos(offset), bottom, (radius + size) * sin(offset));
     Ogre::Vector3 c2((radius + size) * cos(offset),    top, (radius + size) * sin(offset));
 
+    Ogre::Vector3 e1((radius + size) * cos(offset + angle/2), bottom, (radius + size) * sin(offset + angle/2));
+    Ogre::Vector3 e2((radius + size) * cos(offset + angle/2),    top, (radius + size) * sin(offset + angle/2));
+
     BlockPoints points = {a1, b1, c1, d1,
-                          a2, b2, c2, d2};
+                          a2, b2, c2, d2,
+                          e1, e2};
 
     return points;
 }
@@ -366,72 +370,162 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
         triangles.push_back(anti_2);
     }
 
-    // wrong up face
+    // up face
     if (top) {
         Ogre::Vector3 up_normal(Ogre::Vector3::UNIT_Y);
 
-        BlockTriangle up_1;
-        up_1.points[0] = points.c2;
-        up_1.points[1] = points.b2;
-        up_1.points[2] = points.d2;
+        if (this->subdivide[layer]) {
+            BlockTriangle up_1;
+            up_1.points[0] = points.c2;
+            up_1.points[1] = points.b2;
+            up_1.points[2] = points.e2;
 
-        up_1.colours[0] = Ogre::ColourValue::Green;
-        up_1.colours[1] = Ogre::ColourValue::Blue;
-        up_1.colours[2] = Ogre::ColourValue::Red;
+            up_1.colours[0] = Ogre::ColourValue::Green;
+            up_1.colours[1] = Ogre::ColourValue::Blue;
+            up_1.colours[2] = Ogre::ColourValue::Red;
 
-        up_1.normals[0] = up_normal;
-        up_1.normals[1] = up_normal;
-        up_1.normals[2] = up_normal;
+            up_1.normals[0] = up_normal;
+            up_1.normals[1] = up_normal;
+            up_1.normals[2] = up_normal;
 
-        BlockTriangle up_2;
-        up_2.points[0] = points.d2;
-        up_2.points[1] = points.a2;
-        up_2.points[2] = points.c2;
+            BlockTriangle up_2;
+            up_2.points[0] = points.d2;
+            up_2.points[1] = points.a2;
+            up_2.points[2] = points.e2;
 
-        up_2.colours[0] = Ogre::ColourValue::Red;
-        up_2.colours[1] = Ogre::ColourValue::White;
-        up_2.colours[2] = Ogre::ColourValue::Green;
+            up_2.colours[0] = Ogre::ColourValue::Red;
+            up_2.colours[1] = Ogre::ColourValue::White;
+            up_2.colours[2] = Ogre::ColourValue::Green;
 
-        up_2.normals[0] = up_normal;
-        up_2.normals[1] = up_normal;
-        up_2.normals[2] = up_normal;
+            up_2.normals[0] = up_normal;
+            up_2.normals[1] = up_normal;
+            up_2.normals[2] = up_normal;
 
-        triangles.push_back(up_1);
-        triangles.push_back(up_2);
+            BlockTriangle up_3;
+            up_3.points[0] = points.d2;
+            up_3.points[1] = points.e2;
+            up_3.points[2] = points.b2;
+
+            up_3.colours[0] = Ogre::ColourValue::Red;
+            up_3.colours[1] = Ogre::ColourValue::White;
+            up_3.colours[2] = Ogre::ColourValue::Green;
+
+            up_3.normals[0] = up_normal;
+            up_3.normals[1] = up_normal;
+            up_3.normals[2] = up_normal;
+
+            triangles.push_back(up_1);
+            triangles.push_back(up_2);
+            triangles.push_back(up_3);
+        } else {
+            BlockTriangle up_1;
+            up_1.points[0] = points.c2;
+            up_1.points[1] = points.b2;
+            up_1.points[2] = points.d2;
+
+            up_1.colours[0] = Ogre::ColourValue::Green;
+            up_1.colours[1] = Ogre::ColourValue::Blue;
+            up_1.colours[2] = Ogre::ColourValue::Red;
+
+            up_1.normals[0] = up_normal;
+            up_1.normals[1] = up_normal;
+            up_1.normals[2] = up_normal;
+
+            BlockTriangle up_2;
+            up_2.points[0] = points.d2;
+            up_2.points[1] = points.a2;
+            up_2.points[2] = points.c2;
+
+            up_2.colours[0] = Ogre::ColourValue::Red;
+            up_2.colours[1] = Ogre::ColourValue::White;
+            up_2.colours[2] = Ogre::ColourValue::Green;
+
+            up_2.normals[0] = up_normal;
+            up_2.normals[1] = up_normal;
+            up_2.normals[2] = up_normal;
+
+            triangles.push_back(up_1);
+            triangles.push_back(up_2);
+        }
     }
 
-    // wrong down face
+    // down face
     if (bottom) {
         Ogre::Vector3 down_normal(-Ogre::Vector3::UNIT_Y);
 
-        BlockTriangle down_1;
-        down_1.points[0] = points.d1;
-        down_1.points[1] = points.b1;
-        down_1.points[2] = points.c1;
+        if (this->subdivide[layer]) {
+            BlockTriangle down_1;
+            down_1.points[0] = points.e1;
+            down_1.points[1] = points.b1;
+            down_1.points[2] = points.c1;
 
-        down_1.colours[0] = Ogre::ColourValue::White;
-        down_1.colours[1] = Ogre::ColourValue::Green;
-        down_1.colours[2] = Ogre::ColourValue::Blue;
+            down_1.colours[0] = Ogre::ColourValue::White;
+            down_1.colours[1] = Ogre::ColourValue::Green;
+            down_1.colours[2] = Ogre::ColourValue::Blue;
 
-        down_1.normals[0] = down_normal;
-        down_1.normals[1] = down_normal;
-        down_1.normals[2] = down_normal;
+            down_1.normals[0] = down_normal;
+            down_1.normals[1] = down_normal;
+            down_1.normals[2] = down_normal;
 
-        BlockTriangle down_2;
-        down_2.points[0] = points.c1;
-        down_2.points[1] = points.a1;
-        down_2.points[2] = points.d1;
+            BlockTriangle down_2;
+            down_2.points[0] = points.e1;
+            down_2.points[1] = points.a1;
+            down_2.points[2] = points.d1;
 
-        down_2.colours[0] = Ogre::ColourValue::Blue;
-        down_2.colours[1] = Ogre::ColourValue::Red;
-        down_2.colours[2] = Ogre::ColourValue::White;
+            down_2.colours[0] = Ogre::ColourValue::Blue;
+            down_2.colours[1] = Ogre::ColourValue::Red;
+            down_2.colours[2] = Ogre::ColourValue::White;
 
-        down_2.normals[0] = down_normal;
-        down_2.normals[1] = down_normal;
-        down_2.normals[2] = down_normal;
+            down_2.normals[0] = down_normal;
+            down_2.normals[1] = down_normal;
+            down_2.normals[2] = down_normal;
 
-        triangles.push_back(down_1);
-        triangles.push_back(down_2);
+            BlockTriangle down_3;
+            down_3.points[0] = points.b1;
+            down_3.points[1] = points.e1;
+            down_3.points[2] = points.d1;
+
+            down_3.colours[0] = Ogre::ColourValue::Blue;
+            down_3.colours[1] = Ogre::ColourValue::Red;
+            down_3.colours[2] = Ogre::ColourValue::White;
+
+            down_3.normals[0] = down_normal;
+            down_3.normals[1] = down_normal;
+            down_3.normals[2] = down_normal;
+
+            triangles.push_back(down_1);
+            triangles.push_back(down_2);
+            triangles.push_back(down_3);
+        } else {
+            BlockTriangle down_1;
+            down_1.points[0] = points.d1;
+            down_1.points[1] = points.b1;
+            down_1.points[2] = points.c1;
+
+            down_1.colours[0] = Ogre::ColourValue::White;
+            down_1.colours[1] = Ogre::ColourValue::Green;
+            down_1.colours[2] = Ogre::ColourValue::Blue;
+
+            down_1.normals[0] = down_normal;
+            down_1.normals[1] = down_normal;
+            down_1.normals[2] = down_normal;
+
+            BlockTriangle down_2;
+            down_2.points[0] = points.c1;
+            down_2.points[1] = points.a1;
+            down_2.points[2] = points.d1;
+
+            down_2.colours[0] = Ogre::ColourValue::Blue;
+            down_2.colours[1] = Ogre::ColourValue::Red;
+            down_2.colours[2] = Ogre::ColourValue::White;
+
+            down_2.normals[0] = down_normal;
+            down_2.normals[1] = down_normal;
+            down_2.normals[2] = down_normal;
+
+            triangles.push_back(down_1);
+            triangles.push_back(down_2);
+        }
     }
 
     // wrong forward face
