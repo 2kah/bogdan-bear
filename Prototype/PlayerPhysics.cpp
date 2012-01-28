@@ -85,7 +85,7 @@ void PlayerPhysics::playerUpdated(Player *player)
 	else
 	{
 		walk = walk * btScalar(0.3);
-		walk += oldWalkDirection;
+		walk += (oldWalkDirection * btScalar(0.99));
 		if(walk.length() > airMovementSpeed)
 		{
 			walk = walk / (walk.length() / airMovementSpeed);
