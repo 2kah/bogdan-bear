@@ -10,7 +10,7 @@ class Explosion;
 class RocketPhysics
 {
 public:
-    RocketPhysics(Rocket *explosion, btDiscreteDynamicsWorld *dynamicsWorld);
+    RocketPhysics(Rocket *rocket, btDiscreteDynamicsWorld *dynamicsWorld);
     virtual ~RocketPhysics();
 protected:
     virtual void rocketUpdated(Rocket *rocket);
