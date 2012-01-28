@@ -65,7 +65,8 @@ public:
 
     virtual Ogre::Vector3 getBlockPosition(unsigned level, unsigned layer, unsigned sector);
     virtual BlockPoints getBlockPoints(unsigned level, unsigned layer, unsigned sector);
-    virtual void getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned level, unsigned layer, unsigned sector);
+    virtual void getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned level, unsigned layer, unsigned sector, BoundingVolume bounds);
+    virtual void getChunkTriangles(std::vector<BlockTriangle> &triangles, TowerChunk chunk);
 
     TowerSignals signals;
 

@@ -12,8 +12,9 @@
 #include "Tower.h"
 
 PhysicsChunk::PhysicsChunk(Tower *tower, BoundingVolume bounds, btDiscreteDynamicsWorld *dynamicsWorld)
-    : TowerChunk(tower, bounds),
-    dynamicsWorld(dynamicsWorld)
+    : TowerChunk(tower, bounds)
+    , PhysicsObject(TOWER_CHUNK)
+    , dynamicsWorld(dynamicsWorld)
 {
     this->body = NULL;
 
@@ -35,19 +36,7 @@ void PhysicsChunk::rebuild()
 
     std::vector<BlockTriangle> triangles;
 
-    for (unsigned level = this->bounds.level_bottom; level < this->bounds.level_top; ++level)
-    {
-        for (unsigned layer = this->bounds.layer_inner; layer < this->bounds.layer_outer; ++layer)
-        {
-            for (unsigned sector = 0; sector < this->tower->blocks[level][layer].size(); ++sector)
-            {
-                if (this->tower->blocks[level][layer][sector])
-                {
-                    this->tower->getBlockTriangles(triangles, level, layer, sector);
-                }
-            }
-        }
-    }
+    this->tower->getChunkTriangles(triangles, *this);
 
     for(std::vector<BlockTriangle>::iterator i = triangles.begin(); i != triangles.end(); ++i)
     {
@@ -64,7 +53,7 @@ void PhysicsChunk::rebuild()
     btRigidBody::btRigidBodyConstructionInfo blockRigidBodyCI(0, blockMotionState, shape, btVector3(0, 0, 0));           
 
     this->body = new btRigidBody(blockRigidBodyCI);
-    this->body->setUserPointer(this->tower);
+    this->body->setUserPointer(this);
     this->body->setActivationState(ISLAND_SLEEPING);
 
     dynamicsWorld->addRigidBody(this->body);

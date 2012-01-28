@@ -125,8 +125,6 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
         sector_right = this->sectors - 1;
     }
 
-    std::set<unsigned> levels;
-    
     //std::cout << sector_left << ", " << sector_right << std::endl;    
 
     BoundingVolume bounds(level_bottom, level_top,
@@ -135,8 +133,6 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
 
     for (unsigned level = level_bottom; level < level_top; ++level)
     {
-        levels.insert((level / 4) * 4);
-
         for (unsigned layer = layer_inner; layer < layer_outer; ++layer)
         {
             // all goes a bit wrong here...
@@ -175,13 +171,6 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
             }
             */
         }
-    }
-
-    for(std::set<unsigned>::iterator i = levels.begin(); i != levels.end(); ++i)
-    {
-        unsigned level = *i;
-        
-        this->signals.levelUpdated(this, level);
     }
 
     this->signals.updated(this, bounds);
@@ -248,19 +237,19 @@ BlockPoints Tower::getBlockPoints(unsigned level, unsigned layer, unsigned secto
     return points;
 }
 
-void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned level, unsigned layer, unsigned sector)
+void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned level, unsigned layer, unsigned sector, BoundingVolume bounds)
 {
     BlockPoints points = this->getBlockPoints(level, layer, sector);
 
     unsigned divisions = this->blocks[level][layer].size();
 
     // Which faces are actually visible?
-    bool front = this->subdivide[layer] || !(layer < this->layers-1 && this->blocks[level][layer+1][sector]);
-    bool back = !(layer != 0 && this->blocks[level][layer-1][this->sectorParent(layer, sector)]);
+    bool front = !(layer < this->layers-1 && this->blocks[level][layer+1][sector]) || layer == bounds.layer_outer;
+    bool back = !(layer != 0 && this->blocks[level][layer-1][this->sectorParent(layer, sector)]) || layer == bounds.layer_inner;
     bool clock = !(this->blocks[level][layer][(sector - 1 + divisions) % divisions]);
     bool anti = !(this->blocks[level][layer][(sector + 1) % divisions]);
-    bool top = !(level < this->blocks.size()-1 && this->blocks[level+1][layer][sector]);
-    bool bottom = !(level != 0 && this->blocks[level-1][layer][sector]);
+    bool top = !(level < this->blocks.size()-1 && this->blocks[level+1][layer][sector]) || level == bounds.level_top;
+    bool bottom = !(level != 0 && this->blocks[level-1][layer][sector]) || level == bounds.level_bottom;
 
     // back face
     Ogre::Vector3 inner_clock_normal = points.c2 - points.b2;
@@ -539,7 +528,10 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
         outer_anti_normal.normalise();
         outer_mid_normal.normalise();
 
-        if (true) {
+        bool clock_face = !(layer < this->layers-1 && this->blocks[level][layer + 1][sector*2]) || layer == bounds.layer_outer;
+        bool anti_face = !(layer < this->layers-1 && this->blocks[level][layer + 1][sector*2+1]) || layer == bounds.layer_outer;
+
+        if (anti_face) {
             BlockTriangle forward_1;
             forward_1.points[0] = points.a2;
             forward_1.points[1] = points.a1;
@@ -570,7 +562,7 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             triangles.push_back(forward_2);
         }
 
-        if (true) {
+        if (clock_face) {
             BlockTriangle forward_1;
             forward_1.points[0] = points.e2;
             forward_1.points[1] = points.e1;
@@ -639,6 +631,23 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
 
             triangles.push_back(forward_1);
             triangles.push_back(forward_2);
+        }
+    }
+}
+
+void Tower::getChunkTriangles(std::vector<BlockTriangle> &triangles, TowerChunk chunk)
+{   
+    for (unsigned level = chunk.bounds.level_bottom; level < chunk.bounds.level_top; ++level)
+    {
+        for (unsigned layer = chunk.bounds.layer_inner; layer < chunk.bounds.layer_outer; ++layer)
+        {
+            for (unsigned sector = 0; sector < this->blocks[level][layer].size(); ++sector)
+            {
+                if (this->blocks[level][layer][sector])
+                {
+                    this->getBlockTriangles(triangles, level, layer, sector, chunk.bounds);
+                }
+            }
         }
     }
 }

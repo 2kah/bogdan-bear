@@ -11,12 +11,13 @@
 #include "Platform.h"
 
 PlatformPhysics::PlatformPhysics(Platform *platform, btDiscreteDynamicsWorld *dynamicsWorld)
+    : PhysicsObject(PLATFORM)
 {
 	this->platform = platform;
 	this->dynamicsWorld = dynamicsWorld;
 
-	//this->platform->signals.updated.connect(boost::bind(&PlatformPhysics::platformUpdated, this, _1));
 	this->platform->signals.expired.connect(boost::bind(&PlatformPhysics::platformExpired, this, _1));
+    this->platform->signals.destroyed.connect(boost::bind(&PlatformPhysics::platformExpired, this, _1));
 
 	//TODO: tweak
 	btVector3 platformSize(10, 1, 10);
@@ -28,6 +29,7 @@ PlatformPhysics::PlatformPhysics(Platform *platform, btDiscreteDynamicsWorld *dy
 
 	this->body = new btRigidBody(rbCI);
 	this->body->setActivationState(ISLAND_SLEEPING);
+    this->body->setUserPointer(this);
 
 	this->body->setWorldTransform(btTransform(BtOgre::Convert::toBullet(this->platform->orientation), BtOgre::Convert::toBullet(this->platform->position)));
 

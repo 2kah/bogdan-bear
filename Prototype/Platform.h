@@ -15,6 +15,7 @@ namespace {
 struct PlatformSignals {
     boost::signal<void (Platform *)> updated;
     boost::signal<void (Platform *)> expired;
+    boost::signal<void (Platform *)> destroyed;
 };
 }
 
@@ -25,6 +26,7 @@ public:
     virtual ~Platform();
 
     virtual void update();
+    virtual void destroy();
 
     PlatformSignals signals;
 protected:

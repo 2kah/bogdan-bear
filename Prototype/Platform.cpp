@@ -30,3 +30,8 @@ void Platform::update()
         ++this->timer;
     }
 }
+
+void Platform::destroy()
+{
+    this->signals.destroyed(this);
+}

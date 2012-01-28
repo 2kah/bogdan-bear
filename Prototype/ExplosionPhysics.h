@@ -2,7 +2,7 @@
 #define __ExplosionPhysics_h_
 
 class btDiscreteDynamicsWorld;
-class btGhostObject;
+class btPairCachingGhostObject;
 
 class Explosion;
 
@@ -20,7 +20,7 @@ protected:
     Explosion *explosion;
     btDiscreteDynamicsWorld *dynamicsWorld;
     
-    btGhostObject *ghost;
+    btPairCachingGhostObject *ghost;
 
     Tower *tower;
 };

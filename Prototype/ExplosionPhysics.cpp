@@ -10,8 +10,12 @@
 #include <btBulletCollisionCommon.h>
 #include <BulletCollision/CollisionDispatch/btGhostObject.h>
 
+#include "PhysicsObject.h"
 #include "Explosion.h"
 #include "Tower.h"
+#include "TowerPhysics.h"
+#include "PlatformPhysics.h"
+#include "Platform.h"
 
 ExplosionPhysics::ExplosionPhysics(Explosion *explosion, btDiscreteDynamicsWorld *dynamicsWorld)
 {
@@ -21,7 +25,7 @@ ExplosionPhysics::ExplosionPhysics(Explosion *explosion, btDiscreteDynamicsWorld
     this->explosion->signals.updated.connect(boost::bind(&ExplosionPhysics::explosionUpdated, this, _1));
     this->explosion->signals.finished.connect(boost::bind(&ExplosionPhysics::explosionFinished, this, _1));
 
-    this->ghost = new btGhostObject();
+    this->ghost = new btPairCachingGhostObject();
     
     btVector3 position(this->explosion->position.x, this->explosion->position.y, this->explosion->position.z);
     this->ghost->setCollisionShape(new btSphereShape(Explosion::SIZE));
@@ -41,28 +45,17 @@ ExplosionPhysics::ExplosionPhysics(Explosion *explosion, btDiscreteDynamicsWorld
     {
         btCollisionObject *blockObject = this->ghost->getOverlappingObject(i);
         
-        Tower *tower = (Tower *) blockObject->getUserPointer();
+        PhysicsObject *object = static_cast<PhysicsObject *>(blockObject->getUserPointer());
 
-        if (tower != NULL) {
-            //block->tower->blocks[block->level][block->layer][block->sector] = false;
-            this->tower = tower;
-
-            //destructions.push_back(blockObject);
+        if (object != NULL) {
+            if (object->type == TOWER_CHUNK) {
+                this->tower = static_cast<PhysicsChunk *>(object)->tower;
+            } else if (object->type == PLATFORM) {
+                static_cast<PlatformPhysics *>(object)->platform->destroy();
+            }
         }
     }
-    
-    for(std::vector<btCollisionObject *>::iterator it = destructions.begin(); it != destructions.end(); ++it) {
-        btCollisionObject *blockObject = *it;
-    
-       this->dynamicsWorld->removeCollisionObject(blockObject);
-    }
-
-    /*
-    if (tower != NULL) {
-        tower->carveSphere(this->explosion->position, Explosion::SIZE);
-    }
-    */
-    
+   
     if (this->tower != NULL) {
         this->tower->carveSphere(this->explosion->position, Explosion::SIZE);
     }

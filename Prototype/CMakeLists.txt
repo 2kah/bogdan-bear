@@ -107,6 +107,7 @@ set(HDRS
     ./Updatable.h
     
     ./Object.h
+    ./PhysicsObject.h
     
     ./Tower.h
     ./TowerChunk.h
