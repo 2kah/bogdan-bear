@@ -32,8 +32,9 @@ public:
     virtual ~TowerGraphics();
 
     virtual void blocksUpdated(Tower *tower, unsigned level);
-
 protected:
+    void towerUpdated(Tower *tower, BoundingVolume bounds);
+
     Tower *tower;
     Ogre::SceneManager *sceneManager;
 
