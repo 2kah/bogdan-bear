@@ -251,6 +251,7 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
     unsigned divisions = this->blocks[level][layer].size();
 
     // Which faces are actually visible?
+    bool front = this->subdivide[layer] || !(layer < this->layers-1 && this->blocks[level][layer+1][sector]);
     bool back = !(layer != 0 && this->blocks[level][layer-1][this->sectorParent(layer, sector)]);
     bool clock = !(this->blocks[level][layer][(sector - 1 + divisions) % divisions]);
     bool anti = !(this->blocks[level][layer][(sector + 1) % divisions]);
@@ -434,40 +435,42 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
     }
 
     // wrong forward face
-    Ogre::Vector3 outer_clock_normal = -inner_clock_normal;
-    Ogre::Vector3 outer_anti_normal = -inner_anti_normal;
+    if (front) {
+        Ogre::Vector3 outer_clock_normal = -inner_clock_normal;
+        Ogre::Vector3 outer_anti_normal = -inner_anti_normal;
 
-    outer_clock_normal.normalise();
-    outer_anti_normal.normalise();
+        outer_clock_normal.normalise();
+        outer_anti_normal.normalise();
 
-    BlockTriangle forward_1;
-    forward_1.points[0] = points.a2;
-    forward_1.points[1] = points.a1;
-    forward_1.points[2] = points.c1;
+        BlockTriangle forward_1;
+        forward_1.points[0] = points.a2;
+        forward_1.points[1] = points.a1;
+        forward_1.points[2] = points.c1;
 
-    forward_1.colours[0] = Ogre::ColourValue::White;
-    forward_1.colours[1] = Ogre::ColourValue::Red;
-    forward_1.colours[2] = Ogre::ColourValue::Blue;
+        forward_1.colours[0] = Ogre::ColourValue::White;
+        forward_1.colours[1] = Ogre::ColourValue::Red;
+        forward_1.colours[2] = Ogre::ColourValue::Blue;
 
-    forward_1.normals[0] = outer_anti_normal;
-    forward_1.normals[1] = outer_anti_normal;
-    forward_1.normals[2] = outer_clock_normal;
+        forward_1.normals[0] = outer_anti_normal;
+        forward_1.normals[1] = outer_anti_normal;
+        forward_1.normals[2] = outer_clock_normal;
 
-    BlockTriangle forward_2;
-    forward_2.points[0] = points.c1;
-    forward_2.points[1] = points.c2;
-    forward_2.points[2] = points.a2;
+        BlockTriangle forward_2;
+        forward_2.points[0] = points.c1;
+        forward_2.points[1] = points.c2;
+        forward_2.points[2] = points.a2;
 
-    forward_2.colours[0] = Ogre::ColourValue::Blue;
-    forward_2.colours[1] = Ogre::ColourValue::Green;
-    forward_2.colours[2] = Ogre::ColourValue::White;
+        forward_2.colours[0] = Ogre::ColourValue::Blue;
+        forward_2.colours[1] = Ogre::ColourValue::Green;
+        forward_2.colours[2] = Ogre::ColourValue::White;
 
-    forward_2.normals[0] = outer_clock_normal;
-    forward_2.normals[1] = outer_clock_normal;
-    forward_2.normals[2] = outer_anti_normal;
+        forward_2.normals[0] = outer_clock_normal;
+        forward_2.normals[1] = outer_clock_normal;
+        forward_2.normals[2] = outer_anti_normal;
 
-    triangles.push_back(forward_1);
-    triangles.push_back(forward_2);
+        triangles.push_back(forward_1);
+        triangles.push_back(forward_2);
+    }
 
     // single forward face
     if (!this->subdivide[layer])
