@@ -7,7 +7,7 @@
 class Object
 {
 public:
-    virtual ~Object(void) {};
+    virtual ~Object() {};
 //protected:
     Ogre::Vector3 position;
     Ogre::Quaternion orientation;

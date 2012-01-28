@@ -31,7 +31,7 @@ public:
     TowerGraphics(Tower *tower, Ogre::SceneManager *sceneManager);
     virtual ~TowerGraphics();
 
-    virtual void blocksUpdated(Tower *tower, unsigned level);
+    static const unsigned CHUNK_HEIGHT;
 protected:
     void towerUpdated(Tower *tower, BoundingVolume bounds);
 
@@ -39,9 +39,6 @@ protected:
     Ogre::SceneManager *sceneManager;
 
     std::vector<GraphicsChunk *> chunks;
-
-    Ogre::ManualObject *wholething; // TODO: temporary
-    virtual void rebuildTowerObject(unsigned level, bool first);
 };
 
 #endif // #ifndef __TowerGraphics_h_

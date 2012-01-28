@@ -1,23 +1,24 @@
 #ifndef __PlatformPhysics_h_
 #define __PlatformPhysics_h_
 
+#include "PhysicsObject.h"
+
 class btDiscreteDynamicsWorld;
 class btRigidBody;
 
 class Platform;
 
-class PlatformPhysics
+class PlatformPhysics : public PhysicsObject
 {
 public:
     PlatformPhysics(Platform *platform, btDiscreteDynamicsWorld *dynamicsWorld);
     virtual ~PlatformPhysics();
-protected:
-    //virtual void platformUpdated(Platform *platform);
-    virtual void platformExpired(Platform *platform);
 
     Platform *platform;
-    btDiscreteDynamicsWorld *dynamicsWorld;
-    
+protected:
+    virtual void platformExpired(Platform *platform);
+
+    btDiscreteDynamicsWorld *dynamicsWorld;    
 	btRigidBody *body;
 };
 

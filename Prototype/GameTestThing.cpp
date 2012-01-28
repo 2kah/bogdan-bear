@@ -42,12 +42,13 @@ GameTestThing::GameTestThing(Game *game)
     
     // Create an empty tower
     unsigned divisions[] = {9, 18, 18, 36, 36, 36, 72, 72, 72, 72, 72, 72, 72, 72, 72, 144, 144, 144, 144, 144, 144, 144};
-    std::vector<unsigned> structure(divisions, divisions + 14 + 8);
+    std::vector<unsigned> structure(divisions, divisions + 14);
     //unsigned divisions[] = {32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32};
     //std::vector<unsigned> structure(divisions, divisions + 14);
 
-    this->game->tower = new Tower(1024, structure);
-    //this->game->tower = new Tower(128, 16, 32);
+    std::cout << structure.size() << std::endl; 
+
+    this->game->tower = new Tower(256, structure);
 
     // Create a tower builder and generate the tower with it
     TowerBuilder *builder = new TowerBuilder(this->game->tower);
@@ -59,6 +60,12 @@ GameTestThing::GameTestThing(Game *game)
     // Add tower graphics and physics
     new TowerGraphics(this->game->tower, this->game->mSceneMgr);
     new TowerPhysics(this->game->tower, this->game->dynamicsWorld);
+
+    // Add the bowl
+    Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowl.mesh");
+    Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
+    sceneNode->attachObject(bowl);
+    sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
 
     // Add a player
     this->player = new Player(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height + 10, 10));
@@ -168,6 +175,7 @@ void GameTestThing::platformCreated(Player *player, Platform *platform)
 	PlatformPhysics *platformPhysics = new PlatformPhysics(platform, this->game->dynamicsWorld);
 
     platform->signals.expired.connect(boost::bind(&GameTestThing::platformExpired, this, _1));
+    platform->signals.destroyed.connect(boost::bind(&GameTestThing::platformExpired, this, _1));
 }
 
 void GameTestThing::platformExpired(Platform *platform)

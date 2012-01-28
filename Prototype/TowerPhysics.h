@@ -3,6 +3,7 @@
 
 #include <vector>
 
+#include "PhysicsObject.h"
 #include "TowerChunk.h"
 
 class btDiscreteDynamicsWorld;
@@ -11,7 +12,7 @@ class btRigidBody;
 //class Tower;
 //struct BoundingVolume;
 
-class PhysicsChunk : public TowerChunk
+class PhysicsChunk : public TowerChunk, public PhysicsObject
 {
 public:
     PhysicsChunk(Tower *tower, BoundingVolume bounds, btDiscreteDynamicsWorld *dynamicsWorld);
