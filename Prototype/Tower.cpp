@@ -10,8 +10,6 @@
 
 #include <OGRE/OgreVector3.h>
 
-#define PI 3.14159265
-
 Tower::Tower(unsigned levels, std::vector<unsigned> structure)
 {
     this->levels = levels;
@@ -41,13 +39,13 @@ Tower::Tower(unsigned levels, std::vector<unsigned> structure)
 
         // magic formula to give square shaped blocks
         // (inner circumference of ring) / (number of blocks in this ring - pi)
-        this->heights[layer-1] = (2 * PI * this->radii[layer-1]) / (structure[layer-1] - PI);
+        this->heights[layer-1] = (boost::math::constants::two_pi<double>() * this->radii[layer-1]) / (structure[layer-1] - boost::math::constants::pi<double>());
         
         this->radii[layer] = this->radii[layer-1] + this->heights[layer-1];
     }
 
     this->subdivide[this->layers-1] = false;
-    this->heights[this->layers-1] = (2 * PI * this->radii[this->layers-1]) / (structure[this->layers-1] - PI);;
+    this->heights[this->layers-1] = boost::math::constants::two_pi<double>() * this->radii[this->layers-1] / (structure[this->layers-1] - boost::math::constants::pi<double>());
 
     this->block_height = boost::math::constants::two_pi<double>() * this->radii[this->layers - 1] / this->sectors / 2;
 }
@@ -97,7 +95,6 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
         }
     }
     
-    ///*
     // narrow down relevant sectors (if possible)
     double sector_angle = boost::math::constants::two_pi<double>() / this->sectors;
     double point_angle = std::atan2(position.z, position.x); // this could be backwards, and possible offset by 1/4 circle too... confusing!
@@ -126,15 +123,15 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
     {
         sector_left = 0;
         sector_right = this->sectors - 1;
-
-        std::cout << "CENTRE" << std::endl;
     }
-    //*/
 
     std::set<unsigned> levels;
-
-    //std::cout << layer_inner << ", " << layer_outer << std::endl;
+    
     //std::cout << sector_left << ", " << sector_right << std::endl;    
+
+    BoundingVolume bounds(level_bottom, level_top,
+                          layer_inner,  layer_outer,
+                          sector_left,  sector_right);
 
     for (unsigned level = level_bottom; level < level_top; ++level)
     {
@@ -186,6 +183,8 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
         
         this->signals.levelUpdated(this, level);
     }
+
+    this->signals.updated(this, bounds);
 }
 
 void Tower::rebuild()
@@ -221,7 +220,7 @@ BlockPoints Tower::getBlockPoints(unsigned level, unsigned layer, unsigned secto
     double size = this->heights[layer];
     double radius = this->radii[layer];
 
-    double angle = ((2*PI) / this->blocks[level][layer].size());
+    double angle = boost::math::constants::two_pi<double>() / this->blocks[level][layer].size();
     double offset = angle * sector;
 
     double bottom = this->block_height * level;
@@ -298,8 +297,7 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
 
     // clockwise face
     if (clock) {
-        Ogre::Vector3 clock_normal = points.b2 - points.b1;
-        clock_normal = clock_normal.crossProduct(points.b2 - points.c2);
+        Ogre::Vector3 clock_normal = Ogre::Vector3::UNIT_Y.crossProduct(points.b2 - points.c2);
         clock_normal.normalise();
 
         BlockTriangle clock_1;
@@ -334,8 +332,7 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
 
     // anticlockwise face
     if (anti) {
-        Ogre::Vector3 anti_normal = points.d2 - points.a2;
-        anti_normal = anti_normal.crossProduct(points.d2 - points.d1);
+        Ogre::Vector3 anti_normal = (points.d2 - points.a2).crossProduct(Ogre::Vector3::UNIT_Y);
         anti_normal.normalise();
 
         BlockTriangle anti_1;
@@ -439,6 +436,9 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
     // wrong forward face
     Ogre::Vector3 outer_clock_normal = -inner_clock_normal;
     Ogre::Vector3 outer_anti_normal = -inner_anti_normal;
+
+    outer_clock_normal.normalise();
+    outer_anti_normal.normalise();
 
     BlockTriangle forward_1;
     forward_1.points[0] = points.a2;
