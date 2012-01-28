@@ -26,6 +26,7 @@
 
 #include "Platform.h"
 #include "PlatformGraphics.h"
+#include "PlatformPhysics.h"
 
 #include "Rocket.h"
 #include "RocketGraphics.h"
@@ -164,6 +165,7 @@ void GameTestThing::platformCreated(Player *player, Platform *platform)
     this->game->objects.insert(platform);
 
     PlatformGraphics *platfromGraphics = new PlatformGraphics(platform, this->game->mSceneMgr);
+	PlatformPhysics *platformPhysics = new PlatformPhysics(platform, this->game->dynamicsWorld);
 
     platform->signals.expired.connect(boost::bind(&GameTestThing::platformExpired, this, _1));
 }

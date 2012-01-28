@@ -94,6 +94,7 @@ void Player::create(bool state)
     }
 }
 
+//TODO: remove this code (redundant)
 void Player::jump(bool state)
 {
     this->velocity.y = Player::MOVEMENT_SPEED * state;
