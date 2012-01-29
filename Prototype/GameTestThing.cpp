@@ -98,7 +98,7 @@ GameTestThing::GameTestThing(Game *game)
     this->game->objects.insert(turret);
     
     // Set the turret to aim at the player always
-    turret->setTarget(this->game->player);
+    //turret->setTarget(this->game->player);
 
     // Listen for when the turret fires
     turret->signals.fired.connect(boost::bind(&GameTestThing::turretFired, this, _1, _2));

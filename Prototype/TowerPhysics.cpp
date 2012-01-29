@@ -30,6 +30,7 @@ void PhysicsChunk::rebuild()
     if (this->body != NULL) {
         this->dynamicsWorld->removeRigidBody(this->body);
         delete this->body;
+        this->body = NULL;
     }
 
     btTriangleMesh *data = new btTriangleMesh();
@@ -37,6 +38,10 @@ void PhysicsChunk::rebuild()
     std::vector<BlockTriangle> triangles;
 
     this->tower->getChunkTriangles(triangles, *this);
+
+    if (triangles.size() == 0) {
+        return;
+    }
 
     for(std::vector<BlockTriangle>::iterator i = triangles.begin(); i != triangles.end(); ++i)
     {

@@ -109,15 +109,15 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
             point_angle += boost::math::constants::two_pi<double>();
         }
 
-        sector_left = (point_angle + circle_arc) / sector_angle;
-        sector_left = (sector_left + 1) % this->sectors;
+        sector_right = (point_angle + circle_arc) / sector_angle;
+        sector_right = sector_right % this->sectors;
 
         if (point_angle - circle_arc < 0) {
-            point_angle -= boost::math::constants::two_pi<double>();
+            point_angle += boost::math::constants::two_pi<double>();
         }
 
-        sector_right = (point_angle - circle_arc) / sector_angle;
-        sector_right = sector_right % this->sectors;
+        sector_left = (point_angle - circle_arc) / sector_angle;
+        sector_left = sector_left % this->sectors;
     }
     else
     {
@@ -125,51 +125,46 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
         sector_right = this->sectors - 1;
     }
 
-    //std::cout << sector_left << ", " << sector_right << std::endl;    
-
     BoundingVolume bounds(level_bottom, level_top,
                           layer_inner,  layer_outer,
                           sector_left,  sector_right);
 
-    for (unsigned level = level_bottom; level < level_top; ++level)
+
+    for (unsigned layer = layer_inner; layer < layer_outer; ++layer)
     {
-        for (unsigned layer = layer_inner; layer < layer_outer; ++layer)
+        unsigned divisions = this->blocks[0][layer].size();
+
+        double ratio = divisions / (double) this->sectors;
+        int left = (int) (sector_left * ratio) % divisions;
+        int right = (int) (sector_right * ratio) % divisions;
+
+        for (unsigned level = level_bottom; level < level_top; ++level)
         {
-            // all goes a bit wrong here...
-
-            for (unsigned sector = 0; sector < this->blocks[level][layer].size(); ++sector) { 
-                Ogre::Vector3 difference = this->getBlockPosition(level, layer, sector) - position;
-                double distance = difference.length();
-
-                this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && distance > radius + this->block_height / 2;
-            }
-
-            /*
-            unsigned divisions = this->blocks[level][layer].size();
-
-            double ratio = divisions / (double) this->sectors;
-            int right = ((int) (sector_left * ratio) + 1) % divisions;
-            int left = ((int) (sector_right * ratio)) % divisions;
-
-            std::cout << left << ", " << right << std::endl;
-
             // TODO: cynlindrical collisions?
             if (left < right) {
-                for (int sector = left; sector < right; ++sector)
+                for (int sector = left; sector <= right; ++sector)
                 {
-                    this->blocks[level][layer][sector] = false; //this->blocks[level][layer][sector] && (this->getBlockPosition(level, layer, sector) - position).length() > radius + this->block_height / 2;
+                    Ogre::Vector3 difference = this->getBlockPosition(level, layer, sector) - position;
+                    double distance = difference.length();
+
+                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && distance > radius + this->block_height / 2;
                 }
             } else {
                 for (int sector = left; sector < divisions; ++sector)
                 {
-                    this->blocks[level][layer][sector] = false; //this->blocks[level][layer][sector] && (this->getBlockPosition(level, layer, sector) - position).length() > radius + this->block_height / 2;
+                    Ogre::Vector3 difference = this->getBlockPosition(level, layer, sector) - position;
+                    double distance = difference.length();
+
+                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && distance > radius + this->block_height / 2;
                 }
-                for (int sector = 0; sector < right; ++sector)
+                for (int sector = 0; sector <= right; ++sector)
                 {
-                    this->blocks[level][layer][sector] = false; //this->blocks[level][layer][sector] && (this->getBlockPosition(level, layer, sector) - position).length() > radius + this->block_height / 2;
+                    Ogre::Vector3 difference = this->getBlockPosition(level, layer, sector) - position;
+                    double distance = difference.length();
+
+                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && distance > radius + this->block_height / 2;
                 }
             }
-            */
         }
     }
 
