@@ -20,7 +20,7 @@ struct BoundingVolume {
         if (this->layer_inner  > volume.layer_outer  || this->layer_outer  < volume.layer_inner ) return false;
         
         if (!this->wraps && !volume.wraps) {
-            if (this->sector_left > volume.sector_right || this->sector_right < volume.sector_left) return false;
+            //if (this->sector_left > volume.sector_right || this->sector_right < volume.sector_left) return false;
         } else {
         }
 
