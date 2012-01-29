@@ -32,7 +32,9 @@ public:
     virtual void setTarget(Object *target);
 protected:
     unsigned timer;
-
+	Ogre::Vector3 oldtarget;
+	Ogre::Vector3 nptarget;
+	Ogre::Vector3 currenttarget;
     Object *target;
 };
 

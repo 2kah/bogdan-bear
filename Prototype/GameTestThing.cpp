@@ -103,8 +103,9 @@ GameTestThing::GameTestThing(Game *game)
     new TurretGraphics(turret, this->game->mSceneMgr);
     this->game->objects.insert(turret);
     
-    // Set the turret to aim at the player always
-    //turret->setTarget(this->game->player);
+    // Set the turret to aim at the player always. Setting it to NULL makes it shoot randomly at the tower.
+    //urret->setTarget(this->game->player);
+	turret->setTarget(NULL);
 
     // Listen for when the turret fires
     turret->signals.fired.connect(boost::bind(&GameTestThing::turretFired, this, _1, _2));
