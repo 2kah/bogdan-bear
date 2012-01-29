@@ -44,7 +44,7 @@ GameTestThing::GameTestThing(Game *game)
     
     this->network = new NetworkTestStuff();
     this->network->signals.chat.connect(boost::bind(&GameTestThing::chatReceived, this, _1));
-    this->network->update();
+    this->game->objects.insert(this->network);
 
     // Create an empty tower
     unsigned divisions[] = {9, 18, 18, 36, 36, 36, 72, 72, 72, 72, 72, 72, 72, 72, 72, 144, 144, 144, 144, 144, 144, 144};

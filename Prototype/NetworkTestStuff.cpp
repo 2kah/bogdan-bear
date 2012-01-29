@@ -10,5 +10,5 @@ NetworkTestStuff::~NetworkTestStuff()
 
 void NetworkTestStuff::update()
 {
-    this->signals.chat("TESTING!");
+    //this->signals.chat("TESTING!");
 }
