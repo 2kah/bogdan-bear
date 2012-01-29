@@ -6,8 +6,10 @@
 #include "BtKinematicCharacterController.h"
 #include "Player.h"
 #include "PlayerInput.h"
+#include "Explosion.h"
+#include "BtOgreExtras.h"
 
-PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWorld)
+PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWorld) : PhysicsObject()
 {
 	this->player = player;
 	
@@ -26,6 +28,7 @@ PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWo
 	btConvexShape* capsule = new btCapsuleShape(1.5, 8);
 	m_ghostObject->setCollisionShape(capsule);
 	m_ghostObject->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
+	this->m_ghostObject->setUserPointer(this);
 
 	//TODO: make this sensible, this is the max metres a player can step up (0.35 is recommended)
 	btScalar stepHeight = btScalar(2.5);
@@ -43,11 +46,12 @@ PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWo
 	//The max horizontal movement speed while airborne
 	airMovementSpeed = btScalar(0.6);
 
-	dynamicsWorld->addCollisionObject(m_ghostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);
+	dynamicsWorld->addCollisionObject(m_ghostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::AllFilter /*btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter*/);
 	dynamicsWorld->addAction(m_character);
 
 	walkDirection.setZero();
 	oldWalkDirection.setZero();
+	pushDirection.setZero();
 
     //TODO: utility function to convert between ogre and bullet vector3
 	this->player->signals.updated.connect(boost::bind(&PlayerPhysics::playerUpdated, this, _1));
@@ -72,14 +76,16 @@ void PlayerPhysics::playerUpdated(Player *player)
 	Ogre::Vector3 oPosition(xform.getOrigin().x(), xform.getOrigin().y() - 5, xform.getOrigin().z());
 	this->player->position = oPosition;
 
-
 	Ogre::Vector3 movement = this->player->orientation * Ogre::Vector3(walkDirection.x(), walkDirection.y(), walkDirection.z());
 	btVector3 walk(movement.x, movement.y, movement.z);
+	btVector3 actualMovement = pushDirection;
+	pushDirection *= btScalar(0.95);
 
 	//if on ground then allow whatever movement the player wants
 	if(m_character->onGround())
 	{
-		m_character->setWalkDirection(walk * walkSpeed);
+		actualMovement += (walk * walkSpeed);
+		//m_character->setWalkDirection(walk * walkSpeed);
 	}
 	//if airborne then use previous movement plus a dampened amount of wanted movement
 	else
@@ -90,9 +96,10 @@ void PlayerPhysics::playerUpdated(Player *player)
 		{
 			walk = walk / (walk.length() / airMovementSpeed);
 		}
-		m_character->setWalkDirection(walk);
+		actualMovement += walk;
+		//m_character->setWalkDirection(walk);
 	}
-
+	m_character->setWalkDirection(actualMovement);
 	oldWalkDirection = walk;
 }
 
@@ -151,4 +158,11 @@ void PlayerPhysics::jump(bool state)
 	{
 		m_character->jump();
 	}
+}
+
+void PlayerPhysics::explode(Explosion *explosion)
+{
+	std::cout << "Explosion has hit player" << std::endl;
+
+	pushDirection = BtOgre::Convert::toBullet(this->player->position - explosion->position) * btScalar(0.1);
 }
