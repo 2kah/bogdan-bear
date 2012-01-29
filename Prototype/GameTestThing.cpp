@@ -9,6 +9,8 @@
 
 #include <OGRE/OgreVector3.h>
 
+#include <btBulletWorldImporter.h>
+
 #include "Game.h"
 
 #include "NetworkTestStuff.h"
@@ -72,6 +74,19 @@ GameTestThing::GameTestThing(Game *game)
     Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
     sceneNode->attachObject(bowl);
     sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
+
+	btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
+	fileLoader->loadFile("bowl.bullet");
+    btCollisionObject* bowlObject = this->game->dynamicsWorld->getCollisionObjectArray()[(this->game->dynamicsWorld->getNumCollisionObjects())-1];
+    btCollisionShape* bowlShape = bowlObject->getCollisionShape();
+    bowlShape->setLocalScaling(btVector3(30,30,30));
+    btQuaternion qRot(0,0,0,1);
+    btDefaultMotionState* bowlMotionState = new btDefaultMotionState(btTransform(qRot,btVector3(0,88.6,0)));
+    btRigidBody::btRigidBodyConstructionInfo bowlRigidBodyCI(0,bowlMotionState,bowlShape,btVector3(0,0,0));
+    btRigidBody* bowlRigidBody= new btRigidBody(bowlRigidBodyCI);
+    //bowlRigidBody->setCenterOfMassTransform(btTransform(qRot,btVector3(0,0,0)));
+	this->game->dynamicsWorld->addRigidBody(bowlRigidBody);
+	delete this->game->dynamicsWorld->getCollisionObjectArray()[(this->game->dynamicsWorld->getNumCollisionObjects())-2];
 
     // Add a player
     this->player = new Player(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height + 10, 10));
