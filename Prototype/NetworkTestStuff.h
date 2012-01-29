@@ -10,6 +10,7 @@
 namespace {
 struct NetworkSignals {
     boost::signal<void (std::string message)> chat;
+    boost::signal<void (double x, double y, double z)> explosion;
 };
 }
 
