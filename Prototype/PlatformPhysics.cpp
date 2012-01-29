@@ -46,5 +46,5 @@ void PlatformPhysics::platformExpired(Platform *platform)
 {
     this->dynamicsWorld->removeRigidBody(this->body);
 	delete this->body;
-	//delete this;
+	//delete this; // TODO: MAKE THIS REMOVED
 }
