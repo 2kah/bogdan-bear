@@ -19,7 +19,8 @@ PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWo
 
 	btTransform startTransform;
 	startTransform.setIdentity();
-	btVector3 bPosition(this->player->position.x, this->player->position.y + 5, this->player->position.z);
+	//6 is added to y because the position is measured from the feet and we want the centre
+	btVector3 bPosition(this->player->position.x, this->player->position.y + 6, this->player->position.z);
 	startTransform.setOrigin(bPosition);
 
 	m_ghostObject = new btPairCachingGhostObject();
@@ -165,4 +166,5 @@ void PlayerPhysics::explode(Explosion *explosion)
 	std::cout << "Explosion has hit player" << std::endl;
 
 	pushDirection = BtOgre::Convert::toBullet(this->player->position - explosion->position) * btScalar(0.1);
+	pushDirection.setY(pushDirection.y() + 0.6);
 }
