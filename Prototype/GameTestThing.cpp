@@ -49,14 +49,14 @@ GameTestThing::GameTestThing(Game *game)
     this->game->objects.insert(this->network);
 
     // Create an empty tower
-    unsigned divisions[] = {9, 18, 18, 36, 36, 36, 72, 72, 72, 72, 72, 72, 72, 72, 72, 144, 144, 144, 144, 144, 144, 144};
-    std::vector<unsigned> structure(divisions, divisions + 14);
+    unsigned divisions[] = {8, 16, 16, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 128, 128, 128, 128, 128, 128, 128};
+    std::vector<unsigned> structure(divisions, divisions + 14 + 8);
     //unsigned divisions[] = {32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32};
     //std::vector<unsigned> structure(divisions, divisions + 14);
 
     std::cout << structure.size() << std::endl; 
 
-    this->game->tower = new Tower(128, structure);
+    this->game->tower = new Tower(32, structure);
 
     // Create a tower builder and generate the tower with it
     TowerBuilder *builder = new TowerBuilder(this->game->tower);

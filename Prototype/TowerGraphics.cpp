@@ -78,7 +78,11 @@ TowerGraphics::TowerGraphics(Tower *tower, Ogre::SceneManager *sceneManager)
 
     for (unsigned level = 0; level < this->tower->levels / CHUNK_HEIGHT; ++level)
     {
-        this->chunks.push_back(new GraphicsChunk(tower, BoundingVolume(level * CHUNK_HEIGHT, (level + 1) * CHUNK_HEIGHT, 0, this->tower->layers, 0, 0), this->sceneManager));
+        BoundingVolume bounds(level * CHUNK_HEIGHT, (level + 1) * CHUNK_HEIGHT,
+                              0,                    this->tower->layers,
+                              0,                    this->tower->sectors);
+
+        this->chunks.push_back(new GraphicsChunk(tower, bounds, this->sceneManager));
     }
 }
 

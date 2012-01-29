@@ -238,13 +238,17 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
 
     unsigned divisions = this->blocks[level][layer].size();
 
+    double ratio = divisions / (double) this->sectors;
+    int left = (int) (bounds.sector_left * ratio) % divisions;
+    int right = (int) (bounds.sector_right * ratio) % divisions;
+
     // Which faces are actually visible?
-    bool front = !(layer < this->layers-1 && this->blocks[level][layer+1][sector]) || layer == bounds.layer_outer;
-    bool back = !(layer != 0 && this->blocks[level][layer-1][this->sectorParent(layer, sector)]) || layer == bounds.layer_inner;
-    bool clock = !(this->blocks[level][layer][(sector - 1 + divisions) % divisions]);
-    bool anti = !(this->blocks[level][layer][(sector + 1) % divisions]);
-    bool top = !(level < this->blocks.size()-1 && this->blocks[level+1][layer][sector]) || level == bounds.level_top;
-    bool bottom = !(level != 0 && this->blocks[level-1][layer][sector]) || level == bounds.level_bottom;
+    bool front =  !(layer < this->layers-1 && this->blocks[level][layer+1][sector])                || layer  == bounds.layer_outer;
+    bool back =   !(layer != 0 && this->blocks[level][layer-1][this->sectorParent(layer, sector)]) || layer  == bounds.layer_inner;
+    bool clock =  !(this->blocks[level][layer][(sector - 1 + divisions) % divisions])              || sector == left;
+    bool anti =   !(this->blocks[level][layer][(sector + 1) % divisions])                          || sector == right;
+    bool top =    !(level < this->blocks.size()-1 && this->blocks[level+1][layer][sector])         || level  == bounds.level_top;
+    bool bottom = !(level != 0 && this->blocks[level-1][layer][sector])                            || level  == bounds.level_bottom;
 
     // back face
     Ogre::Vector3 inner_clock_normal = points.c2 - points.b2;
@@ -632,11 +636,17 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
 
 void Tower::getChunkTriangles(std::vector<BlockTriangle> &triangles, TowerChunk chunk)
 {   
-    for (unsigned level = chunk.bounds.level_bottom; level < chunk.bounds.level_top; ++level)
+    for (unsigned layer = chunk.bounds.layer_inner; layer < chunk.bounds.layer_outer; ++layer)
     {
-        for (unsigned layer = chunk.bounds.layer_inner; layer < chunk.bounds.layer_outer; ++layer)
+        unsigned divisions = this->blocks[0][layer].size();
+
+        double ratio = divisions / (double) this->sectors;
+        int left = (int) (chunk.bounds.sector_left * ratio) % divisions;
+        int right = (int) (chunk.bounds.sector_right * ratio) % divisions;
+
+        for (unsigned sector = left; sector < right; ++sector)
         {
-            for (unsigned sector = 0; sector < this->blocks[level][layer].size(); ++sector)
+            for (unsigned level = chunk.bounds.level_bottom; level < chunk.bounds.level_top; ++level)
             {
                 if (this->blocks[level][layer][sector])
                 {

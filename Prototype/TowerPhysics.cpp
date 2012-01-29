@@ -71,9 +71,21 @@ TowerPhysics::TowerPhysics(Tower *tower, btDiscreteDynamicsWorld *dynamicsWorld)
 
     tower->signals.updated.connect(boost::bind(&TowerPhysics::towerUpdated, this, _1, _2));
     
-    for (unsigned level = 0; level < this->tower->levels / 4; ++level)
+    for (unsigned level = 0; level < this->tower->levels / 8; ++level)
     {
-        this->chunks.push_back(new PhysicsChunk(tower, BoundingVolume(level * 4, (level + 1) * 4, 0, this->tower->layers, 0, this->tower->sectors), dynamicsWorld));
+        for (unsigned layer = 0; layer < this->tower->layers / 11; ++layer)
+        {
+            for (unsigned sector = 0; sector < this->tower->sectors / 16; ++sector)
+            {
+                BoundingVolume bounds(level  * 8, (level+1)  * 8,
+                                      //0,          this->tower->layers,
+                                      layer  * 11, (layer+1)  * 11,
+                                      //0,          this->tower->sectors);
+                                      sector * 16, (sector+1) * 16);
+
+                this->chunks.push_back(new PhysicsChunk(tower, bounds, dynamicsWorld));
+            }
+        }
     }
 
     //*/
@@ -124,12 +136,17 @@ TowerPhysics::~TowerPhysics()
 
 void TowerPhysics::towerUpdated(Tower *tower, BoundingVolume bounds)
 {
+    unsigned rebuilt = 0;
+
     for (std::vector<PhysicsChunk *>::iterator it = this->chunks.begin(); it != this->chunks.end(); ++it)
     {
         PhysicsChunk *chunk = *it;
         
         if (chunk->bounds.collides(bounds)) {
             chunk->rebuild();
+            ++rebuilt;
         }
     }
+
+    std::cout << "REBUILT: " << rebuilt << " / " << this->chunks.size() << std::endl;
 }
