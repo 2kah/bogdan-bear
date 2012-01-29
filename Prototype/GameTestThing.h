@@ -1,11 +1,13 @@
 #ifndef __GameTestThing_h_
 #define __GameTestThing_h_
 
+#include <string>
 #include <set>
 
 #include "Updatable.h"
 
 class Game;
+class NetworkTestStuff;
 class Turret;
 class Player;
 class Platform;
@@ -21,6 +23,7 @@ public:
     virtual void update();
 protected:
     Game *game;
+    NetworkTestStuff *network;
     Player *player;
 private:
     void turretFired(Turret *turret, Rocket *rocket);
@@ -29,6 +32,8 @@ private:
     void explosionFinished(Explosion *explosion);
     void platformCreated(Player *player, Platform *platform);
     void platformExpired(Platform *platform);
+
+    void chatReceived(std::string message);
 
     std::set<Updatable *> removeQueue;
 };

@@ -11,6 +11,8 @@
 
 #include "Game.h"
 
+#include "NetworkTestStuff.h"
+
 #include "Tower.h"
 #include "TowerPhysics.h"
 #include "TowerGraphics.h"
@@ -40,6 +42,10 @@ GameTestThing::GameTestThing(Game *game)
 {
     this->game = game;
     
+    this->network = new NetworkTestStuff();
+    this->network->signals.chat.connect(boost::bind(&GameTestThing::chatReceived, this, _1));
+    this->network->update();
+
     // Create an empty tower
     unsigned divisions[] = {9, 18, 18, 36, 36, 36, 72, 72, 72, 72, 72, 72, 72, 72, 72, 144, 144, 144, 144, 144, 144, 144};
     std::vector<unsigned> structure(divisions, divisions + 14);
@@ -181,4 +187,9 @@ void GameTestThing::platformCreated(Player *player, Platform *platform)
 void GameTestThing::platformExpired(Platform *platform)
 {
     this->removeQueue.insert(platform);
+}
+
+void GameTestThing::chatReceived(std::string message)
+{
+    std::cout << "CHAT: " << message << std::endl;
 }
