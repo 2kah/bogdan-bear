@@ -3,9 +3,12 @@
 
 #include <btBulletDynamicsCommon.h>
 
+#include "PhysicsObject.h"
+
 class PlayerInput;
 enum DIRECTION;
 class Player;
+class Explosion;
 class btDiscreteDynamicsWorld;
 class btRigidBody;
 
@@ -13,7 +16,7 @@ class btCharacterControllerInterface;
 class btKinematicCharacterController;
 class btCollisionShape;
 
-class PlayerPhysics
+class PlayerPhysics : public PhysicsObject
 {
 public:
     PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWorld);
@@ -23,6 +26,8 @@ public:
 
 	virtual void movement(DIRECTION direction, bool state);
 	virtual void jump(bool state);
+
+	virtual void explode(Explosion *explosion);
 
 	btKinematicCharacterController* m_character;
 	class btPairCachingGhostObject* m_ghostObject;
@@ -35,6 +40,8 @@ protected:
 	btVector3 walkDirection;
 	btVector3 oldWalkDirection;
 	btScalar airMovementSpeed;
+
+	btVector3 pushDirection;
 };
 
 #endif // #ifndef __PlayerPhysics_h_
