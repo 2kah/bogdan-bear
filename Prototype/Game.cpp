@@ -63,7 +63,6 @@ void Game::createScene(void)
 
     // Add lighting
     /*
-    mSceneMgr->setAmbientLight(Ogre::ColourValue(0.9, 0.9, 0.9));
     Ogre::Light* pointlight1 = mSceneMgr->createLight("pointlight1");
     pointlight1->setType(Ogre::Light::LT_POINT);
     pointlight1->setPosition(Ogre::Vector3(500, 150, 0));
@@ -83,6 +82,8 @@ void Game::createScene(void)
     //pointlight1->setType(Ogre::Light::LT_POINT);
     //pointlight1->setPosition(Ogre::Vector3(500, 150, 0));
     //pointlight1->setDiffuseColour(Ogre::ColourValue::White);
+
+    mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
 
     Ogre::Light *moon = mSceneMgr->createLight();
     moon->setType(Ogre::Light::LT_DIRECTIONAL);

@@ -7,6 +7,14 @@
 class Object
 {
 public:
+    Object()
+        : position()
+        , orientation()
+    {}
+    Object(Ogre::Vector3 position, Ogre::Quaternion orientation)
+        : position(position)
+        , orientation(orientation)
+    {}
     virtual ~Object() {};
 //protected:
     Ogre::Vector3 position;

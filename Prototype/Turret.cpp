@@ -8,11 +8,10 @@
 #define PI 3.14159265
 
 Turret::Turret(Ogre::Vector3 position, Ogre::Quaternion orientation)
+    : Object(position, orientation)
+    , timer(0)
+    , target(NULL)
 {
-    this->position = position;
-    this->orientation = orientation;
-
-    this->timer = 0;
 }
 
 Turret::~Turret()

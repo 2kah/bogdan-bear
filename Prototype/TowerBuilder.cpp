@@ -86,8 +86,6 @@ void TowerBuilder::regenerate(void)
 		//if a meta shape is finished then regeneratingMetaShapes--;
 	}*/
 
-
-    ///*
     for (unsigned level = 0; level < this->tower->levels; ++level)
     {
         for (unsigned layer = 0; layer < this->tower->layers; ++layer)
@@ -98,9 +96,6 @@ void TowerBuilder::regenerate(void)
             }
         }
     }
-
-    //return;
-    //*/
 
     for (unsigned level = 0; level < this->tower->levels; ++level)
     {
