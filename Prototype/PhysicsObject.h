@@ -1,6 +1,8 @@
 #ifndef __PhysicsObject_h_
 #define __PhysicsObject_h_
 
+class Explosion;
+
 enum PHYSICS_OBJECT_TYPE {
     UNDEFINED,
     TOWER_CHUNK,
@@ -17,6 +19,8 @@ public:
         : type(type)
     {}
     virtual ~PhysicsObject() {}
+
+    virtual void explode(Explosion *explosion) {};
 
     PHYSICS_OBJECT_TYPE type;
 };

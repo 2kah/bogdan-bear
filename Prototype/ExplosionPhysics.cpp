@@ -53,6 +53,8 @@ ExplosionPhysics::ExplosionPhysics(Explosion *explosion, btDiscreteDynamicsWorld
             } else if (object->type == PLATFORM) {
                 static_cast<PlatformPhysics *>(object)->platform->destroy();
             }
+
+            object->explode(this->explosion);
         }
     }
    
