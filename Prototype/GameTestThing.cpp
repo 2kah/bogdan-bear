@@ -15,6 +15,8 @@
 
 #include "NetworkTestStuff.h"
 
+#include "Sounds.h"
+
 #include "Tower.h"
 #include "TowerPhysics.h"
 #include "TowerGraphics.h"
@@ -40,9 +42,6 @@
 #include "ExplosionPhysics.h"
 #include "ExplosionGraphics.h"
 
-#include "include/irrKlang.h"
-#pragma comment(lib, "irrKlang.lib")
-
 GameTestThing::GameTestThing(Game *game)
 {
     this->game = game;
@@ -50,17 +49,6 @@ GameTestThing::GameTestThing(Game *game)
     this->network = new NetworkTestStuff();
     this->network->signals.chat.connect(boost::bind(&GameTestThing::chatReceived, this, _1));
     this->game->objects.insert(this->network);
-
-	se = irrklang::createIrrKlangDevice();
-	se->setSoundVolume(0.5f);
-
-    if(!se)
-    {
-	    std::cout << "Error: Could not create Sound Engine" << std::endl;
-    }
-
-
-    
 
     // Create an empty tower
     unsigned divisions[] = {8, 16, 16, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 128, 128, 128, 128, 128, 128, 128};
@@ -128,6 +116,8 @@ GameTestThing::GameTestThing(Game *game)
     turret->signals.fired.connect(boost::bind(&GameTestThing::turretFired, this, _1, _2));
     //*/
 
+    this->sounds = new Sounds(this->player);
+
     // Listen for when the players fire or create platforms
     this->player->signals.fired.connect(boost::bind(&GameTestThing::playerFired, this, _1, _2));
     this->player->signals.platform.connect(boost::bind(&GameTestThing::platformCreated, this, _1, _2));
@@ -156,21 +146,16 @@ void GameTestThing::update()
 
 void GameTestThing::turretFired(Turret *turret, Rocket *rocket)
 {
-    this->game->objects.insert(rocket);
-    float x = player->position.x;
-	float y = player->position.y;
-	float z = player->position.z;
-	irrklang::vec3df position1(x,y,z);
-
-	float x1 = turret->position.x;
+    // factor out?
+    float x1 = turret->position.x;
 	float y1 = turret->position.y;
 	float z1 = turret->position.z;
-	irrklang::vec3df position2(x1,y1,z1);
-
-	se->setListenerPosition(position1,irrklang::vec3df(0,1,0));
-	
-	sound2 = se->play3D("sounds/play.mp3",position2);
-
+	irrklang::vec3df position(x1, y1, z1);
+    
+	this->sounds->engine->play3D("sounds/play.mp3", position);
+    //
+    
+    this->game->objects.insert(rocket);
 
     new RocketGraphics(rocket, this->game->mSceneMgr);
     new RocketPhysics(rocket, this->game->dynamicsWorld);

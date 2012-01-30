@@ -108,6 +108,8 @@ set(HDRS
     
     ./NetworkTestStuff.h
     
+    ./Sounds.h
+    
     ./Updatable.h
     
     ./Object.h
@@ -157,6 +159,8 @@ set(SRCS
     ./GameTestThing.cpp
     
     ./NetworkTestStuff.cpp
+    
+    ./Sounds.cpp
     
     ./Tower.cpp
     ./TowerBuilder.cpp
