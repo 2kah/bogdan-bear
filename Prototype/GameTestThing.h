@@ -13,12 +13,17 @@ class Player;
 class Platform;
 class Rocket;
 class Explosion;
+#include "include/irrKlang.h"
+#pragma comment(lib, "irrKlang.lib")
 
 class GameTestThing : public Updatable
 {
 public:
     GameTestThing(Game *game);
     ~GameTestThing();
+	irrklang::ISoundEngine* se;
+	irrklang::ISound *sound;
+    irrklang::ISound *sound2;
 
     virtual void update();
 protected:
