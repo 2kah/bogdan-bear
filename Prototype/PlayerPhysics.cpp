@@ -166,5 +166,6 @@ void PlayerPhysics::explode(Explosion *explosion)
 	std::cout << "Explosion has hit player" << std::endl;
 
 	pushDirection = BtOgre::Convert::toBullet(this->player->position - explosion->position) * btScalar(0.1);
+	//offset the vertical
 	pushDirection.setY(pushDirection.y() + 0.6);
 }

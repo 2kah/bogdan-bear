@@ -128,6 +128,7 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
     BoundingVolume bounds(level_bottom, level_top,
                           layer_inner,  layer_outer,
                           sector_left,  sector_right);
+	int blocksRemoved = 0;
 
 
     for (unsigned layer = layer_inner; layer < layer_outer; ++layer)
@@ -150,6 +151,9 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
                     bool untouched = distance > radius + this->block_height / 2;
 
                     this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && untouched;
+
+					if(!this->blocks[level][layer][sector] && !untouched)
+						blocksRemoved++;
                 }
             } else {
                 for (int sector = left; sector < divisions; ++sector)
@@ -160,6 +164,9 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
                     bool untouched = distance > radius + this->block_height / 2;
 
                     this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && untouched;
+
+					if(!this->blocks[level][layer][sector] && !untouched)
+						blocksRemoved++;
                 }
                 for (int sector = 0; sector <= right; ++sector)
                 {
@@ -169,12 +176,15 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
                     bool untouched = distance > radius + this->block_height / 2;
 
                     this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && untouched;
+
+					if(!this->blocks[level][layer][sector] && !untouched)
+						blocksRemoved++;
                 }
             }
         }
     }
 
-    this->signals.updated(this, bounds);
+	this->signals.updated(this, bounds, blocksRemoved);
 }
 
 void Tower::rebuild()

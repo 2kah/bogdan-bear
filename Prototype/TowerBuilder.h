@@ -14,7 +14,7 @@ public:
     virtual void update(void);
     virtual void regenerate(void);
 
-    virtual void blocksUpdated(Tower *tower, unsigned level);
+    virtual void blocksUpdated(int blocksDestroyed);
 
     Tower *tower;
 protected:
@@ -24,6 +24,8 @@ protected:
 	int blocksAvailable;
 	int maxRegeneratingMetaShapes;
 	int regeneratingMetaShapes;
+	int maxBlocks;
+	int activeBlocks;
 };
 
 #endif // #ifndef __TowerBuilder_h_

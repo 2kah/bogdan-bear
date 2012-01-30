@@ -44,7 +44,7 @@ struct BlockReference
 namespace {
 struct TowerSignals {
     boost::signal<void (Tower *, unsigned level)> levelUpdated;
-    boost::signal<void (Tower *, BoundingVolume bounds)> updated;
+    boost::signal<void (Tower *, BoundingVolume bounds, int blocksRemoved)> updated;
 };
 }
 
