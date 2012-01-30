@@ -54,9 +54,7 @@ GameTestThing::GameTestThing(Game *game)
     //unsigned divisions[] = {32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32};
     //std::vector<unsigned> structure(divisions, divisions + 14);
 
-    std::cout << structure.size() << std::endl; 
-
-    this->game->tower = new Tower(32, structure);
+    this->game->tower = new Tower(256, structure);
 
     // Create a tower builder and generate the tower with it
     TowerBuilder *builder = new TowerBuilder(this->game->tower);

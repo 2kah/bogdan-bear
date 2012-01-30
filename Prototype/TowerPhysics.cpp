@@ -141,7 +141,7 @@ void TowerPhysics::towerUpdated(Tower *tower, BoundingVolume bounds)
     for (std::vector<PhysicsChunk *>::iterator it = this->chunks.begin(); it != this->chunks.end(); ++it)
     {
         PhysicsChunk *chunk = *it;
-        
+
         if (chunk->bounds.collides(bounds)) {
             chunk->rebuild();
             ++rebuilt;
