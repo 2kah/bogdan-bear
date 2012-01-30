@@ -47,7 +47,7 @@ Tower::Tower(unsigned levels, std::vector<unsigned> structure)
     this->subdivide[this->layers-1] = false;
     this->heights[this->layers-1] = boost::math::constants::two_pi<double>() * this->radii[this->layers-1] / (structure[this->layers-1] - boost::math::constants::pi<double>());
 
-    this->block_height = boost::math::constants::two_pi<double>() * this->radii[this->layers - 1] / this->sectors / 2;
+    this->block_height = boost::math::constants::two_pi<double>() * this->radii[this->layers - 1] / this->sectors / 2; // / 3; //2;
 }
 
 Tower::~Tower()
@@ -147,7 +147,9 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
                     Ogre::Vector3 difference = this->getBlockPosition(level, layer, sector) - position;
                     double distance = difference.length();
 
-                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && distance > radius + this->block_height / 2;
+                    bool touched = distance > radius + this->block_height / 2;
+
+                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && touched;
                 }
             } else {
                 for (int sector = left; sector < divisions; ++sector)
@@ -155,14 +157,18 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
                     Ogre::Vector3 difference = this->getBlockPosition(level, layer, sector) - position;
                     double distance = difference.length();
 
-                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && distance > radius + this->block_height / 2;
+                    bool touched = distance > radius + this->block_height / 2;
+
+                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && touched;
                 }
                 for (int sector = 0; sector <= right; ++sector)
                 {
                     Ogre::Vector3 difference = this->getBlockPosition(level, layer, sector) - position;
                     double distance = difference.length();
 
-                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && distance > radius + this->block_height / 2;
+                    bool touched = distance > radius + this->block_height / 2;
+
+                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && touched;
                 }
             }
         }
