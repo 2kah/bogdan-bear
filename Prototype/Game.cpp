@@ -166,7 +166,7 @@ void Game::run(void)
         }
 
         // Render a frame
-        mDebugDrawer->step();
+        //mDebugDrawer->step();
         if (!mRoot->renderOneFrame())
         {
             break;

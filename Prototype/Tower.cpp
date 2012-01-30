@@ -31,7 +31,7 @@ Tower::Tower(unsigned levels, std::vector<unsigned> structure)
     this->radii = std::vector<double>(this->layers, 0);
     this->heights = std::vector<double>(this->layers, 0);
 
-    this->radii[0] = 5;
+    this->radii[0] = 3.5;
 
     for (unsigned layer = 1; layer < this->layers; ++layer)
     {
@@ -240,7 +240,7 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
 
     double ratio = divisions / (double) this->sectors;
     int left = (int) (bounds.sector_left * ratio) % divisions;
-    int right = (int) (bounds.sector_right * ratio) % divisions;
+    int right = (int) ((bounds.sector_right-1) * ratio) % divisions;
 
     // Which faces are actually visible?
     bool front =  !(layer < this->layers-1 && this->blocks[level][layer+1][sector])                || layer  == bounds.layer_outer;
@@ -642,9 +642,9 @@ void Tower::getChunkTriangles(std::vector<BlockTriangle> &triangles, TowerChunk 
 
         double ratio = divisions / (double) this->sectors;
         int left = (int) (chunk.bounds.sector_left * ratio) % divisions;
-        int right = (int) (chunk.bounds.sector_right * ratio) % divisions;
+        int right = (int) ((chunk.bounds.sector_right-1) * ratio) % divisions;
 
-        for (unsigned sector = left; sector < right; ++sector)
+        for (unsigned sector = left; sector <= right; ++sector)
         {
             for (unsigned level = chunk.bounds.level_bottom; level < chunk.bounds.level_top; ++level)
             {
