@@ -98,6 +98,8 @@ set(RAKNET_LIBRARIES)
 # raknet maybe
 include_directories("raknet/Source")
  
+include_directories("include")
+ 
 set(HDRS
     ./Refactor.h
 	./Game.h
