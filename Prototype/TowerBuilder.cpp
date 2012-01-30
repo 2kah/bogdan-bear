@@ -11,6 +11,9 @@ TowerBuilder::TowerBuilder(Tower *tower)
     this->timer = 0;
     this->level = this->tower->levels - 1;
 
+	this->blocksAvailable = 0;
+	this->tower->signals.updated.connect(boost::bind(&TowerBuilder::blocksUpdated, this, _3));
+
 	/*
 	//TODO: set to max number of blocks
 	blocksAvailable = 1000;
@@ -49,8 +52,10 @@ void TowerBuilder::update(void)
     }
 }
 
-void TowerBuilder::blocksUpdated(Tower *tower, unsigned level)
+void TowerBuilder::blocksUpdated(int blocksDestroyed)
 {
+	this->blocksAvailable += blocksDestroyed;
+	std::cout << "blocks available = " << blocksAvailable << std::endl;
 }
 
 void TowerBuilder::regenerate(void)
