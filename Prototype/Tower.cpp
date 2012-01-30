@@ -147,9 +147,9 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
                     Ogre::Vector3 difference = this->getBlockPosition(level, layer, sector) - position;
                     double distance = difference.length();
 
-                    bool touched = distance > radius + this->block_height / 2;
+                    bool untouched = distance > radius + this->block_height / 2;
 
-                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && touched;
+                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && untouched;
                 }
             } else {
                 for (int sector = left; sector < divisions; ++sector)
@@ -157,18 +157,18 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
                     Ogre::Vector3 difference = this->getBlockPosition(level, layer, sector) - position;
                     double distance = difference.length();
 
-                    bool touched = distance > radius + this->block_height / 2;
+                    bool untouched = distance > radius + this->block_height / 2;
 
-                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && touched;
+                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && untouched;
                 }
                 for (int sector = 0; sector <= right; ++sector)
                 {
                     Ogre::Vector3 difference = this->getBlockPosition(level, layer, sector) - position;
                     double distance = difference.length();
 
-                    bool touched = distance > radius + this->block_height / 2;
+                    bool untouched = distance > radius + this->block_height / 2;
 
-                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && touched;
+                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && untouched;
                 }
             }
         }
