@@ -30,12 +30,15 @@ public:
     TurretSignals signals;
 
     virtual void setTarget(Object *target);
+
+	virtual bool isOccupied();
 protected:
     unsigned timer;
 	Ogre::Vector3 oldtarget;
 	Ogre::Vector3 nptarget;
 	Ogre::Vector3 currenttarget;
     Object *target;
+	bool occ;
 };
 
 #endif // #ifndef __Turret_h_
