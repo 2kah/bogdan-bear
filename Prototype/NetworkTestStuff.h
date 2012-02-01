@@ -23,6 +23,9 @@ public:
     NetworkSignals signals;
 
     virtual void update();
+
+    void startServer();
+    void startClient();
 };
 
 #endif // #ifndef __NetworkTestStuff_h_
