@@ -2,6 +2,7 @@
 #define __PlayerPhysics_h_
 
 #include <btBulletDynamicsCommon.h>
+#include <boost/signals.hpp>
 
 #include "PhysicsObject.h"
 
@@ -42,6 +43,10 @@ protected:
 	btScalar airMovementSpeed;
 
 	btVector3 pushDirection;
+
+	btDiscreteDynamicsWorld *dynamicsWorld;
+
+	boost::signals::connection connection;
 };
 
 #endif // #ifndef __PlayerPhysics_h_

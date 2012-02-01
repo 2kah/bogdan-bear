@@ -12,6 +12,7 @@
 PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWorld) : PhysicsObject()
 {
 	this->player = player;
+	this->dynamicsWorld = dynamicsWorld;
 	
 	//TODO: make this a cvar
 	//Defines walk speed
@@ -55,11 +56,18 @@ PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWo
 	pushDirection.setZero();
 
     //TODO: utility function to convert between ogre and bullet vector3
-	this->player->signals.updated.connect(boost::bind(&PlayerPhysics::playerUpdated, this, _1));
+	connection = this->player->signals.updated.connect(boost::bind(&PlayerPhysics::playerUpdated, this, _1));
 }
 
 PlayerPhysics::~PlayerPhysics()
 {
+	this->dynamicsWorld->removeCollisionObject(this->m_ghostObject);
+	this->dynamicsWorld->removeAction(this->m_character);
+
+	connection.disconnect();
+
+	delete this->m_ghostObject;
+	delete this->m_character;
 }
 
 void PlayerPhysics::addInput(PlayerInput &input)
