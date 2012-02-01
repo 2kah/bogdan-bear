@@ -12,6 +12,7 @@ class TowerOld;
 class PlayerInput;
 enum DIRECTION;
 
+class Turret;
 class Player;
 class Platform;
 class Rocket;
@@ -22,6 +23,9 @@ struct PlayerSignals {
 
     boost::signal<void (Player *, Rocket *)> fired;
     boost::signal<void (Player *, Platform *)> platform;
+
+    boost::signal<void (Player *, Turret *)> enteredTurret;
+    boost::signal<void (Player *, Turret *)> exitedTurret;
 };
 }
 
@@ -49,10 +53,9 @@ public:
     virtual void jump(bool state);
     virtual void use(bool state);
 
-    // old tower, contains physics
-    //virtual void shoot(Ogre::SceneManager *mSceneMgr, btDiscreteDynamicsWorld *dynamicsWorld, TowerOld *tower);
-
     Ogre::Quaternion relativeAim;
+
+    Turret *turret;
 private:
     Ogre::Vector3 velocity;
 

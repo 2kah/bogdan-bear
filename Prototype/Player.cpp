@@ -5,6 +5,8 @@
 
 #include <boost/bind.hpp>
 
+#include <OGRE/OgreQuaternion.h>
+
 #include "PlayerInput.h"
 
 #include "Platform.h"
@@ -16,10 +18,10 @@ const double Player::MOVEMENT_SPEED = 5 / 16.0;
 const double Player::ROTATION_SPEED = 0.05;
 
 Player::Player(Ogre::Vector3 position)
+    : Object(position, Ogre::Quaternion())
+    , velocity(Ogre::Vector3::ZERO)
+    , turret(NULL)
 {
-    this->position = position;
-
-    this->velocity = Ogre::Vector3::ZERO;
 }
 
 Player::~Player()
