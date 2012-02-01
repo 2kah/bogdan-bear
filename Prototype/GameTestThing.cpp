@@ -149,6 +149,19 @@ GameTestThing::~GameTestThing()
 {
 }
 
+void GameTestThing::netStartClient()
+{
+	this->network->startNetwork(false);
+}
+void GameTestThing::netStartServer()
+{
+	this->network->startNetwork(true);
+}
+void GameTestThing::netSendChat(std::string message)
+{
+	this->network->sendChat(message);
+}
+
 void GameTestThing::update()
 {
     // Remove the things in the remove queue from the set of objects to be updated

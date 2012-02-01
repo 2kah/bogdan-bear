@@ -222,6 +222,18 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
 	{
         this->playerInput.signals.jump(true);
 	}
+	else if (arg.key == OIS::KC_F8)
+	{
+		this->gameTestThing->netStartClient();
+	}
+	else if (arg.key == OIS::KC_F9)
+	{
+		this->gameTestThing->netStartServer();
+	}
+	else if (arg.key == OIS::KC_F10)
+	{
+		this->gameTestThing->netSendChat("hello");
+	}
 	
     return true;
 }
