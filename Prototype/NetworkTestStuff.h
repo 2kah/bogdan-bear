@@ -28,6 +28,8 @@ public:
 
     void startServer();
     void startClient();
+
+    virtual void sendExplosion(double x, double y, double z);
 };
 
 #endif // #ifndef __NetworkTestStuff_h_

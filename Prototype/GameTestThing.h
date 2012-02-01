@@ -39,6 +39,7 @@ private:
     void platformExpired(Platform *platform);
 
     void chatReceived(std::string message);
+    void networkExplosion(double x, double y, double z);
 
     std::set<Updatable *> removeQueue;
 };
