@@ -179,14 +179,7 @@ void GameTestThing::update()
 
 void GameTestThing::turretFired(Turret *turret, Rocket *rocket)
 {
-    // factor out?
-    float x1 = turret->position.x;
-	float y1 = turret->position.y;
-	float z1 = turret->position.z;
-	irrklang::vec3df position(x1, y1, z1);
-    
-	this->sounds->engine->play3D("sounds/play.mp3", position);
-    //
+    this->sounds->engine->play3D("sounds/play.mp3", BtOgre::Convert::toIrrKlang(turret->position));
     
     this->game->objects.insert(rocket);
 

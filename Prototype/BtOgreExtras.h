@@ -28,6 +28,8 @@
 
 #include <OGRE/OgreSceneNode.h> //
 
+#include "include/irrKlang.h"
+
 namespace BtOgre
 {
 
@@ -57,6 +59,15 @@ public:
 	{
 		return Ogre::Vector3(v.x(), v.y(), v.z());
 	}
+
+    static irrklang::vec3df toIrrKlang(const btVector3 &v)
+    {
+        return irrklang::vec3df(v.x(), v.y(), v.z());
+    }
+    static irrklang::vec3df toIrrKlang(const Ogre::Vector3  &v)
+    {
+        return irrklang::vec3df(v.x, v.y, v.z);
+    }
 };
 
 //From here on its debug-drawing stuff. ------------------------------------------------------------------
