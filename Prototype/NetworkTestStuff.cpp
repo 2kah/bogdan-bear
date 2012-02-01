@@ -66,7 +66,10 @@ void NetworkTestStuff::sendChat(std::string message)
 	std::cout << "Sent Message" << std::endl;
 }
 
+void NetworkTestStuff::sendExplosion(double x, double y, double z)
+{
 
+}
 
 void NetworkTestStuff::update()
 {

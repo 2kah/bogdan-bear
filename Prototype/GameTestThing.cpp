@@ -48,6 +48,7 @@ GameTestThing::GameTestThing(Game *game)
     
     this->network = new NetworkTestStuff();
     this->network->signals.chat.connect(boost::bind(&GameTestThing::chatReceived, this, _1));
+    this->network->signals.explosion.connect(boost::bind(&GameTestThing::networkExplosion, this, _1, _2, _3));
     this->game->objects.insert(this->network);
 
     // Create an empty tower
@@ -215,6 +216,9 @@ void GameTestThing::rocketExploded(Rocket *rocket, Explosion *explosion)
     new ExplosionPhysics(explosion, this->game->dynamicsWorld);
 
     this->removeQueue.insert(rocket);
+
+    // TODO: refactor
+    this->network->sendExplosion(explosion->position.x, explosion->position.y, explosion->position.z);
 }
 
 void GameTestThing::explosionFinished(Explosion *explosion)
@@ -241,4 +245,16 @@ void GameTestThing::platformExpired(Platform *platform)
 void GameTestThing::chatReceived(std::string message)
 {
     std::cout << "CHAT: " << message << std::endl;
+}
+
+void GameTestThing::networkExplosion(double x, double y, double z)
+{
+    Explosion *explosion = new Explosion(Ogre::Vector3(x, y, z));
+
+    this->game->objects.insert(explosion);
+
+    explosion->signals.finished.connect(boost::bind(&GameTestThing::explosionFinished, this, _1));
+    
+    new ExplosionGraphics(explosion, this->game->mSceneMgr);
+    new ExplosionPhysics(explosion, this->game->dynamicsWorld);
 }
