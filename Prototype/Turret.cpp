@@ -26,6 +26,7 @@ void Turret::update()
     double pitch;
 	double yaw;
 	Ogre::Vector3 d;
+	
     if (this->target != NULL) {
 		d = this->target->position - this->position;
 	}
@@ -35,9 +36,27 @@ void Turret::update()
 	}
 
     //this->orientation = this->position.getRotationTo((this->target->position + Ogre::Vector3::UNIT_Y * 4) - this->position, Ogre::Vector3::UNIT_Y) * Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y);
-    yaw = (atan (d.x/d.z) * 180 / PI)+90;
-	if(d.y < 0) pitch = (atan (d.z/d.y) * 180 / PI)-90;
-	else pitch = (atan (d.z/d.y) * 180 / PI) + 90;
+    
+	if(this->position.z > 0) {
+		yaw = (atan (d.x/d.z) * 180 / PI)+90;
+	    if(d.y < 0) pitch = (atan (d.z/d.y) * 180 / PI)-90;
+	    else pitch = (atan (d.z/d.y) * 180 / PI) + 90;
+	}
+	else if(this->position.z < 0) {
+		yaw = (atan (d.x/d.z) * 180 / PI)-90;
+	    if(d.y < 0) pitch = (atan (-d.z/d.y) * 180 / PI)-90;
+	    else pitch = (atan (-d.z/d.y) * 180 / PI) + 90;
+	}
+	if(this->position.x > 0) {
+		yaw = (atan (-d.z/d.x) * 180 / PI)+180;
+	    if(d.y < 0) pitch = (atan (d.x/d.y) * 180 / PI)-90;
+	    else pitch = (atan (d.x/d.y) * 180 / PI) + 90;
+	}
+	else if(this->position.x < 0) {
+		yaw = (atan (-d.z/d.x) * 180 / PI);//-90;
+	    if(d.y < 0) pitch = (atan (-d.x/d.y) * 180 / PI)-90;
+	    else pitch = (atan (-d.x/d.y) * 180 / PI) + 90;
+	}
 
 	this->orientation = Ogre::Quaternion(Ogre::Degree(yaw), Ogre::Vector3::UNIT_Y);
 	this->orientation = this->orientation * Ogre::Quaternion(Ogre::Degree(pitch), Ogre::Vector3::UNIT_Z);
@@ -62,4 +81,9 @@ void Turret::update()
 void Turret::setTarget(Object *target)
 {
     this->target = target;
+}
+
+bool Turret::isOccupied()
+{
+    return this->occ;
 }

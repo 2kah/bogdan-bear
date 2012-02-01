@@ -73,7 +73,7 @@ GameTestThing::GameTestThing(Game *game)
     Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowl.mesh");
     Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
     sceneNode->attachObject(bowl);
-    sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
+    //sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
 
 	btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
 	fileLoader->loadFile("bowl.bullet");
@@ -105,15 +105,34 @@ GameTestThing::GameTestThing(Game *game)
     ///*
     // Create a turret with graphics and add it to the list of things to update
     Turret *turret = new Turret(Ogre::Vector3(0, 150, 400), Ogre::Quaternion::IDENTITY);
+	Turret *turret2 = new Turret(Ogre::Vector3(0, 150, -400), Ogre::Quaternion::IDENTITY);
+	Turret *turret3 = new Turret(Ogre::Vector3(400, 150, 0), Ogre::Quaternion::IDENTITY);
+	Turret *turret4 = new Turret(Ogre::Vector3(-400, 150, 0), Ogre::Quaternion::IDENTITY);
     new TurretGraphics(turret, this->game->mSceneMgr);
+	new TurretGraphics(turret2, this->game->mSceneMgr);
+	new TurretGraphics(turret3, this->game->mSceneMgr);
+	new TurretGraphics(turret4, this->game->mSceneMgr);
     this->game->objects.insert(turret);
+	this->game->objects.insert(turret2);
+	this->game->objects.insert(turret3);
+	this->game->objects.insert(turret4);
     
     // Set the turret to aim at the player always. Setting it to NULL makes it shoot randomly at the tower.
-    //urret->setTarget(this->game->player);
-	turret->setTarget(NULL);
+	turret->setTarget(this->game->player);
+	turret2->setTarget(this->game->player);
+	turret3->setTarget(this->game->player);
+	turret4->setTarget(this->game->player);
+	
+	/*turret->setTarget(NULL);
+	turret2->setTarget(NULL);
+	turret3->setTarget(NULL);
+	turret4->setTarget(NULL);*/
 
     // Listen for when the turret fires
     turret->signals.fired.connect(boost::bind(&GameTestThing::turretFired, this, _1, _2));
+	turret2->signals.fired.connect(boost::bind(&GameTestThing::turretFired, this, _1, _2));
+	turret3->signals.fired.connect(boost::bind(&GameTestThing::turretFired, this, _1, _2));
+	turret4->signals.fired.connect(boost::bind(&GameTestThing::turretFired, this, _1, _2));
     //*/
 
     this->sounds = new Sounds(this->player);
