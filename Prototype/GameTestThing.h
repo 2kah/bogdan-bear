@@ -22,6 +22,9 @@ public:
     ~GameTestThing();
 
     virtual void update();
+	virtual void netStartClient();
+	virtual void netStartServer();
+	virtual void netSendChat(std::string message);
 protected:
     Game *game;
     NetworkTestStuff *network;

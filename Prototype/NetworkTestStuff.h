@@ -22,6 +22,8 @@ public:
 
     NetworkSignals signals;
 
+	virtual void startNetwork(bool asServer);
+	virtual void sendChat(std::string message);
     virtual void update();
 
     void startServer();
