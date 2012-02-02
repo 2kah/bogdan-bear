@@ -113,10 +113,10 @@ GameTestThing::GameTestThing(Game *game)
 	new TurretGraphics(turret2, this->game->mSceneMgr);
 	new TurretGraphics(turret3, this->game->mSceneMgr);
 	new TurretGraphics(turret4, this->game->mSceneMgr);
-    this->game->objects.insert(turret);
-	this->game->objects.insert(turret2);
-	this->game->objects.insert(turret3);
-	this->game->objects.insert(turret4);
+    //this->game->objects.insert(turret);
+	//this->game->objects.insert(turret2);
+	//this->game->objects.insert(turret3);
+	//this->game->objects.insert(turret4);
     
     // Set the turret to aim at the player always. Setting it to NULL makes it shoot randomly at the tower.
 	turret->setTarget(this->game->player);
@@ -161,6 +161,10 @@ void GameTestThing::netStartServer()
 void GameTestThing::netSendChat(std::string message)
 {
 	this->network->sendChat(message);
+}
+void GameTestThing::netSendExplosion(double x, double y, double z)
+{
+	this->network->sendExplosion(x,y,z);
 }
 
 void GameTestThing::update()
@@ -251,3 +255,4 @@ void GameTestThing::networkExplosion(double x, double y, double z)
     new ExplosionGraphics(explosion, this->game->mSceneMgr);
     new ExplosionPhysics(explosion, this->game->dynamicsWorld);
 }
+
