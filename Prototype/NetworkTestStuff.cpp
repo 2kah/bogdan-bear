@@ -160,6 +160,9 @@ void NetworkTestStuff::update()
 					zdata[i] = packet->data[i+17];
 				}
 				std::cout << "(" << x << "," << y << "," << z << ")"  << std::endl;
+
+                this->signals.explosion(x, y, z);
+
 				break;
 			}
 		}
