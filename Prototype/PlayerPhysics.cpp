@@ -16,7 +16,7 @@ PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWo
 	
 	//TODO: make this a cvar
 	//Defines walk speed
-	walkSpeed = btScalar(2.0);
+	walkSpeed = btScalar(1.0);
 
 	btTransform startTransform;
 	startTransform.setIdentity();
@@ -93,8 +93,10 @@ void PlayerPhysics::playerUpdated(Player *player)
 	//if on ground then allow whatever movement the player wants
 	if(m_character->onGround())
 	{
-		actualMovement += (walk * walkSpeed);
-		//m_character->setWalkDirection(walk * walkSpeed);
+		if(walk.length() > 0)
+		{
+			actualMovement += walk.normalize() * walkSpeed;
+		}
 	}
 	//if airborne then use previous movement plus a dampened amount of wanted movement
 	else
@@ -106,7 +108,6 @@ void PlayerPhysics::playerUpdated(Player *player)
 			walk = walk / (walk.length() / airMovementSpeed);
 		}
 		actualMovement += walk;
-		//m_character->setWalkDirection(walk);
 	}
 	m_character->setWalkDirection(actualMovement);
 	oldWalkDirection = walk;
