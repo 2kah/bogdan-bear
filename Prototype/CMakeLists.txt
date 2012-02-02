@@ -102,7 +102,8 @@ include_directories("include")
  
 set(HDRS
     ./Refactor.h
-	./Game.h
+	./InputManager.h
+    ./Game.h
     
     ./GameTestThing.h
     
@@ -154,6 +155,7 @@ set(HDRS
  
 set(SRCS
     ./Refactor.cpp
+    ./InputManager.cpp
 	./Game.cpp
     
     ./GameTestThing.cpp
