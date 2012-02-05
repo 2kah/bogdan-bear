@@ -16,83 +16,10 @@
 #include "TowerGraphics.h"
 
 #include "Player.h"
-#include "FallingObject.h"
 
 #include "GameTestThing.h"
 
-Game::~Game(void)
-{
-}
-
-void Game::createScene(void)
-{    
-    // Create and initialise the dynamics world
-    btBroadphaseInterface* broadphase = new btDbvtBroadphase();
- 
-    btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
-    btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
- 
-    btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
- 
-    dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
- 
-    dynamicsWorld->setGravity(btVector3(0, -9.8, 0));
-    
-    this->dynamicsWorld->getPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
-
-    this->mDebugDrawer = new BtOgre::DebugDrawer(mSceneMgr->getRootSceneNode(), dynamicsWorld);
-    this->dynamicsWorld->setDebugDrawer(this->mDebugDrawer);
-
-    // Create and add the ground plane
-    btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0,1,0),1);
-    
-	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(0,-1,0)));
-    btRigidBody::btRigidBodyConstructionInfo
-                groundRigidBodyCI(0,groundMotionState,groundShape,btVector3(0,0,0));
-    btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
-    dynamicsWorld->addRigidBody(groundRigidBody); // , 4, 2);
-    
-    // Create and add a falling object
-    fallingObject = new FallingObject(Ogre::Vector3(40.5, 64, 40.15));
-    fallingObject->addToScene(mSceneMgr);
-    fallingObject->addToPhysics(dynamicsWorld);
-    objects.insert(fallingObject);
-
-    // Add test entities (tower, player, turret, rocket/explosion handlers)
-    this->gameTestThing = new GameTestThing(this);
-
-    // Add lighting
-    /*
-    Ogre::Light* pointlight1 = mSceneMgr->createLight("pointlight1");
-    pointlight1->setType(Ogre::Light::LT_POINT);
-    pointlight1->setPosition(Ogre::Vector3(500, 150, 0));
-    Ogre::Light* pointlight2 = mSceneMgr->createLight("pointlight2");
-    pointlight2->setType(Ogre::Light::LT_POINT);
-    pointlight2->setPosition(Ogre::Vector3(-500, 150, 0));
-	Ogre::Light* pointlight3 = mSceneMgr->createLight("pointlight3");
-    pointlight3->setType(Ogre::Light::LT_POINT);
-    pointlight3->setPosition(Ogre::Vector3(-1000, 150, 0));
-	Ogre::Light* pointlight4 = mSceneMgr->createLight("pointlight4");
-    pointlight4->setType(Ogre::Light::LT_POINT);
-    pointlight4->setPosition(Ogre::Vector3(-800, 100, 0));
-    */
-
-    //mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
-    //Ogre::Light* pointlight1 = mSceneMgr->createLight();
-    //pointlight1->setType(Ogre::Light::LT_POINT);
-    //pointlight1->setPosition(Ogre::Vector3(500, 150, 0));
-    //pointlight1->setDiffuseColour(Ogre::ColourValue::White);
-
-    mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
-
-    Ogre::Light *moon = mSceneMgr->createLight();
-    moon->setType(Ogre::Light::LT_DIRECTIONAL);
-    moon->setDirection(Ogre::Vector3(0.5, -1, 0.5));
-    moon->setDiffuseColour(Ogre::ColourValue::White);
-    moon->setSpecularColour(Ogre::ColourValue::White);
-}
-
-void Game::run(void)
+Game::Game()
 {
 #ifdef _DEBUG
     mResourcesCfg = "resources_d.cfg";
@@ -101,11 +28,51 @@ void Game::run(void)
     mResourcesCfg = "resources.cfg";
     mPluginsCfg = "plugins.cfg";
 #endif
-    if (!setup())
+}
+
+Game::~Game(void)
+{
+}
+
+void Game::run(void)
+{    
+    if (!this->setup())
     {
         return;
     }
 
+    // Create and initialise the dynamics world
+    btCollisionConfiguration *collisionConfig = new btDefaultCollisionConfiguration();
+
+    this->dynamicsWorld = new btDiscreteDynamicsWorld(new btCollisionDispatcher(collisionConfig),
+                                                      new btDbvtBroadphase(),
+                                                      new btSequentialImpulseConstraintSolver(),
+                                                      collisionConfig);
+ 
+    // Required to make ghost objects work
+    this->dynamicsWorld->getPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
+
+    // Gravity is set at Earth gravity, assuming 1 unit is 1 meter
+    this->dynamicsWorld->setGravity(btVector3(0, -9.8, 0));
+
+    // Set up a debug drawer
+    this->mDebugDrawer = new BtOgre::DebugDrawer(mSceneMgr->getRootSceneNode(), dynamicsWorld);
+    this->dynamicsWorld->setDebugDrawer(this->mDebugDrawer);
+
+    // camera/viewport
+    mCamera = mSceneMgr->createCamera("playerCam");
+    mCamera->setNearClipDistance(1);
+    
+    // Create one viewport, entire window
+    Ogre::Viewport* vp = mWindow->addViewport(mCamera);
+    vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
+
+    // Alter the camera aspect ratio to match the viewport
+    mCamera->setAspectRatio(Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
+
+    this->gameTestThing = new GameTestThing(this);
+
+    // Stuff
     Ogre::Timer timer;
 
     double oldTime = timer.getMilliseconds() / 1000.0;
@@ -177,22 +144,6 @@ void Game::run(void)
 
     std::cout << "You have been eaten by Bogdan!" << std::endl;
     std::cout << "*** GAME OVER ***" << std::endl;
-}
-//TODO: put this code where it should be
-void Game::createCamera(void)
-{
-    mCamera = mSceneMgr->createCamera("playerCam");
-    mCamera->setNearClipDistance(1);
-}
-
-void Game::createViewports(void)
-{
-    // Create one viewport, entire window
-    Ogre::Viewport* vp = mWindow->addViewport(mCamera);
-    vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
-
-    // Alter the camera aspect ratio to match the viewport
-    mCamera->setAspectRatio(Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
 }
 
 //TODO: make this use changeable key bindings (not hard coded)
