@@ -1,9 +1,22 @@
 #ifndef __TowerBuilder_h_
 #define __TowerBuilder_h_
 
+#include <vector>
+
 #include "Updatable.h"
+#include "PhysicsObject.h"
+#include "TowerChunk.h"
 
 class Tower;
+
+class BuilderChunk : public TowerChunk, public PhysicsObject
+{
+public:
+	BuilderChunk(Tower *tower, BoundingVolume bounds);
+	virtual ~BuilderChunk();
+
+	virtual bool empty();
+};
 
 class TowerBuilder : public Updatable
 {
@@ -26,6 +39,8 @@ protected:
 	int regeneratingMetaShapes;
 	int maxBlocks;
 	int activeBlocks;
+
+	std::vector<std::vector<std::vector<BuilderChunk>>> chunks;
 };
 
 #endif // #ifndef __TowerBuilder_h_
