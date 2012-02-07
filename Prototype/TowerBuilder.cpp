@@ -1,8 +1,22 @@
 #include "TowerBuilder.h"
 
 #include <boost/signal.hpp>
+#include <vector>
 
 #include "Tower.h"
+
+BuilderChunk::BuilderChunk(Tower *tower, BoundingVolume bounds) : TowerChunk(tower, bounds)
+{
+}
+
+BuilderChunk::~BuilderChunk()
+{
+}
+
+bool BuilderChunk::empty()
+{
+	return true;
+}
 
 TowerBuilder::TowerBuilder(Tower *tower)
 {
@@ -16,10 +30,36 @@ TowerBuilder::TowerBuilder(Tower *tower)
 
 	/*
 	//TODO: set to max number of blocks
-	blocksAvailable = 1000;
+	this->blocksAvailable = 10000;
 	//TODO: make cvar
-	maxRegeneratingMetaShapes = 5;
-	regeneratingMetaShapes = 0;*/
+	this->maxRegeneratingMetaShapes = 5;
+	this->regeneratingMetaShapes = 0;*/
+
+	//TODO: make this code generic
+	BoundingVolume bounds;
+	//this->chunks = std::vector<std::vector<std::vector<BuilderChunk>>>(tower->levels/8, std::vector<std::vector<BuilderChunk>>(tower->layers/11, std::vector<BuilderChunk>(1, BuilderChunk(tower, bounds))));
+
+	for (unsigned level = 0; level < this->tower->levels / 8; ++level)
+    {
+		std::vector<std::vector<BuilderChunk>> levelVector;
+        for (unsigned layer = 0; layer < this->tower->layers / 11; ++layer)
+        {
+			std::vector<BuilderChunk> layerVector;
+            for (unsigned sector = 0; sector < this->tower->sectors / 16; ++sector)
+            {
+                BoundingVolume bounds(level  * 8, (level+1)  * 8,
+                                      //0,          this->tower->layers,
+                                      layer  * 11, (layer+1)  * 11,
+                                      //0,          this->tower->sectors);
+                                      sector * 16, (sector+1) * 16);
+
+				//this->chunks[level][layer] = std::vector<BoundingVolume>(this->tower->sectors/16, BuilderChunk(tower, bounds));
+				layerVector.push_back(BuilderChunk(tower, bounds));
+            }
+			levelVector.push_back(layerVector);
+        }
+		this->chunks.push_back(levelVector);
+    }
 }
 
 TowerBuilder::~TowerBuilder(void)
