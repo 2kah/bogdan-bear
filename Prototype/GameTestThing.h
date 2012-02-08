@@ -42,6 +42,8 @@ private:
     void chatReceived(std::string message);
     void networkExplosion(double x, double y, double z);
 
+    void playerUsed(Player *player);
+
     std::set<Updatable *> removeQueue;
 };
 
