@@ -14,6 +14,7 @@ Turret::Turret(Ogre::Vector3 position, Ogre::Quaternion orientation)
 	, nptarget(0,100,0)
 	, oldtarget(0,0,0)
 	, currenttarget(0,0,0)
+	, occ(false)
 {
 }
 
@@ -81,6 +82,11 @@ void Turret::update()
 void Turret::setTarget(Object *target)
 {
     this->target = target;
+}
+
+void Turret::setOccupied(bool set)
+{
+	this->occ = set;
 }
 
 bool Turret::isOccupied()

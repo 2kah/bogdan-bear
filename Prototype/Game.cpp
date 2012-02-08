@@ -189,6 +189,35 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
 	{
 		this->gameTestThing->netSendChat("hello");
 	}
+	else if (arg.key == OIS::KC_T)
+	{
+		//this->objects.find(turret);
+		Ogre::Vector3 min(0,0,0);
+		double minDis = 1000;
+		double check = 0;
+		check = (Ogre::Vector3(0, 150, 400) - this->player->position).length();
+		if(minDis > check) {
+			min = Ogre::Vector3(0, 150, 400);
+			minDis = check;
+		}
+	    check = (Ogre::Vector3(0, 150, -400) - this->player->position).length();
+		if(minDis > check) {
+			min = Ogre::Vector3(0, 150, -400);
+			minDis = check;
+		}
+		check = (Ogre::Vector3(400, 150, 0) - this->player->position).length();
+	    if(minDis > check) {
+			min = Ogre::Vector3(400, 150, 0);
+			minDis = check;
+		}
+		check = (Ogre::Vector3(-400, 150, 0) - this->player->position).length();
+		if(minDis > check) {
+			min = Ogre::Vector3(-400, 150, 0);
+			minDis = check;
+		}
+		this->player->position = min;
+		printf("hello\n");
+	}
 	
     return true;
 }

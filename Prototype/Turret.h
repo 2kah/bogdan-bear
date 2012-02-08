@@ -31,6 +31,8 @@ public:
 
     virtual void setTarget(Object *target);
 
+	virtual void setOccupied(bool set);
+
 	virtual bool isOccupied();
 protected:
     unsigned timer;
