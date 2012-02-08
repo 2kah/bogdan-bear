@@ -37,6 +37,7 @@
 #include "Rocket.h"
 #include "RocketGraphics.h"
 #include "RocketPhysics.h"
+#include "RocketSound.h"
 
 #include "Explosion.h"
 #include "ExplosionPhysics.h"
@@ -45,9 +46,9 @@
 #include "FallingObject.h"
 
 GameTestThing::GameTestThing(Game *game)
+    : game(game)
+    , localPlayer(NULL)
 {
-    this->game = game;
-    
     this->network = new NetworkTestStuff();
     this->network->signals.chat.connect(boost::bind(&GameTestThing::chatReceived, this, _1));
     this->network->signals.explosion.connect(boost::bind(&GameTestThing::networkExplosion, this, _1, _2, _3));
@@ -142,6 +143,7 @@ GameTestThing::GameTestThing(Game *game)
     // Listen for when the players fire or create platforms
     player->signals.fired.connect(boost::bind(&GameTestThing::playerFired, this, _1, _2));
     player->signals.platform.connect(boost::bind(&GameTestThing::platformCreated, this, _1, _2));
+    player->signals.used.connect(boost::bind(&GameTestThing::playerUsed, this, _1));
 
     enemy->signals.fired.connect(boost::bind(&GameTestThing::playerFired, this, _1, _2));
     enemy->signals.platform.connect(boost::bind(&GameTestThing::platformCreated, this, _1, _2));
@@ -208,12 +210,11 @@ void GameTestThing::update()
 
 void GameTestThing::turretFired(Turret *turret, Rocket *rocket)
 {
-    this->sounds->engine->play3D("sounds/play.mp3", BtOgre::Convert::toIrrKlang(turret->position));
-    
     this->game->objects.insert(rocket);
 
     new RocketGraphics(rocket, this->game->mSceneMgr);
     new RocketPhysics(rocket, this->game->dynamicsWorld);
+    new RocketSound(rocket, this->sounds->engine);
 
     rocket->signals.exploded.connect(boost::bind(&GameTestThing::rocketExploded, this, _1, _2));
 }
@@ -281,3 +282,13 @@ void GameTestThing::networkExplosion(double x, double y, double z)
     new ExplosionPhysics(explosion, this->game->dynamicsWorld);
 }
 
+void GameTestThing::playerUsed(Player *player)
+{
+    // look at all turrets here and see if the player is getting inside one
+    std::cout << "USING!" << std::endl;
+}
+
+void GameTestThing::setLocalPlayer(Player *player)
+{
+    this->localPlayer = player;
+}

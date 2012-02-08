@@ -188,7 +188,11 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
 	else if (arg.key == OIS::KC_F10)
 	{
 		this->gameTestThing->netSendChat("hello");
-	}
+    }
+    else if (arg.key == OIS::KC_T)
+    {
+        this->playerInput.signals.use(true);
+    }
 	
     return true;
 }
@@ -217,6 +221,9 @@ bool Game::keyReleased(const OIS::KeyEvent &arg)
         break;
     case OIS::KC_SPACE:
         this->playerInput.signals.jump(false);
+        break;
+    case OIS::KC_T:
+        this->playerInput.signals.use(false);
         break;
     default:
         break;

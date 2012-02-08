@@ -41,6 +41,8 @@ public:
     void startClient();
 
     virtual void sendExplosion(double x, double y, double z);
+
+    bool hosting;
 };
 
 #endif // #ifndef __NetworkTestStuff_h_

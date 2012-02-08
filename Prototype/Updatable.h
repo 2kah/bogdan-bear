@@ -4,9 +4,9 @@
 class Updatable
 {
 public:
-    virtual ~Updatable(void) {};
+    virtual ~Updatable() {};
 
-    virtual void update(void) = 0;
+    virtual void update() = 0;
 };
 
 #endif // #ifndef __Updatable_h_
