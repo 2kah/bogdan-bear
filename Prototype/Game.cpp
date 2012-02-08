@@ -215,6 +215,7 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
 			min = Ogre::Vector3(-400, 150, 0);
 			minDis = check;
 		}
+		
 		this->player->position = min;
 		printf("hello\n");
 	}
