@@ -14,6 +14,17 @@ struct NetworkSignals {
 };
 }
 
+#pragma pack(push, 1)
+struct Coords3D
+{
+unsigned char typeId; // Your type here
+double x;
+double y;
+double z;
+};
+#pragma pack(pop)
+
+
 class NetworkTestStuff : public Updatable
 {
 public:
@@ -28,6 +39,8 @@ public:
 
     void startServer();
     void startClient();
+
+    virtual void sendExplosion(double x, double y, double z);
 };
 
 #endif // #ifndef __NetworkTestStuff_h_

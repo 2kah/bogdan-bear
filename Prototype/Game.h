@@ -23,36 +23,27 @@ class GameTestThing;
 class Game : public BaseApplication
 {
 public:
+    Game();
     virtual ~Game(void);
 
     virtual void run(void);
 protected:
-    virtual void createScene(void);
-
     virtual bool keyPressed(const OIS::KeyEvent &arg);
     virtual bool keyReleased(const OIS::KeyEvent &arg);
 	virtual bool mouseMoved(const OIS::MouseEvent &arg);
     virtual bool mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
     virtual bool mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
 
-    virtual void createCamera(void);
-    virtual void createViewports(void);
-
-private:
-    PlayerInput playerInput;
-    Player *player;
-    FallingObject *fallingObject;
     btDiscreteDynamicsWorld* dynamicsWorld;
-
-    std::set<Updatable *> objects;
-
     BtOgre::DebugDrawer *mDebugDrawer;
 
-    Tower* tower;
-
-    Ogre::Camera* mCamera;
-
+    Tower *tower;
     GameTestThing *gameTestThing;
+
+    PlayerInput playerInput;
+private:
+    std::set<Updatable *> objects;
+    Ogre::Camera* mCamera;
 
     friend class GameTestThing;
 };

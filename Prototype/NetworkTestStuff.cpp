@@ -20,6 +20,7 @@
 static const char *SERVER_IP_ADDRESS="127.0.0.1";
 static const unsigned short SERVER_PORT=12345;
 static const unsigned char ID_TEXT = 140;
+static const unsigned char ID_EXP = 141;
 
 
 RakNet::RakPeerInterface *rakPeer;
@@ -66,42 +67,61 @@ void NetworkTestStuff::sendChat(std::string message)
 	std::cout << "Sent Message" << std::endl;
 }
 
-
+void NetworkTestStuff::sendExplosion(double x, double y, double z)
+{
+	if (rakPeer >0)
+	{
+		Coords3D coord;
+		coord.typeId=ID_EXP;
+		coord.x=x;
+		coord.y=y;
+		coord.z=z;
+		rakPeer->Send((char*)&coord,sizeof(coord) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+		std::cout << "Sending Explosion at: ";
+		std::cout << "(" << x << "," << y << "," << z << ")"  << std::endl;
+	}
+}
 
 void NetworkTestStuff::update()
 {
 	//std::cout << "Network Update" << std::endl;
-    //this->signals.chat("TESTING!");
+	//this->signals.chat("TESTING!");
 	//this->signals.chat("MEH");
 	if (rakPeer > 0)
 	{
 		RakNet::Packet *packet;
-			for (packet = rakPeer->Receive(); packet; rakPeer->DeallocatePacket(packet), packet = rakPeer->Receive())
+		for (packet = rakPeer->Receive(); packet; rakPeer->DeallocatePacket(packet), packet = rakPeer->Receive())
+		{
+			switch (packet->data[0])
 			{
-				switch (packet->data[0])
-				{
-				case ID_CONNECTION_ATTEMPT_FAILED:
-					std::cout << "ID_CONNECTION_ATTEMPT_FAILED" << std::endl;
-					break;
-				case ID_NO_FREE_INCOMING_CONNECTIONS:
-					std::cout << "ID_NO_FREE_INCOMING_CONNECTIONS" << std::endl;
-					break;
-				case ID_CONNECTION_REQUEST_ACCEPTED:
-					std::cout << "ID_CONNECTION_REQUEST_ACCEPTED" << std::endl;
-					break;
-				case ID_NEW_INCOMING_CONNECTION:
-					std::cout << "ID_NEW_INCOMING_CONNECTION" << std::endl;
-					break;
-				case ID_DISCONNECTION_NOTIFICATION:
-					std::cout << "ID_DISCONNECTION_NOTIFICATION" << std::endl;
-					break;
-				case ID_CONNECTION_LOST:
-					std::cout << "ID_CONNECTION_LOST" << std::endl;
-					break;
-				case ID_TEXT:
-					std::cout << "Received Message" << std::endl;
-					break;
-				}
+			case ID_CONNECTION_ATTEMPT_FAILED:
+				std::cout << "ID_CONNECTION_ATTEMPT_FAILED" << std::endl;
+				break;
+			case ID_NO_FREE_INCOMING_CONNECTIONS:
+				std::cout << "ID_NO_FREE_INCOMING_CONNECTIONS" << std::endl;
+				break;
+			case ID_CONNECTION_REQUEST_ACCEPTED:
+				std::cout << "ID_CONNECTION_REQUEST_ACCEPTED" << std::endl;
+				break;
+			case ID_NEW_INCOMING_CONNECTION:
+				std::cout << "ID_NEW_INCOMING_CONNECTION" << std::endl;
+				break;
+			case ID_DISCONNECTION_NOTIFICATION:
+				std::cout << "ID_DISCONNECTION_NOTIFICATION" << std::endl;
+				break;
+			case ID_CONNECTION_LOST:
+				std::cout << "ID_CONNECTION_LOST" << std::endl;
+				break;
+			case ID_TEXT:
+				std::cout << "Received Message" << std::endl;
+				break;
+			case ID_EXP:
+				std::cout << "Received Explosion at: ";
+				Coords3D* coords = (Coords3D*)packet->data;
+				std::cout << "(" << coords->x << "," << coords->y << "," << coords->z << ")"  << std::endl;
+                this->signals.explosion(coords->x, coords->y, coords->z);
+				break;
 			}
+		}
 	}
 }

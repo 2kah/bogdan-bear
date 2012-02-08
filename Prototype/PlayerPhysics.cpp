@@ -12,10 +12,11 @@
 PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWorld) : PhysicsObject()
 {
 	this->player = player;
+	this->dynamicsWorld = dynamicsWorld;
 	
 	//TODO: make this a cvar
 	//Defines walk speed
-	walkSpeed = btScalar(2.0);
+	walkSpeed = btScalar(1.0);
 
 	btTransform startTransform;
 	startTransform.setIdentity();
@@ -55,11 +56,18 @@ PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWo
 	pushDirection.setZero();
 
     //TODO: utility function to convert between ogre and bullet vector3
-	this->player->signals.updated.connect(boost::bind(&PlayerPhysics::playerUpdated, this, _1));
+	connection = this->player->signals.updated.connect(boost::bind(&PlayerPhysics::playerUpdated, this, _1));
 }
 
 PlayerPhysics::~PlayerPhysics()
 {
+	this->dynamicsWorld->removeCollisionObject(this->m_ghostObject);
+	this->dynamicsWorld->removeAction(this->m_character);
+
+	connection.disconnect();
+
+	delete this->m_ghostObject;
+	delete this->m_character;
 }
 
 void PlayerPhysics::addInput(PlayerInput &input)
@@ -85,8 +93,10 @@ void PlayerPhysics::playerUpdated(Player *player)
 	//if on ground then allow whatever movement the player wants
 	if(m_character->onGround())
 	{
-		actualMovement += (walk * walkSpeed);
-		//m_character->setWalkDirection(walk * walkSpeed);
+		if(walk.length() > 0)
+		{
+			actualMovement += walk.normalize() * walkSpeed;
+		}
 	}
 	//if airborne then use previous movement plus a dampened amount of wanted movement
 	else
@@ -98,7 +108,6 @@ void PlayerPhysics::playerUpdated(Player *player)
 			walk = walk / (walk.length() / airMovementSpeed);
 		}
 		actualMovement += walk;
-		//m_character->setWalkDirection(walk);
 	}
 	m_character->setWalkDirection(actualMovement);
 	oldWalkDirection = walk;

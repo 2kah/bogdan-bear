@@ -42,12 +42,15 @@
 #include "ExplosionPhysics.h"
 #include "ExplosionGraphics.h"
 
+#include "FallingObject.h"
+
 GameTestThing::GameTestThing(Game *game)
 {
     this->game = game;
     
     this->network = new NetworkTestStuff();
     this->network->signals.chat.connect(boost::bind(&GameTestThing::chatReceived, this, _1));
+    this->network->signals.explosion.connect(boost::bind(&GameTestThing::networkExplosion, this, _1, _2, _3));
     this->game->objects.insert(this->network);
 
     // Create an empty tower
@@ -79,19 +82,18 @@ GameTestThing::GameTestThing(Game *game)
 	fileLoader->loadFile("bowl.bullet");
 
     // Add a player
-    this->player = new Player(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height + 10, 10));
-    this->game->player = this->player;
+    Player *player = new Player(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height + 10, 10));
 
     // Link local input to the player
-    this->game->player->addInput(this->game->playerInput);
+    player->addInput(this->game->playerInput);
 
     // Add player physics and link local input to it
-    PlayerPhysics* playerPhysics = new PlayerPhysics(this->player, this->game->dynamicsWorld);
+    PlayerPhysics* playerPhysics = new PlayerPhysics(player, this->game->dynamicsWorld);
 	playerPhysics->addInput(this->game->playerInput);
 
     // Add player graphics and link the local camera to the player
-    new PlayerGraphics(this->player, this->game->mSceneMgr);
-    new PlayerCamera(this->player, this->game->mCamera);
+    new PlayerGraphics(player, this->game->mSceneMgr);
+    new PlayerCamera(player, this->game->mCamera);
 
     // Create another player with physics and graphics
     Player *enemy = new Player(Ogre::Vector3(1000 / 16.0, 0, 1000 / 16.0));
@@ -99,7 +101,7 @@ GameTestThing::GameTestThing(Game *game)
     new PlayerGraphics(enemy, this->game->mSceneMgr);
 
     // Add both players to the set of things to update
-    this->game->objects.insert(this->player);
+    this->game->objects.insert(player);
     this->game->objects.insert(enemy);
 
     ///*
@@ -112,16 +114,16 @@ GameTestThing::GameTestThing(Game *game)
 	new TurretGraphics(turret2, this->game->mSceneMgr);
 	new TurretGraphics(turret3, this->game->mSceneMgr);
 	new TurretGraphics(turret4, this->game->mSceneMgr);
-    this->game->objects.insert(turret);
-	this->game->objects.insert(turret2);
-	this->game->objects.insert(turret3);
-	this->game->objects.insert(turret4);
+    //this->game->objects.insert(turret);
+	//this->game->objects.insert(turret2);
+	//this->game->objects.insert(turret3);
+	//this->game->objects.insert(turret4);
     
     // Set the turret to aim at the player always. Setting it to NULL makes it shoot randomly at the tower.
-	turret->setTarget(this->game->player);
-	turret2->setTarget(this->game->player);
-	turret3->setTarget(this->game->player);
-	turret4->setTarget(this->game->player);
+	turret->setTarget(player);
+	turret2->setTarget(player);
+	turret3->setTarget(player);
+	turret4->setTarget(player);
 	
 	/*turret->setTarget(NULL);
 	turret2->setTarget(NULL);
@@ -135,14 +137,38 @@ GameTestThing::GameTestThing(Game *game)
 	turret4->signals.fired.connect(boost::bind(&GameTestThing::turretFired, this, _1, _2));
     //*/
 
-    this->sounds = new Sounds(this->player);
+    this->sounds = new Sounds(player);
 
     // Listen for when the players fire or create platforms
-    this->player->signals.fired.connect(boost::bind(&GameTestThing::playerFired, this, _1, _2));
-    this->player->signals.platform.connect(boost::bind(&GameTestThing::platformCreated, this, _1, _2));
+    player->signals.fired.connect(boost::bind(&GameTestThing::playerFired, this, _1, _2));
+    player->signals.platform.connect(boost::bind(&GameTestThing::platformCreated, this, _1, _2));
 
     enemy->signals.fired.connect(boost::bind(&GameTestThing::playerFired, this, _1, _2));
     enemy->signals.platform.connect(boost::bind(&GameTestThing::platformCreated, this, _1, _2));
+
+    // stuff
+    // Create and add the ground plane
+    btCollisionShape *groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
+    
+	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(0,-1,0)));
+    btRigidBody::btRigidBodyConstructionInfo
+                groundRigidBodyCI(0,groundMotionState,groundShape,btVector3(0,0,0));
+    btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
+    this->game->dynamicsWorld->addRigidBody(groundRigidBody); // , 4, 2);
+    
+    // Create and add a falling object
+    FallingObject *object = new FallingObject(Ogre::Vector3(40.5, 64, 40.15));
+    object->addToScene(this->game->mSceneMgr);
+    object->addToPhysics(this->game->dynamicsWorld);
+    this->game->objects.insert(object);
+
+    this->game->mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
+
+    Ogre::Light *moon = this->game->mSceneMgr->createLight();
+    moon->setType(Ogre::Light::LT_DIRECTIONAL);
+    moon->setDirection(Ogre::Vector3(0.5, -1, 0.5));
+    moon->setDiffuseColour(Ogre::ColourValue::White);
+    moon->setSpecularColour(Ogre::ColourValue::White);
 }
 
 GameTestThing::~GameTestThing()
@@ -161,6 +187,10 @@ void GameTestThing::netSendChat(std::string message)
 {
 	this->network->sendChat(message);
 }
+void GameTestThing::netSendExplosion(double x, double y, double z)
+{
+	this->network->sendExplosion(x,y,z);
+}
 
 void GameTestThing::update()
 {
@@ -178,14 +208,7 @@ void GameTestThing::update()
 
 void GameTestThing::turretFired(Turret *turret, Rocket *rocket)
 {
-    // factor out?
-    float x1 = turret->position.x;
-	float y1 = turret->position.y;
-	float z1 = turret->position.z;
-	irrklang::vec3df position(x1, y1, z1);
-    
-	this->sounds->engine->play3D("sounds/play.mp3", position);
-    //
+    this->sounds->engine->play3D("sounds/play.mp3", BtOgre::Convert::toIrrKlang(turret->position));
     
     this->game->objects.insert(rocket);
 
@@ -215,6 +238,9 @@ void GameTestThing::rocketExploded(Rocket *rocket, Explosion *explosion)
     new ExplosionPhysics(explosion, this->game->dynamicsWorld);
 
     this->removeQueue.insert(rocket);
+
+    // TODO: refactor
+    this->network->sendExplosion(explosion->position.x, explosion->position.y, explosion->position.z);
 }
 
 void GameTestThing::explosionFinished(Explosion *explosion)
@@ -242,3 +268,16 @@ void GameTestThing::chatReceived(std::string message)
 {
     std::cout << "CHAT: " << message << std::endl;
 }
+
+void GameTestThing::networkExplosion(double x, double y, double z)
+{
+    Explosion *explosion = new Explosion(Ogre::Vector3(x, y, z));
+
+    this->game->objects.insert(explosion);
+
+    explosion->signals.finished.connect(boost::bind(&GameTestThing::explosionFinished, this, _1));
+    
+    new ExplosionGraphics(explosion, this->game->mSceneMgr);
+    new ExplosionPhysics(explosion, this->game->dynamicsWorld);
+}
+
