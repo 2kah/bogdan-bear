@@ -104,4 +104,5 @@ void Player::jump(bool state)
 
 void Player::use(bool state)
 {
+    this->signals.used(this);
 }

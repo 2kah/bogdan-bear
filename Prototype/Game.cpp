@@ -188,11 +188,38 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
 	else if (arg.key == OIS::KC_F10)
 	{
 		this->gameTestThing->netSendChat("hello");
-	}
-	else if (arg.key == OIS::KC_T)
-	{
-		//this->objects.find(turret);
+    }
+    else if (arg.key == OIS::KC_T)
+    {
+        this->playerInput.signals.use(true);
+    //this->objects.find(turret);
 		Ogre::Vector3 min(0,0,0);
+		double minDis = 1000;
+		double check = 0;
+		check = (Ogre::Vector3(0, 150, 400) - this->player->position).length();
+		if(minDis > check) {
+			min = Ogre::Vector3(0, 150, 400);
+			minDis = check;
+		}
+	    check = (Ogre::Vector3(0, 150, -400) - this->player->position).length();
+		if(minDis > check) {
+			min = Ogre::Vector3(0, 150, -400);
+			minDis = check;
+		}
+		check = (Ogre::Vector3(400, 150, 0) - this->player->position).length();
+	    if(minDis > check) {
+			min = Ogre::Vector3(400, 150, 0);
+			minDis = check;
+		}
+		check = (Ogre::Vector3(-400, 150, 0) - this->player->position).length();
+		if(minDis > check) {
+			min = Ogre::Vector3(-400, 150, 0);
+			minDis = check;
+		}
+		
+		this->player->position = min;
+		printf("hello\n");
+	}
 		double minDis = 1000;
 		double check = 0;
 		check = (Ogre::Vector3(0, 150, 400) - this->player->position).length();
@@ -247,6 +274,9 @@ bool Game::keyReleased(const OIS::KeyEvent &arg)
         break;
     case OIS::KC_SPACE:
         this->playerInput.signals.jump(false);
+        break;
+    case OIS::KC_T:
+        this->playerInput.signals.use(false);
         break;
     default:
         break;
