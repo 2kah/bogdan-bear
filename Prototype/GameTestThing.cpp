@@ -37,6 +37,7 @@
 #include "Rocket.h"
 #include "RocketGraphics.h"
 #include "RocketPhysics.h"
+#include "RocketSound.h"
 
 #include "Explosion.h"
 #include "ExplosionPhysics.h"
@@ -45,9 +46,9 @@
 #include "FallingObject.h"
 
 GameTestThing::GameTestThing(Game *game)
+    : game(game)
+    , localPlayer(NULL)
 {
-    this->game = game;
-    
     this->network = new NetworkTestStuff();
     this->network->signals.chat.connect(boost::bind(&GameTestThing::chatReceived, this, _1));
     this->network->signals.explosion.connect(boost::bind(&GameTestThing::networkExplosion, this, _1, _2, _3));
@@ -209,12 +210,11 @@ void GameTestThing::update()
 
 void GameTestThing::turretFired(Turret *turret, Rocket *rocket)
 {
-    this->sounds->engine->play3D("sounds/play.mp3", BtOgre::Convert::toIrrKlang(turret->position));
-    
     this->game->objects.insert(rocket);
 
     new RocketGraphics(rocket, this->game->mSceneMgr);
     new RocketPhysics(rocket, this->game->dynamicsWorld);
+    new RocketSound(rocket, this->sounds->engine);
 
     rocket->signals.exploded.connect(boost::bind(&GameTestThing::rocketExploded, this, _1, _2));
 }
@@ -288,3 +288,7 @@ void GameTestThing::playerUsed(Player *player)
     std::cout << "USING!" << std::endl;
 }
 
+void GameTestThing::setLocalPlayer(Player *player)
+{
+    this->localPlayer = player;
+}

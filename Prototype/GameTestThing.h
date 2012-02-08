@@ -45,6 +45,11 @@ private:
     void playerUsed(Player *player);
 
     std::set<Updatable *> removeQueue;
+
+// networky stuff
+    void setLocalPlayer(Player *player);
+
+    Player *localPlayer;
 };
 
 #endif // #ifndef __GameTestThing_h_
