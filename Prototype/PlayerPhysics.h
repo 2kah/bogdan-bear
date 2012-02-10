@@ -30,6 +30,9 @@ public:
 
 	virtual void explode(Explosion *explosion);
 
+	virtual void deactivate();
+	virtual void reactivate();
+
 	btKinematicCharacterController* m_character;
 	class btPairCachingGhostObject* m_ghostObject;
 protected:
@@ -46,7 +49,10 @@ protected:
 
 	btDiscreteDynamicsWorld *dynamicsWorld;
 
-	boost::signals::connection connection;
+	//TODO: not sure if this is necessary/the correct way to do this
+	boost::signals::connection playerUpdateConnection;
+	boost::signals::connection enterTurretConnection;
+	boost::signals::connection exitTurretConnection;
 };
 
 #endif // #ifndef __PlayerPhysics_h_
