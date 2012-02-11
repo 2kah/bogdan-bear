@@ -180,10 +180,18 @@ GameTestThing::~GameTestThing()
 void GameTestThing::netStartClient()
 {
 	this->network->startNetwork(false);
+
+    // wait to receive game state
+
+    // then wait to be given a player
 }
 void GameTestThing::netStartServer()
 {
 	this->network->startNetwork(true);
+
+    // create local player
+
+    // register local player
 }
 void GameTestThing::netSendChat(std::string message)
 {
