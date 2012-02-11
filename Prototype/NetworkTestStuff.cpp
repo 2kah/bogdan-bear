@@ -134,3 +134,19 @@ void NetworkTestStuff::update()
 		}
 	}
 }
+
+void NetworkTestStuff::clientConnected()
+{
+    // send all the world state
+
+    // create a player
+
+    // register the player, to synchronise
+
+    // tell the client they are that player
+}
+
+void NetworkTestStuff::clientDisconnected()
+{
+    // destroy that client's player
+}

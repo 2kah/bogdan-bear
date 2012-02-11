@@ -47,6 +47,10 @@ public:
     virtual void sendExplosion(double x, double y, double z);
 
     //
+    void clientConnected();
+    void clientDisconnected();
+
+    //
     void sendWorld() {};
     void sendPlayers() {};
     void sendRockets() {};
