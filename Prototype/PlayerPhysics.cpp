@@ -55,8 +55,9 @@ PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWo
 	oldWalkDirection.setZero();
 	pushDirection.setZero();
 
-    //TODO: utility function to convert between ogre and bullet vector3
-	connection = this->player->signals.updated.connect(boost::bind(&PlayerPhysics::playerUpdated, this, _1));
+	playerUpdateConnection = this->player->signals.updated.connect(boost::bind(&PlayerPhysics::playerUpdated, this, _1));
+	enterTurretConnection = this->player->signals.enteredTurret.connect(boost::bind(&PlayerPhysics::deactivate, this));
+	exitTurretConnection = this->player->signals.exitedTurret.connect(boost::bind(&PlayerPhysics::reactivate, this));
 }
 
 PlayerPhysics::~PlayerPhysics()
@@ -64,7 +65,9 @@ PlayerPhysics::~PlayerPhysics()
 	this->dynamicsWorld->removeCollisionObject(this->m_ghostObject);
 	this->dynamicsWorld->removeAction(this->m_character);
 
-	connection.disconnect();
+	playerUpdateConnection.disconnect();
+	enterTurretConnection.disconnect();
+	exitTurretConnection.disconnect();
 
 	delete this->m_ghostObject;
 	delete this->m_character;
@@ -177,4 +180,16 @@ void PlayerPhysics::explode(Explosion *explosion)
 	pushDirection = BtOgre::Convert::toBullet(this->player->position - explosion->position) * btScalar(0.1);
 	//offset the vertical
 	pushDirection.setY(pushDirection.y() + 0.6);
+}
+
+void PlayerPhysics::deactivate()
+{
+	this->dynamicsWorld->removeCollisionObject(this->m_ghostObject);
+	this->dynamicsWorld->removeAction(this->m_character);
+}
+
+void PlayerPhysics::reactivate()
+{
+	this->dynamicsWorld->addCollisionObject(this->m_ghostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::AllFilter /*btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter*/);
+	this->dynamicsWorld->addAction(this->m_character);
 }

@@ -17,6 +17,11 @@
 #include "Rand.h"
 #include "RakNetTypes.h"
 
+//
+#include <vector>
+
+#include "Player.h"
+
 static const char *SERVER_IP_ADDRESS="127.0.0.1";
 static const unsigned short SERVER_PORT=12345;
 static const unsigned char ID_TEXT = 140;
@@ -29,6 +34,8 @@ RakNet::SocketDescriptor sd;
 NetworkTestStuff::NetworkTestStuff()
 {
 	std::cout << "Init Network" << std::endl;
+
+    std::vector<Player *> players;
 }
 
 NetworkTestStuff::~NetworkTestStuff()
@@ -37,7 +44,9 @@ NetworkTestStuff::~NetworkTestStuff()
 
 void NetworkTestStuff::startNetwork(bool asServer)
 {
-	if (asServer)
+	this->hosting = asServer;
+    
+    if (asServer)
 	{
 		std::cout << "Starting Server" << std::endl;
 		sd.port=SERVER_PORT;
@@ -124,4 +133,20 @@ void NetworkTestStuff::update()
 			}
 		}
 	}
+}
+
+void NetworkTestStuff::clientConnected()
+{
+    // send all the world state
+
+    // create a player
+
+    // register the player, to synchronise
+
+    // tell the client they are that player
+}
+
+void NetworkTestStuff::clientDisconnected()
+{
+    // destroy that client's player
 }

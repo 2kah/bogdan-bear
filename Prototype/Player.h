@@ -27,8 +27,8 @@ struct PlayerSignals {
     boost::signal<void (Player *)> used;
 
     // TODO: not sure about these
-    boost::signal<void (Player *, Turret *)> enteredTurret;
-    boost::signal<void (Player *, Turret *)> exitedTurret;
+    boost::signal<void (Player */*, Turret **/)> enteredTurret;
+    boost::signal<void (Player */*, Turret **/)> exitedTurret;
 };
 }
 
@@ -55,6 +55,10 @@ public:
 
     virtual void jump(bool state);
     virtual void use(bool state);
+
+	//TODO: remove these 2 (testing purposes only)
+	virtual void enteredTurret();
+	virtual void exitedTurret();
 
     Ogre::Quaternion relativeAim;
 

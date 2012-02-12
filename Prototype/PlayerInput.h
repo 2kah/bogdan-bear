@@ -22,6 +22,10 @@ struct PlayerInputSignals {
     boost::signal<void (bool state)> create;
     boost::signal<void (bool state)> jump;
     boost::signal<void (bool state)> use;
+
+	//TODO: remove these 2 (testing purposes only)
+	boost::signal<void (bool state)> deactivate;
+	boost::signal<void (bool state)> reactivate;
 };
 }
 

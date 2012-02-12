@@ -51,6 +51,10 @@ void Player::addInput(PlayerInput &input)
 
     //input.signals.jump.connect(boost::bind(&Player::jump, this, _1));
     input.signals.use.connect(boost::bind(&Player::use, this, _1));
+
+	//TODO: remove these 2 (testing purposes only)
+	input.signals.deactivate.connect(boost::bind(&Player::enteredTurret, this));
+	input.signals.reactivate.connect(boost::bind(&Player::exitedTurret, this));
 }
 
 void Player::movement(DIRECTION direction, bool state)
@@ -106,3 +110,15 @@ void Player::use(bool state)
 {
     this->signals.used(this);
 }
+
+//TODO: remove these 2 (testing purposes only)
+void Player::enteredTurret()
+{
+	this->signals.enteredTurret(this);
+}
+
+void Player::exitedTurret()
+{
+	this->signals.exitedTurret(this);
+}
+
