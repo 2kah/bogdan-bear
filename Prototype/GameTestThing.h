@@ -36,6 +36,8 @@ public:
 
     virtual void addPlayer(Player *player);
     virtual void addTurret(Turret *turret);
+    virtual void addRocket(Rocket *rocket);
+    virtual void addExplosion(Explosion *explosion);
 
 protected:
     Game *game;
