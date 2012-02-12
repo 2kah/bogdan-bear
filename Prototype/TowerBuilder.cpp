@@ -97,7 +97,7 @@ void TowerBuilder::update(void)
 {
 	this->timer++;
 
-	if(this->timer == 100)
+	if(this->timer == 50)
 	{
 		this->timer = 0;
 		this->regenerate();
@@ -192,7 +192,7 @@ void TowerBuilder::regenerate(void)
 	int shapeIndex = rand() % this->regeneratingMetaShapes;
 	MetaShape metaShape = this->metaShapes[shapeIndex];
 	int blocksAdded = 0;
-	for(int j = 0; j < metaShape.coords.size() && j < blocksAvailable * 0.9; j++)
+	for(int j = 0; j < metaShape.coords.size() && j < blocksAvailable * 0.7; j++)
 	{
 		if(this->blocksAvailable == 0)
 		{
