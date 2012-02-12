@@ -231,9 +231,9 @@ bool Game::keyReleased(const OIS::KeyEvent &arg)
     case OIS::KC_SPACE:
         this->playerInput.signals.jump(false);
         break;
-    case OIS::KC_T:
-        this->playerInput.signals.use(false);
-        break;
+    //case OIS::KC_T:
+    //    this->playerInput.signals.use(false);
+    //    break;
     default:
         break;
     }
