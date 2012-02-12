@@ -13,8 +13,8 @@ RocketSound::RocketSound(Rocket *rocket, irrklang::ISoundEngine *soundEngine)
 {
     this->sound = this->soundEngine->play3D("sounds/play.mp3", BtOgre::Convert::toIrrKlang(rocket->position));
 
-    this->rocket->signals.exploded.connect(boost::bind(&RocketSound::rocketExploded, this, _1, _2));
-    this->rocket->signals.updated.connect(boost::bind(&RocketSound::rocketUpdated, this, _1));
+    //this->rocket->signals.exploded.connect(boost::bind(&RocketSound::rocketExploded, this, _1, _2));
+    //this->rocket->signals.updated.connect(boost::bind(&RocketSound::rocketUpdated, this, _1));
 }
 
 RocketSound::~RocketSound()
