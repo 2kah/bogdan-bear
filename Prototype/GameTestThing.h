@@ -2,6 +2,7 @@
 #define __GameTestThing_h_
 
 #include <string>
+#include <vector>
 #include <set>
 
 #include <OGRE/OgreVector3.h>
@@ -24,16 +25,25 @@ public:
     GameTestThing(Game *game);
     ~GameTestThing();
 
+    virtual void startLocal();
+    virtual void startServer();
+    virtual void startClient();
+
     virtual void update();
-	virtual void netStartClient();
-	virtual void netStartServer();
+
 	virtual void netSendChat(std::string message);
 	virtual void netSendExplosion(double x, double y, double z);
+
+    virtual void addPlayer(Player *player);
+    virtual void addTurret(Turret *turret);
+
 protected:
     Game *game;
     NetworkTestStuff *network;
     Player *player;
     Sounds *sounds;
+
+    std::set<Turret *> turrets;
 private:
     void turretFired(Turret *turret, Rocket *rocket);
     void playerFired(Player *player, Rocket *rocket);
@@ -53,6 +63,8 @@ private:
     void setLocalPlayer(Player *player);
 
     Player *replicatePlayer(Ogre::Vector3 position, Ogre::Vector3 velocity, Ogre::Quaternion orientation) {};
+
+    std::vector<Player *> players;
 
     Player *localPlayer;
 };
