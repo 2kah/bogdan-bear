@@ -69,6 +69,9 @@ GameTestThing::GameTestThing(Game *game)
     sceneNode->attachObject(bowl);
     sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
 
+    btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
+	fileLoader->loadFile("bowl.bullet");
+
     // Create and add a falling object
     FallingObject *object = new FallingObject(Ogre::Vector3(40.5, 64, 40.15));
     object->addToScene(this->game->mSceneMgr);
@@ -113,46 +116,30 @@ void GameTestThing::startLocal()
     new TowerGraphics(this->game->tower, this->game->mSceneMgr);
     new TowerPhysics(this->game->tower, this->game->dynamicsWorld);
 
-	btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
-	fileLoader->loadFile("bowl.bullet");
-
     // Add a player
-    Player *player = this->createPlayer(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height + 10, 10));
-    Player *enemy = this->createPlayer(Ogre::Vector3(100, 0, 100));
+    Player *player = new Player(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height + 10, 10));
+    Player *enemy = new Player(Ogre::Vector3(100, 0, 100));
     this->setLocalPlayer(player);
 
-    ///*
-    // Create a turret with graphics and add it to the list of things to update
-    Turret *turret = new Turret(Ogre::Vector3(0, 150, 400), Ogre::Quaternion::IDENTITY);
-	Turret *turret2 = new Turret(Ogre::Vector3(0, 150, -400), Ogre::Quaternion::IDENTITY);
-	Turret *turret3 = new Turret(Ogre::Vector3(400, 150, 0), Ogre::Quaternion::IDENTITY);
-	Turret *turret4 = new Turret(Ogre::Vector3(-400, 150, 0), Ogre::Quaternion::IDENTITY);
-    new TurretGraphics(turret, this->game->mSceneMgr);
-	new TurretGraphics(turret2, this->game->mSceneMgr);
-	new TurretGraphics(turret3, this->game->mSceneMgr);
-	new TurretGraphics(turret4, this->game->mSceneMgr);
-    //this->game->objects.insert(turret);
-	//this->game->objects.insert(turret2);
-	//this->game->objects.insert(turret3);
-	//this->game->objects.insert(turret4);
-    
+    this->addPlayer(player);
+    this->addPlayer(enemy);
+
+    // Add four turrets
+    Turret *turret1 = new Turret(Ogre::Vector3(0, 150, 400), Ogre::Quaternion());
+	Turret *turret2 = new Turret(Ogre::Vector3(0, 150, 400), Ogre::Quaternion());
+	Turret *turret3 = new Turret(Ogre::Vector3(0, 150, 400), Ogre::Quaternion());
+	Turret *turret4 = new Turret(Ogre::Vector3(0, 150, 400), Ogre::Quaternion());
+
+    this->addTurret(turret1);
+    this->addTurret(turret2);
+    this->addTurret(turret3);
+    this->addTurret(turret4);
+
     // Set the turret to aim at the player always. Setting it to NULL makes it shoot randomly at the tower.
-	turret->setTarget(player);
+	turret1->setTarget(player);
 	turret2->setTarget(player);
 	turret3->setTarget(player);
 	turret4->setTarget(player);
-	
-	/*turret->setTarget(NULL);
-	turret2->setTarget(NULL);
-	turret3->setTarget(NULL);
-	turret4->setTarget(NULL);*/
-
-    // Listen for when the turret fires
-    turret->signals.fired.connect(boost::bind(&GameTestThing::turretFired, this, _1, _2));
-	turret2->signals.fired.connect(boost::bind(&GameTestThing::turretFired, this, _1, _2));
-	turret3->signals.fired.connect(boost::bind(&GameTestThing::turretFired, this, _1, _2));
-	turret4->signals.fired.connect(boost::bind(&GameTestThing::turretFired, this, _1, _2));
-    //*/
 }
 
 void GameTestThing::startClient()
@@ -167,7 +154,8 @@ void GameTestThing::startServer()
 {
 	this->network->startNetwork(true);
     
-    Player *player = this->createPlayer(Ogre::Vector3(0, 50, 100));
+    Player *player = new Player(Ogre::Vector3(0, 50, 100));
+    this->addPlayer(player);
     this->setLocalPlayer(player);
 
     // create local player
@@ -203,7 +191,7 @@ void GameTestThing::turretFired(Turret *turret, Rocket *rocket)
 
     new RocketGraphics(rocket, this->game->mSceneMgr);
     new RocketPhysics(rocket, this->game->dynamicsWorld);
-    new RocketSound(rocket, this->sounds->engine);
+    //new RocketSound(rocket, this->sounds->engine);
 
     rocket->signals.exploded.connect(boost::bind(&GameTestThing::rocketExploded, this, _1, _2));
 }
@@ -275,6 +263,13 @@ void GameTestThing::playerUsed(Player *player)
 {
     // look at all turrets here and see if the player is getting inside one
     std::cout << "USING!" << std::endl;
+
+    for(std::set<Turret *>::iterator i = this->turrets.begin(); i != this->turrets.end(); ++i)
+    {
+        Turret *turret = *i;
+
+        std::cout << turret->position << std::endl;
+    }
 }
 
 void GameTestThing::setLocalPlayer(Player *player)
@@ -295,10 +290,8 @@ void GameTestThing::setLocalPlayer(Player *player)
 	playerPhysics->addInput(this->game->playerInput);
 }
 
-Player *GameTestThing::createPlayer(Ogre::Vector3 position)
+void GameTestThing::addPlayer(Player *player)
 {
-    Player *player = new Player(position);
-
     // Add player graphics
     new PlayerGraphics(player, this->game->mSceneMgr);
 
@@ -309,6 +302,18 @@ Player *GameTestThing::createPlayer(Ogre::Vector3 position)
     player->signals.fired.connect(boost::bind(&GameTestThing::playerFired, this, _1, _2));
     player->signals.platform.connect(boost::bind(&GameTestThing::platformCreated, this, _1, _2));
     player->signals.used.connect(boost::bind(&GameTestThing::playerUsed, this, _1));
+}
 
-    return player;
+void GameTestThing::addTurret(Turret *turret)
+{
+    // Create turret graphics
+    new TurretGraphics(turret, this->game->mSceneMgr);
+    
+    this->turrets.insert(turret);
+
+    // update the turrets every frame
+    this->game->objects.insert(turret);
+
+    // Listen for when the turret fires
+    turret->signals.fired.connect(boost::bind(&GameTestThing::turretFired, this, _1, _2));
 }

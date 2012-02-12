@@ -54,7 +54,7 @@ void NetworkTestStuff::startNetwork(bool asServer)
 		sd.port=SERVER_PORT;
 		rakPeer = RakNet::RakPeerInterface::GetInstance();
 		RakNet::StartupResult sr = rakPeer->Startup(32,&sd,1);
-		RakAssert(sr==RAKNET_STARTED);
+		//RakAssert(sr==RAKNET_STARTED);
 		rakPeer->SetMaximumIncomingConnections(32);
 	}
 	else
@@ -63,9 +63,9 @@ void NetworkTestStuff::startNetwork(bool asServer)
 		sd.port=0;
 		rakPeer = RakNet::RakPeerInterface::GetInstance();
 		RakNet::StartupResult sr = rakPeer->Startup(32,&sd,1);
-		RakAssert(sr==RAKNET_STARTED);
+		//RakAssert(sr==RAKNET_STARTED);
 		RakNet::ConnectionAttemptResult car = rakPeer->Connect(SERVER_IP_ADDRESS,SERVER_PORT,0,0);
-		RakAssert(car==CONNECTION_ATTEMPT_STARTED);
+		//RakAssert(car==CONNECTION_ATTEMPT_STARTED);
 	}
 
 }

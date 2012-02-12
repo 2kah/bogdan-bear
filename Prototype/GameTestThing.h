@@ -34,13 +34,16 @@ public:
 	virtual void netSendChat(std::string message);
 	virtual void netSendExplosion(double x, double y, double z);
 
-    Player *createPlayer(Ogre::Vector3 position);
+    virtual void addPlayer(Player *player);
+    virtual void addTurret(Turret *turret);
 
 protected:
     Game *game;
     NetworkTestStuff *network;
     Player *player;
     Sounds *sounds;
+
+    std::set<Turret *> turrets;
 private:
     void turretFired(Turret *turret, Rocket *rocket);
     void playerFired(Player *player, Rocket *rocket);
