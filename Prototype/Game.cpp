@@ -179,15 +179,19 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
 	}
 	else if (arg.key == OIS::KC_F8)
 	{
-		this->gameTestThing->netStartClient();
+		this->gameTestThing->startClient();
 	}
 	else if (arg.key == OIS::KC_F9)
 	{
-		this->gameTestThing->netStartServer();
+		this->gameTestThing->startServer();
 	}
 	else if (arg.key == OIS::KC_F10)
 	{
 		this->gameTestThing->netSendChat("hello");
+    }
+    else if (arg.key == OIS::KC_F11)
+	{
+		this->gameTestThing->startLocal();
     }
     else if (arg.key == OIS::KC_T)
     {

@@ -27,8 +27,8 @@ struct PlayerSignals {
     boost::signal<void (Player *)> used;
 
     // TODO: not sure about these
-    boost::signal<void (Player */*, Turret **/)> enteredTurret;
-    boost::signal<void (Player */*, Turret **/)> exitedTurret;
+    boost::signal<void (Player * /*, Turret **/)> enteredTurret;
+    boost::signal<void (Player * /*, Turret **/)> exitedTurret;
 };
 }
 
@@ -61,11 +61,10 @@ public:
 	virtual void exitedTurret();
 
     Ogre::Quaternion relativeAim;
+    Ogre::Vector3 velocity;
 
     Turret *turret;
 private:
-    Ogre::Vector3 velocity;
-
     Ogre::Radian rotX;
     Ogre::Radian rotY;
 };
