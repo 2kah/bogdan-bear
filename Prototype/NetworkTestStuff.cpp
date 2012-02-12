@@ -20,6 +20,9 @@
 //
 #include <vector>
 
+#include <OGRE/OgreVector3.h>
+#include <OGRE/OgreQuaternion.h>
+
 #include "Player.h"
 
 static const char *SERVER_IP_ADDRESS="127.0.0.1";
@@ -32,10 +35,9 @@ RakNet::RakPeerInterface *rakPeer;
 RakNet::SocketDescriptor sd;
 
 NetworkTestStuff::NetworkTestStuff()
+    : lastID(0)
 {
 	std::cout << "Init Network" << std::endl;
-
-    std::vector<Player *> players;
 }
 
 NetworkTestStuff::~NetworkTestStuff()
@@ -52,7 +54,7 @@ void NetworkTestStuff::startNetwork(bool asServer)
 		sd.port=SERVER_PORT;
 		rakPeer = RakNet::RakPeerInterface::GetInstance();
 		RakNet::StartupResult sr = rakPeer->Startup(32,&sd,1);
-		RakAssert(sr==RAKNET_STARTED);
+		//RakAssert(sr==RAKNET_STARTED);
 		rakPeer->SetMaximumIncomingConnections(32);
 	}
 	else
@@ -61,9 +63,9 @@ void NetworkTestStuff::startNetwork(bool asServer)
 		sd.port=0;
 		rakPeer = RakNet::RakPeerInterface::GetInstance();
 		RakNet::StartupResult sr = rakPeer->Startup(32,&sd,1);
-		RakAssert(sr==RAKNET_STARTED);
+		//RakAssert(sr==RAKNET_STARTED);
 		RakNet::ConnectionAttemptResult car = rakPeer->Connect(SERVER_IP_ADDRESS,SERVER_PORT,0,0);
-		RakAssert(car==CONNECTION_ATTEMPT_STARTED);
+		//RakAssert(car==CONNECTION_ATTEMPT_STARTED);
 	}
 
 }
@@ -133,6 +135,38 @@ void NetworkTestStuff::update()
 			}
 		}
 	}
+}
+
+unsigned NetworkTestStuff::registerObject(Object *object)
+{
+    ++this->lastID;
+
+    unsigned id = this->lastID;
+
+    this->objectsByID[id] = object;
+    this->IDsByObject[object] = id;
+
+    return id;
+}
+
+void NetworkTestStuff::sendWorld()
+{
+    this->sendPlayers();
+}
+
+void NetworkTestStuff::sendPlayers()
+{
+
+}
+
+void NetworkTestStuff::sendPlayer(Player *player, bool existing)
+{
+    Ogre::Vector3 position = player->position;
+    Ogre::Vector3 velocity = player->velocity;
+    Ogre::Quaternion rotation = player->orientation;
+    Ogre::Quaternion elevation = player->relativeAim;
+
+    // send creation of player
 }
 
 void NetworkTestStuff::clientConnected()

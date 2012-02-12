@@ -2,11 +2,13 @@
 #define __NetworkTestStuff_h_
 
 #include <string>
+#include <map>
 
 #include <boost/signals.hpp>
 
 #include "Updatable.h"
 
+class Object;
 class Player;
 
 namespace {
@@ -46,13 +48,22 @@ public:
 
     virtual void sendExplosion(double x, double y, double z);
 
+    // object index
+    unsigned lastID;
+    std::map<unsigned, Object *> objectsByID;
+    std::map<Object *, unsigned> IDsByObject;
+
+    unsigned registerObject(Object *);
+
     //
     void clientConnected();
     void clientDisconnected();
 
+    void sendPlayer(Player *player, bool existing);
+
     //
-    void sendWorld() {};
-    void sendPlayers() {};
+    void sendWorld();
+    void sendPlayers();
     void sendRockets() {};
     void sendExplosions() {};
     void sendPlatforms() {};

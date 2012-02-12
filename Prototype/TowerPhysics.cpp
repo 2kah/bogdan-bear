@@ -148,5 +148,5 @@ void TowerPhysics::towerUpdated(Tower *tower, BoundingVolume bounds)
         }
     }
 
-    std::cout << "REBUILT: " << rebuilt << " / " << this->chunks.size() << std::endl;
+    //std::cout << "REBUILT: " << rebuilt << " / " << this->chunks.size() << std::endl;
 }
