@@ -268,13 +268,16 @@ void GameTestThing::playerUsed(Player *player)
 	    if(player->position == min)
 	    {
 			turret->setOccupied(false);
+			turret->setTarget(NULL);
 	        player->exitedTurret();
+
 	    }
 	    else
 	    {
 	    	player->enteredTurret();
 			turret->setOccupied(true);
 	        player->position = turret->position;
+			turret->setTarget(player);
 	    }
 	}
     // look at all turrets here and see if the player is getting inside one
