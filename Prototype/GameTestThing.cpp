@@ -56,6 +56,9 @@ GameTestThing::GameTestThing(Game *game)
 
     this->sounds = new Sounds();
 
+	//TODO: remove this - needed because networking is hacky
+	this->towerBuilder = NULL;
+
     // Create and add the ground plane
     btCollisionShape *groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
     
@@ -75,10 +78,10 @@ GameTestThing::GameTestThing(Game *game)
 	fileLoader->loadFile("bowl.bullet");
 
     // Create and add a falling object
-    FallingObject *object = new FallingObject(Ogre::Vector3(40.5, 64, 40.15));
+    /*FallingObject *object = new FallingObject(Ogre::Vector3(40.5, 64, 40.15));
     object->addToScene(this->game->mSceneMgr);
     object->addToPhysics(this->game->dynamicsWorld);
-    this->game->objects.insert(object);
+    this->game->objects.insert(object);*/
 
     this->game->mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
 
@@ -108,8 +111,8 @@ void GameTestThing::startLocal()
     this->game->tower = new Tower(256, structure);
 
     // Create a tower builder and generate the tower with it
-    TowerBuilder *builder = new TowerBuilder(this->game->tower);
-    builder->generate();
+    this->towerBuilder = new TowerBuilder(this->game->tower);
+    this->towerBuilder->generate();
 
     // Add the tower builder to the set of things to update
     //this->game->objects.insert(builder);
@@ -184,6 +187,11 @@ void GameTestThing::update()
     }
 
     this->removeQueue.clear();
+
+	if(this->towerBuilder != NULL)
+	{
+		this->towerBuilder->update();
+	}
 }
 
 void GameTestThing::turretFired(Turret *turret, Rocket *rocket)

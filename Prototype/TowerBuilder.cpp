@@ -95,9 +95,10 @@ TowerBuilder::~TowerBuilder(void)
 
 void TowerBuilder::update(void)
 {
+	this->regenerate();
     //return; // rebuilding static geometry too slow atm
     
-    ++this->timer;
+    /*++this->timer;
 
     if (timer >= 20 && this->level >= 10)
     {
@@ -116,12 +117,15 @@ void TowerBuilder::update(void)
         if (this->level != 0) {
             --this->level;
         }
-    }
+    }*/
 }
 
 void TowerBuilder::blocksUpdated(int blocksDestroyed)
 {
-	this->blocksAvailable += blocksDestroyed;
+	if(blocksDestroyed > 0)
+	{
+		this->blocksAvailable += blocksDestroyed;
+	}
 	std::cout << "blocks available = " << blocksAvailable << std::endl;
 }
 

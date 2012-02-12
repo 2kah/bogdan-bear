@@ -18,6 +18,7 @@ class Player;
 class Platform;
 class Rocket;
 class Explosion;
+class TowerBuilder;
 
 class GameTestThing : public Updatable
 {
@@ -44,6 +45,7 @@ protected:
     NetworkTestStuff *network;
     Player *player;
     Sounds *sounds;
+	TowerBuilder *towerBuilder;
 
     std::set<Turret *> turrets;
 private:
