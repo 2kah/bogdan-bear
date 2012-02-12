@@ -193,6 +193,15 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
     {
         this->playerInput.signals.use(true);
 	}
+	//TODO: remove these 2 (testing purposes only)
+	else if (arg.key == OIS::KC_1)
+	{
+		this->playerInput.signals.deactivate(true);
+	}
+	else if (arg.key == OIS::KC_2)
+	{
+		this->playerInput.signals.reactivate(true);
+	}
 	
     return true;
 }

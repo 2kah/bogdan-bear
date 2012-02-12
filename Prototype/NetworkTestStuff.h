@@ -7,8 +7,12 @@
 
 #include "Updatable.h"
 
+class Player;
+
 namespace {
 struct NetworkSignals {
+    boost::signal<void (Player *player)> localPlayerAssigned;
+
     boost::signal<void (std::string message)> chat;
     boost::signal<void (double x, double y, double z)> explosion;
 };
@@ -41,6 +45,17 @@ public:
     void startClient();
 
     virtual void sendExplosion(double x, double y, double z);
+
+    //
+    void clientConnected();
+    void clientDisconnected();
+
+    //
+    void sendWorld() {};
+    void sendPlayers() {};
+    void sendRockets() {};
+    void sendExplosions() {};
+    void sendPlatforms() {};
 
     bool hosting;
 };

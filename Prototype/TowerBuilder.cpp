@@ -15,7 +15,34 @@ BuilderChunk::~BuilderChunk()
 
 bool BuilderChunk::empty()
 {
-	return true;
+	//iterate over all blocks in chunk and count how many there are total and how many there are active
+	int blocksTotal = 0;
+	int blocksActive = 0;
+	for(unsigned layer = this->bounds.layer_inner; layer < this->bounds.layer_outer; layer++)
+	{
+		unsigned divisions = this->tower->blocks[0][layer].size();
+
+        double ratio = divisions / (double) this->tower->sectors;
+        int left = (int) (this->bounds.sector_left * ratio) % divisions;
+        int right = (int) ((this->bounds.sector_right-1) * ratio) % divisions;
+
+        for (unsigned sector = left; sector <= right; ++sector)
+        {
+            for (unsigned level = this->bounds.level_bottom; level < this->bounds.level_top; ++level)
+            {
+				blocksTotal++;
+                if (this->tower->blocks[level][layer][sector])
+                {
+					blocksActive++;
+                }
+            }
+        }
+	}
+	if(((float) blocksActive / (float) blocksTotal) < 0.1)
+	{
+		return true;
+	}
+	return false;
 }
 
 TowerBuilder::TowerBuilder(Tower *tower)
@@ -37,7 +64,6 @@ TowerBuilder::TowerBuilder(Tower *tower)
 
 	//TODO: make this code generic
 	BoundingVolume bounds;
-	//this->chunks = std::vector<std::vector<std::vector<BuilderChunk>>>(tower->levels/8, std::vector<std::vector<BuilderChunk>>(tower->layers/11, std::vector<BuilderChunk>(1, BuilderChunk(tower, bounds))));
 
 	for (unsigned level = 0; level < this->tower->levels / 8; ++level)
     {
@@ -53,7 +79,6 @@ TowerBuilder::TowerBuilder(Tower *tower)
                                       //0,          this->tower->sectors);
                                       sector * 16, (sector+1) * 16);
 
-				//this->chunks[level][layer] = std::vector<BoundingVolume>(this->tower->sectors/16, BuilderChunk(tower, bounds));
 				layerVector.push_back(BuilderChunk(tower, bounds));
             }
 			levelVector.push_back(layerVector);
@@ -107,17 +132,21 @@ void TowerBuilder::regenerate(void)
 		return;
 	}
 
-	//first work out whether to start a new meta shape or not, currently can only start 1 new meta shape per frame
+	
+
+	//first work out whether to start a new meta shape or not, currently can only start 1 new meta shape per frame (which is fine)
 	//if max regnerating then obviously don't start any more
 	if(regeneratingMetaShapes < maxRegeneratingMetaShapes)
 	{
-		//if no meta shapes or a lot of blocks available (given the number of meta shapes already regenerating then start a new meta shape
+		//if no meta shapes or a lot of blocks available (given the number of meta shapes already regenerating) then start a new meta shape
 		//TODO: tweak the value (currently 30) defining how many blocks per meta shape is a lot
 		if(regeneratingMetaShapes == 0 || (blocksAvailable / regeneratingMetaShapes) > 30)
 		{
 			//start a new meta shape
 			regeneratingMetaShapes++;
-			//find a relatively empty chunk (high probability of an 'open contact')
+			//find a relatively empty chunk
+			//randomly choose from all chunks and test whether it is empty enough for a new meta shape
+			//random algorithm should be more likely to choose chunks closer to the centre
 			//randomly pick which meta shape to generate (if 'open contact' then one which fits)
 			//decide the size
 			//store which blocks would be filled by the meta shape if it were complete
@@ -156,4 +185,5 @@ void TowerBuilder::regenerate(void)
             }
         }
     }
+
 }

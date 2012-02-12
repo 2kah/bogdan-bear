@@ -4,6 +4,9 @@
 #include <string>
 #include <set>
 
+#include <OGRE/OgreVector3.h>
+#include <OGRE/OgreQuaternion.h>
+
 #include "Updatable.h"
 
 class Game;
@@ -45,6 +48,13 @@ private:
     void playerUsed(Player *player);
 
     std::set<Updatable *> removeQueue;
+
+// networky stuff
+    void setLocalPlayer(Player *player);
+
+    Player *replicatePlayer(Ogre::Vector3 position, Ogre::Vector3 velocity, Ogre::Quaternion orientation) {};
+
+    Player *localPlayer;
 };
 
 #endif // #ifndef __GameTestThing_h_
