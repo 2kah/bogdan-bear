@@ -109,7 +109,7 @@ void GameTestThing::startLocal()
 
     // Create a tower builder and generate the tower with it
     TowerBuilder *builder = new TowerBuilder(this->game->tower);
-    builder->regenerate();
+    builder->generate();
 
     // Add the tower builder to the set of things to update
     //this->game->objects.insert(builder);

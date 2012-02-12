@@ -121,6 +121,7 @@ set(HDRS
     ./TowerBuilder.h
     ./TowerPhysics.h
     ./TowerGraphics.h
+    ./MetaShapeBuilder.h
 
     ./Turret.h
     ./TurretGraphics.h
@@ -169,6 +170,7 @@ set(SRCS
     ./TowerBuilder.cpp
     ./TowerPhysics.cpp
     ./TowerGraphics.cpp
+    ./MetaShapeBuilder.cpp
     
     ./Turret.cpp
     ./TurretGraphics.cpp
