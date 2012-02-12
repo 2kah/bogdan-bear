@@ -60,7 +60,7 @@ TowerBuilder::TowerBuilder(Tower *tower)
 	this->metaShapeBuilder = new MetaShapeBuilder();
 
 	//TODO: make cvar
-	this->maxRegeneratingMetaShapes = 5;
+	this->maxRegeneratingMetaShapes = 10;
 	this->regeneratingMetaShapes = 0;
 
 	//TODO: make this code generic
@@ -95,7 +95,13 @@ TowerBuilder::~TowerBuilder(void)
 
 void TowerBuilder::update(void)
 {
-	this->regenerate();
+	this->timer++;
+
+	if(this->timer == 100)
+	{
+		this->timer = 0;
+		this->regenerate();
+	}
     //return; // rebuilding static geometry too slow atm
     
     /*++this->timer;
@@ -134,7 +140,8 @@ void TowerBuilder::generate()
 	//TODO: tweak this
 	this->blocksAvailable = 100000;
 
-	while(this->blocksAvailable > 0)
+	//TODO: make this generic
+	while(this->blocksAvailable > 399)
 	{
 		this->regenerate();
 	}
@@ -182,9 +189,10 @@ void TowerBuilder::regenerate(void)
 
 	//only regenerate one meta shape per frame
 	//TODO: neaten this up
-	MetaShape metaShape = this->metaShapes[0];
+	int shapeIndex = rand() % this->regeneratingMetaShapes;
+	MetaShape metaShape = this->metaShapes[shapeIndex];
 	int blocksAdded = 0;
-	for(int j = 0; j < metaShape.coords.size(); j++)
+	for(int j = 0; j < metaShape.coords.size() && j < blocksAvailable * 0.9; j++)
 	{
 		if(this->blocksAvailable == 0)
 		{
@@ -197,7 +205,7 @@ void TowerBuilder::regenerate(void)
 		if(j == metaShape.coords.size() - 1)
 		{
 			regeneratingMetaShapes--;
-			this->metaShapes.erase(metaShapes.begin() /* + i */);
+			this->metaShapes.erase(metaShapes.begin() + shapeIndex);
 		}
 		//distribute some of the available blocks (randomly?) over the regenerating meta shapes
 		//if a meta shape is finished then regeneratingMetaShapes--;
