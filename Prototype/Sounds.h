@@ -13,8 +13,10 @@ class Rocket;
 class Sounds
 {
 public:
-    Sounds(Player *player);
+    Sounds();
     virtual ~Sounds();
+
+    virtual void setListener(Player *player);
 
     irrklang::ISoundEngine *engine;
 protected:

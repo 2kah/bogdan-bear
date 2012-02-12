@@ -29,5 +29,5 @@ void RocketSound::rocketUpdated(Rocket *rocket)
 
 void RocketSound::rocketExploded(Rocket *rocket, Explosion *explosion)
 {
-    delete this;
+    //delete this;
 }

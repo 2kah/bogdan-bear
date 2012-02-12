@@ -54,6 +54,8 @@ GameTestThing::GameTestThing(Game *game)
     this->network->signals.explosion.connect(boost::bind(&GameTestThing::networkExplosion, this, _1, _2, _3));
     this->game->objects.insert(this->network);
 
+    this->sounds = new Sounds();
+
     // Create and add the ground plane
     btCollisionShape *groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
     
@@ -154,11 +156,10 @@ void GameTestThing::startServer()
 {
 	this->network->startNetwork(true);
     
+    // create local player
     Player *player = new Player(Ogre::Vector3(0, 50, 100));
     this->addPlayer(player);
     this->setLocalPlayer(player);
-
-    // create local player
 
     // register local player
 }
@@ -187,38 +188,18 @@ void GameTestThing::update()
 
 void GameTestThing::turretFired(Turret *turret, Rocket *rocket)
 {
-    this->game->objects.insert(rocket);
-
-    new RocketGraphics(rocket, this->game->mSceneMgr);
-    new RocketPhysics(rocket, this->game->dynamicsWorld);
-    //new RocketSound(rocket, this->sounds->engine);
-
-    rocket->signals.exploded.connect(boost::bind(&GameTestThing::rocketExploded, this, _1, _2));
+    this->addRocket(rocket);
 }
 
 void GameTestThing::playerFired(Player *player, Rocket *rocket)
 {
-    this->game->objects.insert(rocket);
-
-    new RocketGraphics(rocket, this->game->mSceneMgr);
-    new RocketPhysics(rocket, this->game->dynamicsWorld);
-
-    rocket->signals.exploded.connect(boost::bind(&GameTestThing::rocketExploded, this, _1, _2));
+    this->addRocket(rocket);
 }
 
 void GameTestThing::rocketExploded(Rocket *rocket, Explosion *explosion)
 {
-    this->game->objects.insert(explosion);
-
-    explosion->signals.finished.connect(boost::bind(&GameTestThing::explosionFinished, this, _1));
-    
-    new ExplosionGraphics(explosion, this->game->mSceneMgr);
-    new ExplosionPhysics(explosion, this->game->dynamicsWorld);
-
     this->removeQueue.insert(rocket);
-
-    // TODO: refactor
-    this->network->sendExplosion(explosion->position.x, explosion->position.y, explosion->position.z);
+    this->addExplosion(explosion);
 }
 
 void GameTestThing::explosionFinished(Explosion *explosion)
@@ -251,12 +232,7 @@ void GameTestThing::networkExplosion(double x, double y, double z)
 {
     Explosion *explosion = new Explosion(Ogre::Vector3(x, y, z));
 
-    this->game->objects.insert(explosion);
-
-    explosion->signals.finished.connect(boost::bind(&GameTestThing::explosionFinished, this, _1));
-    
-    new ExplosionGraphics(explosion, this->game->mSceneMgr);
-    new ExplosionPhysics(explosion, this->game->dynamicsWorld);
+    this->addExplosion(explosion);
 }
 
 void GameTestThing::playerUsed(Player *player)
@@ -313,7 +289,7 @@ void GameTestThing::setLocalPlayer(Player *player)
     new PlayerCamera(player, this->game->mCamera);
 
     // Link local sound to the player
-    this->sounds = new Sounds(player);
+    this->sounds->setListener(player);
 
     // Link local input to the player
     player->addInput(this->game->playerInput);
@@ -349,4 +325,28 @@ void GameTestThing::addTurret(Turret *turret)
 
     // Listen for when the turret fires
     turret->signals.fired.connect(boost::bind(&GameTestThing::turretFired, this, _1, _2));
+}
+
+void GameTestThing::addRocket(Rocket *rocket)
+{
+    this->game->objects.insert(rocket);
+
+    new RocketGraphics(rocket, this->game->mSceneMgr);
+    new RocketPhysics(rocket, this->game->dynamicsWorld);
+    new RocketSound(rocket, this->sounds->engine);
+
+    rocket->signals.exploded.connect(boost::bind(&GameTestThing::rocketExploded, this, _1, _2));
+}
+
+void GameTestThing::addExplosion(Explosion *explosion)
+{
+    this->game->objects.insert(explosion);
+
+    explosion->signals.finished.connect(boost::bind(&GameTestThing::explosionFinished, this, _1));
+    
+    new ExplosionGraphics(explosion, this->game->mSceneMgr);
+    new ExplosionPhysics(explosion, this->game->dynamicsWorld);
+
+    // TODO: refactor
+    this->network->sendExplosion(explosion->position.x, explosion->position.y, explosion->position.z);
 }
