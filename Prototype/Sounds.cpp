@@ -8,7 +8,7 @@
 #include "Player.h"
 #include "Turret.h"
 
-Sounds::Sounds(Player *player)
+Sounds::Sounds()
 {
     this->engine = irrklang::createIrrKlangDevice();
 	this->engine->setSoundVolume(0.5f);
@@ -17,12 +17,15 @@ Sounds::Sounds(Player *player)
     {
 	    std::cout << "Error: Could not create Sound Engine" << std::endl;
     }
-
-    player->signals.updated.connect(boost::bind(&Sounds::listenerUpdated, this, _1));
 }
 
 Sounds::~Sounds()
 {
+}
+
+void Sounds::setListener(Player *player)
+{
+    player->signals.updated.connect(boost::bind(&Sounds::listenerUpdated, this, _1));
 }
 
 void Sounds::listenerUpdated(Player *player)
