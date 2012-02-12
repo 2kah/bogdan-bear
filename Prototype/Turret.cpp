@@ -4,6 +4,7 @@
 #include <OGRE/OgreQuaternion.h>
 
 #include "Rocket.h"
+#include "Player.h"
 
 #define PI 3.14159265
 
@@ -82,11 +83,14 @@ void Turret::update()
 	}
 	else
 	{
-		//Aim where the player is aiming?
+		Ogre::Quaternion orientation = target->orientation * target->relativeAim;
+		orientation = orientation * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
+		this->orientation = orientation;
+		this->signals.updated(this);
 	}
 }
 
-void Turret::setTarget(Object *target)
+void Turret::setTarget(Player *target)
 {
     this->target = target;
 }
