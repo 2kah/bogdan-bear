@@ -126,9 +126,9 @@ void GameTestThing::startLocal()
 
     // Add four turrets
     Turret *turret1 = new Turret(Ogre::Vector3(0, 150, 400), Ogre::Quaternion());
-	Turret *turret2 = new Turret(Ogre::Vector3(0, 150, 400), Ogre::Quaternion());
-	Turret *turret3 = new Turret(Ogre::Vector3(0, 150, 400), Ogre::Quaternion());
-	Turret *turret4 = new Turret(Ogre::Vector3(0, 150, 400), Ogre::Quaternion());
+	Turret *turret2 = new Turret(Ogre::Vector3(0, 150, -400), Ogre::Quaternion());
+	Turret *turret3 = new Turret(Ogre::Vector3(400, 150, 0), Ogre::Quaternion());
+	Turret *turret4 = new Turret(Ogre::Vector3(-400, 150, 0), Ogre::Quaternion());
 
     this->addTurret(turret1);
     this->addTurret(turret2);
@@ -136,10 +136,10 @@ void GameTestThing::startLocal()
     this->addTurret(turret4);
 
     // Set the turret to aim at the player always. Setting it to NULL makes it shoot randomly at the tower.
-	turret1->setTarget(player);
-	turret2->setTarget(player);
-	turret3->setTarget(player);
-	turret4->setTarget(player);
+	//turret1->setTarget(player);
+	//turret2->setTarget(player);
+	//turret3->setTarget(player);
+	//turret4->setTarget(player);
 }
 
 void GameTestThing::startClient()
@@ -261,52 +261,48 @@ void GameTestThing::networkExplosion(double x, double y, double z)
 
 void GameTestThing::playerUsed(Player *player)
 {
-	//this->game->objects.find(turret);
 	Ogre::Vector3 min;
 	double minDis = 1000;
 	double check = 0;
-	check = (Ogre::Vector3(0, 150, 400) - player->position).length();
-	if(minDis > check) {
-		min = Ogre::Vector3(0, 150, 400);
-		minDis = check;
-	}
-	check = (Ogre::Vector3(0, 150, -400) - player->position).length();
-	if(minDis > check) {
-		min = Ogre::Vector3(0, 150, -400);
-		minDis = check;
-	}
-	check = (Ogre::Vector3(400, 150, 0) - player->position).length();
-	if(minDis > check) {
-		min = Ogre::Vector3(400, 150, 0);
-		minDis = check;
-	}
-	check = (Ogre::Vector3(-400, 150, 0) - player->position).length();
-	if(minDis > check) {
-		min = Ogre::Vector3(-400, 150, 0);
-		minDis = check;
-	}
+	Turret *turret;
+	    for(std::set<Turret *>::iterator i = this->turrets.begin(); i != this->turrets.end(); ++i)
+    {
+        turret = *i;
+		check = (turret->position - player->position).length();
+		if(minDis > check) 
+		{
+		    min = turret->position;
+		    minDis = check;
+	    }
+        std::cout << turret->position << std::endl;
+    }
+		for(std::set<Turret *>::iterator j = this->turrets.begin(); j != this->turrets.end(); ++j)
+    {
+        turret = *j;
+		if(min == turret->position) 
+		{
+            j = this->turrets.end();
+	    }
+    }
 	printf("%f\n", minDis);
+	printf("%f,%f,%f\n",turret->position.x, turret->position.y, turret->position.z);
+	printf("%f,%f,%f\n",min.x, min.y, min.z);
 	if(minDis < 180)
 	{
 	    if(player->position == min)
 	    {
+			turret->setOccupied(false);
 	        player->exitedTurret();
 	    }
 	    else
 	    {
 	    	player->enteredTurret();
-	        player->position = min;
+			turret->setOccupied(true);
+	        player->position = turret->position;
 	    }
 	}
     // look at all turrets here and see if the player is getting inside one
     std::cout << "USING!" << std::endl;
-
-    for(std::set<Turret *>::iterator i = this->turrets.begin(); i != this->turrets.end(); ++i)
-    {
-        Turret *turret = *i;
-
-        std::cout << turret->position << std::endl;
-    }
 }
 
 void GameTestThing::setLocalPlayer(Player *player)
