@@ -182,8 +182,7 @@ void TowerBuilder::regenerate(void)
 			this->metaShapeBuilder->getMetaShape(0, &this->chunks[randLevel][randLayer][randSector], &metaShape);
 			this->metaShapes.push_back(metaShape);
 			//randomly pick which meta shape to generate (if 'open contact' then one which fits)
-			//decide the size
-			//store which blocks would be filled by the meta shape if it were complete
+			//TODO: vary the size of meta shapes
 		}
 	}
 
@@ -199,16 +198,20 @@ void TowerBuilder::regenerate(void)
 			break;
 		}
 		Triple coords = metaShape.coords[j];
-		this->tower->blocks[coords.level][coords.layer][coords.sector] = true;
-		blocksAvailable--;
-		blocksAdded++;
+		if(!this->tower->blocks[coords.level][coords.layer][coords.sector])
+		{
+			this->tower->blocks[coords.level][coords.layer][coords.sector] = true;
+			blocksAvailable--;
+			blocksAdded++;
+		}
+		//if meta shape has been fully regenerated then remove it
 		if(j == metaShape.coords.size() - 1)
 		{
 			regeneratingMetaShapes--;
 			this->metaShapes.erase(metaShapes.begin() + shapeIndex);
+			break;
 		}
-		//distribute some of the available blocks (randomly?) over the regenerating meta shapes
-		//if a meta shape is finished then regeneratingMetaShapes--;
+		//distribute some of the available blocks over the regenerating meta shape
 	}
 	this->tower->signals.updated(this->tower, this->chunks[metaShape.chunk.level][metaShape.chunk.layer][metaShape.chunk.sector].bounds, -blocksAdded);
 
