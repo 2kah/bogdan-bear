@@ -292,6 +292,7 @@ void GameTestThing::networkExplosion(double x, double y, double z)
 
 void GameTestThing::playerUsed(Player *player)
 {
+	//this->game->objects.find(turret);
 	Ogre::Vector3 min;
 	double minDis = 1000;
 	double check = 0;
@@ -315,9 +316,19 @@ void GameTestThing::playerUsed(Player *player)
 		min = Ogre::Vector3(-400, 150, 0);
 		minDis = check;
 	}
-	//Delete this->player->~Player();
-	//player->~Player();
-	//this->player->position = min;
+	printf("%f\n", minDis);
+	if(minDis < 180)
+	{
+	    if(player->position == min)
+	    {
+	        player->exitedTurret();
+	    }
+	    else
+	    {
+	    	player->enteredTurret();
+	        player->position = min;
+	    }
+	}
     // look at all turrets here and see if the player is getting inside one
     std::cout << "USING!" << std::endl;
 }

@@ -186,10 +186,12 @@ void PlayerPhysics::deactivate()
 {
 	this->dynamicsWorld->removeCollisionObject(this->m_ghostObject);
 	this->dynamicsWorld->removeAction(this->m_character);
+	playerUpdateConnection.disconnect();
 }
 
 void PlayerPhysics::reactivate()
 {
 	this->dynamicsWorld->addCollisionObject(this->m_ghostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::AllFilter /*btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter*/);
 	this->dynamicsWorld->addAction(this->m_character);
+	playerUpdateConnection = this->player->signals.updated.connect(boost::bind(&PlayerPhysics::playerUpdated, this, _1));
 }
