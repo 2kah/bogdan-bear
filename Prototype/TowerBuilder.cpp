@@ -138,7 +138,7 @@ void TowerBuilder::blocksUpdated(int blocksDestroyed)
 void TowerBuilder::generate()
 {
 	//TODO: tweak this
-	this->blocksAvailable = 100000;
+	this->blocksAvailable = 50000;
 
 	//TODO: make this generic
 	while(this->blocksAvailable > 399)
