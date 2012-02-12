@@ -284,6 +284,32 @@ void GameTestThing::networkExplosion(double x, double y, double z)
 
 void GameTestThing::playerUsed(Player *player)
 {
+	Ogre::Vector3 min;
+	double minDis = 1000;
+	double check = 0;
+	check = (Ogre::Vector3(0, 150, 400) - player->position).length();
+	if(minDis > check) {
+		min = Ogre::Vector3(0, 150, 400);
+		minDis = check;
+	}
+	check = (Ogre::Vector3(0, 150, -400) - player->position).length();
+	if(minDis > check) {
+		min = Ogre::Vector3(0, 150, -400);
+		minDis = check;
+	}
+	check = (Ogre::Vector3(400, 150, 0) - player->position).length();
+	if(minDis > check) {
+		min = Ogre::Vector3(400, 150, 0);
+		minDis = check;
+	}
+	check = (Ogre::Vector3(-400, 150, 0) - player->position).length();
+	if(minDis > check) {
+		min = Ogre::Vector3(-400, 150, 0);
+		minDis = check;
+	}
+	//Delete this->player->~Player();
+	//player->~Player();
+	//this->player->position = min;
     // look at all turrets here and see if the player is getting inside one
     std::cout << "USING!" << std::endl;
 }
