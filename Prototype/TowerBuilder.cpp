@@ -149,7 +149,8 @@ void TowerBuilder::generate()
 
 void TowerBuilder::regenerate(void)
 {
-	
+	//TODO: guard against 0 modulus (illegal)
+
 	//Only proceed if there are actually any missing blocks to regenerate
 	if(this->blocksAvailable == 0)
 	{
