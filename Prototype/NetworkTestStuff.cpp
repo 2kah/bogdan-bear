@@ -133,9 +133,13 @@ void NetworkTestStuff::update()
 				break;
 			case ID_CONNECTION_REQUEST_ACCEPTED:
 				std::cout << "ID_CONNECTION_REQUEST_ACCEPTED" << std::endl;
+				std::cout << "Connected To: ";
+				std::cout << packet->guid.ToString() << std::endl;
 				break;
 			case ID_NEW_INCOMING_CONNECTION:
 				std::cout << "ID_NEW_INCOMING_CONNECTION" << std::endl;
+				std::cout << "From: ";
+				std::cout << packet->guid.ToString() << std::endl;
 				break;
 			case ID_DISCONNECTION_NOTIFICATION:
 				std::cout << "ID_DISCONNECTION_NOTIFICATION" << std::endl;
@@ -145,6 +149,8 @@ void NetworkTestStuff::update()
 				break;
 			case ID_TEXT:
 				std::cout << "Received Message" << std::endl;
+				std::cout << "From:";
+				std::cout << packet->guid.ToString() << std::endl;
 				break;
 			case ID_NEW_EXPLOSION:
 				receiveNewExplosion(packet);
