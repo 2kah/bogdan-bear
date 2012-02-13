@@ -54,6 +54,8 @@ GameTestThing::GameTestThing(Game *game)
     this->network->signals.explosion.connect(boost::bind(&GameTestThing::networkExplosion, this, _1, _2, _3));
     this->game->objects.insert(this->network);
 
+    this->network->signals.playerReplicated.connect(boost::bind(&GameTestThing::addPlayer, this, _1));
+
     this->sounds = new Sounds();
 
 	//TODO: remove this - needed because networking is hacky
@@ -72,7 +74,7 @@ GameTestThing::GameTestThing(Game *game)
     Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowl.mesh");
     Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
     sceneNode->attachObject(bowl);
-    //sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
+    sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
 
     btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
 	fileLoader->loadFile("bowl.bullet");

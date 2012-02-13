@@ -169,6 +169,21 @@ void NetworkTestStuff::sendPlayer(Player *player, bool existing)
     // send creation of player
 }
 
+void NetworkTestStuff::receivePlayer(RakNet::Packet *packet)
+{
+    // extract player data
+    //
+
+    // create a new player with the data from the packet
+    //Player *player = new Player(...);
+
+    // register the player as the given ID (not possible yet)
+    //
+
+    // signal player replicated
+    //this->signals.playerReplicated(player);
+}
+
 void NetworkTestStuff::clientConnected()
 {
     // send all the world state
