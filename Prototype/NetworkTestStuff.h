@@ -6,6 +6,8 @@
 
 #include <boost/signals.hpp>
 
+#include "RakNetTypes.h"
+
 #include "Updatable.h"
 
 class Object;
