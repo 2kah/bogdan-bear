@@ -13,6 +13,9 @@ class Player;
 
 namespace {
 struct NetworkSignals {
+    boost::signal<void (Player *player)> playerReplicated;
+    boost::signal<void (Player *player)> playerCreated;
+    boost::signal<void (Player *player)> playerDestroyed;
     boost::signal<void (Player *player)> localPlayerAssigned;
 
     boost::signal<void (std::string message)> chat;
@@ -60,6 +63,7 @@ public:
     void clientDisconnected();
 
     void sendPlayer(Player *player, bool existing);
+    void receivePlayer(RakNet::Packet *packet);
 
     //
     void sendWorld();
