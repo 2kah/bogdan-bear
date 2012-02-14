@@ -6,7 +6,8 @@ class Explosion;
 enum PHYSICS_OBJECT_TYPE {
     UNDEFINED,
     TOWER_CHUNK,
-    PLATFORM
+    PLATFORM,
+	PLAYER
 };
 
 class PhysicsObject

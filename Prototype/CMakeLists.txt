@@ -146,6 +146,8 @@ set(HDRS
     ./ExplosionPhysics.h
     ./ExplosionGraphics.h
     
+    ./Goal.h
+    
     ./FallingObject.h
     
     ./BaseApplication.h
@@ -194,6 +196,8 @@ set(SRCS
     ./Explosion.cpp
     ./ExplosionPhysics.cpp
     ./ExplosionGraphics.cpp
+    
+    ./Goal.cpp
     
     ./FallingObject.cpp
     

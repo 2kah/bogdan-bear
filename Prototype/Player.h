@@ -27,7 +27,7 @@ struct PlayerSignals {
     boost::signal<void (Player *)> used;
 
     // TODO: not sure about these
-    boost::signal<void (Player */*, Turret **/)> enteredTurret;
+    boost::signal<void (Player * /*, Turret **/)> enteredTurret;
     boost::signal<void (Player * /*, Turret **/)> exitedTurret;
 };
 }

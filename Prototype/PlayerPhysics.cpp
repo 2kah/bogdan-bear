@@ -9,7 +9,7 @@
 #include "Explosion.h"
 #include "BtOgreExtras.h"
 
-PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWorld) : PhysicsObject()
+PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWorld) : PhysicsObject(PLAYER)
 {
 	this->player = player;
 	this->dynamicsWorld = dynamicsWorld;
