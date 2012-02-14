@@ -43,6 +43,8 @@
 #include "ExplosionPhysics.h"
 #include "ExplosionGraphics.h"
 
+#include "Goal.h"
+
 #include "FallingObject.h"
 
 GameTestThing::GameTestThing(Game *game)
@@ -74,7 +76,7 @@ GameTestThing::GameTestThing(Game *game)
     Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowl.mesh");
     Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
     sceneNode->attachObject(bowl);
-    sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
+    //sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
 
     btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
 	fileLoader->loadFile("bowl.bullet");
@@ -131,16 +133,19 @@ void GameTestThing::startLocal()
     this->addPlayer(player);
     this->addPlayer(enemy);
 
-    // Add four turrets
-    Turret *turret1 = new Turret(Ogre::Vector3(0, 150, 400), Ogre::Quaternion());
-	Turret *turret2 = new Turret(Ogre::Vector3(0, 150, -400), Ogre::Quaternion());
-	Turret *turret3 = new Turret(Ogre::Vector3(400, 150, 0), Ogre::Quaternion());
-	Turret *turret4 = new Turret(Ogre::Vector3(-400, 150, 0), Ogre::Quaternion());
+	//Add the goal
+	Goal *goal = new Goal(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height, 0), this->game->dynamicsWorld);
 
-    this->addTurret(turret1);
-    this->addTurret(turret2);
-    this->addTurret(turret3);
-    this->addTurret(turret4);
+    // Add four turrets
+    //Turret *turret1 = new Turret(Ogre::Vector3(0, 150, 400), Ogre::Quaternion());
+	//Turret *turret2 = new Turret(Ogre::Vector3(0, 150, -400), Ogre::Quaternion());
+	//Turret *turret3 = new Turret(Ogre::Vector3(400, 150, 0), Ogre::Quaternion());
+	//Turret *turret4 = new Turret(Ogre::Vector3(-400, 150, 0), Ogre::Quaternion());
+
+    //this->addTurret(turret1);
+    //this->addTurret(turret2);
+    //this->addTurret(turret3);
+    //this->addTurret(turret4);
 
     // Set the turret to aim at the player always. Setting it to NULL makes it shoot randomly at the tower.
 	//turret1->setTarget(player);
