@@ -9,6 +9,10 @@
 #include "RakNetTypes.h"
 
 #include "Updatable.h"
+#include <vector>
+
+#include <OGRE/OgreVector3.h>
+#include <OGRE/OgreQuaternion.h>
 
 class Object;
 class Player;
@@ -28,10 +32,21 @@ struct NetworkSignals {
 #pragma pack(push, 1)
 struct Coords3D
 {
-unsigned char typeId; // Your type here
+unsigned char typeId; 
 double x;
 double y;
 double z;
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct NetPlayer
+{
+unsigned char typeId;
+int playerID;
+Ogre::Vector3 position;
+Ogre::Quaternion orientation;
+Ogre::Vector3 velocity;
 };
 #pragma pack(pop)
 
@@ -47,9 +62,7 @@ public:
 	virtual void startNetwork(bool asServer);
 	virtual void sendChat(std::string message);
     virtual void update();
-
-    void startServer();
-    void startClient();
+	virtual void sendPlayer(unsigned char packetType, int playerID, Ogre::Vector3 position, Ogre::Quaternion orientation, Ogre::Vector3 velocity);
 
     virtual void sendExplosion(double x, double y, double z);
 
@@ -65,7 +78,12 @@ public:
     void clientDisconnected();
 
     void sendPlayer(Player *player, bool existing);
-    void receivePlayer(RakNet::Packet *packet);
+    void receiveNewPlayer(RakNet::Packet *packet);
+	void receiveExistingPlayer(RakNet::Packet *packet);
+	void receiveUpdatePlayer(RakNet::Packet *packet);
+	void receiveDestroyPlayer(RakNet::Packet *packet);
+
+	void receiveNewExplosion(RakNet::Packet *packet);
 
     //
     void sendWorld();

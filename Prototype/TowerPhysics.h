@@ -6,6 +6,7 @@
 #include "PhysicsObject.h"
 #include "TowerChunk.h"
 
+class btTriangleMesh;
 class btDiscreteDynamicsWorld;
 class btRigidBody;
 
@@ -20,6 +21,7 @@ public:
 
     virtual void rebuild();
 protected:
+    btTriangleMesh *mesh;
     btDiscreteDynamicsWorld *dynamicsWorld;
     btRigidBody *body;
 };

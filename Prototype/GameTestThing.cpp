@@ -214,6 +214,10 @@ void GameTestThing::playerFired(Player *player, Rocket *rocket)
 void GameTestThing::rocketExploded(Rocket *rocket, Explosion *explosion)
 {
     this->removeQueue.insert(rocket);
+
+    // TODO: refactor
+    this->network->sendExplosion(explosion->position.x, explosion->position.y, explosion->position.z);
+
     this->addExplosion(explosion);
 }
 
@@ -364,7 +368,4 @@ void GameTestThing::addExplosion(Explosion *explosion)
     
     new ExplosionGraphics(explosion, this->game->mSceneMgr);
     new ExplosionPhysics(explosion, this->game->dynamicsWorld);
-
-    // TODO: refactor
-    this->network->sendExplosion(explosion->position.x, explosion->position.y, explosion->position.z);
 }
