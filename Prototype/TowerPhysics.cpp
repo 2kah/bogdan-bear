@@ -31,9 +31,10 @@ void PhysicsChunk::rebuild()
         this->dynamicsWorld->removeRigidBody(this->body);
         delete this->body;
         this->body = NULL;
+        delete this->mesh;
     }
 
-    btTriangleMesh *data = new btTriangleMesh();
+    this->mesh = new btTriangleMesh();
 
     std::vector<BlockTriangle> triangles;
 
@@ -47,12 +48,12 @@ void PhysicsChunk::rebuild()
     {
         BlockTriangle triangle = *i;
 
-        data->addTriangle(BtOgre::Convert::toBullet(triangle.points[0]),
+        this->mesh->addTriangle(BtOgre::Convert::toBullet(triangle.points[0]),
                           BtOgre::Convert::toBullet(triangle.points[1]),
                           BtOgre::Convert::toBullet(triangle.points[2]));
     }
 
-    btBvhTriangleMeshShape *shape = new btBvhTriangleMeshShape(data, true, true);
+    btBvhTriangleMeshShape *shape = new btBvhTriangleMeshShape(this->mesh, true, true);
     
     btDefaultMotionState* blockMotionState = new btDefaultMotionState(btTransform(btMatrix3x3::getIdentity(), btVector3(0, 0, 0)));
     btRigidBody::btRigidBodyConstructionInfo blockRigidBodyCI(0, blockMotionState, shape, btVector3(0, 0, 0));           
