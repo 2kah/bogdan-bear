@@ -13,6 +13,7 @@ public:
     PlayerGraphics(Player *player, Ogre::SceneManager *sceneManager);
     virtual ~PlayerGraphics();
 protected:
+    virtual void playerRemoved(Player *player);
     virtual void playerUpdated(Player *player);
 
     Player *player;

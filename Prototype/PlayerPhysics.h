@@ -25,6 +25,8 @@ public:
 
 	virtual void addInput(PlayerInput &input);
 
+    virtual void playerRemoved(Player *player);
+
 	virtual void movement(DIRECTION direction, bool state);
 	virtual void jump(bool state);
 
@@ -53,6 +55,7 @@ protected:
 	boost::signals::connection playerUpdateConnection;
 	boost::signals::connection enterTurretConnection;
 	boost::signals::connection exitTurretConnection;
+    boost::signals::connection removedConnection;
 };
 
 #endif // #ifndef __PlayerPhysics_h_

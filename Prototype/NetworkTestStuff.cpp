@@ -321,10 +321,14 @@ void NetworkTestStuff::clientConnected()
 	// send all the world state
 
 	// create a player
+    Player *player = new Player(Ogre::Vector3(0, 0, 0));
+    this->signals.playerCreated(player);
 
 	// register the player, to synchronise
+    this->registerObject(player);
 
 	// tell the client they are that player
+
 }
 
 void NetworkTestStuff::clientDisconnected()

@@ -14,11 +14,17 @@ PlayerCamera::PlayerCamera(Player *player, Ogre::Camera *camera)
 
     this->playerUpdated(this->player);
 
+    this->player->signals.removed.connect(boost::bind(&PlayerCamera::playerRemoved, this, _1));
     this->player->signals.updated.connect(boost::bind(&PlayerCamera::playerUpdated, this, _1));
 }
 
 PlayerCamera::~PlayerCamera()
 {
+}
+
+void PlayerCamera::playerRemoved(Player *player)
+{
+    delete this;
 }
 
 void PlayerCamera::playerUpdated(Player *player)
