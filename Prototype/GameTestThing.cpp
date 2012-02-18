@@ -126,9 +126,10 @@ void GameTestThing::startLocal()
     // Add a player
     Player *player = new Player(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height + 10, 10));
     Player *enemy = new Player(Ogre::Vector3(100, 0, 100));
-    this->setLocalPlayer(player);
 
     this->addPlayer(player);
+    this->setLocalPlayer(player);
+
     this->addPlayer(enemy);
 
     // Add four turrets
@@ -137,10 +138,12 @@ void GameTestThing::startLocal()
 	Turret *turret3 = new Turret(Ogre::Vector3(400, 150, 0), Ogre::Quaternion());
 	Turret *turret4 = new Turret(Ogre::Vector3(-400, 150, 0), Ogre::Quaternion());
 
+    ///*
     this->addTurret(turret1);
     this->addTurret(turret2);
     this->addTurret(turret3);
     this->addTurret(turret4);
+    //*/
 
     // Set the turret to aim at the player always. Setting it to NULL makes it shoot randomly at the tower.
 	//turret1->setTarget(player);
@@ -157,17 +160,23 @@ void GameTestThing::startClient()
 
     // then wait to be given a player
 }
+
 void GameTestThing::startServer()
 {
 	this->network->startNetwork(true);
     
+    // listen for new players, adding them when they come
+    this->network->signals.playerCreated.connect(boost::bind(&GameTestThing::addPlayer, this, _1));
+
     // create local player
-    Player *player = new Player(Ogre::Vector3(0, 50, 100));
+    Player *player = new Player(Ogre::Vector3(0, 0, 0));
     this->addPlayer(player);
     this->setLocalPlayer(player);
 
     // register local player
+    this->network->registerObject(player);
 }
+
 void GameTestThing::netSendChat(std::string message)
 {
 	this->network->sendChat(message);
@@ -328,6 +337,12 @@ void GameTestThing::addPlayer(Player *player)
     player->signals.fired.connect(boost::bind(&GameTestThing::playerFired, this, _1, _2));
     player->signals.platform.connect(boost::bind(&GameTestThing::platformCreated, this, _1, _2));
     player->signals.used.connect(boost::bind(&GameTestThing::playerUsed, this, _1));
+}
+
+void GameTestThing::removePlayer(Player *player)
+{
+    // Queue player for removal
+    this->removeQueue.insert(player);
 }
 
 void GameTestThing::addTurret(Turret *turret)

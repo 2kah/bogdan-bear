@@ -19,6 +19,8 @@ class Rocket;
 
 namespace {
 struct PlayerSignals {
+    boost::signal<void (Player *)> removed;
+
     boost::signal<void (Player *)> updated;
 
     boost::signal<void (Player *, Rocket *)> fired;
@@ -40,6 +42,10 @@ public:
 
     Player(Ogre::Vector3 position);
     virtual ~Player();
+
+    virtual void setState(Ogre::Vector3 position,
+                          Ogre::Vector3 velocity,
+                          Ogre::Quaternion orientation);
 
     virtual void update();
 

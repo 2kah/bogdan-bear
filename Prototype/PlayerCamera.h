@@ -12,6 +12,7 @@ public:
     PlayerCamera(Player *player, Ogre::Camera *camera);
     virtual ~PlayerCamera();
 protected:
+    virtual void playerRemoved(Player *player);
     virtual void playerUpdated(Player *player);
 
     Player *player;
