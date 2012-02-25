@@ -3,6 +3,7 @@
 
 #include <boost/signal.hpp>
 
+#include "PlayerInput.h"
 #include "Updatable.h"
 #include "Object.h"
 
