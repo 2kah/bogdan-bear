@@ -5,6 +5,7 @@
 #include <set>
 
 #include <boost/math/constants/constants.hpp>
+#include <boost/bind.hpp>
 
 #include <btBulletDynamicsCommon.h>
 #include <btBulletCollisionCommon.h>
@@ -34,7 +35,7 @@ ExplosionPhysics::ExplosionPhysics(Explosion *explosion, btDiscreteDynamicsWorld
     //std::cout << "Explosion destroyed " << this->ghost->getNumOverlappingObjects() << " objects!" << std::endl;
 
     std::vector<btCollisionObject *> destructions;
-    
+    std::set<unsigned> levels;
 
     Tower *tower = NULL;
 
@@ -46,6 +47,8 @@ ExplosionPhysics::ExplosionPhysics(Explosion *explosion, btDiscreteDynamicsWorld
 
         if (block != NULL) {
             //block->tower->blocks[block->level][block->layer][block->sector] = false;
+            levels.insert((block->level / 4) * 4);
+
             tower = block->tower;
 
             destructions.push_back(blockObject);
@@ -60,6 +63,12 @@ ExplosionPhysics::ExplosionPhysics(Explosion *explosion, btDiscreteDynamicsWorld
 
     if (tower != NULL) {
         tower->carveSphere(this->explosion->position, Explosion::SIZE);
+    }
+
+    for(std::set<unsigned>::iterator i = levels.begin(); i != levels.end(); ++i) {
+        unsigned level = *i;
+        
+        tower->signals.levelUpdated(tower, level);
     }
 }
 
