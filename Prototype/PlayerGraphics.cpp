@@ -1,6 +1,7 @@
 #include "PlayerGraphics.h"
 
 #include <string>
+#include <boost/bind.hpp>
 
 #include "Player.h"
 

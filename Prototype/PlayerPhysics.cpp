@@ -1,7 +1,9 @@
 #include "PlayerPhysics.h"
 
+#include <boost/bind.hpp>
+
 #include <btBulletDynamicsCommon.h>
-#include <BulletCollision\CollisionDispatch\btGhostObject.h>
+#include <BulletCollision/CollisionDispatch/btGhostObject.h>
 
 #include "BtKinematicCharacterController.h"
 #include "Player.h"
@@ -99,49 +101,20 @@ void PlayerPhysics::playerUpdated(Player *player)
 void PlayerPhysics::movement(DIRECTION direction, bool state)
 {
     if (direction == FORWARD)
-	{
-		//there must be a nicer way of doing this surely
-		if(state)
-		{
-			walkDirection.setZ(walkDirection.z() - Player::MOVEMENT_SPEED);
-		}
-		else
-		{
-			walkDirection.setZ(walkDirection.z() + Player::MOVEMENT_SPEED);
-		}
+    {
+		walkDirection.setZ(-Player::MOVEMENT_SPEED * state);
     }
     else if (direction == BACKWARD)
     {
-		if(state)
-		{
-			walkDirection.setZ(walkDirection.z() + Player::MOVEMENT_SPEED);
-		}
-		else
-		{
-			walkDirection.setZ(walkDirection.z() - Player::MOVEMENT_SPEED);
-		}
+        walkDirection.setZ(Player::MOVEMENT_SPEED * state);
     }
     else if (direction == LEFT)
     {
-		if(state)
-		{
-			walkDirection.setX(walkDirection.x() - Player::MOVEMENT_SPEED);
-		}
-		else
-		{
-			walkDirection.setX(walkDirection.x() + Player::MOVEMENT_SPEED);
-		}
+        walkDirection.setX(-Player::MOVEMENT_SPEED * state);
     }
     else if (direction == RIGHT)
     {
-		if(state)
-		{
-			walkDirection.setX(walkDirection.x() + Player::MOVEMENT_SPEED);
-		}
-		else
-		{
-			walkDirection.setX(walkDirection.x() - Player::MOVEMENT_SPEED);
-		}
+        walkDirection.setX(Player::MOVEMENT_SPEED * state);
     }
 }
 
