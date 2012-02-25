@@ -1,6 +1,7 @@
 #include "RocketGraphics.h"
 
 #include <string>
+#include <boost/bind.hpp>
 
 #include "Rocket.h"
 

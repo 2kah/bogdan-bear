@@ -1,6 +1,7 @@
 #include "ExplosionGraphics.h"
 
 #include <string>
+#include <boost/bind.hpp>
 
 #include "Explosion.h"
 
