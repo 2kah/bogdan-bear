@@ -92,10 +92,29 @@ void NetworkTestStuff::startNetwork(bool asServer)
 
 void NetworkTestStuff::sendChat(std::string message)
 {
-	char mymessage [] = " hello";
-	mymessage[0] = ID_TEXT;
-	rakPeer->Send(mymessage, (int) strlen(mymessage)+1, HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
-	std::cout << "Sent Message" << std::endl;
+	int len = message.length() + 2;
+	char* sendBuffer = (char*)calloc(1,len);
+	sendBuffer[0] = ID_TEXT;
+	sendBuffer++;
+	strcpy_s(sendBuffer,len,message.c_str());
+	sendBuffer--;
+	rakPeer->Send(sendBuffer,len, HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+	std::cout << "Broadcast Message: ";
+	std::cout << message << std::endl;
+}
+
+void NetworkTestStuff::sendChat(std::string message, RakNet::AddressOrGUID target)
+{
+	int len = message.length() + 2;
+	char* sendBuffer = (char*)calloc(1,len);
+	sendBuffer[0] = ID_TEXT;
+	sendBuffer++;
+	strcpy_s(sendBuffer,len,message.c_str());
+	sendBuffer--;
+	rakPeer->Send(sendBuffer,len, HIGH_PRIORITY, RELIABLE_ORDERED, 0, target, false);
+	std::cout << "Send Message To: ";
+	std::cout << target.ToString() << std::endl;
+	std::cout << message << std::endl;
 }
 
 void NetworkTestStuff::sendExplosion(double x, double y, double z)
@@ -140,17 +159,20 @@ void NetworkTestStuff::update()
 				std::cout << "ID_NEW_INCOMING_CONNECTION" << std::endl;
 				std::cout << "From: ";
 				std::cout << packet->guid.ToString() << std::endl;
+				sendChat("Welcome to the server",packet->guid);
 				break;
 			case ID_DISCONNECTION_NOTIFICATION:
 				std::cout << "ID_DISCONNECTION_NOTIFICATION" << std::endl;
 				break;
 			case ID_CONNECTION_LOST:
 				std::cout << "ID_CONNECTION_LOST" << std::endl;
+				std::cout << packet->guid.ToString();
+				std::cout << " Disconnected" << std::endl;
 				break;
 			case ID_TEXT:
-				std::cout << "Received Message" << std::endl;
-				std::cout << "From:";
+				std::cout << "Received Message From: " ;
 				std::cout << packet->guid.ToString() << std::endl;
+				std::cout << packet->data + 1 << std::endl;
 				break;
 			case ID_NEW_EXPLOSION:
 				receiveNewExplosion(packet);
@@ -299,10 +321,14 @@ void NetworkTestStuff::clientConnected()
 	// send all the world state
 
 	// create a player
+    Player *player = new Player(Ogre::Vector3(0, 0, 0));
+    this->signals.playerCreated(player);
 
 	// register the player, to synchronise
+    this->registerObject(player);
 
 	// tell the client they are that player
+
 }
 
 void NetworkTestStuff::clientDisconnected()

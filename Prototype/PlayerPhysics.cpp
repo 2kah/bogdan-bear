@@ -58,6 +58,8 @@ PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWo
 	playerUpdateConnection = this->player->signals.updated.connect(boost::bind(&PlayerPhysics::playerUpdated, this, _1));
 	enterTurretConnection = this->player->signals.enteredTurret.connect(boost::bind(&PlayerPhysics::deactivate, this));
 	exitTurretConnection = this->player->signals.exitedTurret.connect(boost::bind(&PlayerPhysics::reactivate, this));
+
+    this->removedConnection = this->player->signals.removed.connect(boost::bind(&PlayerPhysics::playerRemoved, this, _1));
 }
 
 PlayerPhysics::~PlayerPhysics()
@@ -68,9 +70,15 @@ PlayerPhysics::~PlayerPhysics()
 	playerUpdateConnection.disconnect();
 	enterTurretConnection.disconnect();
 	exitTurretConnection.disconnect();
+    this->removedConnection.disconnect();
 
 	delete this->m_ghostObject;
 	delete this->m_character;
+}
+
+void PlayerPhysics::playerRemoved(Player *player)
+{
+    delete this;
 }
 
 void PlayerPhysics::addInput(PlayerInput &input)

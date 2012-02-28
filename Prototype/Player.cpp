@@ -28,6 +28,17 @@ Player::~Player()
 {
 }
 
+void Player::setState(Ogre::Vector3 position, Ogre::Vector3 velocity, Ogre::Quaternion orientation)
+{
+    this->position = position;
+    this->velocity = velocity;
+    this->orientation = orientation;
+
+    this->update();
+
+    // make sure physics updates too
+}
+
 void Player::update()
 {
 	this->orientation = this->orientation * Ogre::Quaternion(Ogre::Radian(rotX), Ogre::Vector3::UNIT_Y);

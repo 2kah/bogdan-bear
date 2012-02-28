@@ -19,6 +19,7 @@ PlayerGraphics::PlayerGraphics(Player *player, Ogre::SceneManager *sceneManager)
 
     this->playerUpdated(this->player);
 
+    this->player->signals.removed.connect(boost::bind(&PlayerGraphics::playerRemoved, this, _1));
     this->player->signals.updated.connect(boost::bind(&PlayerGraphics::playerUpdated, this, _1));
 }
 
@@ -26,6 +27,11 @@ PlayerGraphics::~PlayerGraphics()
 {
     this->sceneManager->destroyEntity(this->entity);
     this->sceneManager->destroySceneNode(this->sceneNode);
+}
+
+void PlayerGraphics::playerRemoved(Player *player)
+{
+    delete this;
 }
 
 void PlayerGraphics::playerUpdated(Player *player)
