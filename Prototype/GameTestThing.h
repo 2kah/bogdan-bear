@@ -36,6 +36,8 @@ public:
 	virtual void netSendExplosion(double x, double y, double z);
 
     virtual void addPlayer(Player *player);
+    virtual void removePlayer(Player *player);
+
     virtual void addTurret(Turret *turret);
     virtual void addRocket(Rocket *rocket);
     virtual void addExplosion(Explosion *explosion);

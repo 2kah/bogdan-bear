@@ -50,7 +50,6 @@ Ogre::Vector3 velocity;
 };
 #pragma pack(pop)
 
-
 class NetworkTestStuff : public Updatable
 {
 public:
@@ -61,6 +60,7 @@ public:
 
 	virtual void startNetwork(bool asServer);
 	virtual void sendChat(std::string message);
+	virtual void sendChat(std::string message, RakNet::AddressOrGUID target);
     virtual void update();
 	virtual void sendPlayer(unsigned char packetType, int playerID, Ogre::Vector3 position, Ogre::Quaternion orientation, Ogre::Vector3 velocity);
 
