@@ -1,12 +1,14 @@
 #ifndef __PlayerCamera_h_
 #define __PlayerCamera_h_
 
+#include <boost/signals.hpp>
+
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreCamera.h>
 
 class Player;
 
-class PlayerCamera
+class PlayerCamera : public boost::signals::trackable
 {
 public:
     PlayerCamera(Player *player, Ogre::Camera *camera);

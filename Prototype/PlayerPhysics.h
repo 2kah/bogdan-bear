@@ -17,7 +17,7 @@ class btCharacterControllerInterface;
 class btKinematicCharacterController;
 class btCollisionShape;
 
-class PlayerPhysics : public PhysicsObject
+class PlayerPhysics : public boost::signals::trackable, public PhysicsObject
 {
 public:
     PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWorld);

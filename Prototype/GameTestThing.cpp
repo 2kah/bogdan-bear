@@ -175,6 +175,19 @@ void GameTestThing::startServer()
 
     // register local player
     this->network->registerObject(player);
+
+    Player *test1 = new Player(Ogre::Vector3(100, 0, 0));
+    this->addPlayer(test1);
+
+    Player *test2 = new Player(Ogre::Vector3(100, 0, 100));
+    this->addPlayer(test2);
+
+    Player *test3 = new Player(Ogre::Vector3(100, 0, -100));
+    this->addPlayer(test3);
+
+    test1->signals.removed(test1);
+    test2->signals.removed(test2);
+    test3->signals.removed(test3);
 }
 
 void GameTestThing::netSendChat(std::string message)
@@ -337,6 +350,7 @@ void GameTestThing::addPlayer(Player *player)
     player->signals.fired.connect(boost::bind(&GameTestThing::playerFired, this, _1, _2));
     player->signals.platform.connect(boost::bind(&GameTestThing::platformCreated, this, _1, _2));
     player->signals.used.connect(boost::bind(&GameTestThing::playerUsed, this, _1));
+    player->signals.removed.connect(boost::bind(&GameTestThing::removePlayer, this, _1));
 }
 
 void GameTestThing::removePlayer(Player *player)
