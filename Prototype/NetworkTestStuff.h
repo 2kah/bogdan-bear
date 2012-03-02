@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include <iostream>
 
 #include <boost/signals.hpp>
 
@@ -42,6 +43,7 @@ double z;
 #pragma pack(push, 1)
 struct NetPlayer
 {
+	std::string name;
 unsigned char typeId;
 int playerID;
 Ogre::Vector3 position;
@@ -76,14 +78,20 @@ public:
     //
     void clientConnected();
     void clientDisconnected();
-
+	void storeServer(RakNet::Packet *packet);
     void sendPlayer(Player *player, bool existing);
+
+	void addPlayer(RakNet::Packet *packet);
+	void freePlayer(RakNet::Packet *packet);
+	std::string getName(RakNet::Packet *packet);
+
     void receiveNewPlayer(RakNet::Packet *packet);
 	void receiveExistingPlayer(RakNet::Packet *packet);
 	void receiveUpdatePlayer(RakNet::Packet *packet);
 	void receiveDestroyPlayer(RakNet::Packet *packet);
 
 	void receiveNewExplosion(RakNet::Packet *packet);
+	void receiveChat(RakNet::Packet *packet);
 
     //
     void sendWorld();
