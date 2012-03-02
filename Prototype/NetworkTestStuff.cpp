@@ -17,12 +17,14 @@
 #include "Rand.h"
 #include "RakNetTypes.h"
 
+#include <string>
+#include <unordered_map>
+
 //
 #include <vector>
 
 #include <OGRE/OgreVector3.h>
 #include <OGRE/OgreQuaternion.h>
-
 #include "Player.h"
 
 static const char *SERVER_IP_ADDRESS="127.0.0.1";
@@ -50,7 +52,8 @@ static const unsigned char ID_EXIST_ROCKET = 172;
 static const unsigned char ID_UPDATE_ROCKET = 173;
 static const unsigned char ID_DESTROY_ROCKET = 174;
 
-
+std::tr1::unordered_map<uint64_t, NetPlayer*> PlayerMap;
+int playerCounter = 0;
 RakNet::RakPeerInterface *rakPeer;
 RakNet::SocketDescriptor sd;
 
@@ -151,28 +154,30 @@ void NetworkTestStuff::update()
 				std::cout << "ID_NO_FREE_INCOMING_CONNECTIONS" << std::endl;
 				break;
 			case ID_CONNECTION_REQUEST_ACCEPTED:
+				storeServer(packet);
 				std::cout << "ID_CONNECTION_REQUEST_ACCEPTED" << std::endl;
 				std::cout << "Connected To: ";
-				std::cout << packet->guid.ToString() << std::endl;
+				std::cout << getName(packet) << std::endl;
 				break;
 			case ID_NEW_INCOMING_CONNECTION:
+				addPlayer(packet);
 				std::cout << "ID_NEW_INCOMING_CONNECTION" << std::endl;
 				std::cout << "From: ";
-				std::cout << packet->guid.ToString() << std::endl;
-				sendChat("Welcome to the server",packet->guid);
+				std::cout << getName(packet) << std::endl;
+				playerCounter++;
+				
 				break;
 			case ID_DISCONNECTION_NOTIFICATION:
 				std::cout << "ID_DISCONNECTION_NOTIFICATION" << std::endl;
 				break;
 			case ID_CONNECTION_LOST:
 				std::cout << "ID_CONNECTION_LOST" << std::endl;
-				std::cout << packet->guid.ToString();
+				std::cout << getName(packet);
 				std::cout << " Disconnected" << std::endl;
+				freePlayer(packet);
 				break;
 			case ID_TEXT:
-				std::cout << "Received Message From: " ;
-				std::cout << packet->guid.ToString() << std::endl;
-				std::cout << packet->data + 1 << std::endl;
+				receiveChat(packet);
 				break;
 			case ID_NEW_EXPLOSION:
 				receiveNewExplosion(packet);
@@ -198,7 +203,52 @@ void NetworkTestStuff::update()
 	}
 }
 
+std::string NetworkTestStuff::getName(RakNet::Packet *packet)
+{
+	std::tr1::unordered_map<uint64_t, NetPlayer*>::iterator it = PlayerMap.find(packet->guid.g);
+	NetPlayer* P = it->second;
+	return P->name;
+}
 
+void NetworkTestStuff::receiveChat(RakNet::Packet *packet)	
+{
+	std::tr1::unordered_map<uint64_t, NetPlayer*>::iterator it = PlayerMap.find(packet->guid.g);
+	NetPlayer* P = it->second;
+	std::cout << "Received Message From: " ;
+	std::cout << P->name << std::endl;
+	std::cout << packet->data + 1 << std::endl;
+}
+
+void NetworkTestStuff::freePlayer(RakNet::Packet *packet)
+{
+	std::tr1::unordered_map<uint64_t, NetPlayer*>::iterator it = PlayerMap.find(packet->guid.g);
+	free(it->second);
+}
+
+void NetworkTestStuff::storeServer(RakNet::Packet *packet)
+{
+	NetPlayer* P = (NetPlayer*)calloc(1,sizeof(NetPlayer));
+	P->name="The Server";
+	P->playerID = playerCounter;
+	playerCounter++;
+	PlayerMap.insert(std::pair<uint64_t, NetPlayer*>(packet->guid.g, P));
+}
+
+void NetworkTestStuff::addPlayer(RakNet::Packet *packet)
+{
+	NetPlayer* P = (NetPlayer*)calloc(1,sizeof(NetPlayer));
+	std::stringstream namestream;
+	namestream << "Player ";
+	namestream << playerCounter;
+	P->name=namestream.str();
+	P->playerID=playerCounter;
+	std::stringstream msgstream;
+	msgstream << "Welcome to the server, you are ";
+	msgstream << P->name;
+	PlayerMap.insert(std::pair<uint64_t, NetPlayer*>(packet->guid.g, P));
+	sendChat(msgstream.str(),packet->guid);
+	
+}
 
 unsigned NetworkTestStuff::registerObject(Object *object)
 {
