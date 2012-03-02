@@ -26,7 +26,7 @@ ExplosionPhysics::ExplosionPhysics(Explosion *explosion, btDiscreteDynamicsWorld
     this->explosion->signals.updated.connect(boost::bind(&ExplosionPhysics::explosionUpdated, this, _1));
     this->explosion->signals.finished.connect(boost::bind(&ExplosionPhysics::explosionFinished, this, _1));
 
-    this->ghost = new btGhostObject();
+    this->ghost = new btPairCachingGhostObject();
     
     btVector3 position(this->explosion->position.x, this->explosion->position.y, this->explosion->position.z);
     this->ghost->setCollisionShape(new btSphereShape(Explosion::SIZE));
@@ -40,31 +40,27 @@ ExplosionPhysics::ExplosionPhysics(Explosion *explosion, btDiscreteDynamicsWorld
 
     std::vector<btCollisionObject *> destructions;
     
-
-    Tower *tower = NULL;
+    this->tower = NULL;
 
     for(int i = 0; i < this->ghost->getNumOverlappingObjects(); i++)
     {
         btCollisionObject *blockObject = this->ghost->getOverlappingObject(i);
         
-        BlockReference *block = (BlockReference *) blockObject->getUserPointer();
+        PhysicsObject *object = static_cast<PhysicsObject *>(blockObject->getUserPointer());
 
-        if (block != NULL) {
-            //block->tower->blocks[block->level][block->layer][block->sector] = false;
-            tower = block->tower;
+        if (object != NULL) {
+            if (object->type == TOWER_CHUNK) {
+                this->tower = static_cast<PhysicsChunk *>(object)->tower;
+            } else if (object->type == PLATFORM) {
+                static_cast<PlatformPhysics *>(object)->platform->destroy();
+            }
 
-            destructions.push_back(blockObject);
+            object->explode(this->explosion);
         }
     }
-    
-    for(std::vector<btCollisionObject *>::iterator it = destructions.begin(); it != destructions.end(); ++it) {
-        btCollisionObject *blockObject = *it;
-
-        this->dynamicsWorld->removeCollisionObject(blockObject);
-    }
-
-    if (tower != NULL) {
-        tower->carveSphere(this->explosion->position, Explosion::SIZE);
+   
+    if (this->tower != NULL) {
+        this->tower->carveSphere(this->explosion->position, Explosion::SIZE);
     }
 }
 
@@ -83,3 +79,4 @@ void ExplosionPhysics::explosionFinished(Explosion *explosion)
 {
     delete this;
 }
+

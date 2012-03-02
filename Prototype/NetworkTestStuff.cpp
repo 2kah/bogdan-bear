@@ -96,7 +96,7 @@ void NetworkTestStuff::sendChat(std::string message)
 	char* sendBuffer = (char*)calloc(1,len);
 	sendBuffer[0] = ID_TEXT;
 	sendBuffer++;
-	strcpy_s(sendBuffer,len,message.c_str());
+	//strncpy(sendBuffer,len,message.c_str());
 	sendBuffer--;
 	rakPeer->Send(sendBuffer,len, HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
 	std::cout << "Broadcast Message: ";
@@ -109,7 +109,7 @@ void NetworkTestStuff::sendChat(std::string message, RakNet::AddressOrGUID targe
 	char* sendBuffer = (char*)calloc(1,len);
 	sendBuffer[0] = ID_TEXT;
 	sendBuffer++;
-	strcpy_s(sendBuffer,len,message.c_str());
+	//strncpy(sendBuffer,len,message.c_str());
 	sendBuffer--;
 	rakPeer->Send(sendBuffer,len, HIGH_PRIORITY, RELIABLE_ORDERED, 0, target, false);
 	std::cout << "Send Message To: ";
