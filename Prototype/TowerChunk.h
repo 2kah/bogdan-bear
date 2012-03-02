@@ -40,7 +40,7 @@ class TowerChunk
 {
 public:
     TowerChunk()
-        : tower(NULL),
+        : tower(),
         bounds(0, 0, 0, 0, 0, 0)
     {}
     TowerChunk(Tower *tower, BoundingVolume bounds)
