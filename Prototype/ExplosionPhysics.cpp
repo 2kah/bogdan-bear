@@ -5,6 +5,7 @@
 #include <set>
 
 #include <boost/math/constants/constants.hpp>
+#include <boost/bind.hpp>
 
 #include <btBulletDynamicsCommon.h>
 #include <btBulletCollisionCommon.h>
@@ -78,3 +79,4 @@ void ExplosionPhysics::explosionFinished(Explosion *explosion)
 {
     delete this;
 }
+

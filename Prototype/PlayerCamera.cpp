@@ -1,6 +1,7 @@
 #include "PlayerCamera.h"
 
 #include <string>
+#include <boost/bind.hpp>
 
 #include "Player.h"
 
