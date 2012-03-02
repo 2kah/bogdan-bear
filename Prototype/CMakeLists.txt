@@ -26,9 +26,6 @@ if(WIN32)
   
   set(${BULLET_PHYSICS_SOURCE_DIR}/bullet)
   set(BULLET_LIBS BulletDynamics BulletCollision LinearMath BulletWorldImporter BulletFileLoader)
-  
-  set(${RAKNET_SOURCE_DIR}/raknet)
-  set(RAKNET_LIBS RakNetDLL RakNetStatic)
 endif(WIN32)
  
 if(UNIX)
@@ -48,7 +45,7 @@ if(UNIX)
   
   find_package(Bullet REQUIRED)
 endif(UNIX)
-
+ 
 if (CMAKE_BUILD_TYPE STREQUAL "")
   # CMake defaults to leaving CMAKE_BUILD_TYPE empty. This screws up
   # differentiation between debug and release builds.
@@ -87,13 +84,12 @@ endif ()
 set(Boost_ADDITIONAL_VERSIONS "1.47" "1.44" "1.44.0" "1.42" "1.42.0" "1.41.0" "1.41" "1.40.0" "1.40" "1.39.0" "1.39" "1.38.0" "1.38" "1.37.0" "1.37" )
 # Components that need linking (NB does not include header-only components like bind)
 set(OGRE_BOOST_COMPONENTS thread date_time)
-find_package(Boost REQUIRED)
+#find_package(Boost REQUIRED)
 
 # Set up referencing of Boost
-include_directories(${Boost_INCLUDE_DIR})
-add_definitions(-DBOOST_ALL) # _NO_LIB)
-set(OGRE_LIBRARIES ${OGRE_LIBRARIES} ${Boost_LIBRARIES})
-set(RAKNET_LIBRARIES)
+#include_directories(${Boost_INCLUDE_DIR})
+#add_definitions(-DBOOST_ALL) # _NO_LIB)
+set(OGRE_LIBRARIES ${OGRE_LIBRARIES})
  
 # raknet maybe
 include_directories("raknet/Source")
@@ -201,10 +197,10 @@ set(SRCS
     
     ./BtOgre.cpp
     
-    ./Ping.cpp
+    #./Ping.cpp
 )
 
-find_package(Boost 1.47 REQUIRED)
+find_package(Boost 1.47 COMPONENTS signals REQUIRED)
 add_definitions(-DBOOST_ALL)
 link_directories ( ${Boost_LIBRARY_DIRS} )
 include_directories ( ${Boost_INCLUDE_DIRS} )
@@ -230,9 +226,8 @@ target_link_libraries(
     Prototype
     ${OGRE_LIBRARIES}
     ${OIS_LIBRARIES}
-    ${BULLET_LIBS}
-    ${RAKNET_LIBS}
-    ${BOOST_LIBRARIES}
+    ${BULLET_LIBRARIES}
+    ${Boost_LIBRARIES}
 )
  
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/bin)
@@ -325,5 +320,7 @@ if(UNIX)
  
 endif(UNIX)
 
-set(EXECUTABLE_OUTPUT_PATH $ENV{REFACTOR_HOME}/bin)
-set(LIBRARY_OUTPUT_PATH $ENV{REFACTOR_HOME}/bin)
+set(REFACTOR_HOME /home/adam/dev/Refactor)
+
+set(EXECUTABLE_OUTPUT_PATH ${REFACTOR_HOME}/bin)
+set(LIBRARY_OUTPUT_PATH ${REFACTOR_HOME}/bin)

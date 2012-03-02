@@ -2,6 +2,8 @@
 
 #include <vector>
 
+#include <boost/bind.hpp>
+
 #include <btBulletDynamicsCommon.h>
 #include <btBulletCollisionCommon.h>
 #include <BulletCollision/CollisionShapes/btTriangleMeshShape.h>
