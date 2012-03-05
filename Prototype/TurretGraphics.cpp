@@ -1,7 +1,5 @@
 #include "TurretGraphics.h"
 
-#include <boost/bind.hpp>
-
 #include <OGRE/OgreVector3.h>
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreEntity.h>

@@ -1,7 +1,5 @@
 #include "MetaShapeBuilder.h"
 
-#include <stdlib.h>
-
 MetaShapeBuilder::MetaShapeBuilder()
 {
 }
