@@ -39,6 +39,7 @@ public:
 	class btPairCachingGhostObject* m_ghostObject;
 protected:
     virtual void playerUpdated(Player *player);
+    virtual void playerStateSet(Player *player);
 
     Player *player;
 
