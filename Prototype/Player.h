@@ -22,6 +22,7 @@ struct PlayerSignals {
     boost::signal<void (Player *)> removed;
 
     boost::signal<void (Player *)> updated;
+    boost::signal<void (Player *)> stateSet;
 
     boost::signal<void (Player *, Rocket *)> fired;
     boost::signal<void (Player *, Platform *)> platform;
