@@ -29,6 +29,9 @@ struct PlayerSignals {
 
     boost::signal<void (Player *)> used;
 
+    boost::signal<void (Player *)> startedStepping;
+    boost::signal<void (Player *)> stoppedStepping;
+
     // TODO: not sure about these
     boost::signal<void (Player */*, Turret **/)> enteredTurret;
     boost::signal<void (Player * /*, Turret **/)> exitedTurret;
@@ -71,6 +74,8 @@ public:
     Ogre::Vector3 velocity;
 
     Turret *turret;
+
+    bool stepping;
 private:
     Ogre::Radian rotX;
     Ogre::Radian rotY;
