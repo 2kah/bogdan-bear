@@ -54,7 +54,8 @@ GameTestThing::GameTestThing(Game *game)
     this->network->signals.explosion.connect(boost::bind(&GameTestThing::networkExplosion, this, _1, _2, _3));
     this->game->objects.insert(this->network);
 
-    this->network->signals.playerReplicated.connect(boost::bind(&GameTestThing::addPlayer, this, _1));
+	this->network->signals.addPlayer.connect(boost::bind(&GameTestThing::addPlayer, this, _1));
+	this->network->signals.assignLocalPlayer.connect(boost::bind(&GameTestThing::setLocalPlayer, this, _1));
 
     this->sounds = new Sounds();
 
@@ -165,29 +166,29 @@ void GameTestThing::startServer()
 {
 	this->network->startNetwork(true);
     
-    // listen for new players, adding them when they come
-    this->network->signals.playerCreated.connect(boost::bind(&GameTestThing::addPlayer, this, _1));
+    //// listen for new players, adding them when they come
+    //this->network->signals.playerCreated.connect(boost::bind(&GameTestThing::addPlayer, this, _1));
 
-    // create local player
-    Player *player = new Player(Ogre::Vector3(0, 0, 0));
-    this->addPlayer(player);
-    this->setLocalPlayer(player);
+    //// create local player
+    //Player *player = new Player(Ogre::Vector3(0, 0, 0));
+    //this->addPlayer(player);
+    //this->setLocalPlayer(player);
 
-    // register local player
-    this->network->registerObject(player);
+    //// register local player
+    //this->network->registerObject(player);
 
-    Player *test1 = new Player(Ogre::Vector3(100, 0, 0));
-    this->addPlayer(test1);
+    //Player *test1 = new Player(Ogre::Vector3(100, 0, 0));
+    //this->addPlayer(test1);
 
-    Player *test2 = new Player(Ogre::Vector3(100, 0, 100));
-    this->addPlayer(test2);
+    //Player *test2 = new Player(Ogre::Vector3(100, 0, 100));
+    //this->addPlayer(test2);
 
-    Player *test3 = new Player(Ogre::Vector3(100, 0, -100));
-    this->addPlayer(test3);
+    //Player *test3 = new Player(Ogre::Vector3(100, 0, -100));
+    //this->addPlayer(test3);
 
-    test1->signals.removed(test1);
-    test2->signals.removed(test2);
-    test3->signals.removed(test3);
+    //test1->signals.removed(test1);
+    //test2->signals.removed(test2);
+    //test3->signals.removed(test3);
 }
 
 void GameTestThing::netSendChat(std::string message)

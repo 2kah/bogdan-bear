@@ -37,8 +37,8 @@ static const unsigned char ID_EXIST_EXPLOSION = 142;
 static const unsigned char ID_UPDATE_EXPLOSION = 143;
 static const unsigned char ID_DESTROY_EXPLOSION = 144;
 
-static const unsigned char ID_NEW_PLAYER = 151;
-static const unsigned char ID_EXIST_PLAYER = 152;
+static const unsigned char ID_ASSIGN_PLAYER = 151;
+static const unsigned char ID_INSERT_PLAYER = 152;
 static const unsigned char ID_UPDATE_PLAYER = 153;
 static const unsigned char ID_DESTROY_PLAYER = 154;
 
@@ -52,8 +52,17 @@ static const unsigned char ID_EXIST_ROCKET = 172;
 static const unsigned char ID_UPDATE_ROCKET = 173;
 static const unsigned char ID_DESTROY_ROCKET = 174;
 
-std::tr1::unordered_map<uint64_t, NetPlayer*> PlayerMap;
+//static const unsigned char ID_INSERT_PLAYER = 175;
+//static const unsigned char ID_UPDATE_PLAYER = 176;
+
+std::tr1::unordered_map<uint64_t, NetPlayer*> NetPlayerByGUID;
+std::tr1::unordered_map<int, NetPlayer*> NetPlayerByPlayerID;
+NetPlayer* myNetPlayer = 0;
+
 int playerCounter = 0;
+bool shouldUpload = false;
+int updateDelay = 0;
+
 RakNet::RakPeerInterface *rakPeer;
 RakNet::SocketDescriptor sd;
 
@@ -70,7 +79,10 @@ NetworkTestStuff::~NetworkTestStuff()
 void NetworkTestStuff::startNetwork(bool asServer)
 {
 	this->hosting = asServer;
-
+	if (rakPeer > 0)
+	{
+		rakPeer->DestroyInstance(rakPeer);
+	}
 	if (asServer)
 	{
 		std::cout << "Starting Server" << std::endl;
@@ -79,6 +91,19 @@ void NetworkTestStuff::startNetwork(bool asServer)
 		RakNet::StartupResult sr = rakPeer->Startup(32,&sd,1);
 		//RakAssert(sr==RAKNET_STARTED);
 		rakPeer->SetMaximumIncomingConnections(32);
+
+		//Start Up to add player
+		/*Player* p = new Player(Ogre::Vector3(0, 0, 0));
+		NetPlayer* np = new NetPlayer;
+		sprintf(np->name,"Server %d",playerCounter);
+		np->player = p;
+		np->playerID = playerCounter;
+		playerCounter++;
+		np->GUID=0;
+		insertNetPlayer(np);
+
+		this->signals.addPlayer(p);
+		this->signals.assignLocalPlayer(p);*/
 	}
 	else
 	{
@@ -93,26 +118,47 @@ void NetworkTestStuff::startNetwork(bool asServer)
 
 }
 
+void NetworkTestStuff::insertNetPlayer(NetPlayer* np)
+{
+	NetPlayerByGUID.insert(std::pair<uint64_t, NetPlayer*>(np->GUID, np));
+	NetPlayerByPlayerID.insert(std::pair<int, NetPlayer*>(np->playerID, np));
+	listNetPlayers();
+}
+
+void NetworkTestStuff::listNetPlayers()
+{
+	std::cout << "Begin listing:" <<std::endl;
+	std::tr1::unordered_map<int, NetPlayer*>::const_iterator It;
+	for (It = NetPlayerByPlayerID.begin(); It != NetPlayerByPlayerID.end(); ++It)
+   {
+	   std::cout << It->first << " = " << It->second->name << " GUID: " << It->second->GUID << std::endl;
+   }
+	std::cout << "End listing:" <<std::endl;
+}
+
 void NetworkTestStuff::sendChat(std::string message)
 {
 	int len = message.length() + 2;
-	char* sendBuffer = (char*)calloc(1,len);
+	char* sendBuffer = new char[len];
 	sendBuffer[0] = ID_TEXT;
 	sendBuffer++;
-	strcpy_s(sendBuffer,len,message.c_str());
+	//strcpy_s(sendBuffer,len,message.c_str());
+	strncpy(sendBuffer, message.c_str(),len);
 	sendBuffer--;
 	rakPeer->Send(sendBuffer,len, HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
 	std::cout << "Broadcast Message: ";
 	std::cout << message << std::endl;
+	std::cout << sendBuffer << std::endl;
 }
 
 void NetworkTestStuff::sendChat(std::string message, RakNet::AddressOrGUID target)
 {
 	int len = message.length() + 2;
-	char* sendBuffer = (char*)calloc(1,len);
+	char* sendBuffer = new char[len];
 	sendBuffer[0] = ID_TEXT;
 	sendBuffer++;
-	strcpy_s(sendBuffer,len,message.c_str());
+	//strcpy_s(sendBuffer,len,message.c_str());
+	strncpy(sendBuffer, message.c_str(),len);
 	sendBuffer--;
 	rakPeer->Send(sendBuffer,len, HIGH_PRIORITY, RELIABLE_ORDERED, 0, target, false);
 	std::cout << "Send Message To: ";
@@ -124,57 +170,48 @@ void NetworkTestStuff::sendExplosion(double x, double y, double z)
 {
 	if (rakPeer >0)
 	{
-		Coords3D coord;
-		coord.typeId=ID_NEW_EXPLOSION;
-		coord.x=x;
-		coord.y=y;
-		coord.z=z;
-		rakPeer->Send((char*)&coord,sizeof(coord) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
-		std::cout << "Sending Explosion at: ";
-		std::cout << "(" << x << "," << y << "," << z << ")"  << std::endl;
+		NetExplosion exp;
+		exp.typeId=ID_NEW_EXPLOSION;
+		exp.vector=Ogre::Vector3(x,y,z);
+		rakPeer->Send((char*)&exp,sizeof(exp) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+		std::cout << "Sending Explosion at: " << "(" << x << "," << y << "," << z << ")"  << std::endl;
 	}
 }
 
 void NetworkTestStuff::update()
 {
-	//std::cout << "Network Update" << std::endl;
-	//this->signals.chat("TESTING!");
-	//this->signals.chat("MEH");
 	if (rakPeer > 0)
 	{
+		if (shouldUpload)
+		{
+			updateDelay++;
+			if (updateDelay > 5)
+			{
+			updateDelay = 0;
+			//std::cout << "Sending Own Player Update" << std::endl;
+				sendPlayerUpdate(myNetPlayer);
+			}
+		}
+
 		RakNet::Packet *packet;
 		for (packet = rakPeer->Receive(); packet; rakPeer->DeallocatePacket(packet), packet = rakPeer->Receive())
 		{
 			switch (packet->data[0])
 			{
-			case ID_CONNECTION_ATTEMPT_FAILED:
-				std::cout << "ID_CONNECTION_ATTEMPT_FAILED" << std::endl;
-				break;
-			case ID_NO_FREE_INCOMING_CONNECTIONS:
-				std::cout << "ID_NO_FREE_INCOMING_CONNECTIONS" << std::endl;
+			case ID_UPDATE_PLAYER:
+				receiveUpdatePlayer(packet);
 				break;
 			case ID_CONNECTION_REQUEST_ACCEPTED:
-				storeServer(packet);
-				std::cout << "ID_CONNECTION_REQUEST_ACCEPTED" << std::endl;
-				std::cout << "Connected To: ";
-				std::cout << getName(packet) << std::endl;
+				connectedToServer(packet);
 				break;
 			case ID_NEW_INCOMING_CONNECTION:
-				addPlayer(packet);
-				std::cout << "ID_NEW_INCOMING_CONNECTION" << std::endl;
-				std::cout << "From: ";
-				std::cout << getName(packet) << std::endl;
-				playerCounter++;
-				
-				break;
-			case ID_DISCONNECTION_NOTIFICATION:
-				std::cout << "ID_DISCONNECTION_NOTIFICATION" << std::endl;
+				clientConnected(packet);
 				break;
 			case ID_CONNECTION_LOST:
-				std::cout << "ID_CONNECTION_LOST" << std::endl;
-				std::cout << getName(packet);
-				std::cout << " Disconnected" << std::endl;
-				freePlayer(packet);
+				if (hosting)
+					clientDisconnected(packet);
+				else
+					disconnectedFromServer(packet);
 				break;
 			case ID_TEXT:
 				receiveChat(packet);
@@ -182,72 +219,157 @@ void NetworkTestStuff::update()
 			case ID_NEW_EXPLOSION:
 				receiveNewExplosion(packet);
 				break;
-			case ID_NEW_PLAYER:
-				std::cout << "Received New Player Info\n";
-				receiveNewPlayer(packet);
+			case ID_ASSIGN_PLAYER:
+				receiveAssignPlayer(packet);
 				break;
-			case ID_EXIST_PLAYER:
-				std::cout << "Received Existing Player Info\n";
-				receiveExistingPlayer(packet);
-				break;
-			case ID_UPDATE_PLAYER:
-				std::cout << "Received Update Player Info\n";
-				receiveUpdatePlayer(packet);
+			case ID_INSERT_PLAYER:
+				receiveInsertPlayer(packet);
 				break;
 			case ID_DESTROY_PLAYER:
 				std::cout << "Received Destroy Player Info\n";
 				receiveDestroyPlayer(packet);
+				break;
+			case ID_CONNECTION_ATTEMPT_FAILED:
+				std::cout << "ID_CONNECTION_ATTEMPT_FAILED" << std::endl;
+				break;
+			case ID_NO_FREE_INCOMING_CONNECTIONS:
+				std::cout << "ID_NO_FREE_INCOMING_CONNECTIONS" << std::endl;
+				break;
+			case ID_DISCONNECTION_NOTIFICATION:
+				std::cout << "ID_DISCONNECTION_NOTIFICATION" << std::endl;
 				break;
 			}
 		}
 	}
 }
 
-std::string NetworkTestStuff::getName(RakNet::Packet *packet)
+void NetworkTestStuff::receiveNewExplosion(RakNet::Packet *packet)
 {
-	std::tr1::unordered_map<uint64_t, NetPlayer*>::iterator it = PlayerMap.find(packet->guid.g);
-	NetPlayer* P = it->second;
-	return P->name;
+	std::cout << "Received Explosion at: ";
+	NetExplosion* exp = (NetExplosion*)packet->data;
+	Ogre::Vector3 v = exp->vector;
+	std::cout << "(" << v.x << "," << v.y << "," << v.z << ")"  << std::endl;
+	if (hosting)
+	{
+		std::cout << "Broadcasting explosion" << std::endl;
+		rakPeer->Send((char*)exp,sizeof(*exp) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+	}
+	this->signals.explosion(v.x, v.y, v.z);
+}
+
+void NetworkTestStuff::connectedToServer(RakNet::Packet *packet)
+{
+	std::cout << "ID_CONNECTION_REQUEST_ACCEPTED" << std::endl;
+	std::cout << "Connected To: ";
+	std::cout << packet->guid.ToString() << std::endl;
+}
+
+void NetworkTestStuff::clientConnected(RakNet::Packet *packet)
+{
+	std::cout << "ID_NEW_INCOMING_CONNECTION" << std::endl;
+	std::cout << "From: " << packet->guid.ToString() << std::endl;
+	
+	sendWorld(packet);
+	// send all the world state
+
+	// world state sent - create and assign player
+	Player* p = new Player(Ogre::Vector3(0, 0, 0));
+	this->signals.addPlayer(p);
+	NetPlayer* np = new NetPlayer;
+	sprintf(np->name,"Player %d",playerCounter);
+	np->player = p;
+	np->playerID = playerCounter;
+	playerCounter++;
+	np->GUID=packet->guid.g;
+	insertNetPlayer(np);
+	sendNetPlayer(np, ID_INSERT_PLAYER); //Creates new player across all clients
+	sendNetPlayer(np, ID_ASSIGN_PLAYER, packet->guid); //assigns new player to client
+	
+
+	
+	
+	
+
+	//Notify Of Complete Client Connection
+	std::stringstream msgstream;
+	msgstream << "Welcome to the server, you are ";
+	msgstream << np->name;
+	sendChat(msgstream.str(),packet->guid);
+}
+
+void NetworkTestStuff::sendNetPlayer(NetPlayer* np, unsigned char type, RakNet::AddressOrGUID g)
+{
+	np->typeId=type;
+	rakPeer->Send((char*)np,sizeof(*np) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, g, false);
+}
+
+void NetworkTestStuff::sendNetPlayer(NetPlayer* np, unsigned char type)
+{
+	np->typeId=type;
+	rakPeer->Send((char*)np,sizeof(*np) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+}
+
+void NetworkTestStuff::receiveAssignPlayer(RakNet::Packet *packet)
+{
+	NetPlayer* inc = (NetPlayer*)packet->data;
+	NetPlayer* np = getNetPlayer(inc->playerID);
+	myNetPlayer = np;
+	Player* p = np->player;
+	std::cout << "Being assigned Player '" << np->name << "'" << std::endl;
+	this->signals.assignLocalPlayer(p);
+	shouldUpload=true;
+}
+
+void NetworkTestStuff::receiveInsertPlayer(RakNet::Packet *packet)
+{
+	NetPlayer* inc = (NetPlayer*)packet->data;
+	std::cout << "Inserting New Player '" << inc->name << "'" << std::endl;
+	Player* p = new Player(Ogre::Vector3(0, 0, 0));
+	this->signals.addPlayer(p);
+	NetPlayer* np = new NetPlayer;
+	np->GUID = inc->GUID;
+	strncpy(np->name,inc->name,NAME_LENGTH);
+	np->playerID = inc->playerID;
+	np->player=p;
+	insertNetPlayer(np);
+}
+
+void NetworkTestStuff::clientDisconnected(RakNet::Packet *packet)
+{
+	std::cout << "ID_CONNECTION_LOST" << std::endl;
+	std::cout << getNetPlayer(packet)->name;
+	std::cout << " Disconnected" << std::endl;
+	//free(getNetPlayer(packet));
+}
+
+void NetworkTestStuff::disconnectedFromServer(RakNet::Packet *packet)
+{
+	std::cout << "Disconnected From Server" << std::endl;
+}
+
+NetPlayer* NetworkTestStuff::getNetPlayer(RakNet::Packet *packet)
+{
+	std::tr1::unordered_map<uint64_t, NetPlayer*>::iterator it = NetPlayerByGUID.find(packet->guid.g);
+	NetPlayer* np = it->second;
+	if (it == NetPlayerByGUID.end())
+		return 0;
+	return np;
+}
+
+NetPlayer* NetworkTestStuff::getNetPlayer(int playerID)
+{
+	//std::cout << "Searching for " << playerID <<std::endl;
+	std::tr1::unordered_map<int, NetPlayer*>::iterator it = NetPlayerByPlayerID.find(playerID);
+	NetPlayer* np = it->second;
+	if (it == NetPlayerByPlayerID.end()) 
+			return 0;
+	return np;
 }
 
 void NetworkTestStuff::receiveChat(RakNet::Packet *packet)	
 {
-	std::tr1::unordered_map<uint64_t, NetPlayer*>::iterator it = PlayerMap.find(packet->guid.g);
-	NetPlayer* P = it->second;
-	std::cout << "Received Message From: " ;
-	std::cout << P->name << std::endl;
+	std::cout << "Received Message From '" << packet->guid.ToString() << "'" << std::endl;
 	std::cout << packet->data + 1 << std::endl;
-}
-
-void NetworkTestStuff::freePlayer(RakNet::Packet *packet)
-{
-	std::tr1::unordered_map<uint64_t, NetPlayer*>::iterator it = PlayerMap.find(packet->guid.g);
-	free(it->second);
-}
-
-void NetworkTestStuff::storeServer(RakNet::Packet *packet)
-{
-	NetPlayer* P = (NetPlayer*)calloc(1,sizeof(NetPlayer));
-	P->name="The Server";
-	P->playerID = playerCounter;
-	playerCounter++;
-	PlayerMap.insert(std::pair<uint64_t, NetPlayer*>(packet->guid.g, P));
-}
-
-void NetworkTestStuff::addPlayer(RakNet::Packet *packet)
-{
-	NetPlayer* P = (NetPlayer*)calloc(1,sizeof(NetPlayer));
-	std::stringstream namestream;
-	namestream << "Player ";
-	namestream << playerCounter;
-	P->name=namestream.str();
-	P->playerID=playerCounter;
-	std::stringstream msgstream;
-	msgstream << "Welcome to the server, you are ";
-	msgstream << P->name;
-	PlayerMap.insert(std::pair<uint64_t, NetPlayer*>(packet->guid.g, P));
-	sendChat(msgstream.str(),packet->guid);
-	
 }
 
 unsigned NetworkTestStuff::registerObject(Object *object)
@@ -262,86 +384,57 @@ unsigned NetworkTestStuff::registerObject(Object *object)
 	return id;
 }
 
-void NetworkTestStuff::sendWorld()
+void NetworkTestStuff::sendWorld(RakNet::Packet *packet)
 {
-	this->sendPlayers();
+	this->sendPlayers(packet);
 }
 
-void NetworkTestStuff::sendPlayers()
+void NetworkTestStuff::sendPlayers(RakNet::Packet *packet)
 {
-
+	std::cout << "Begin listing:" <<std::endl;
+	std::tr1::unordered_map<int, NetPlayer*>::const_iterator It;
+	for (It = NetPlayerByPlayerID.begin(); It != NetPlayerByPlayerID.end(); ++It)
+   {
+	   sendNetPlayer(It->second,ID_INSERT_PLAYER,packet->guid);
+   }
+	std::cout << "End listing:" <<std::endl;
 }
 
-void NetworkTestStuff::sendPlayer(Player *player, bool existing)
+void NetworkTestStuff::sendPlayerUpdate(NetPlayer* np)
 {
-	Ogre::Vector3 position = player->position;
-	Ogre::Vector3 velocity = player->velocity;
-	Ogre::Quaternion rotation = player->orientation;
-	Ogre::Quaternion elevation = player->relativeAim;
-
-	// send creation of player
+	PlayerInfo pi;
+	pi.playerID = np->playerID;
+	pi.position = np->player->position;
+	pi.velocity = np->player->velocity;
+	pi.orientation = np->player->orientation;
+	pi.relativeAim = np->player->relativeAim;
+	pi.typeID = ID_UPDATE_PLAYER;
+	rakPeer->Send((char*)&pi,sizeof(pi) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+	//std::cout << "Sending velocity: ";
+	//Ogre::Vector3 v = np->player->velocity;
+	//std::cout << "(" << v.x << "," << v.y << "," << v.z << ")"  << std::endl;
 }
 
-void NetworkTestStuff::sendPlayer(unsigned char packetType, int playerID, Ogre::Vector3 position, Ogre::Quaternion orientation, Ogre::Vector3 velocity)
+void NetworkTestStuff::receiveUpdatePlayer(RakNet::Packet *packet)
 {
-	if (rakPeer >0)
+	PlayerInfo* pi = (PlayerInfo*) packet->data;
+	//std::cout << "Updating ID " << pi->playerID << std::endl;
+	NetPlayer* np = getNetPlayer(pi->playerID);
+	if (np != myNetPlayer)
 	{
-		NetPlayer p;
-
-		p.orientation=orientation;
-		p.playerID=playerID;
-		p.position=position;
-		p.typeId=packetType;
-		p.velocity=velocity;
-
-		rakPeer->Send((char*)&p,sizeof(p) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
-		std::cout << "Sending Player Info\n";
-		//std::cout << "(" << x << "," << y << "," << z << ")"  << std::endl;
+	//std::cout << "Updating '" << np->name << "'" << std::endl;
+	Player* p =np->player;
+	p->position = pi->position;
+	p->velocity = pi->velocity;
+	p->orientation = pi->orientation;
+	p->relativeAim = pi->relativeAim;
+	}
+	if (hosting)
+	{
+		rakPeer->Send((char*)pi,sizeof(*pi) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
 	}
 }
 
-void NetworkTestStuff::receiveNewPlayer(RakNet::Packet *packet)
-{
-	// extract player data
-	//
-
-	// create a new player with the data from the packet
-	//Player *player = new Player(...);
-
-	// register the player as the given ID (not possible yet)
-	//
-
-	// signal player replicated
-	//this->signals.playerReplicated(player);
-}
-void NetworkTestStuff::receiveExistingPlayer(RakNet::Packet *packet)
-{
-	// extract player data
-	//
-
-	// create a new player with the data from the packet
-	//Player *player = new Player(...);
-
-	// register the player as the given ID (not possible yet)
-	//
-
-	// signal player replicated
-	//this->signals.playerReplicated(player);
-}
-void NetworkTestStuff::receiveUpdatePlayer(RakNet::Packet *packet)
-{
-	// extract player data
-	//
-
-	// create a new player with the data from the packet
-	//Player *player = new Player(...);
-
-	// register the player as the given ID (not possible yet)
-	//
-
-	// signal player replicated
-	//this->signals.playerReplicated(player);
-}
 void NetworkTestStuff::receiveDestroyPlayer(RakNet::Packet *packet)
 {
 	// extract player data
@@ -355,33 +448,4 @@ void NetworkTestStuff::receiveDestroyPlayer(RakNet::Packet *packet)
 
 	// signal player replicated
 	//this->signals.playerReplicated(player);
-}
-void NetworkTestStuff::receiveNewExplosion(RakNet::Packet *packet)
-{
-	std::cout << "Received Explosion at: ";
-	Coords3D* coords = (Coords3D*)packet->data;
-	std::cout << "(" << coords->x << "," << coords->y << "," << coords->z << ")"  << std::endl;
-	this->signals.explosion(coords->x, coords->y, coords->z);
-}
-
-
-
-void NetworkTestStuff::clientConnected()
-{
-	// send all the world state
-
-	// create a player
-    Player *player = new Player(Ogre::Vector3(0, 0, 0));
-    this->signals.playerCreated(player);
-
-	// register the player, to synchronise
-    this->registerObject(player);
-
-	// tell the client they are that player
-
-}
-
-void NetworkTestStuff::clientDisconnected()
-{
-	// destroy that client's player
 }
