@@ -34,9 +34,10 @@ void Player::setState(Ogre::Vector3 position, Ogre::Vector3 velocity, Ogre::Quat
     this->velocity = velocity;
     this->orientation = orientation;
 
-    this->update();
+    //this->update();
 
     // make sure physics updates too
+    this->signals.stateSet(this);
 }
 
 void Player::update()
@@ -47,7 +48,7 @@ void Player::update()
     rotX = 0;
     rotY = 0;
     
-    this->position = this->position + this->orientation * this->velocity;
+    //this->position = this->position + this->orientation * this->velocity;
     
     this->signals.updated(this);
 }
