@@ -1,7 +1,6 @@
 #include "TowerBuilder.h"
 
 #include <boost/signal.hpp>
-#include <boost/bind.hpp>
 #include <vector>
 
 #include "MetaShapeBuilder.h"
@@ -69,7 +68,7 @@ TowerBuilder::TowerBuilder(Tower *tower)
 
 	for (unsigned level = 0; level < this->tower->levels / 8; ++level)
     {
-		std::vector<std::vector<BuilderChunk> > levelVector;
+		std::vector<std::vector<BuilderChunk>> levelVector;
         for (unsigned layer = 0; layer < this->tower->layers / 11; ++layer)
         {
 			std::vector<BuilderChunk> layerVector;

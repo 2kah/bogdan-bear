@@ -58,7 +58,7 @@ protected:
 	int maxBlocks;
 	int activeBlocks;
 
-	std::vector<std::vector<std::vector<BuilderChunk> > > chunks;
+	std::vector<std::vector<std::vector<BuilderChunk>>> chunks;
 	std::vector<MetaShape> metaShapes;
 };
 

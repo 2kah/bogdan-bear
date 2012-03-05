@@ -2,8 +2,6 @@
 
 #include "include/irrKlang.h"
 
-#include <boost/bind.hpp>
-
 #include "BtOgreExtras.h"
 
 #include "Rocket.h"

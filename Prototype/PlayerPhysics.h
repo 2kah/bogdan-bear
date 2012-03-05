@@ -1,7 +1,6 @@
 #ifndef __PlayerPhysics_h_
 #define __PlayerPhysics_h_
 
-#include "PlayerInput.h"
 #include <btBulletDynamicsCommon.h>
 #include <boost/signals.hpp>
 
