@@ -21,6 +21,7 @@ PlayerGraphics::PlayerGraphics(Player *player, Ogre::SceneManager *sceneManager)
 
     this->player->signals.removed.connect(boost::bind(&PlayerGraphics::playerRemoved, this, _1));
     this->player->signals.updated.connect(boost::bind(&PlayerGraphics::playerUpdated, this, _1));
+    this->player->signals.stateSet.connect(boost::bind(&PlayerGraphics::playerUpdated, this, _1));
 }
 
 PlayerGraphics::~PlayerGraphics()
