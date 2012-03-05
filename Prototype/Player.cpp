@@ -86,14 +86,6 @@ void Player::movement(DIRECTION direction, bool state)
     {
         this->velocity.x = Player::MOVEMENT_SPEED * state;
     }
-
-    if (!this->stepping && this->velocity.length() > 0) {
-        this->stepping = true;
-        this->signals.startedStepping(this);
-    } else if (this->stepping && this->velocity.length() == 0) {
-        this->stepping = false;
-        this->signals.stoppedStepping(this);
-    }
 }
 
 void Player::look(int x, int y)
@@ -123,9 +115,6 @@ void Player::create(bool state)
 void Player::jump(bool state)
 {
     this->velocity.y = Player::MOVEMENT_SPEED * state;
-
-    this->stepping = false;
-    this->signals.stoppedStepping(this);
 }
 
 void Player::use(bool state)
