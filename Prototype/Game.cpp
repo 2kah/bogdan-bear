@@ -175,7 +175,7 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
 	}
 	else if (arg.key == OIS::KC_F12)
 	{
-		this->gameTestThing->netSendExplosion(1.0,2.0,3.0);
+		//this->gameTestThing->netSendExplosion(1.0,2.0,3.0);
 	}
 	else if (arg.key == OIS::KC_F8)
 	{

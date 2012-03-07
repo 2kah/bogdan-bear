@@ -30,6 +30,7 @@ struct NetworkSignals {
 
     boost::signal<void (std::string message)> chat;
     boost::signal<void (double x, double y, double z)> explosion;
+	boost::signal<void (Ogre::Vector3 position, Ogre::Quaternion orientation)> recvRocket;
 };
 }
 
@@ -38,6 +39,15 @@ struct NetExplosion
 {
 unsigned char typeId;
 Ogre::Vector3 vector;
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct NetRocket
+{
+unsigned char typeId;
+Ogre::Vector3 position;
+Ogre::Quaternion orientation;	
 };
 #pragma pack(pop)
 
@@ -79,7 +89,8 @@ public:
 	virtual void sendChat(std::string message, RakNet::AddressOrGUID target);
     virtual void update();
 
-    virtual void sendExplosion(double x, double y, double z);
+    virtual void sendExplosion(Ogre::Vector3 position);
+	virtual void sendRocket(Ogre::Vector3 position, Ogre::Quaternion orientation);
 
     // object index
     unsigned lastID;
@@ -110,6 +121,7 @@ public:
 	void receiveDestroyPlayer(RakNet::Packet *packet);
 
 	void receiveNewExplosion(RakNet::Packet *packet);
+	void receiveNewRocket(RakNet::Packet *packet);
 	void receiveChat(RakNet::Packet *packet);
 
     //

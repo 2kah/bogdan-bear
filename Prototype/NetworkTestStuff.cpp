@@ -166,18 +166,30 @@ void NetworkTestStuff::sendChat(std::string message, RakNet::AddressOrGUID targe
 	std::cout << message << std::endl;
 }
 
-void NetworkTestStuff::sendExplosion(double x, double y, double z)
+void NetworkTestStuff::sendExplosion(Ogre::Vector3 position)
 {
 	if (rakPeer >0)
 	{
 		NetExplosion exp;
 		exp.typeId=ID_NEW_EXPLOSION;
-		exp.vector=Ogre::Vector3(x,y,z);
+		exp.vector=position;
 		rakPeer->Send((char*)&exp,sizeof(exp) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
-		std::cout << "Sending Explosion at: " << "(" << x << "," << y << "," << z << ")"  << std::endl;
+		std::cout << "Sending Explosion at: " << "(" << position.x << "," << position.y << "," << position.z << ")"  << std::endl;
 	}
 }
 
+void NetworkTestStuff::sendRocket(Ogre::Vector3 position, Ogre::Quaternion orientation)
+{
+		if (rakPeer >0)
+	{
+		NetRocket rocket;
+		rocket.typeId=ID_NEW_ROCKET;
+		rocket.position = position;
+		rocket.orientation = orientation;
+		rakPeer->Send((char*)&rocket,sizeof(rocket) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+		std::cout << "Sending Rocket at: " << "(" << position.x << "," << position.y << "," << position.z << ")"  << std::endl;
+	}
+}
 void NetworkTestStuff::update()
 {
 	if (rakPeer > 0)
@@ -219,6 +231,9 @@ void NetworkTestStuff::update()
 			case ID_NEW_EXPLOSION:
 				receiveNewExplosion(packet);
 				break;
+			case ID_NEW_ROCKET:
+				receiveNewRocket(packet);
+				break;
 			case ID_ASSIGN_PLAYER:
 				receiveAssignPlayer(packet);
 				break;
@@ -255,6 +270,18 @@ void NetworkTestStuff::receiveNewExplosion(RakNet::Packet *packet)
 		rakPeer->Send((char*)exp,sizeof(*exp) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
 	}
 	this->signals.explosion(v.x, v.y, v.z);
+}
+
+void NetworkTestStuff::receiveNewRocket(RakNet::Packet *packet)
+{
+	std::cout << "Received Rocket"<< std::endl;
+	NetRocket* rocket = (NetRocket*)packet->data;
+	if (hosting)
+	{
+		std::cout << "Broadcasting Rocket" << std::endl;
+		rakPeer->Send((char*)rocket,sizeof(*rocket) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+	}
+	this->signals.recvRocket(rocket->position, rocket->orientation);
 }
 
 void NetworkTestStuff::connectedToServer(RakNet::Packet *packet)

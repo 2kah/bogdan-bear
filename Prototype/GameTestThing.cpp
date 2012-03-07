@@ -45,6 +45,9 @@
 
 #include "FallingObject.h"
 
+bool isLocal = false;
+bool isServer = false;
+
 GameTestThing::GameTestThing(Game *game)
     : game(game)
     , localPlayer(NULL)
@@ -52,10 +55,12 @@ GameTestThing::GameTestThing(Game *game)
     this->network = new NetworkTestStuff();
     this->network->signals.chat.connect(boost::bind(&GameTestThing::chatReceived, this, _1));
     this->network->signals.explosion.connect(boost::bind(&GameTestThing::networkExplosion, this, _1, _2, _3));
+	this->network->signals.recvRocket.connect(boost::bind(&GameTestThing::networkRocket, this, _1, _2));
     this->game->objects.insert(this->network);
 
 	this->network->signals.addPlayer.connect(boost::bind(&GameTestThing::addPlayer, this, _1));
 	this->network->signals.assignLocalPlayer.connect(boost::bind(&GameTestThing::setLocalPlayer, this, _1));
+	
 
     this->sounds = new Sounds();
 
@@ -105,6 +110,8 @@ GameTestThing::~GameTestThing()
 
 void GameTestThing::startLocal()
 {
+	isLocal = true;
+	isServer = false;
     // Create an empty tower
     unsigned divisions[] = {8, 16, 16, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 128, 128, 128, 128, 128, 128, 128};
     std::vector<unsigned> structure(divisions, divisions + 14 + 8);
@@ -155,6 +162,8 @@ void GameTestThing::startLocal()
 
 void GameTestThing::startClient()
 {
+	isLocal = false;
+	isServer = false;
 	this->network->startNetwork(false);
 
     // wait to receive game state
@@ -164,6 +173,9 @@ void GameTestThing::startClient()
 
 void GameTestThing::startServer()
 {
+	isLocal = false;
+	isServer = true;
+
 	this->network->startNetwork(true);
     
     //// listen for new players, adding them when they come
@@ -195,9 +207,14 @@ void GameTestThing::netSendChat(std::string message)
 {
 	this->network->sendChat(message);
 }
-void GameTestThing::netSendExplosion(double x, double y, double z)
+void GameTestThing::netSendExplosion(Ogre::Vector3 position)
 {
-	this->network->sendExplosion(x,y,z);
+	this->network->sendExplosion(position);
+}
+
+void GameTestThing::netSendRocket(Ogre::Vector3 position, Ogre::Quaternion orientation)
+{
+	this->network->sendRocket(position, orientation);
 }
 
 void GameTestThing::update()
@@ -221,12 +238,18 @@ void GameTestThing::update()
 
 void GameTestThing::turretFired(Turret *turret, Rocket *rocket)
 {
+
     this->addRocket(rocket);
 }
 
 void GameTestThing::playerFired(Player *player, Rocket *rocket)
 {
-    this->addRocket(rocket);
+    if (isLocal) 
+		{
+			std::cout<<"Local Rocket" <<std::endl;
+			this->addRocket(rocket);
+	}
+	this->network->sendRocket(rocket->position,rocket->orientation);
 }
 
 void GameTestThing::rocketExploded(Rocket *rocket, Explosion *explosion)
@@ -234,9 +257,13 @@ void GameTestThing::rocketExploded(Rocket *rocket, Explosion *explosion)
     this->removeQueue.insert(rocket);
 
     // TODO: refactor
-    this->network->sendExplosion(explosion->position.x, explosion->position.y, explosion->position.z);
+    if (isServer) this->network->sendExplosion(explosion->position);
 
-    this->addExplosion(explosion);
+    if (isLocal) 
+	{
+		std::cout<<"Local Explosion" <<std::endl;
+		this->addExplosion(explosion);
+	}
 }
 
 void GameTestThing::explosionFinished(Explosion *explosion)
@@ -270,6 +297,12 @@ void GameTestThing::networkExplosion(double x, double y, double z)
     Explosion *explosion = new Explosion(Ogre::Vector3(x, y, z));
 
     this->addExplosion(explosion);
+}
+
+void GameTestThing::networkRocket(Ogre::Vector3 position, Ogre::Quaternion orientation)
+{
+	Rocket* rocket = new Rocket(position,orientation);
+	this->addRocket(rocket);
 }
 
 void GameTestThing::playerUsed(Player *player)
