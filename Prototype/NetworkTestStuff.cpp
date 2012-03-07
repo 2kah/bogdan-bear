@@ -363,10 +363,11 @@ void NetworkTestStuff::receiveInsertPlayer(RakNet::Packet *packet)
 
 void NetworkTestStuff::clientDisconnected(RakNet::Packet *packet)
 {
+	NetPlayer* np = getNetPlayer(packet);
 	std::cout << "ID_CONNECTION_LOST" << std::endl;
-	std::cout << getNetPlayer(packet)->name;
+	std::cout << np->name;
 	std::cout << " Disconnected" << std::endl;
-	//free(getNetPlayer(packet));
+	sendNetPlayer(np, ID_DESTROY_PLAYER);
 }
 
 void NetworkTestStuff::disconnectedFromServer(RakNet::Packet *packet)
@@ -464,6 +465,11 @@ void NetworkTestStuff::receiveUpdatePlayer(RakNet::Packet *packet)
 
 void NetworkTestStuff::receiveDestroyPlayer(RakNet::Packet *packet)
 {
+	NetPlayer* inc = (NetPlayer*)packet->data;
+	NetPlayer* np = getNetPlayer(inc->playerID);
+
+	std::cout << np->name;
+	std::cout << " Disconnected" << std::endl;
 	// extract player data
 	//
 
