@@ -33,7 +33,8 @@ public:
     virtual void update();
 
 	virtual void netSendChat(std::string message);
-	virtual void netSendExplosion(double x, double y, double z);
+	virtual void netSendExplosion(Ogre::Vector3 position);
+	virtual void netSendRocket(Ogre::Vector3 position, Ogre::Quaternion orientation);
 
     virtual void addPlayer(Player *player);
     virtual void removePlayer(Player *player);
@@ -60,6 +61,7 @@ private:
 
     void chatReceived(std::string message);
     void networkExplosion(double x, double y, double z);
+	void networkRocket(Ogre::Vector3 position, Ogre::Quaternion orientation);
 
     void playerUsed(Player *player);
 

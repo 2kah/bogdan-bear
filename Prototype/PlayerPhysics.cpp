@@ -60,6 +60,8 @@ PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWo
 	exitTurretConnection = this->player->signals.exitedTurret.connect(boost::bind(&PlayerPhysics::reactivate, this));
 
     this->removedConnection = this->player->signals.removed.connect(boost::bind(&PlayerPhysics::playerRemoved, this, _1));
+
+    this->player->signals.stateSet.connect(boost::bind(&PlayerPhysics::playerStateSet, this, _1));
 }
 
 PlayerPhysics::~PlayerPhysics()
@@ -122,6 +124,11 @@ void PlayerPhysics::playerUpdated(Player *player)
 	}
 	m_character->setWalkDirection(actualMovement);
 	oldWalkDirection = walk;
+}
+
+void PlayerPhysics::playerStateSet(Player *player)
+{
+    // update position/velocity here
 }
 
 void PlayerPhysics::movement(DIRECTION direction, bool state)
