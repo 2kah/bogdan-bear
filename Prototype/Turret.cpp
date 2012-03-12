@@ -4,14 +4,13 @@
 #include <OGRE/OgreQuaternion.h>
 
 #include "Rocket.h"
-#include "Player.h"
 
 #define PI 3.14159265
 
 Turret::Turret(Ogre::Vector3 position, Ogre::Quaternion orientation)
     : Object(position, orientation)
     , timer(0)
-    , target(NULL)
+    //, target(NULL)
 	, nptarget(0,100,0)
 	, oldtarget(0,0,0)
 	, currenttarget(0,0,0)
@@ -31,13 +30,13 @@ void Turret::update()
 	
 	if(!occ)
 	{
-        if (this->target != NULL) {
-	    	d = this->target->position - this->position;
-	    }
-	    else {
+        //if (this->target != NULL) {
+	    //	d = this->target - this->position;
+	    //}
+	   // else {
 	    	this->currenttarget = this->currenttarget + ((this->nptarget - this->oldtarget)/600);
 	    	d = this->currenttarget - this->position;
-	    }
+	    //}
 	    
         //this->orientation = this->position.getRotationTo((this->target->position + Ogre::Vector3::UNIT_Y * 4) - this->position, Ogre::Vector3::UNIT_Y) * Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y);
         
@@ -70,10 +69,10 @@ void Turret::update()
         if (this->timer >= 600)
         {
             this->timer = 0;
-	    	if (this->target == NULL) {
+	    	//if (this->target == NULL) {
 	    	    this->oldtarget = this->nptarget;
 	    	    this->nptarget = Ogre::Vector3(rand() % 150 - 75, rand() % 500 - 150, rand() % 150 - 75);
-	    	}
+	    	//}
             this->signals.fired(this, new Rocket(this->position, this->orientation));
         }
         else
@@ -83,16 +82,16 @@ void Turret::update()
 	}
 	else
 	{
-		Ogre::Quaternion orientation = target->orientation * target->relativeAim;
+		Ogre::Quaternion orientation = occupantOrientation * occupantRelativeAim;
 		orientation = orientation * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
 		this->orientation = orientation;
 		this->signals.updated(this);
 	}
 }
 
-void Turret::setTarget(Player *target)
+void Turret::setTarget(Ogre::Vector3 target)
 {
-    this->target = target;
+    this->currenttarget = target;
 }
 
 void Turret::setOccupied(bool set)
@@ -103,4 +102,15 @@ void Turret::setOccupied(bool set)
 bool Turret::isOccupied()
 {
     return this->occ;
+}
+
+void Turret::fireTurret() 
+{
+	this->signals.fired(this, new Rocket(this->position, this->orientation));
+}
+
+void Turret::setOccupant(Ogre::Quaternion newOO, Ogre::Quaternion newRA)
+{
+	occupantOrientation = newOO;
+	occupantRelativeAim = newRA;
 }

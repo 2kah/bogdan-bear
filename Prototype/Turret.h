@@ -8,7 +8,6 @@
 
 #include "Updatable.h"
 #include "Object.h"
-#include "Player.h"
 
 class Turret;
 class Rocket;
@@ -30,17 +29,23 @@ public:
 
     TurretSignals signals;
 
-    virtual void setTarget(Player *target);
+    virtual void setTarget(Ogre::Vector3 positionTarget);
 
 	virtual void setOccupied(bool set);
 
 	virtual bool isOccupied();
+
+	virtual void fireTurret();
+
+	virtual void setOccupant(Ogre::Quaternion newOO, Ogre::Quaternion newRA);
+
 protected:
     unsigned timer;
 	Ogre::Vector3 oldtarget;
 	Ogre::Vector3 nptarget;
 	Ogre::Vector3 currenttarget;
-    Player *target;
+	Ogre::Quaternion occupantOrientation;
+	Ogre::Quaternion occupantRelativeAim;
 	bool occ;
 };
 

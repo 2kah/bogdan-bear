@@ -135,19 +135,20 @@ void GameTestThing::startLocal()
     this->addPlayer(enemy);
 
 	//Add the goal
-	Goal *goal = new Goal(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height, 0), this->game->dynamicsWorld);
+	Goal *goal = new Goal(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height, 0), player);
+	this->game->objects.insert(goal);
 
     // Add four turrets
-    //Turret *turret1 = new Turret(Ogre::Vector3(0, 150, 400), Ogre::Quaternion());
-	//Turret *turret2 = new Turret(Ogre::Vector3(0, 150, -400), Ogre::Quaternion());
-	//Turret *turret3 = new Turret(Ogre::Vector3(400, 150, 0), Ogre::Quaternion());
-	//Turret *turret4 = new Turret(Ogre::Vector3(-400, 150, 0), Ogre::Quaternion());
+    Turret *turret1 = new Turret(Ogre::Vector3(0, 150, 400), Ogre::Quaternion());
+	Turret *turret2 = new Turret(Ogre::Vector3(0, 150, -400), Ogre::Quaternion());
+	Turret *turret3 = new Turret(Ogre::Vector3(400, 150, 0), Ogre::Quaternion());
+	Turret *turret4 = new Turret(Ogre::Vector3(-400, 150, 0), Ogre::Quaternion());
 
-    //this->addTurret(turret1);
-    //this->addTurret(turret2);
-    //this->addTurret(turret3);
-    //this->addTurret(turret4);
-    //*/
+    this->addTurret(turret1);
+    this->addTurret(turret2);
+    this->addTurret(turret3);
+    this->addTurret(turret4);
+    
 
     // Set the turret to aim at the player always. Setting it to NULL makes it shoot randomly at the tower.
 	//turret1->setTarget(player);
@@ -295,16 +296,18 @@ void GameTestThing::playerUsed(Player *player)
 	    if(player->position == min)
 	    {
 			turret->setOccupied(false);
-			turret->setTarget(NULL);
+			//turret->setTarget(NULL);
+			player->setTurret(NULL);
 	        player->exitedTurret();
 
 	    }
 	    else
 	    {
 	    	player->enteredTurret();
+			player->setTurret(turret);
 			turret->setOccupied(true);
 	        player->position = turret->position;
-			turret->setTarget(player);
+			//turret->setTarget(player);
 	    }
 	}
     // look at all turrets here and see if the player is getting inside one
