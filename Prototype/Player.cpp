@@ -14,6 +14,8 @@
 
 #include "Tower.h"
 
+#include "Turret.h"
+
 const double Player::MOVEMENT_SPEED = 5 / 16.0;
 const double Player::ROTATION_SPEED = 0.05;
 
@@ -21,6 +23,11 @@ Player::Player(Ogre::Vector3 position)
     : Object(position, Ogre::Quaternion())
     , velocity(Ogre::Vector3::ZERO)
     , turret(NULL)
+	, needsReload(false)
+	, reloadTimer(200)
+	, rocketAmmo(4)
+	, canFire(true)
+	, cooldown(50)
 {
 }
 
@@ -50,6 +57,33 @@ void Player::update()
     this->position = this->position + this->orientation * this->velocity;
     
     this->signals.updated(this);
+
+	if(!this->canFire) {
+		this->cooldown--;
+		if(this->cooldown <= 0) {
+			this->canFire = true;
+			this->cooldown = 50;
+		}
+	}
+
+	if(this->needsReload) {
+		this->reloadTimer--;
+		if(this->reloadTimer <= 0) {
+			this->rocketAmmo++;
+			std::cout << "Ammo " << this->rocketAmmo << std::endl;
+			this->reloadTimer = 200;
+			if(rocketAmmo < 4) {
+				this->needsReload = true;
+			}
+			else {
+				this->needsReload = false;
+			}
+		}
+	}
+
+	if(this->turret != NULL) {
+		this->turret->setOccupant(this->orientation, this->relativeAim);
+	}
 }
 
 void Player::addInput(PlayerInput &input)
@@ -97,10 +131,22 @@ void Player::look(int x, int y)
 void Player::fire(bool state)
 {
     if (state) {
-        Ogre::Quaternion orientation = this->orientation * this->relativeAim;
-        orientation = orientation * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
-
-        this->signals.fired(this, new Rocket(this->position + Ogre::Vector3::UNIT_Y * 180 / 16.0 + (orientation * Ogre::Vector3::UNIT_X * 10), orientation));
+		if(this->turret == NULL) {
+		    if(this->canFire && this->rocketAmmo > 0) {
+                Ogre::Quaternion orientation = this->orientation * this->relativeAim;
+                orientation = orientation * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
+		    
+                this->signals.fired(this, new Rocket(this->position + Ogre::Vector3::UNIT_Y * 180 / 16.0 + (orientation * Ogre::Vector3::UNIT_X * 10), orientation));
+		    	this->rocketAmmo--;
+		    	std::cout << "Ammo " << this->rocketAmmo << std::endl;
+		    	this->needsReload = true;
+		    	this->reloadTimer = 200;
+		    	this->canFire = false;
+		    }
+		}
+		else if(this->turret != NULL) {
+			this->turret->fireTurret();
+		}
     }
 }
 
@@ -133,4 +179,8 @@ void Player::exitedTurret()
 	this->signals.exitedTurret(this);
 }
 
+void Player::setTurret(Turret *newTurret)
+{
+	this->turret = newTurret;
+}
 

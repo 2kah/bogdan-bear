@@ -5,6 +5,7 @@
 
 #include "Updatable.h"
 #include "Object.h"
+#include "Turret.h"
 
 class btDiscreteDynamicsWorld;
 class TowerOld;
@@ -66,13 +67,22 @@ public:
 	virtual void enteredTurret();
 	virtual void exitedTurret();
 
+	virtual void setTurret(Turret *newTurret);
+
     Ogre::Quaternion relativeAim;
     Ogre::Vector3 velocity;
 
-    Turret *turret;
 private:
     Ogre::Radian rotX;
     Ogre::Radian rotY;
+
+	int rocketAmmo;
+	bool needsReload;
+	int reloadTimer;
+	bool canFire;
+	int cooldown;
+
+	Turret *turret;
 };
 
 #endif // #ifndef __Player_h_

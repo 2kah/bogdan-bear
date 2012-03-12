@@ -12,63 +12,59 @@
 
 #include "PhysicsObject.h"
 #include "Goal.h"
-#include "Tower.h"
-#include "TowerPhysics.h"
-#include "PlatformPhysics.h"
-#include "Platform.h"
+#include "Player.h"
 
-Goal::Goal(Ogre::Vector3 position, btDiscreteDynamicsWorld *dynamicsWorld)
+//holdingTeam :0 redTeam, 1 blueTeam, 2 greenTeam, 3 orangeTeam
+
+Goal::Goal(Ogre::Vector3 position, Player *playerTracked)
 {
-    this->dynamicsWorld = dynamicsWorld;
-
-    this->ghost = new btGhostObject();
-
-    this->ghost->setCollisionShape(new btSphereShape(50));
-
-    this->ghost->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
-    this->ghost->setWorldTransform(btTransform(btMatrix3x3::getIdentity(), btVector3(position.x, position.y, position.z)));
-
-    this->dynamicsWorld->addCollisionObject(this->ghost, btBroadphaseProxy::SensorTrigger, btBroadphaseProxy::AllFilter & ~btBroadphaseProxy::SensorTrigger);
-
-    //std::cout << "Goal destroyed " << this->ghost->getNumOverlappingObjects() << " objects!" << std::endl;
-
-    std::vector<btCollisionObject *> destructions;
-    
-    this->tower = NULL;
-
-    /*for(int i = 0; i < this->ghost->getNumOverlappingObjects(); i++)
-    {
-        btCollisionObject *blockObject = this->ghost->getOverlappingObject(i);
-        
-        PhysicsObject *object = static_cast<PhysicsObject *>(blockObject->getUserPointer());
-
-        if (object != NULL) {
-            if (object->type == PLAYER) { 
-                std::cout << "Player in goal " << this->ghost->getNumOverlappingObjects() << std::endl;
-            }
-        }
-    }*/
+	player = playerTracked;
+	goalPosition = position;
+	goalPosition.y = goalPosition.y - 20;
+	this->holdingTeam[0] = 0;
+	this->holdingTeam[1] = 0;
+	this->holdingTeam[2] = 0;
+	this->holdingTeam[3] = 0;
+	this->holdingTeam[4] = 0;
+	this->teamPoints[0] = 0;
+	this->teamPoints[1] = 0;
+	this->teamPoints[2] = 0;
+	this->teamPoints[3] = 0;
+	this->teamPoints[4] = 0;
+	this->signals.updated(this);
 }
 
 Goal::~Goal()
 {
-    this->dynamicsWorld->removeCollisionObject(this->ghost);
-
-    delete this->ghost;
 }
 
 void Goal::update(void)
 {
-	for(int i = 0; i < this->ghost->getNumOverlappingObjects(); i++)
-    {
-        btCollisionObject *blockObject = this->ghost->getOverlappingObject(i);
-        
-        PhysicsObject *object = static_cast<PhysicsObject *>(blockObject->getUserPointer());
+	//Loop over players
+	if((this->goalPosition - player->position).length() < 40 && player->position.y > this->goalPosition.y)
+	{
+		//flag the team to add points to
+		//If goal contains both then add points to neither
+		this->holdingTeam[0] = 1;
+	}
+	//end loop of players
+	//Add the points to the relevant team: loop to see if only one team is in the hill (count is how many teams are in the hill,
+	//currentHold is the team holding the hill (will get awarded points if there is only one team)
+	int count = 0;
+	int currentHold = 4;
+	for(int i = 0; i < 4; i++)
+	{
+		if(this->holdingTeam[i] > 0)
+		{
+			count++;
+			currentHold = i;
+		}
+		this->holdingTeam[i] = 0;
+	}
+	if(count = 1)
+	{
+	    this->teamPoints[currentHold]++;
+	}
+	this->signals.updated(this);
 
-        if (object != NULL) {
-            if (object->type == PLAYER) { 
-                std::cout << "Player in goal " << this->ghost->getNumOverlappingObjects() << std::endl;
-            }
-        }
-    }
 }
