@@ -1,8 +1,10 @@
 #ifndef __NetworkTestStuff_h_
 #define __NetworkTestStuff_h_
 
+#define NAME_LENGTH 32
 #include <string>
 #include <map>
+#include <iostream>
 
 #include <boost/signals.hpp>
 
@@ -19,36 +21,60 @@ class Player;
 
 namespace {
 struct NetworkSignals {
-    boost::signal<void (Player *player)> playerReplicated;
+    //boost::signal<void (Player *player)> playerReplicated;
+	boost::signal<void (Player *player)> addPlayer;
     boost::signal<void (Player *player)> playerCreated;
     boost::signal<void (Player *player)> playerDestroyed;
-    boost::signal<void (Player *player)> localPlayerAssigned;
+    //boost::signal<void (Player *player)> localPlayerAssigned;
+	boost::signal<void (Player *player)> assignLocalPlayer;
 
     boost::signal<void (std::string message)> chat;
     boost::signal<void (double x, double y, double z)> explosion;
+	boost::signal<void (Ogre::Vector3 position, Ogre::Quaternion orientation)> recvRocket;
 };
 }
 
 #pragma pack(push, 1)
-struct Coords3D
+struct NetExplosion
 {
-unsigned char typeId; 
-double x;
-double y;
-double z;
+unsigned char typeId;
+Ogre::Vector3 vector;
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct NetRocket
+{
+unsigned char typeId;
+Ogre::Vector3 position;
+Ogre::Quaternion orientation;	
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct PlayerInfo
+{
+	unsigned char typeID;
+	int playerID;
+	Ogre::Vector3 position;
+	Ogre::Vector3 velocity;
+	Ogre::Quaternion orientation;
+	Ogre::Quaternion relativeAim;
 };
 #pragma pack(pop)
 
 #pragma pack(push, 1)
 struct NetPlayer
 {
-unsigned char typeId;
-int playerID;
-Ogre::Vector3 position;
-Ogre::Quaternion orientation;
-Ogre::Vector3 velocity;
+	unsigned char typeId;
+	int playerID;
+	char name [NAME_LENGTH];
+	uint64_t GUID;
+	Player* player;
 };
 #pragma pack(pop)
+
+
 
 class NetworkTestStuff : public Updatable
 {
@@ -62,9 +88,9 @@ public:
 	virtual void sendChat(std::string message);
 	virtual void sendChat(std::string message, RakNet::AddressOrGUID target);
     virtual void update();
-	virtual void sendPlayer(unsigned char packetType, int playerID, Ogre::Vector3 position, Ogre::Quaternion orientation, Ogre::Vector3 velocity);
 
-    virtual void sendExplosion(double x, double y, double z);
+    virtual void sendExplosion(Ogre::Vector3 position);
+	virtual void sendRocket(Ogre::Vector3 position, Ogre::Quaternion orientation);
 
     // object index
     unsigned lastID;
@@ -74,20 +100,33 @@ public:
     unsigned registerObject(Object *);
 
     //
-    void clientConnected();
-    void clientDisconnected();
+    void clientConnected(RakNet::Packet *packet);
+    void clientDisconnected(RakNet::Packet *packet);
+	void connectedToServer(RakNet::Packet *packet);
+	void disconnectedFromServer(RakNet::Packet *packet);
 
-    void sendPlayer(Player *player, bool existing);
-    void receiveNewPlayer(RakNet::Packet *packet);
-	void receiveExistingPlayer(RakNet::Packet *packet);
+	NetPlayer* getNetPlayer(RakNet::Packet *packet);
+	NetPlayer* getNetPlayer(int playerID);
+
+	void insertNetPlayer(NetPlayer* np);
+	void listNetPlayers();
+	void sendNetPlayer(NetPlayer* np, unsigned char type, RakNet::AddressOrGUID g);
+	void sendNetPlayer(NetPlayer* np, unsigned char type);
+
+    void sendPlayerUpdate(NetPlayer* np);
+
+	void receiveAssignPlayer(RakNet::Packet *packet);
+	void receiveInsertPlayer(RakNet::Packet *packet);
 	void receiveUpdatePlayer(RakNet::Packet *packet);
 	void receiveDestroyPlayer(RakNet::Packet *packet);
 
 	void receiveNewExplosion(RakNet::Packet *packet);
+	void receiveNewRocket(RakNet::Packet *packet);
+	void receiveChat(RakNet::Packet *packet);
 
     //
-    void sendWorld();
-    void sendPlayers();
+    void sendWorld(RakNet::Packet *packet);
+    void sendPlayers(RakNet::Packet *packet);
     void sendRockets() {};
     void sendExplosions() {};
     void sendPlatforms() {};

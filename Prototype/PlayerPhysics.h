@@ -17,7 +17,7 @@ class btCharacterControllerInterface;
 class btKinematicCharacterController;
 class btCollisionShape;
 
-class PlayerPhysics : public PhysicsObject
+class PlayerPhysics : public boost::signals::trackable, public PhysicsObject
 {
 public:
     PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWorld);
@@ -39,6 +39,7 @@ public:
 	class btPairCachingGhostObject* m_ghostObject;
 protected:
     virtual void playerUpdated(Player *player);
+    virtual void playerStateSet(Player *player);
 
     Player *player;
 

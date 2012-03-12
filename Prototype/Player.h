@@ -23,11 +23,15 @@ struct PlayerSignals {
     boost::signal<void (Player *)> removed;
 
     boost::signal<void (Player *)> updated;
+    boost::signal<void (Player *)> stateSet;
 
     boost::signal<void (Player *, Rocket *)> fired;
     boost::signal<void (Player *, Platform *)> platform;
 
     boost::signal<void (Player *)> used;
+
+    boost::signal<void (Player *)> startedStepping;
+    boost::signal<void (Player *)> stoppedStepping;
 
     // TODO: not sure about these
     boost::signal<void (Player * /*, Turret **/)> enteredTurret;
@@ -72,6 +76,8 @@ public:
     Ogre::Quaternion relativeAim;
     Ogre::Vector3 velocity;
 
+
+    bool stepping;
 private:
     Ogre::Radian rotX;
     Ogre::Radian rotY;

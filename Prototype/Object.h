@@ -1,10 +1,12 @@
 #ifndef __Object_h_
 #define __Object_h_
 
+#include <boost/signals.hpp>
+
 #include <OGRE/OgreVector3.h>
 #include <OGRE/OgreQuaternion.h>
 
-class Object
+class Object : public boost::signals::trackable
 {
 public:
     Object()
