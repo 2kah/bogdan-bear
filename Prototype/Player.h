@@ -6,6 +6,7 @@
 #include "Updatable.h"
 #include "Object.h"
 #include "Turret.h"
+#include "PlayerProperties.h"
 
 class btDiscreteDynamicsWorld;
 class TowerOld;
@@ -76,6 +77,7 @@ public:
     Ogre::Quaternion relativeAim;
     Ogre::Vector3 velocity;
 
+	PlayerProperties* prop;
 
     bool stepping;
 private:
@@ -89,6 +91,7 @@ private:
 	int cooldown;
 
 	Turret *turret;
+
 };
 
 #endif // #ifndef __Player_h_

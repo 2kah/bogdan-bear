@@ -9,6 +9,7 @@
 #include <OGRE/OgreQuaternion.h>
 
 #include "Updatable.h"
+#include "Goal.h"
 
 class Game;
 class NetworkTestStuff;
@@ -43,6 +44,8 @@ public:
     virtual void addRocket(Rocket *rocket);
     virtual void addExplosion(Explosion *explosion);
 
+	Goal *goal;
+
 protected:
     Game *game;
     NetworkTestStuff *network;
@@ -66,6 +69,7 @@ private:
     void playerUsed(Player *player);
 
     std::set<Updatable *> removeQueue;
+
 
 // networky stuff
     void setLocalPlayer(Player *player);

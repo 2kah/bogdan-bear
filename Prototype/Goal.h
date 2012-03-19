@@ -31,6 +31,8 @@ public:
 
 	virtual void update();
 
+	virtual bool isGameOver();
+
 	GoalSignals signals;
 
 protected:
@@ -38,6 +40,8 @@ protected:
     btDiscreteDynamicsWorld *dynamicsWorld;
     
     btGhostObject *ghost;
+
+	bool gameOver;
 
     Tower *tower;
 	Ogre::Vector3 goalPosition;

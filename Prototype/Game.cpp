@@ -84,8 +84,8 @@ void Game::run(void)
     double simTimeQueued = 0.0;
 
     int counted = 0;
-
-    while (true)
+	bool game = true;
+    while (game)
     {
         Ogre::WindowEventUtilities::messagePump();
 
@@ -138,12 +138,17 @@ void Game::run(void)
         {
             break;
         }
+		if(this->gameTestThing->goal != NULL) 
+		{
+			if(this->gameTestThing->goal->isGameOver()) {
+                destroyScene();
+				game = false;
+                std::cout << "You have been eaten by Bogdan!" << std::endl;
+                std::cout << "*** GAME OVER ***" << std::endl;
+			}
+		}
     }
 
-    destroyScene();
-
-    std::cout << "You have been eaten by Bogdan!" << std::endl;
-    std::cout << "*** GAME OVER ***" << std::endl;
 }
 
 //TODO: make this use changeable key bindings (not hard coded)
