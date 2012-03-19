@@ -10,6 +10,8 @@
 #include <OGRE/OgreVector3.h>
 
 #include <btBulletWorldImporter.h>
+#include <OGRE/OgreOverlay.h>
+#include <OGRE/OgreOverlayManager.h>
 
 #include "Game.h"
 
@@ -29,6 +31,7 @@
 #include "PlayerPhysics.h"
 #include "PlayerGraphics.h"
 #include "PlayerCamera.h"
+#include "PlayerProperties.h"
 
 #include "Platform.h"
 #include "PlatformGraphics.h"
@@ -53,6 +56,7 @@ bool isServer = false;
 GameTestThing::GameTestThing(Game *game)
     : game(game)
     , localPlayer(NULL)
+	, goal(NULL)
 {
     this->network = new NetworkTestStuff();
     this->network->signals.chat.connect(boost::bind(&GameTestThing::chatReceived, this, _1));
@@ -104,6 +108,13 @@ GameTestThing::GameTestThing(Game *game)
     std::cout << "PRESS F11 FOR LOCAL TEST GAME" << std::endl;
     std::cout << "PRESS F9 FOR LOCAL SERVER GAME" << std::endl;
     std::cout << "PRESS F8 FOR LOCAL CLIENT GAME" << std::endl;
+
+	Ogre::Overlay *ol = Ogre::OverlayManager::getSingleton().getByName("overlay");
+    if (ol)
+	{
+		std::cout << "LOADED OVERLAY" << std::endl;
+        ol->show();
+	}
 }
 
 GameTestThing::~GameTestThing()
@@ -145,6 +156,7 @@ void GameTestThing::startLocal()
 	//Add the goal
 	Goal *goal = new Goal(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height, 0), player);
 	this->game->objects.insert(goal);
+	this->goal = goal;
 
     // Add four turrets
     Turret *turret1 = new Turret(Ogre::Vector3(0, 150, 400), Ogre::Quaternion());
@@ -381,8 +393,11 @@ void GameTestThing::setLocalPlayer(Player *player)
 
 void GameTestThing::addPlayer(Player *player)
 {
+	player->prop = new PlayerProperties(0);
+
     // Add player graphics
     new PlayerGraphics(player, this->game->mSceneMgr);
+	
 
     // Add player to updatable objects
     this->game->objects.insert(player);

@@ -12,7 +12,7 @@ PlayerGraphics::PlayerGraphics(Player *player, Ogre::SceneManager *sceneManager)
     this->player = player;
     
     this->sceneManager = sceneManager;
-    this->entity = sceneManager->createEntity("ninja.mesh");
+    this->entity = sceneManager->createEntity(this->player->prop->getCostumeName());
     this->sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode();
     this->sceneNode->attachObject(this->entity);
     this->sceneNode->setScale(Ogre::Vector3::UNIT_SCALE / 16.0);
