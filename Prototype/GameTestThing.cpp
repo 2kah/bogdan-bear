@@ -417,7 +417,6 @@ void GameTestThing::removePlayer(Player *player)
     // Queue player for removal
 	std::cout << "In GameTestThing, Removing Player Object at (" << player->position.x <<", " << player->position.y<<", " << player->position.z<< ")" << std::endl;
     this->removeQueue.insert(player);
-    player->signals.removed(player);
 }
 
 void GameTestThing::addTurret(Turret *turret)
