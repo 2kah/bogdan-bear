@@ -23,9 +23,7 @@ namespace {
 struct NetworkSignals {
     //boost::signal<void (Player *player)> playerReplicated;
 	boost::signal<void (Player *player)> addPlayer;
-    boost::signal<void (Player *player)> playerCreated;
-    boost::signal<void (Player *player)> playerDestroyed;
-    //boost::signal<void (Player *player)> localPlayerAssigned;
+    boost::signal<void (Player *player)> removePlayer;
 	boost::signal<void (Player *player)> assignLocalPlayer;
 
     boost::signal<void (std::string message)> chat;
@@ -75,6 +73,18 @@ struct NetPlayer
 #pragma pack(pop)
 
 
+#pragma pack(push, 1)
+struct NetPlatform
+{
+	unsigned char typeId;
+	int playerID;
+	char name [NAME_LENGTH];
+	uint64_t GUID;
+	Player* player;
+};
+#pragma pack(pop)
+
+
 
 class NetworkTestStuff : public Updatable
 {
@@ -109,6 +119,7 @@ public:
 	NetPlayer* getNetPlayer(int playerID);
 
 	void insertNetPlayer(NetPlayer* np);
+	void deleteNetPlayer(NetPlayer* np);
 	void listNetPlayers();
 	void sendNetPlayer(NetPlayer* np, unsigned char type, RakNet::AddressOrGUID g);
 	void sendNetPlayer(NetPlayer* np, unsigned char type);
