@@ -79,6 +79,7 @@ public:
 
 	PlayerProperties* prop;
 
+
     bool stepping;
 private:
     Ogre::Radian rotX;
