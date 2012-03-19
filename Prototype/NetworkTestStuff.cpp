@@ -447,10 +447,11 @@ void NetworkTestStuff::receiveUpdatePlayer(RakNet::Packet *packet)
 	{
 	//std::cout << "Updating '" << np->name << "'" << std::endl;
 	Player* p =np->player;
-	p->position = pi->position;
+	p->setState(pi->position, pi->velocity, pi->orientation);
+	/*p->position = pi->position;
 	p->velocity = pi->velocity;
 	p->orientation = pi->orientation;
-	p->relativeAim = pi->relativeAim;
+	p->relativeAim = pi->relativeAim;*/
 	}
 	if (hosting)
 	{
