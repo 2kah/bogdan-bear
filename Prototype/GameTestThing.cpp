@@ -244,6 +244,8 @@ void GameTestThing::update()
         Updatable *object = *i;
 
         this->game->objects.erase(object);
+
+        delete object;
     }
 
     this->removeQueue.clear();
