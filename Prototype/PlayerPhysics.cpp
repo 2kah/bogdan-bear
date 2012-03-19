@@ -54,6 +54,7 @@ PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWo
 	walkDirection.setZero();
 	oldWalkDirection.setZero();
 	pushDirection.setZero();
+	local = false;
 
 	playerUpdateConnection = this->player->signals.updated.connect(boost::bind(&PlayerPhysics::playerUpdated, this, _1));
 	enterTurretConnection = this->player->signals.enteredTurret.connect(boost::bind(&PlayerPhysics::deactivate, this));
@@ -86,8 +87,8 @@ void PlayerPhysics::playerRemoved(Player *player)
 void PlayerPhysics::addInput(PlayerInput &input)
 {
 	input.signals.move.connect(boost::bind(&PlayerPhysics::movement, this, _1, _2));
-
 	input.signals.jump.connect(boost::bind(&PlayerPhysics::jump, this, _1));
+	local = true;
 }
 
 void PlayerPhysics::playerUpdated(Player *player)
@@ -98,37 +99,46 @@ void PlayerPhysics::playerUpdated(Player *player)
 	Ogre::Vector3 oPosition(xform.getOrigin().x(), xform.getOrigin().y() - 5, xform.getOrigin().z());
 	this->player->position = oPosition;
 
-	Ogre::Vector3 movement = this->player->orientation * Ogre::Vector3(walkDirection.x(), walkDirection.y(), walkDirection.z());
-	btVector3 walk(movement.x, movement.y, movement.z);
-	btVector3 actualMovement = pushDirection;
-	pushDirection *= btScalar(0.95);
+	if(local)
+	{
+		Ogre::Vector3 movement = this->player->orientation * Ogre::Vector3(walkDirection.x(), walkDirection.y(), walkDirection.z());
+		btVector3 walk(movement.x, movement.y, movement.z);
+		btVector3 actualMovement = pushDirection;
+		pushDirection *= btScalar(0.95);
 
-	//if on ground then allow whatever movement the player wants
-	if(m_character->onGround())
-	{
-		if(walk.length() > 0)
+		//if on ground then allow whatever movement the player wants
+		if(m_character->onGround())
 		{
-			actualMovement += walk.normalize() * walkSpeed;
+			if(walk.length() > 0)
+			{
+				actualMovement += walk.normalize() * walkSpeed;
+			}
 		}
-	}
-	//if airborne then use previous movement plus a dampened amount of wanted movement
-	else
-	{
-		walk = walk * btScalar(0.3);
-		walk += (oldWalkDirection * btScalar(0.99));
-		if(walk.length() > airMovementSpeed)
+		//if airborne then use previous movement plus a dampened amount of wanted movement
+		else
 		{
-			walk = walk / (walk.length() / airMovementSpeed);
+			walk = walk * btScalar(0.3);
+			walk += (oldWalkDirection * btScalar(0.99));
+			if(walk.length() > airMovementSpeed)
+			{
+				walk = walk / (walk.length() / airMovementSpeed);
+			}
+			actualMovement += walk;
 		}
-		actualMovement += walk;
+		m_character->setWalkDirection(actualMovement);
+		oldWalkDirection = walk;
 	}
-	m_character->setWalkDirection(actualMovement);
-	oldWalkDirection = walk;
 }
 
 void PlayerPhysics::playerStateSet(Player *player)
 {
+	//std::cout << "in playerStateSet" << std::endl;
+	//std::cout << "external player velocity = " << player->velocity << std::endl;
     // update position/velocity here
+	m_character->warp(BtOgre::Convert::toBullet(player->position));
+	//should make the kinematic character controller have the given velocity, no idea what units the time interval is in
+	//hopefully will have another update before time interval ends or player will stop moving
+	m_character->setVelocityForTimeInterval(BtOgre::Convert::toBullet(player->velocity), btScalar(1000));
 }
 
 void PlayerPhysics::movement(DIRECTION direction, bool state)
