@@ -62,17 +62,18 @@ void Goal::update(void)
 		}
 		this->holdingTeam[i] = 0;
 	}
-	if(count = 1)
+	if(count == 1)
 	{
 	    this->teamPoints[currentHold]++;
-		if(this->teamPoints[currentHold] > 2000)
+		if(this->teamPoints[currentHold] > 3000)
 		{
+			std::cout<<"GAME OVER " << currentHold << "WINS WITH " << this->teamPoints[currentHold] <<std::endl;
 			this->gameOver = true;
 		}
 	}
 
-
-
+	int points = this->teamPoints[0];
+	if(points % 100 == 0)std::cout<<"Team points:" << this->teamPoints[0] <<std::endl;
 	this->signals.updated(this);
 
 }

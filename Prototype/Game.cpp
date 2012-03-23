@@ -7,6 +7,9 @@
 #include <btBulletDynamicsCommon.h>
 #include <BulletCollision/CollisionDispatch/btGhostObject.h>
 
+#include <OGRE/OgreOverlay.h>
+#include <OGRE/OgreOverlayManager.h>
+
 #include "Game.h"
 #include "Updatable.h"
 
@@ -218,7 +221,7 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
 bool Game::keyReleased(const OIS::KeyEvent &arg)
 {
     BaseApplication::keyReleased(arg);
-
+	Ogre::Overlay *ol;
     switch (arg.key)
     {
     case OIS::KC_UP:
@@ -243,6 +246,15 @@ bool Game::keyReleased(const OIS::KeyEvent &arg)
     //case OIS::KC_T:
     //    this->playerInput.signals.use(false);
     //    break;
+	case OIS::KC_B:
+		  std::cout << "LOAD!!" << std::endl;
+          ol = Ogre::OverlayManager::getSingleton().getByName("overlay.overlay");
+          if (ol != NULL)
+	      {
+		      std::cout << "LOADED OVERLAY" << std::endl;
+              ol->show();
+	      }
+        break;
     default:
         break;
     }

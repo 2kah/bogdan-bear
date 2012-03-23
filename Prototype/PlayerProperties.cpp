@@ -25,7 +25,7 @@ string PlayerProperties::getCostumeName()
 		return "ninja.mesh";
 	}
 	else if(this->team == 1) {
-		return "ninja.mesh";
+		return "penguin.mesh";
 	}
 	else if(this->team == 2) {
 		return "ninja.mesh";

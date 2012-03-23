@@ -109,12 +109,6 @@ GameTestThing::GameTestThing(Game *game)
     std::cout << "PRESS F9 FOR LOCAL SERVER GAME" << std::endl;
     std::cout << "PRESS F8 FOR LOCAL CLIENT GAME" << std::endl;
 
-	Ogre::Overlay *ol = Ogre::OverlayManager::getSingleton().getByName("overlay");
-    if (ol)
-	{
-		std::cout << "LOADED OVERLAY" << std::endl;
-        ol->show();
-	}
 }
 
 GameTestThing::~GameTestThing()

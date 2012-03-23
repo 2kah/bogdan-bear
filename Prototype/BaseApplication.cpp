@@ -110,6 +110,7 @@ void BaseApplication::createFrameListener(void)
     mTrayMgr = new OgreBites::SdkTrayManager("InterfaceName", mWindow, this->manager->mouse, this);
     mTrayMgr->showFrameStats(OgreBites::TL_BOTTOMLEFT);
     mTrayMgr->showLogo(OgreBites::TL_BOTTOMRIGHT);
+	//OgreBites::Button* b = mTrayMgr->createButton(OgreBites::TL_TOPRIGHT, "MyButton", "Click Me!");
     mTrayMgr->hideCursor();
 
     // create a params panel for displaying sample details
