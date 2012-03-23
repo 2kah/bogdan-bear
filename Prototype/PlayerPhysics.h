@@ -47,6 +47,7 @@ protected:
 	btVector3 walkDirection;
 	btVector3 oldWalkDirection;
 	btScalar airMovementSpeed;
+	bool local;
 
 	btVector3 pushDirection;
 

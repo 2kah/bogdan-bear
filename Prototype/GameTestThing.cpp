@@ -65,6 +65,7 @@ GameTestThing::GameTestThing(Game *game)
     this->game->objects.insert(this->network);
 
 	this->network->signals.addPlayer.connect(boost::bind(&GameTestThing::addPlayer, this, _1));
+	this->network->signals.removePlayer.connect(boost::bind(&GameTestThing::removePlayer, this, _1));
 	this->network->signals.assignLocalPlayer.connect(boost::bind(&GameTestThing::setLocalPlayer, this, _1));
 	
 
@@ -237,6 +238,8 @@ void GameTestThing::update()
         Updatable *object = *i;
 
         this->game->objects.erase(object);
+
+        delete object;
     }
 
     this->removeQueue.clear();
@@ -406,6 +409,7 @@ void GameTestThing::addPlayer(Player *player)
 void GameTestThing::removePlayer(Player *player)
 {
     // Queue player for removal
+	std::cout << "In GameTestThing, Removing Player Object at (" << player->position.x <<", " << player->position.y<<", " << player->position.z<< ")" << std::endl;
     this->removeQueue.insert(player);
 }
 
