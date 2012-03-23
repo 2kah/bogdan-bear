@@ -481,6 +481,8 @@ void btKinematicCharacterController::warp (const btVector3& origin)
 	xform.setIdentity();
 	xform.setOrigin (origin);
 	m_ghostObject->setWorldTransform (xform);
+	//an attempt to keep internal state up to date
+	m_currentPosition = origin;
 }
 
 
