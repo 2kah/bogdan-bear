@@ -121,12 +121,14 @@ void GameTestThing::startLocal()
 	isLocal = true;
 	isServer = false;
     // Create an empty tower
+	//TODO: make tower wider
+	//try {8, 16, 16, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 256, 256, 256, 256, 256, 256, 256}
     unsigned divisions[] = {8, 16, 16, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 128, 128, 128, 128, 128, 128, 128};
     std::vector<unsigned> structure(divisions, divisions + 14 + 8);
     //unsigned divisions[] = {32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32};
     //std::vector<unsigned> structure(divisions, divisions + 14);
 
-    this->game->tower = new Tower(256, structure);
+    this->game->tower = new Tower(192, structure);
 
     // Create a tower builder and generate the tower with it
     this->towerBuilder = new TowerBuilder(this->game->tower);

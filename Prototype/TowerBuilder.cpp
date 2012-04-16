@@ -59,7 +59,7 @@ TowerBuilder::TowerBuilder(Tower *tower)
 	srand(5000);
 	this->metaShapeBuilder = new MetaShapeBuilder();
 
-	//TODO: make cvar
+	//TODO: tweak
 	this->maxRegeneratingMetaShapes = 10;
 	this->regeneratingMetaShapes = 0;
 
@@ -138,7 +138,7 @@ void TowerBuilder::blocksUpdated(int blocksDestroyed)
 void TowerBuilder::generate()
 {
 	//TODO: tweak this
-	this->blocksAvailable = 50000;
+	this->blocksAvailable = 20000;
 
 	//TODO: make this generic
 	while(this->blocksAvailable > 399)
@@ -189,6 +189,8 @@ void TowerBuilder::regenerate(void)
 
 	//only regenerate one meta shape per frame
 	//TODO: neaten this up
+	//TODO: this code is wrong, shouldn't have blocksAvailable * 0.7 in for loop
+	//and the way to detect whether the meta shape is finished is wrong
 	int shapeIndex = rand() % this->regeneratingMetaShapes;
 	MetaShape metaShape = this->metaShapes[shapeIndex];
 	int blocksAdded = 0;
@@ -212,7 +214,6 @@ void TowerBuilder::regenerate(void)
 			this->metaShapes.erase(metaShapes.begin() + shapeIndex);
 			break;
 		}
-		//distribute some of the available blocks over the regenerating meta shape
 	}
 	this->tower->signals.updated(this->tower, this->chunks[metaShape.chunk.level][metaShape.chunk.layer][metaShape.chunk.sector].bounds, -blocksAdded);
 
