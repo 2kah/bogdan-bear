@@ -37,7 +37,7 @@ void MetaShapeBuilder::makePlatform(BuilderChunk *chunk, MetaShape *metaShape)
 
 	for(int levels = 0; levels < height; levels++) //zero replaces levelPlacement
 	{
-		for(int layers = 0; layers < depth; layers++) //zero replaces levelPlacement
+		for(int layers = 0; layers < depth; layers++) //zero replaces layerPlacement
 		{
 			for(int sectors = 0; sectors < width; sectors++) //zero replaces sectorPlacement
 			{

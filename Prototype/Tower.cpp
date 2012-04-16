@@ -31,7 +31,8 @@ Tower::Tower(unsigned levels, std::vector<unsigned> structure)
     this->radii = std::vector<double>(this->layers, 0);
     this->heights = std::vector<double>(this->layers, 0);
 
-    this->radii[0] = 3.5;
+	//was 3.5
+    this->radii[0] = 2.3;
 
     for (unsigned layer = 1; layer < this->layers; ++layer)
     {

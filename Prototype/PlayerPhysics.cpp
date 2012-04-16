@@ -16,7 +16,7 @@ PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWo
 	
 	//TODO: make this a cvar
 	//Defines walk speed
-	walkSpeed = btScalar(1.0);
+	walkSpeed = btScalar(0.8);
 
 	btTransform startTransform;
 	startTransform.setIdentity();
@@ -27,7 +27,7 @@ PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWo
 	m_ghostObject = new btPairCachingGhostObject();
 	m_ghostObject->setWorldTransform(startTransform);
 	m_ghostObject->CO_COLLISION_OBJECT;
-	btConvexShape* capsule = new btCapsuleShape(1.5, 8);
+	btConvexShape* capsule = new btCapsuleShape(2, 8);
 	m_ghostObject->setCollisionShape(capsule);
 	m_ghostObject->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
 	this->m_ghostObject->setUserPointer(this);
@@ -44,9 +44,9 @@ PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWo
 	m_character->setGravity(btScalar(100.0));
 
 	//TODO: make this a cvar
-	m_character->setJumpSpeed(btScalar(50.0));
+	m_character->setJumpSpeed(btScalar(60.0));
 	//The max horizontal movement speed while airborne
-	airMovementSpeed = btScalar(0.6);
+	airMovementSpeed = btScalar(0.5);
 
 	dynamicsWorld->addCollisionObject(m_ghostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::AllFilter);//btBroadphaseProxy::AllFilter /*btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter*/);
 	dynamicsWorld->addAction(m_character);
@@ -117,7 +117,7 @@ void PlayerPhysics::playerUpdated(Player *player)
 		//if airborne then use previous movement plus a dampened amount of wanted movement
 		else
 		{
-			walk = walk * btScalar(0.3);
+			walk = walk * btScalar(0.2);
 			walk += (oldWalkDirection * btScalar(0.99));
 			if(walk.length() > airMovementSpeed)
 			{
