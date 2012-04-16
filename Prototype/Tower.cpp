@@ -274,6 +274,12 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
     inner_clock_normal.normalise();
     inner_anti_normal.normalise();
 
+    Ogre::Vector2     top_left(0, 0);
+    Ogre::Vector2    top_right(1, 0);
+    Ogre::Vector2 bottom_left (0, 1);
+    Ogre::Vector2 bottom_right(1, 1);
+    Ogre::Vector2    top_mid  (0.5, 0);
+
     if (back) {
         BlockTriangle back1;
         back1.points[0] = points.b2;
@@ -288,6 +294,10 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
         back1.normals[1] = inner_clock_normal;
         back1.normals[2] = inner_anti_normal;
 
+        back1.coords[0] = top_left;
+        back1.coords[1] = bottom_left;
+        back1.coords[2] = bottom_right;
+
         BlockTriangle back2;
         back2.points[0] = points.d1;
         back2.points[1] = points.d2;
@@ -300,6 +310,10 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
         back2.normals[0] = inner_anti_normal;
         back2.normals[1] = inner_anti_normal;
         back2.normals[2] = inner_clock_normal;
+
+        back2.coords[0] = bottom_right;
+        back2.coords[1] = top_right;
+        back2.coords[2] = top_left;
 
         triangles.push_back(back1);
         triangles.push_back(back2);
@@ -323,6 +337,10 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
         clock_1.normals[1] = clock_normal;
         clock_1.normals[2] = clock_normal;
 
+        clock_1.coords[0] = top_left;
+        clock_1.coords[1] = bottom_left;
+        clock_1.coords[2] = bottom_right;
+
         BlockTriangle clock_2;
         clock_2.points[0] = points.b1;
         clock_2.points[1] = points.b2;
@@ -335,6 +353,10 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
         clock_2.normals[0] = clock_normal;
         clock_2.normals[1] = clock_normal;
         clock_2.normals[2] = clock_normal;
+
+        clock_2.coords[0] = bottom_right;
+        clock_2.coords[1] = top_right;
+        clock_2.coords[2] = top_left;
 
         triangles.push_back(clock_1);
         triangles.push_back(clock_2);
@@ -358,6 +380,10 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
         anti_1.normals[1] = anti_normal;
         anti_1.normals[2] = anti_normal;
 
+        anti_1.coords[0] = top_left;
+        anti_1.coords[1] = bottom_left;
+        anti_1.coords[2] = bottom_right;
+
         BlockTriangle anti_2;
         anti_2.points[0] = points.a1;
         anti_2.points[1] = points.a2;
@@ -370,6 +396,10 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
         anti_2.normals[0] = anti_normal;
         anti_2.normals[1] = anti_normal;
         anti_2.normals[2] = anti_normal;
+
+        anti_2.coords[0] = bottom_right;
+        anti_2.coords[1] = top_right;
+        anti_2.coords[2] = top_left;
 
         triangles.push_back(anti_1);
         triangles.push_back(anti_2);
@@ -393,6 +423,10 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             up_1.normals[1] = up_normal;
             up_1.normals[2] = up_normal;
 
+            up_1.coords[0] = top_left;
+            up_1.coords[1] = bottom_left;
+            up_1.coords[2] = top_mid;
+
             BlockTriangle up_2;
             up_2.points[0] = points.d2;
             up_2.points[1] = points.a2;
@@ -406,6 +440,10 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             up_2.normals[1] = up_normal;
             up_2.normals[2] = up_normal;
 
+            up_2.coords[0] = bottom_right;
+            up_2.coords[1] = top_right;
+            up_2.coords[2] = top_mid;
+
             BlockTriangle up_3;
             up_3.points[0] = points.d2;
             up_3.points[1] = points.e2;
@@ -418,6 +456,10 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             up_3.normals[0] = up_normal;
             up_3.normals[1] = up_normal;
             up_3.normals[2] = up_normal;
+
+            up_3.coords[0] = bottom_right;
+            up_3.coords[1] = top_mid;
+            up_3.coords[2] = bottom_left;
 
             triangles.push_back(up_1);
             triangles.push_back(up_2);
@@ -436,6 +478,10 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             up_1.normals[1] = up_normal;
             up_1.normals[2] = up_normal;
 
+            up_1.coords[0] = top_left;
+            up_1.coords[1] = bottom_left;
+            up_1.coords[2] = bottom_right;
+
             BlockTriangle up_2;
             up_2.points[0] = points.d2;
             up_2.points[1] = points.a2;
@@ -448,6 +494,10 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             up_2.normals[0] = up_normal;
             up_2.normals[1] = up_normal;
             up_2.normals[2] = up_normal;
+
+            up_2.coords[0] = bottom_right;
+            up_2.coords[1] = top_right;
+            up_2.coords[2] = top_left;
 
             triangles.push_back(up_1);
             triangles.push_back(up_2);
@@ -472,6 +522,10 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             down_1.normals[1] = down_normal;
             down_1.normals[2] = down_normal;
 
+            down_1.coords[0] = top_mid;
+            down_1.coords[1] = bottom_right;
+            down_1.coords[2] = top_right;
+
             BlockTriangle down_2;
             down_2.points[0] = points.e1;
             down_2.points[1] = points.a1;
@@ -485,6 +539,10 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             down_2.normals[1] = down_normal;
             down_2.normals[2] = down_normal;
 
+            down_2.coords[0] = top_mid;
+            down_2.coords[1] = top_left;
+            down_2.coords[2] = bottom_left;
+
             BlockTriangle down_3;
             down_3.points[0] = points.b1;
             down_3.points[1] = points.e1;
@@ -497,6 +555,10 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             down_3.normals[0] = down_normal;
             down_3.normals[1] = down_normal;
             down_3.normals[2] = down_normal;
+
+            down_3.coords[0] = bottom_right;
+            down_3.coords[1] = top_mid;
+            down_3.coords[2] = bottom_left;
 
             triangles.push_back(down_1);
             triangles.push_back(down_2);
@@ -515,6 +577,10 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             down_1.normals[1] = down_normal;
             down_1.normals[2] = down_normal;
 
+            down_1.coords[0] = bottom_left;
+            down_1.coords[1] = bottom_right;
+            down_1.coords[2] = top_right;
+
             BlockTriangle down_2;
             down_2.points[0] = points.c1;
             down_2.points[1] = points.a1;
@@ -527,6 +593,10 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             down_2.normals[0] = down_normal;
             down_2.normals[1] = down_normal;
             down_2.normals[2] = down_normal;
+
+            down_2.coords[0] = top_right;
+            down_2.coords[1] = top_left;
+            down_2.coords[2] = bottom_left;
 
             triangles.push_back(down_1);
             triangles.push_back(down_2);
@@ -561,6 +631,10 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             forward_1.normals[1] = outer_anti_normal;
             forward_1.normals[2] = outer_mid_normal;
 
+            forward_1.coords[0] = top_left;
+            forward_1.coords[1] = bottom_left;
+            forward_1.coords[2] = bottom_right;
+
             BlockTriangle forward_2;
             forward_2.points[0] = points.e1;
             forward_2.points[1] = points.e2;
@@ -573,6 +647,10 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             forward_2.normals[0] = outer_mid_normal;
             forward_2.normals[1] = outer_mid_normal;
             forward_2.normals[2] = outer_anti_normal;
+
+            forward_2.coords[0] = bottom_right;
+            forward_2.coords[1] = top_right;
+            forward_2.coords[2] = top_left;
 
             triangles.push_back(forward_1);
             triangles.push_back(forward_2);
@@ -592,6 +670,10 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             forward_1.normals[1] = outer_mid_normal;
             forward_1.normals[2] = outer_clock_normal;
 
+            forward_1.coords[0] = top_left;
+            forward_1.coords[1] = bottom_left;
+            forward_1.coords[2] = bottom_right;
+
             BlockTriangle forward_2;
             forward_2.points[0] = points.c1;
             forward_2.points[1] = points.c2;
@@ -604,6 +686,10 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             forward_2.normals[0] = outer_clock_normal;
             forward_2.normals[1] = outer_clock_normal;
             forward_2.normals[2] = outer_mid_normal;
+
+            forward_2.coords[0] = bottom_right;
+            forward_2.coords[1] = top_right;
+            forward_2.coords[2] = top_left;
 
             triangles.push_back(forward_1);
             triangles.push_back(forward_2);
@@ -632,6 +718,10 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             forward_1.normals[1] = outer_anti_normal;
             forward_1.normals[2] = outer_clock_normal;
 
+            forward_1.coords[0] = top_left;
+            forward_1.coords[1] = bottom_left;
+            forward_1.coords[2] = bottom_right;
+
             BlockTriangle forward_2;
             forward_2.points[0] = points.c1;
             forward_2.points[1] = points.c2;
@@ -644,6 +734,10 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             forward_2.normals[0] = outer_clock_normal;
             forward_2.normals[1] = outer_clock_normal;
             forward_2.normals[2] = outer_anti_normal;
+
+            forward_2.coords[0] = bottom_right;
+            forward_2.coords[1] = top_right;
+            forward_2.coords[2] = top_left;
 
             triangles.push_back(forward_1);
             triangles.push_back(forward_2);
