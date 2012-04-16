@@ -267,6 +267,10 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
     bool top =    !(level < this->blocks.size()-1 && this->blocks[level+1][layer][sector])         || level  == bounds.level_top;
     bool bottom = !(level != 0 && this->blocks[level-1][layer][sector])                            || level  == bounds.level_bottom;
 
+    double red = ratio, green = level / (double) this->levels, blue = layer / (double) this->layers;
+
+    Ogre::ColourValue colour(red, green, blue);
+
     // back face
     Ogre::Vector3 inner_clock_normal = points.c2 - points.b2;
     Ogre::Vector3 inner_anti_normal = points.a1 - points.d1;
@@ -286,9 +290,9 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
         back1.points[1] = points.b1;
         back1.points[2] = points.d1;
 
-        back1.colours[0] = Ogre::ColourValue::Blue;
-        back1.colours[1] = Ogre::ColourValue::Green;
-        back1.colours[2] = Ogre::ColourValue::White;
+        back1.colours[0] = colour;
+        back1.colours[1] = colour;
+        back1.colours[2] = colour;
 
         back1.normals[0] = inner_clock_normal;
         back1.normals[1] = inner_clock_normal;
@@ -303,9 +307,9 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
         back2.points[1] = points.d2;
         back2.points[2] = points.b2;
 
-        back2.colours[0] = Ogre::ColourValue::White;
-        back2.colours[1] = Ogre::ColourValue::Red;
-        back2.colours[2] = Ogre::ColourValue::Blue;
+        back2.colours[0] = colour;
+        back2.colours[1] = colour;
+        back2.colours[2] = colour;
 
         back2.normals[0] = inner_anti_normal;
         back2.normals[1] = inner_anti_normal;
@@ -329,9 +333,9 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
         clock_1.points[1] = points.c1;
         clock_1.points[2] = points.b1;
 
-        clock_1.colours[0] = Ogre::ColourValue::Red;
-        clock_1.colours[1] = Ogre::ColourValue::Blue;
-        clock_1.colours[2] = Ogre::ColourValue::Green;
+        clock_1.colours[0] = colour;
+        clock_1.colours[1] = colour;
+        clock_1.colours[2] = colour;
 
         clock_1.normals[0] = clock_normal;
         clock_1.normals[1] = clock_normal;
@@ -346,9 +350,9 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
         clock_2.points[1] = points.b2;
         clock_2.points[2] = points.c2;
 
-        clock_2.colours[0] = Ogre::ColourValue::Red;
-        clock_2.colours[1] = Ogre::ColourValue::Blue;
-        clock_2.colours[2] = Ogre::ColourValue::Green;
+        clock_2.colours[0] = colour;
+        clock_2.colours[1] = colour;
+        clock_2.colours[2] = colour;
 
         clock_2.normals[0] = clock_normal;
         clock_2.normals[1] = clock_normal;
@@ -372,9 +376,9 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
         anti_1.points[1] = points.d1;
         anti_1.points[2] = points.a1;
 
-        anti_1.colours[0] = Ogre::ColourValue::Red;
-        anti_1.colours[1] = Ogre::ColourValue::White;
-        anti_1.colours[2] = Ogre::ColourValue::Red;
+        anti_1.colours[0] = colour;
+        anti_1.colours[1] = colour;
+        anti_1.colours[2] = colour;
 
         anti_1.normals[0] = anti_normal;
         anti_1.normals[1] = anti_normal;
@@ -389,9 +393,9 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
         anti_2.points[1] = points.a2;
         anti_2.points[2] = points.d2;
 
-        anti_2.colours[0] = Ogre::ColourValue::Red;
-        anti_2.colours[1] = Ogre::ColourValue::White;
-        anti_2.colours[2] = Ogre::ColourValue::Red;
+        anti_2.colours[0] = colour;
+        anti_2.colours[1] = colour;
+        anti_2.colours[2] = colour;
 
         anti_2.normals[0] = anti_normal;
         anti_2.normals[1] = anti_normal;
@@ -415,9 +419,9 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             up_1.points[1] = points.b2;
             up_1.points[2] = points.e2;
 
-            up_1.colours[0] = Ogre::ColourValue::Green;
-            up_1.colours[1] = Ogre::ColourValue::Blue;
-            up_1.colours[2] = Ogre::ColourValue::Red;
+            up_1.colours[0] = colour;
+            up_1.colours[1] = colour;
+            up_1.colours[2] = colour;
 
             up_1.normals[0] = up_normal;
             up_1.normals[1] = up_normal;
@@ -432,9 +436,9 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             up_2.points[1] = points.a2;
             up_2.points[2] = points.e2;
 
-            up_2.colours[0] = Ogre::ColourValue::Red;
-            up_2.colours[1] = Ogre::ColourValue::White;
-            up_2.colours[2] = Ogre::ColourValue::Green;
+            up_2.colours[0] = colour;
+            up_2.colours[1] = colour;
+            up_2.colours[2] = colour;
 
             up_2.normals[0] = up_normal;
             up_2.normals[1] = up_normal;
@@ -449,9 +453,9 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             up_3.points[1] = points.e2;
             up_3.points[2] = points.b2;
 
-            up_3.colours[0] = Ogre::ColourValue::Red;
-            up_3.colours[1] = Ogre::ColourValue::White;
-            up_3.colours[2] = Ogre::ColourValue::Green;
+            up_3.colours[0] = colour;
+            up_3.colours[1] = colour;
+            up_3.colours[2] = colour;
 
             up_3.normals[0] = up_normal;
             up_3.normals[1] = up_normal;
@@ -470,9 +474,9 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             up_1.points[1] = points.b2;
             up_1.points[2] = points.d2;
 
-            up_1.colours[0] = Ogre::ColourValue::Green;
-            up_1.colours[1] = Ogre::ColourValue::Blue;
-            up_1.colours[2] = Ogre::ColourValue::Red;
+            up_1.colours[0] = colour;
+            up_1.colours[1] = colour;
+            up_1.colours[2] = colour;
 
             up_1.normals[0] = up_normal;
             up_1.normals[1] = up_normal;
@@ -487,9 +491,9 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             up_2.points[1] = points.a2;
             up_2.points[2] = points.c2;
 
-            up_2.colours[0] = Ogre::ColourValue::Red;
-            up_2.colours[1] = Ogre::ColourValue::White;
-            up_2.colours[2] = Ogre::ColourValue::Green;
+            up_2.colours[0] = colour;
+            up_2.colours[1] = colour;
+            up_2.colours[2] = colour;
 
             up_2.normals[0] = up_normal;
             up_2.normals[1] = up_normal;
@@ -514,9 +518,9 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             down_1.points[1] = points.b1;
             down_1.points[2] = points.c1;
 
-            down_1.colours[0] = Ogre::ColourValue::White;
-            down_1.colours[1] = Ogre::ColourValue::Green;
-            down_1.colours[2] = Ogre::ColourValue::Blue;
+            down_1.colours[0] = colour;
+            down_1.colours[1] = colour;
+            down_1.colours[2] = colour;
 
             down_1.normals[0] = down_normal;
             down_1.normals[1] = down_normal;
@@ -531,9 +535,9 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             down_2.points[1] = points.a1;
             down_2.points[2] = points.d1;
 
-            down_2.colours[0] = Ogre::ColourValue::Blue;
-            down_2.colours[1] = Ogre::ColourValue::Red;
-            down_2.colours[2] = Ogre::ColourValue::White;
+            down_2.colours[0] = colour;
+            down_2.colours[1] = colour;
+            down_2.colours[2] = colour;
 
             down_2.normals[0] = down_normal;
             down_2.normals[1] = down_normal;
@@ -548,9 +552,9 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             down_3.points[1] = points.e1;
             down_3.points[2] = points.d1;
 
-            down_3.colours[0] = Ogre::ColourValue::Blue;
-            down_3.colours[1] = Ogre::ColourValue::Red;
-            down_3.colours[2] = Ogre::ColourValue::White;
+            down_3.colours[0] = colour;
+            down_3.colours[1] = colour;
+            down_3.colours[2] = colour;
 
             down_3.normals[0] = down_normal;
             down_3.normals[1] = down_normal;
@@ -569,9 +573,9 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             down_1.points[1] = points.b1;
             down_1.points[2] = points.c1;
 
-            down_1.colours[0] = Ogre::ColourValue::White;
-            down_1.colours[1] = Ogre::ColourValue::Green;
-            down_1.colours[2] = Ogre::ColourValue::Blue;
+            down_1.colours[0] = colour;
+            down_1.colours[1] = colour;
+            down_1.colours[2] = colour;
 
             down_1.normals[0] = down_normal;
             down_1.normals[1] = down_normal;
@@ -586,9 +590,9 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             down_2.points[1] = points.a1;
             down_2.points[2] = points.d1;
 
-            down_2.colours[0] = Ogre::ColourValue::Blue;
-            down_2.colours[1] = Ogre::ColourValue::Red;
-            down_2.colours[2] = Ogre::ColourValue::White;
+            down_2.colours[0] = colour;
+            down_2.colours[1] = colour;
+            down_2.colours[2] = colour;
 
             down_2.normals[0] = down_normal;
             down_2.normals[1] = down_normal;
@@ -623,9 +627,9 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             forward_1.points[1] = points.a1;
             forward_1.points[2] = points.e1;
 
-            forward_1.colours[0] = Ogre::ColourValue::White;
-            forward_1.colours[1] = Ogre::ColourValue::Red;
-            forward_1.colours[2] = Ogre::ColourValue::Blue;
+            forward_1.colours[0] = colour;
+            forward_1.colours[1] = colour;
+            forward_1.colours[2] = colour;
 
             forward_1.normals[0] = outer_anti_normal;
             forward_1.normals[1] = outer_anti_normal;
@@ -640,9 +644,9 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             forward_2.points[1] = points.e2;
             forward_2.points[2] = points.a2;
 
-            forward_2.colours[0] = Ogre::ColourValue::Blue;
-            forward_2.colours[1] = Ogre::ColourValue::Green;
-            forward_2.colours[2] = Ogre::ColourValue::White;
+            forward_2.colours[0] = colour;
+            forward_2.colours[1] = colour;
+            forward_2.colours[2] = colour;
 
             forward_2.normals[0] = outer_mid_normal;
             forward_2.normals[1] = outer_mid_normal;
@@ -662,9 +666,9 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             forward_1.points[1] = points.e1;
             forward_1.points[2] = points.c1;
 
-            forward_1.colours[0] = Ogre::ColourValue::White;
-            forward_1.colours[1] = Ogre::ColourValue::Red;
-            forward_1.colours[2] = Ogre::ColourValue::Blue;
+            forward_1.colours[0] = colour;
+            forward_1.colours[1] = colour;
+            forward_1.colours[2] = colour;
 
             forward_1.normals[0] = outer_mid_normal;
             forward_1.normals[1] = outer_mid_normal;
@@ -679,9 +683,9 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             forward_2.points[1] = points.c2;
             forward_2.points[2] = points.e2;
 
-            forward_2.colours[0] = Ogre::ColourValue::Blue;
-            forward_2.colours[1] = Ogre::ColourValue::Green;
-            forward_2.colours[2] = Ogre::ColourValue::White;
+            forward_2.colours[0] = colour;
+            forward_2.colours[1] = colour;
+            forward_2.colours[2] = colour;
 
             forward_2.normals[0] = outer_clock_normal;
             forward_2.normals[1] = outer_clock_normal;
@@ -710,9 +714,9 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             forward_1.points[1] = points.a1;
             forward_1.points[2] = points.c1;
 
-            forward_1.colours[0] = Ogre::ColourValue::White;
-            forward_1.colours[1] = Ogre::ColourValue::Red;
-            forward_1.colours[2] = Ogre::ColourValue::Blue;
+            forward_1.colours[0] = colour;
+            forward_1.colours[1] = colour;
+            forward_1.colours[2] = colour;
 
             forward_1.normals[0] = outer_anti_normal;
             forward_1.normals[1] = outer_anti_normal;
@@ -727,9 +731,9 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
             forward_2.points[1] = points.c2;
             forward_2.points[2] = points.a2;
 
-            forward_2.colours[0] = Ogre::ColourValue::Blue;
-            forward_2.colours[1] = Ogre::ColourValue::Green;
-            forward_2.colours[2] = Ogre::ColourValue::White;
+            forward_2.colours[0] = colour;
+            forward_2.colours[1] = colour;
+            forward_2.colours[2] = colour;
 
             forward_2.normals[0] = outer_clock_normal;
             forward_2.normals[1] = outer_clock_normal;
