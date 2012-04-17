@@ -206,6 +206,14 @@ void TowerBuilder::generate()
 	//TODO: tweak this
 	this->blocksAvailable = 20000;
 
+	MetaShape metaShape;
+	metaShape.chunk.level = 0;
+	metaShape.chunk.layer = 0;
+	metaShape.chunk.sector = 0;
+	this->metaShapeBuilder->makeStaircase(this->tower, &metaShape);
+	this->metaShapes.push_back(metaShape);
+	this->regeneratingMetaShapes = 1;
+
 	//TODO: make this generic
 	while(this->blocksAvailable > 999)
 	{
@@ -227,7 +235,7 @@ void TowerBuilder::regenerate(void)
 	{
 		//if no meta shapes or a lot of blocks available (given the number of meta shapes already regenerating) then start a new meta shape
 		//TODO: tweak the value (currently 30) defining how many blocks per meta shape is a lot
-		if(regeneratingMetaShapes == 0 || (blocksAvailable / regeneratingMetaShapes) > 30)
+		if(regeneratingMetaShapes == 2 || (blocksAvailable / regeneratingMetaShapes) > 30)
 		{
 			regeneratingMetaShapes++;
 			//find a relatively empty chunk
@@ -265,30 +273,51 @@ void TowerBuilder::regenerate(void)
 	//int shapeIndex = rand() % this->regeneratingMetaShapes;
 	MetaShape metaShape = this->metaShapes[shapeIndex];
 	//TODO: tweak maxBlocksToRegen
-	int blocksAdded = 0, maxBlocksToRegen = blocksAvailable * 0.2;
-	for(int i = 0; i <= maxBlocksToRegen && blocksAvailable > 0; i++)
+	int blocksAdded = 0, maxBlocksToRegen = blocksAvailable * 0.15;
+	//special case code for staircase as it doesn't fit into one chunk
+	if(shapeIndex == 0)
 	{
-		//get the last set of coords in the meta shape and remove them from the data structure
-		Triple coords = metaShape.coords.back();
-		metaShape.coords.pop_back();
-		//if the block the coords reference is inactive then activate it
-		if(!this->tower->blocks[coords.level][coords.layer][coords.sector])
+		boost::random::uniform_int_distribution<> staircaseDist(0, metaShape.coords.size() - 20);
+		unsigned start = staircaseDist(gen);
+		unsigned i;
+		for(i = start; i <= (start + maxBlocksToRegen) && i < metaShape.coords.size() && blocksAvailable > 0; i++)
 		{
-			//TODO: graphical fade in + collision detection
-			this->tower->blocks[coords.level][coords.layer][coords.sector] = true;
-			blocksAvailable--;
-			blocksAdded++;
+			Triple coords = metaShape.coords[i];
+			if(!this->tower->blocks[coords.level][coords.layer][coords.sector])
+			{
+				//TODO: graphical fade in + collision detection
+				this->tower->blocks[coords.level][coords.layer][coords.sector] = true;
+				blocksAvailable--;
+				blocksAdded++;
+			}
 		}
-		//if meta shape has been fully regenerated then remove it
-		if(metaShape.coords.size() == 0)
-		{
-			regeneratingMetaShapes--;
-			this->metaShapes.erase(metaShapes.begin() + shapeIndex);
-			break;
-		}
+		this->tower->signals.updated(this->tower, BoundingVolume(metaShape.coords[start].level, metaShape.coords[i].level, 20, this->tower->layers, 0, this->tower->sectors), -blocksAdded);
 	}
-	this->tower->signals.updated(this->tower, this->chunks[metaShape.chunk.level][metaShape.chunk.layer][metaShape.chunk.sector].bounds, -blocksAdded);
-
+	else
+	{
+		for(int i = 0; i <= maxBlocksToRegen && blocksAvailable > 0; i++)
+		{
+			//get the last set of coords in the meta shape and remove them from the data structure
+			Triple coords = metaShape.coords.back();
+			metaShape.coords.pop_back();
+			//if the block the coords reference is inactive then activate it
+			if(!this->tower->blocks[coords.level][coords.layer][coords.sector])
+			{
+				//TODO: graphical fade in + collision detection
+				this->tower->blocks[coords.level][coords.layer][coords.sector] = true;
+				blocksAvailable--;
+				blocksAdded++;
+			}
+			//if meta shape has been fully regenerated then remove it
+			if(metaShape.coords.size() == 0)
+			{
+				regeneratingMetaShapes--;
+				this->metaShapes.erase(metaShapes.begin() + shapeIndex);
+				break;
+			}
+		}
+		this->tower->signals.updated(this->tower, this->chunks[metaShape.chunk.level][metaShape.chunk.layer][metaShape.chunk.sector].bounds, -blocksAdded);
+	}
     //for (unsigned level = 0; level < this->tower->levels; ++level)
     //{
     //    for (unsigned layer = 0; layer < this->tower->layers; ++layer)

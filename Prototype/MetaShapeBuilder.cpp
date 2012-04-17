@@ -53,3 +53,22 @@ void MetaShapeBuilder::makePlatform(BuilderChunk *chunk, MetaShape *metaShape)
 		}
 	}
 }
+
+void MetaShapeBuilder::makeStaircase(Tower *tower, MetaShape *metaShape)
+{
+	for (unsigned level = 0; level < tower->levels; ++level)
+    {
+        for (unsigned layer = 20; layer < tower->layers; ++layer)
+        {
+            unsigned sectors = tower->blocks[level][layer].size();
+
+            unsigned stair_sector = level % sectors;
+
+            for (unsigned height = 0; height < 8; ++height)
+            {
+                //tower->blocks[(level + height) % tower->levels][layer][stair_sector] = false;
+				metaShape->coords.push_back(Triple((level + height) % tower->levels, layer, stair_sector));
+            }
+        }
+    }
+}
