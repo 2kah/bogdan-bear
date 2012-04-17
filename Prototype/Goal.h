@@ -5,6 +5,10 @@
 
 #include <btBulletDynamicsCommon.h>
 
+#include <OGRE/OgreSceneManager.h>
+#include <OGRE/OgreSceneNode.h>
+#include <OGRE/OgreEntity.h>
+
 #include "Updatable.h"
 #include "Object.h"
 #include "Player.h"
@@ -25,7 +29,7 @@ struct GoalSignals {
 class Goal: public Updatable, public Object
 {
 public:
-    Goal(Ogre::Vector3 position, Player *playerTracked);
+    Goal(Ogre::Vector3 position, Player *playerTracked, Ogre::SceneManager *sceneManager, btDiscreteDynamicsWorld *dynamicsWorld);
 
     virtual ~Goal();
 
@@ -49,6 +53,11 @@ protected:
 	int currentHold;
 	int holdingTeam[5]; //0 red, 1 blue, 2 green, 3 yellow
 	double teamPoints[5];
+
+    Ogre::SceneManager *sceneManager;
+    Ogre::SceneNode *sceneNode;
+    Ogre::Entity *entity;
+
 };
 
 #endif // #ifndef __Goal_h_
