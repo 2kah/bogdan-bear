@@ -39,6 +39,8 @@ public:
 class TowerBuilder : public Updatable
 {
 public:
+	int maxBlocks;
+	bool isPaused;
     TowerBuilder(Tower *tower);
     virtual ~TowerBuilder(void);
 
@@ -47,6 +49,10 @@ public:
     virtual void regenerate(void);
 
     virtual void blocksUpdated(int blocksDestroyed);
+	void FullSync(bool* data);
+	void Init();
+	void InitFull();
+	void GetTowerState(bool* Output);
 
     Tower *tower;
 	MetaShapeBuilder *metaShapeBuilder;
@@ -61,7 +67,6 @@ protected:
 	int blocksAvailable;
 	int maxRegeneratingMetaShapes;
 	int regeneratingMetaShapes;
-	int maxBlocks;
 	int activeBlocks;
 
 	std::vector<std::vector<std::vector<BuilderChunk>>> chunks;

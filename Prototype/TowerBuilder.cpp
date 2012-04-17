@@ -1,10 +1,10 @@
 #include "TowerBuilder.h"
-
 #include <boost/signal.hpp>
 #include <vector>
 
 #include "MetaShapeBuilder.h"
 #include "Tower.h"
+#include <time.h>
 
 BuilderChunk::BuilderChunk(Tower *tower, BoundingVolume bounds) : TowerChunk(tower, bounds)
 {
@@ -94,14 +94,79 @@ TowerBuilder::~TowerBuilder(void)
 	delete this->metaShapeBuilder;
 }
 
+void TowerBuilder::Init(void)
+{
+	this->maxBlocks = 0;
+	
+		for (int i =0; i < this->tower->levels; i++)
+		for (int j =0; j < this->tower->layers; j++)
+			for (int k =0; k < this->tower->blocks[i][j].size(); k++)
+			{
+				this->maxBlocks++;
+				this->tower->blocks[i][j][k] = false;
+			}
+			this->blocksAvailable=this->maxBlocks;
+
+}
+
+void TowerBuilder::InitFull(void)
+{
+	this->maxBlocks = 0;
+	
+		for (int i =0; i < this->tower->levels; i++)
+		for (int j =0; j < this->tower->layers; j++)
+			for (int k =0; k < this->tower->blocks[i][j].size(); k++)
+			{
+				this->maxBlocks++;
+				this->tower->blocks[i][j][k] = true;
+			}
+			this->blocksAvailable=0;
+
+}
+
+void TowerBuilder::FullSync(bool* data)
+{
+	unsigned long total = 0;
+	int count = 0;
+		for (int i =0; i < this->tower->levels; i++)
+		for (int j =0; j < this->tower->layers; j++)
+			for (int k =0; k < this->tower->blocks[i][j].size(); k++)
+			{
+				this->tower->blocks[i][j][k] = data[count];
+				if (data[count])
+					total ++;
+				count++;
+			}
+			printf("total active blocks: %d\n", total);
+			this->tower->signals.updated(this->tower, BoundingVolume(0,tower->levels,0,tower->layers,0,tower->sectors), -count);
+}
+
+void TowerBuilder::GetTowerState(bool* Output)
+{
+	int count = 1;
+	unsigned long total = 0;
+	for (int i =0; i < this->tower->levels; i++)
+		for (int j =0; j < this->tower->layers; j++)
+			for (int k =0; k < this->tower->blocks[i][j].size(); k++)
+			{
+				Output[count] = (this->tower->blocks[i][j][k]);
+				total += Output[count];
+				count++;
+			}
+			printf("total: %d\n", total);
+}
+
 void TowerBuilder::update(void)
 {
+	if (!isPaused)
+	{
 	this->timer++;
 
 	if(this->timer == 50)
 	{
 		this->timer = 0;
 		this->regenerate();
+	}
 	}
     //return; // rebuilding static geometry too slow atm
     

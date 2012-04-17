@@ -15,9 +15,11 @@
 
 #include <OGRE/OgreVector3.h>
 #include <OGRE/OgreQuaternion.h>
+#include "TowerBuilder.h"
 
 class Object;
 class Player;
+
 
 namespace {
 struct NetworkSignals {
@@ -89,11 +91,13 @@ struct NetPlatform
 class NetworkTestStuff : public Updatable
 {
 public:
+	
     NetworkTestStuff();
     virtual ~NetworkTestStuff();
-
+	TowerBuilder* tb;
     NetworkSignals signals;
-
+	void sendFullTower(RakNet::Packet *packet);
+	void receiveFullTower(RakNet::Packet *packet);
 	virtual void startNetwork(bool asServer);
 	virtual void sendChat(std::string message);
 	virtual void sendChat(std::string message, RakNet::AddressOrGUID target);

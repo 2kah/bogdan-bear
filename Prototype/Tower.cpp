@@ -194,6 +194,7 @@ void Tower::rebuild()
 
 void Tower::synchronise()
 {
+
 }
 
 Ogre::Vector3 Tower::getBlockPosition(unsigned level, unsigned layer, unsigned sector)
