@@ -209,6 +209,7 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
 	}
 	else if (arg.key == OIS::KC_F8)
 	{
+		printf("%d\n",sizeof(Tower));
 		this->gameTestThing->startClient();
 		mTrayMgr->hideCursor();
 	}
@@ -219,7 +220,7 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
 	}
 	else if (arg.key == OIS::KC_F10)
 	{
-		this->gameTestThing->netSendChat("hello");
+		this->gameTestThing->resetTower();
     }
     else if (arg.key == OIS::KC_F11)
 	{

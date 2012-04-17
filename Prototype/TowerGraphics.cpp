@@ -26,6 +26,7 @@ GraphicsChunk::GraphicsChunk(Tower *tower, BoundingVolume bounds, Ogre::SceneMan
     this->object->position(0, 0, 0);
     this->object->normal(Ogre::Vector3::UNIT_SCALE);
     this->object->colour(Ogre::ColourValue::White);
+    this->object->textureCoord(0, 0);
     this->object->triangle(0, 0, 0);
     this->object->end();
 
@@ -57,6 +58,7 @@ void GraphicsChunk::rebuild()
             this->object->position(triangle.points[point]);
             this->object->normal(triangle.normals[point]);
             this->object->colour(triangle.colours[point]);
+            this->object->textureCoord(triangle.coords[point]);
         }
 
         this->object->triangle(index, index + 1, index + 2);

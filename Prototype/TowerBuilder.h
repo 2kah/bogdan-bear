@@ -2,6 +2,8 @@
 #define __TowerBuilder_h_
 
 #include <vector>
+#include <boost/random/uniform_int_distribution.hpp>
+#include <boost/random/mersenne_twister.hpp>
 
 #include "Updatable.h"
 #include "PhysicsObject.h"
@@ -37,6 +39,8 @@ public:
 class TowerBuilder : public Updatable
 {
 public:
+	int maxBlocks;
+	bool isPaused;
     TowerBuilder(Tower *tower);
     virtual ~TowerBuilder(void);
 
@@ -45,9 +49,17 @@ public:
     virtual void regenerate(void);
 
     virtual void blocksUpdated(int blocksDestroyed);
+	void FullSync(bool* data);
+	void Init();
+	void InitFull();
+	void GetTowerState(bool* Output);
 
     Tower *tower;
 	MetaShapeBuilder *metaShapeBuilder;
+
+	//pseudo random number generator
+	boost::random::mt19937 gen;
+
 protected:
     unsigned timer;
     unsigned level;
@@ -55,7 +67,6 @@ protected:
 	int blocksAvailable;
 	int maxRegeneratingMetaShapes;
 	int regeneratingMetaShapes;
-	int maxBlocks;
 	int activeBlocks;
 
 	std::vector<std::vector<std::vector<BuilderChunk>>> chunks;

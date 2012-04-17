@@ -6,6 +6,7 @@
 #include <boost/signal.hpp>
 
 #include <OGRE/OgreVector3.h>
+#include <OGRE/OgreVector2.h>
 #include <OGRE/OgreColourValue.h>
 
 #include "TowerChunk.h"
@@ -24,6 +25,7 @@ struct BlockTriangle {
     Ogre::Vector3 points[3];
     Ogre::Vector3 normals[3];
     Ogre::ColourValue colours[3];
+    Ogre::Vector2 coords[3];
 };
 
 class Tower;

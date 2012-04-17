@@ -52,6 +52,8 @@ static const unsigned char ID_EXIST_ROCKET = 172;
 static const unsigned char ID_UPDATE_ROCKET = 173;
 static const unsigned char ID_DESTROY_ROCKET = 174;
 
+static const unsigned char ID_FULL_TOWER = 175;
+
 //static const unsigned char ID_INSERT_PLAYER = 175;
 //static const unsigned char ID_UPDATE_PLAYER = 176;
 
@@ -251,7 +253,12 @@ void NetworkTestStuff::update()
 			case ID_DISCONNECTION_NOTIFICATION:
 				std::cout << "ID_DISCONNECTION_NOTIFICATION" << std::endl;
 				break;
+			case ID_FULL_TOWER:
+				receiveFullTower(packet);
+				std::cout << "Received Full Tower" << std::endl;
+				break;
 			}
+
 		}
 	}
 }
@@ -348,7 +355,7 @@ void NetworkTestStuff::receiveAssignPlayer(RakNet::Packet *packet)
 void NetworkTestStuff::receiveInsertPlayer(RakNet::Packet *packet)
 {
 	NetPlayer* inc = (NetPlayer*)packet->data;
-	Player* p = new Player(Ogre::Vector3(0, 0, 0));
+	Player* p = new Player(Ogre::Vector3(100, 0, 100));
 	NetPlayer* np = new NetPlayer;
 	np->GUID = inc->GUID;
 	strncpy(np->name,inc->name,NAME_LENGTH);
@@ -410,6 +417,7 @@ unsigned NetworkTestStuff::registerObject(Object *object)
 void NetworkTestStuff::sendWorld(RakNet::Packet *packet)
 {
 	this->sendPlayers(packet);
+	this->sendFullTower(packet);
 }
 
 void NetworkTestStuff::sendPlayers(RakNet::Packet *packet)
@@ -422,6 +430,31 @@ void NetworkTestStuff::sendPlayers(RakNet::Packet *packet)
    }
 	std::cout << "End listing:" <<std::endl;
 }
+
+void NetworkTestStuff::sendFullTower(RakNet::Packet *packet)
+{
+	printf("maxblocks %d\n",this->tb->maxBlocks);
+	bool* tower = new bool[this->tb->maxBlocks+1];
+	this->tb->GetTowerState(tower);
+	unsigned long total = 0;
+	for (int i = 1; i < this->tb->maxBlocks+1; i++) 
+		if (tower[i])
+			total++;
+	((unsigned char*)tower)[0] = ID_FULL_TOWER;
+	rakPeer->Send((char*)tower,this->tb->maxBlocks+1 , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+	std::cout << "Sent full tower: " << tb->maxBlocks+1 <<std::endl;
+	printf("network total: %d\n",total);
+	
+}
+
+void NetworkTestStuff::receiveFullTower(RakNet::Packet *packet)
+{
+	printf("maxblocks %d\n",this->tb->maxBlocks);
+	//bool* tower = new bool[this->tb->maxBlocks+1];
+	//memcpy(tower,packet->data+1,this->tb->maxBlocks);
+	this->tb->FullSync((bool*)(packet->data+1));
+}
+
 
 void NetworkTestStuff::sendPlayerUpdate(NetPlayer* np)
 {
