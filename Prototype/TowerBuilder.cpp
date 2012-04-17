@@ -189,26 +189,25 @@ void TowerBuilder::regenerate(void)
 
 	//only regenerate one meta shape per frame
 	//TODO: neaten this up
-	//TODO: this code is wrong, shouldn't have blocksAvailable * 0.7 in for loop
-	//and the way to detect whether the meta shape is finished is wrong
 	int shapeIndex = rand() % this->regeneratingMetaShapes;
 	MetaShape metaShape = this->metaShapes[shapeIndex];
-	int blocksAdded = 0;
-	for(int j = 0; j < metaShape.coords.size() && j < blocksAvailable * 0.7; j++)
+	//TODO: tweak maxBlocksToRegen
+	int blocksAdded = 0, maxBlocksToRegen = blocksAvailable * 0.3;
+	for(int i = 0; i <= maxBlocksToRegen && blocksAvailable > 0; i++)
 	{
-		if(this->blocksAvailable == 0)
-		{
-			break;
-		}
-		Triple coords = metaShape.coords[j];
+		//get the last set of coords in the meta shape and remove them from the data structure
+		Triple coords = metaShape.coords.back();
+		metaShape.coords.pop_back();
+		//if the block the coords reference is inactive then activate it
 		if(!this->tower->blocks[coords.level][coords.layer][coords.sector])
 		{
+			//TODO: graphical fade in + collision detection
 			this->tower->blocks[coords.level][coords.layer][coords.sector] = true;
 			blocksAvailable--;
 			blocksAdded++;
 		}
 		//if meta shape has been fully regenerated then remove it
-		if(j == metaShape.coords.size() - 1)
+		if(metaShape.coords.size() == 0)
 		{
 			regeneratingMetaShapes--;
 			this->metaShapes.erase(metaShapes.begin() + shapeIndex);
