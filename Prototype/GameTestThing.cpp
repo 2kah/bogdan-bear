@@ -116,6 +116,10 @@ GameTestThing::~GameTestThing()
 {
 }
 
+void GameTestThing::resetTower()
+{
+}
+
 void GameTestThing::startLocal()
 {
 	isLocal = true;
@@ -132,7 +136,9 @@ void GameTestThing::startLocal()
 
     // Create a tower builder and generate the tower with it
     this->towerBuilder = new TowerBuilder(this->game->tower);
-    this->towerBuilder->generate();
+	this->network->tb = this->towerBuilder;
+	//this->game->tower->synchronise();
+	this->towerBuilder->generate();
 
     // Add the tower builder to the set of things to update
     //this->game->objects.insert(builder);
@@ -178,6 +184,27 @@ void GameTestThing::startClient()
 {
 	isLocal = false;
 	isServer = false;
+
+
+	unsigned divisions[] = {8, 16, 16, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 128, 128, 128, 128, 128, 128, 128};
+    std::vector<unsigned> structure(divisions, divisions + 14 + 8);
+
+    this->game->tower = new Tower(256, structure);
+
+    // Create a tower builder and generate the tower with it
+    this->towerBuilder = new TowerBuilder(this->game->tower);
+
+	this->towerBuilder->Init();
+	this->network->tb = this->towerBuilder;
+
+    new TowerGraphics(this->game->tower, this->game->mSceneMgr);
+    new TowerPhysics(this->game->tower, this->game->dynamicsWorld);
+
+
+
+
+
+
 	this->network->startNetwork(false);
 
     // wait to receive game state
@@ -189,6 +216,31 @@ void GameTestThing::startServer()
 {
 	isLocal = false;
 	isServer = true;
+
+	unsigned divisions[] = {8, 16, 16, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 128, 128, 128, 128, 128, 128, 128};
+    std::vector<unsigned> structure(divisions, divisions + 14 + 8);
+
+    this->game->tower = new Tower(256, structure);
+
+    // Create a tower builder and generate the tower with it
+    this->towerBuilder = new TowerBuilder(this->game->tower);
+
+	this->towerBuilder->Init();
+	this->towerBuilder->generate();
+	this->network->tb = this->towerBuilder;
+
+    new TowerGraphics(this->game->tower, this->game->mSceneMgr);
+    new TowerPhysics(this->game->tower, this->game->dynamicsWorld);
+
+
+    Player *player = new Player(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height + 10, 10));
+    
+
+    this->addPlayer(player);
+    this->setLocalPlayer(player);
+
+
+
 
 	this->network->startNetwork(true);
     
@@ -273,12 +325,14 @@ void GameTestThing::rocketExploded(Rocket *rocket, Explosion *explosion)
     this->removeQueue.insert(rocket);
 
     // TODO: refactor
+
+	this->addExplosion(explosion);
     if (isServer) this->network->sendExplosion(explosion->position);
 
     if (isLocal) 
 	{
 		std::cout<<"Local Explosion" <<std::endl;
-		this->addExplosion(explosion);
+		//this->addExplosion(explosion);
 	}
 }
 

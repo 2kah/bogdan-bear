@@ -26,7 +26,7 @@ class GameTestThing : public Updatable
 public:
     GameTestThing(Game *game);
     ~GameTestThing();
-
+	virtual void resetTower();
     virtual void startLocal();
     virtual void startServer();
     virtual void startClient();
