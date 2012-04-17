@@ -11,11 +11,28 @@ TurretGraphics::TurretGraphics(Turret *turret, Ogre::SceneManager *sceneManager)
     this->turret = turret;
     
     this->sceneManager = sceneManager;
-    this->entity = sceneManager->createEntity("facial.mesh");
-    this->sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode();
-    this->sceneNode->attachObject(this->entity);
+    this->entity = sceneManager->createEntity("turretBase.mesh");
+    this->sceneNodeBase = this->sceneManager->getRootSceneNode()->createChildSceneNode();
+    this->sceneNodeBase->attachObject(this->entity);
+	this->sceneNodeBase->setOrientation(this->turret->orientation);// * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_Y));
 
-    this->sceneNode->setScale(Ogre::Vector3::UNIT_SCALE / 2);
+	this->entity = sceneManager->createEntity("turretGuard.mesh");
+	//this->sceneNodeGuard = this->sceneNodeBase->createChildSceneNode();
+	this->sceneNodeGuard = this->sceneManager->getRootSceneNode()->createChildSceneNode();
+	this->sceneNodeGuard->attachObject(this->entity);
+
+	this->entity = sceneManager->createEntity("turretGuns.mesh");
+	//this->sceneNodeGuard = this->sceneNodeBase->createChildSceneNode();
+	this->sceneNodeGuns = this->sceneManager->getRootSceneNode()->createChildSceneNode();
+	this->sceneNodeGuns->attachObject(this->entity);
+
+	this->sceneNodeBase->setScale(Ogre::Vector3::UNIT_SCALE * 4);
+	this->sceneNodeGuard->setScale(Ogre::Vector3::UNIT_SCALE * 4);
+	this->sceneNodeGuns->setScale(Ogre::Vector3::UNIT_SCALE * 4);
+
+	this->sceneNodeBase->setPosition(this->turret->position - Ogre::Vector3::UNIT_Y * 11);
+	this->sceneNodeGuard->setPosition(this->turret->position - Ogre::Vector3::UNIT_Y * 11);
+	this->sceneNodeGuns->setPosition(this->turret->position - Ogre::Vector3::UNIT_Y * 11);
 
     this->turretUpdated(this->turret);
 
@@ -26,13 +43,15 @@ TurretGraphics::TurretGraphics(Turret *turret, Ogre::SceneManager *sceneManager)
 TurretGraphics::~TurretGraphics()
 {
     this->sceneManager->destroyEntity(this->entity);
-    this->sceneManager->destroySceneNode(this->sceneNode);
+	this->sceneManager->destroySceneNode(this->sceneNodeGuard);
+    this->sceneManager->destroySceneNode(this->sceneNodeBase);
 }
 
 void TurretGraphics::turretUpdated(Turret *turret)
 {
-    this->sceneNode->setPosition(this->turret->position - Ogre::Vector3::UNIT_Y * 11);
-    this->sceneNode->setOrientation(this->turret->orientation * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_Y));
+	//this->sceneNodeGuard->setPosition(Ogre::Vector3(this->turret->position.x, this->turret->position.y + 5, this->turret->position.z) - Ogre::Vector3::UNIT_Y * 11);
+    this->sceneNodeGuard->setOrientation(this->turret->orientation * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_Y));
+	this->sceneNodeGuns->setOrientation(this->turret->orientation * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_Y));
 }
 
 void TurretGraphics::turretFired(Turret *turret, Rocket *rocket)

@@ -27,6 +27,9 @@ public:
     GameTestThing(Game *game);
     ~GameTestThing();
 
+	virtual void buildScene();
+	virtual void destroyScene();
+
     virtual void startLocal();
     virtual void startServer();
     virtual void startClient();
@@ -45,11 +48,11 @@ public:
     virtual void addExplosion(Explosion *explosion);
 
 	Goal *goal;
+    Player *player;
 
 protected:
     Game *game;
     NetworkTestStuff *network;
-    Player *player;
     Sounds *sounds;
 	TowerBuilder *towerBuilder;
 

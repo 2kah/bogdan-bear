@@ -9,6 +9,8 @@
 
 #include <OGRE/OgreOverlay.h>
 #include <OGRE/OgreOverlayManager.h>
+#include <OGRE/OgreTextAreaOverlayElement.h>
+#include <OgreFrameListener.h>
 
 #include "Game.h"
 #include "Updatable.h"
@@ -23,6 +25,7 @@
 #include "GameTestThing.h"
 
 Game::Game()
+	: game(true)
 {
 #ifdef _DEBUG
     mResourcesCfg = "resources_d.cfg";
@@ -45,7 +48,7 @@ void Game::run(void)
     }
 
     // Create and initialise the dynamics world
-    btCollisionConfiguration *collisionConfig = new btDefaultCollisionConfiguration();
+    /*btCollisionConfiguration *collisionConfig = new btDefaultCollisionConfiguration();
 
     this->dynamicsWorld = new btDiscreteDynamicsWorld(new btCollisionDispatcher(collisionConfig),
                                                       new btDbvtBroadphase(),
@@ -60,20 +63,33 @@ void Game::run(void)
 
     // Set up a debug drawer
     this->mDebugDrawer = new BtOgre::DebugDrawer(mSceneMgr->getRootSceneNode(), dynamicsWorld);
-    this->dynamicsWorld->setDebugDrawer(this->mDebugDrawer);
+    this->dynamicsWorld->setDebugDrawer(this->mDebugDrawer);*/
+	setUpPhysicsWorld();
 
     // camera/viewport
-    mCamera = mSceneMgr->createCamera("playerCam");
+    mCamera = mSceneMgr->getCamera("playerCam");
+	mCamera->setPosition(Ogre::Vector3(400,900,400));
+	mCamera->setOrientation(Ogre::Quaternion(Ogre::Degree(60), Ogre::Vector3::UNIT_Y)*Ogre::Quaternion(Ogre::Degree(-45), Ogre::Vector3::UNIT_X));
     mCamera->setNearClipDistance(1);
     
     // Create one viewport, entire window
-    Ogre::Viewport* vp = mWindow->addViewport(mCamera);
-    vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
+    //Ogre::Viewport* vp = mWindow->addViewport(mCamera);
+    //vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
 
     // Alter the camera aspect ratio to match the viewport
-    mCamera->setAspectRatio(Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
+    //mCamera->setAspectRatio(Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
 
     this->gameTestThing = new GameTestThing(this);
+
+	this->gameTestThing->buildScene();
+
+	Ogre::FontManager::getSingleton().getByName("SdkTrays/Caption")->load();
+	OgreBites::Button* b = mTrayMgr->createButton(OgreBites::TL_CENTER, "StartLocalGame", "Start Local Game");
+	OgreBites::Button* b1 = mTrayMgr->createButton(OgreBites::TL_CENTER, "HostGame", "Host Game");
+	OgreBites::Button* b2 = mTrayMgr->createButton(OgreBites::TL_CENTER, "JoinGame", "Join Game");
+	//mTrayMgr->moveWidgetToTray(b, OgreBites::TL_CENTER);
+	//mTrayMgr->moveWidgetToTray(b1, OgreBites::TL_CENTER);
+	//mTrayMgr->moveWidgetToTray(b2, OgreBites::TL_CENTER);
 
     // Stuff
     Ogre::Timer timer;
@@ -87,8 +103,8 @@ void Game::run(void)
     double simTimeQueued = 0.0;
 
     int counted = 0;
-	bool game = true;
-    while (game)
+	//bool game = true;
+    while (true)
     {
         Ogre::WindowEventUtilities::messagePump();
 
@@ -109,16 +125,19 @@ void Game::run(void)
         {
             //previousState = currentState;
             //integrate (physics) (currentState, simTime, dt);
-            dynamicsWorld->stepSimulation(simFrameLength, 1, simFrameLength);
+			if(game == true) {
 
-            for(std::set<Updatable *>::iterator i = objects.begin(); i != objects.end(); ++i)
-            {
-                Updatable *object = *i;
+                dynamicsWorld->stepSimulation(simFrameLength, 1, simFrameLength);
 
-                object->update();
-            }
+                for(std::set<Updatable *>::iterator i = objects.begin(); i != objects.end(); ++i)
+                {
+                    Updatable *object = *i;
+
+                    object->update();
+                }
 			
-            this->gameTestThing->update();
+                this->gameTestThing->update();
+			}
 
             simTime += simFrameLength;
             simTimeQueued -= simFrameLength;
@@ -144,10 +163,13 @@ void Game::run(void)
 		if(this->gameTestThing->goal != NULL) 
 		{
 			if(this->gameTestThing->goal->isGameOver()) {
-                destroyScene();
-				game = false;
-                std::cout << "You have been eaten by Bogdan!" << std::endl;
-                std::cout << "*** GAME OVER ***" << std::endl;
+				if(game == true) 
+				{
+					endRound();
+					std::cout << "You have been eaten by Bogdan!" << std::endl;
+					std::cout << "*** GAME OVER ***" << std::endl;
+				    game = false;
+				}
 			}
 		}
     }
@@ -188,10 +210,12 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
 	else if (arg.key == OIS::KC_F8)
 	{
 		this->gameTestThing->startClient();
+		mTrayMgr->hideCursor();
 	}
 	else if (arg.key == OIS::KC_F9)
 	{
 		this->gameTestThing->startServer();
+		mTrayMgr->hideCursor();
 	}
 	else if (arg.key == OIS::KC_F10)
 	{
@@ -200,11 +224,12 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
     else if (arg.key == OIS::KC_F11)
 	{
 		this->gameTestThing->startLocal();
+		mTrayMgr->hideCursor();
     }
-    else if (arg.key == OIS::KC_T)
-    {
-        this->playerInput.signals.use(true);
-	}
+    //else if (arg.key == OIS::KC_T)
+    //{
+    //    this->playerInput.signals.use(true);
+	//}
 	//TODO: remove these 2 (testing purposes only)
 	else if (arg.key == OIS::KC_1)
 	{
@@ -214,7 +239,18 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
 	{
 		this->playerInput.signals.reactivate(true);
 	}
-	
+	else if (arg.key == OIS::KC_E)
+    {
+        this->playerInput.signals.use(true);
+	}
+	else if (arg.key == OIS::KC_RETURN)
+    {
+        if(game == false)
+		{
+			startRound();
+			game = true;
+		}
+	}
     return true;
 }
 
@@ -243,18 +279,6 @@ bool Game::keyReleased(const OIS::KeyEvent &arg)
     case OIS::KC_SPACE:
         this->playerInput.signals.jump(false);
         break;
-    //case OIS::KC_T:
-    //    this->playerInput.signals.use(false);
-    //    break;
-	case OIS::KC_B:
-		  std::cout << "LOAD!!" << std::endl;
-          ol = Ogre::OverlayManager::getSingleton().getByName("overlay.overlay");
-          if (ol != NULL)
-	      {
-		      std::cout << "LOADED OVERLAY" << std::endl;
-              ol->show();
-	      }
-        break;
     default:
         break;
     }
@@ -275,7 +299,7 @@ bool Game::mouseMoved(const OIS::MouseEvent &arg)
 bool Game::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id)
 {
     BaseApplication::mousePressed(arg, id);
-
+	if (mTrayMgr->injectMouseDown(arg, id)) return true;
     if (id == OIS::MB_Right)
 	{
         this->playerInput.signals.create(true);
@@ -294,6 +318,7 @@ bool Game::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id)
 
     if (id == OIS::MB_Right)
 	{
+		
         this->playerInput.signals.create(false);
 	}
     else if (id == OIS::MB_Left)
@@ -302,4 +327,147 @@ bool Game::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id)
     }
 
     return true;
+}
+
+void Game::buttonHit(OgreBites::Button *button)
+{
+    if(button->getName() == "StartLocalGame")
+	{
+		startRound();
+	}
+    else if(button->getName() == "JoinGame")
+	{
+		this->gameTestThing->destroyScene();
+		this->gameTestThing->startClient();
+		mTrayMgr->hideCursor();
+		mTrayMgr->destroyAllWidgets();
+		mTrayMgr->clearAllTrays();
+	}
+	else if(button->getName() == "HostGame")
+	{
+		this->gameTestThing->destroyScene();
+		this->gameTestThing->startServer();
+		mTrayMgr->hideCursor();
+		mTrayMgr->destroyAllWidgets();
+		mTrayMgr->clearAllTrays();
+	}
+}
+
+void Game::endRound()
+{
+	//this->gameTestThing->destroyScene();
+
+	Ogre::OverlayManager& overlayManager = Ogre::OverlayManager::getSingleton();
+
+	overlayManager.destroyAllOverlayElements();
+	overlayManager.getByName("OverlayName")->clear();
+    
+    // Create a panel
+    Ogre::OverlayContainer* panel2 = static_cast<Ogre::OverlayContainer*>(
+    overlayManager.createOverlayElement("Panel", "PanelName2"));
+    panel2->setMetricsMode(Ogre::GMM_PIXELS);
+    panel2->setPosition(10, 10);
+	panel2->_setDimensions(200, 200);
+    
+	/*Ogre::TextAreaOverlayElement* textArea = static_cast<Ogre::TextAreaOverlayElement*>(
+    overlayManager.createOverlayElement("TextArea", "win/lose"));
+    //textArea->setFontName("BlueHighway");
+    textArea->setCharHeight(16);
+    textArea->setColour(Ogre::ColourValue(0.3, 0.5, 0.3));
+    textArea->setCaption("Hello OGRE!");
+	printf("here\n");
+    panel2->addChild(textArea);*/
+
+	Ogre::MaterialPtr crosshair2 = Ogre::MaterialManager::getSingleton().create("crosshair2", "General");
+    crosshair2->getTechnique(0)->getPass(0)->createTextureUnitState("grass_1024.jpg");
+    crosshair2->getTechnique(0)->getPass(0)->setDepthCheckEnabled(true);
+    crosshair2->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+    panel2->setMaterialName("crosshair2");
+    
+	// Create an overlay, and add the panel
+    Ogre::Overlay* overlay = overlayManager.getByName("OverlayName");
+    //overlay->add2D(panel2);
+
+    // Show the overlay
+    //overlay->show();
+
+	// camera/viewport
+	//this->gameTestThing->player->enteredTurret();
+    mCamera = mSceneMgr->getCamera("playerCam");
+	mCamera->setPosition(Ogre::Vector3(400,900,400));
+	mCamera->setOrientation(Ogre::Quaternion(Ogre::Degree(60), Ogre::Vector3::UNIT_Y)*Ogre::Quaternion(Ogre::Degree(-45), Ogre::Vector3::UNIT_X));
+    mCamera->setNearClipDistance(1);
+}
+
+void Game::startRound()
+{
+	this->gameTestThing->destroyScene();
+	//setUpPhysicsWorld();
+	this->gameTestThing->startLocal();
+	if(mTrayMgr != NULL) 
+	{
+	    mTrayMgr->hideCursor();
+    	mTrayMgr->destroyAllWidgets();
+	    mTrayMgr->clearAllTrays();
+	}
+
+	Ogre::OverlayManager& overlayManager = Ogre::OverlayManager::getSingleton();
+
+	overlayManager.destroyAllOverlayElements();
+
+	if(overlayManager.getByName("OverlayName") != NULL)
+	{
+		overlayManager.getByName("OverlayName")->clear();
+	}
+    // Create a panel
+    Ogre::OverlayContainer* panel = static_cast<Ogre::OverlayContainer*>(
+    overlayManager.createOverlayElement("Panel", "PanelName"));
+    panel->setMetricsMode(Ogre::GMM_PIXELS);
+    panel->setPosition((mWindow->getWidth()/2), (mWindow->getHeight()/2));
+    //panel->_setDimensions((mWindow->getWidth()/64), (mWindow->getHeight()/64));
+    
+    Ogre::MaterialPtr crosshair = Ogre::MaterialManager::getSingleton().create("crosshair", "General");
+    crosshair->getTechnique(0)->getPass(0)->createTextureUnitState("crosshair.png");
+    crosshair->getTechnique(0)->getPass(0)->setDepthCheckEnabled(true);
+    crosshair->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+    panel->setMaterialName("crosshair");
+    
+    // Create an overlay, and add the panel
+	Ogre::Overlay* overlay = NULL;
+	if(overlayManager.getByName("OverlayName") == NULL)
+	{
+        overlay = overlayManager.create("OverlayName");
+	}
+	else
+	{
+		overlay = overlayManager.getByName("OverlayName");
+	}
+    overlay->add2D(panel);
+    
+    // Show the overlay
+	if(!overlay->isVisible()) 
+	{
+        overlay->show();
+	}
+}
+
+void Game::setUpPhysicsWorld()
+{
+
+	btCollisionConfiguration *collisionConfig = new btDefaultCollisionConfiguration();
+
+    this->dynamicsWorld = new btDiscreteDynamicsWorld(new btCollisionDispatcher(collisionConfig),
+                                                      new btDbvtBroadphase(),
+                                                      new btSequentialImpulseConstraintSolver(),
+                                                      collisionConfig);
+ 
+    // Required to make ghost objects work
+    this->dynamicsWorld->getPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
+
+    // Gravity is set at Earth gravity, assuming 1 unit is 1 meter
+    this->dynamicsWorld->setGravity(btVector3(0, -9.8, 0));
+
+    // Set up a debug drawer
+    this->mDebugDrawer = new BtOgre::DebugDrawer(mSceneMgr->getRootSceneNode(), dynamicsWorld);
+    this->dynamicsWorld->setDebugDrawer(this->mDebugDrawer);
 }
