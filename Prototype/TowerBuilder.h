@@ -2,6 +2,8 @@
 #define __TowerBuilder_h_
 
 #include <vector>
+#include <boost/random/uniform_int_distribution.hpp>
+#include <boost/random/mersenne_twister.hpp>
 
 #include "Updatable.h"
 #include "PhysicsObject.h"
@@ -48,6 +50,10 @@ public:
 
     Tower *tower;
 	MetaShapeBuilder *metaShapeBuilder;
+
+	//pseudo random number generator
+	boost::random::mt19937 gen;
+
 protected:
     unsigned timer;
     unsigned level;

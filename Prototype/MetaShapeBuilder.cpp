@@ -1,7 +1,8 @@
 #include "MetaShapeBuilder.h"
 
-MetaShapeBuilder::MetaShapeBuilder()
+MetaShapeBuilder::MetaShapeBuilder(boost::random::mt19937 &gen)
 {
+	this->gen = gen;
 }
 
 MetaShapeBuilder::~MetaShapeBuilder()
@@ -22,9 +23,15 @@ void MetaShapeBuilder::getMetaShape(int type, BuilderChunk *chunk, MetaShape *me
 void MetaShapeBuilder::makePlatform(BuilderChunk *chunk, MetaShape *metaShape)
 {
 	//randomly generate the size of the platform
-	int height = (rand() % (chunk->bounds.level_top - chunk->bounds.level_bottom)) + 1;
+	boost::random::uniform_int_distribution<> heightDist(1, (chunk->bounds.level_top - chunk->bounds.level_bottom) - 1);
+	int height = heightDist(gen);
+	boost::random::uniform_int_distribution<> depthDist(1, (chunk->bounds.layer_outer - chunk->bounds.layer_inner) - 1);
+	int depth = depthDist(gen);
+	boost::random::uniform_int_distribution<> widthDist(1, (chunk->bounds.sector_right - chunk->bounds.sector_left) - 1);
+	int width = widthDist(gen);
+	/*int height = (rand() % (chunk->bounds.level_top - chunk->bounds.level_bottom)) + 1;
 	int depth = (rand() % (chunk->bounds.layer_outer - chunk->bounds.layer_inner)) + 1;
-	int width = (rand() % (chunk->bounds.sector_right - chunk->bounds.sector_left)) + 1;
+	int width = (rand() % (chunk->bounds.sector_right - chunk->bounds.sector_left)) + 1;*/
 
 	/*//randomly generate the placement of the platform within the chunk (guard against 0 modulus)
 	unsigned levelPlacement = ((chunk->bounds.level_top - chunk->bounds.level_bottom) - height) == 0 ? 0 : rand() % ((chunk->bounds.level_top - chunk->bounds.level_bottom) - height);
