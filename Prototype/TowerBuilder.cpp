@@ -142,7 +142,7 @@ void TowerBuilder::generate()
 	this->blocksAvailable = 20000;
 
 	//TODO: make this generic
-	while(this->blocksAvailable > 399)
+	while(this->blocksAvailable > 999)
 	{
 		this->regenerate();
 	}
@@ -150,8 +150,6 @@ void TowerBuilder::generate()
 
 void TowerBuilder::regenerate(void)
 {
-	//TODO: guard against 0 modulus (illegal)
-
 	//Only proceed if there are actually any missing blocks to regenerate
 	if(this->blocksAvailable == 0)
 	{
@@ -173,13 +171,14 @@ void TowerBuilder::regenerate(void)
 			do
 			{
 				randLevel = levelDist(gen);
-				//TODO: make this not a uniform dist
-				boost::random::uniform_int_distribution<> layerDist(0, this->chunks[randLevel].size() - 1);
+				boost::random::uniform_int_distribution<> layerDist(0, this->chunks[randLevel].size());
 				randLayer = layerDist(gen);
+				//an attempt to make layer 0 more likely
+				randLayer--;
+				randLayer = randLayer < 0 ? 0 : randLayer;
 				boost::random::uniform_int_distribution<> sectorDist(0, this->chunks[randLevel][randLayer].size() - 1);
 				randSector = sectorDist(gen);
 				//randLevel = rand() % this->chunks.size();
-				//TODO: make this more likely to choose lower numbers
 				//randLayer = rand() % this->chunks[randLevel].size();
 				//randSector = rand() % this->chunks[randLevel][randLayer].size();
 			}
@@ -195,14 +194,13 @@ void TowerBuilder::regenerate(void)
 	}
 
 	//only regenerate one meta shape per frame
-	//TODO: neaten this up
 	//pick which meta shape to regenerate
 	boost::random::uniform_int_distribution<> shapeDist(0, this->regeneratingMetaShapes - 1);
 	int shapeIndex = shapeDist(gen);
 	//int shapeIndex = rand() % this->regeneratingMetaShapes;
 	MetaShape metaShape = this->metaShapes[shapeIndex];
 	//TODO: tweak maxBlocksToRegen
-	int blocksAdded = 0, maxBlocksToRegen = blocksAvailable * 0.3;
+	int blocksAdded = 0, maxBlocksToRegen = blocksAvailable * 0.2;
 	for(int i = 0; i <= maxBlocksToRegen && blocksAvailable > 0; i++)
 	{
 		//get the last set of coords in the meta shape and remove them from the data structure
