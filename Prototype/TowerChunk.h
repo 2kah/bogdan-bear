@@ -30,6 +30,9 @@ struct BoundingVolume {
         return true;
     }
 
+    unsigned sector_left_layer(Tower *tower, unsigned layer);
+    unsigned sector_right_layer(Tower *tower, unsigned layer);
+
     unsigned level_bottom, level_top;
     unsigned layer_inner, layer_outer;
     unsigned sector_left, sector_right;
