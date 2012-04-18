@@ -44,6 +44,8 @@ protected:
     Player *player;
 
 	btScalar walkSpeed;
+	btScalar maxMoveSpeed;
+	btVector3 oldPosition;
 	btVector3 walkDirection;
 	btVector3 oldWalkDirection;
 	btScalar airMovementSpeed;
