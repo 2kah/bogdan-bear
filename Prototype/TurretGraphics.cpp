@@ -26,9 +26,9 @@ TurretGraphics::TurretGraphics(Turret *turret, Ogre::SceneManager *sceneManager)
 	this->sceneNodeGuns = this->sceneManager->getRootSceneNode()->createChildSceneNode();
 	this->sceneNodeGuns->attachObject(this->entity);
 
-	this->sceneNodeBase->setScale(Ogre::Vector3::UNIT_SCALE * 4);
-	this->sceneNodeGuard->setScale(Ogre::Vector3::UNIT_SCALE * 4);
-	this->sceneNodeGuns->setScale(Ogre::Vector3::UNIT_SCALE * 4);
+	this->sceneNodeBase->setScale(Ogre::Vector3::UNIT_SCALE * 2);
+	this->sceneNodeGuard->setScale(Ogre::Vector3::UNIT_SCALE * 2);
+	this->sceneNodeGuns->setScale(Ogre::Vector3::UNIT_SCALE * 2);
 
 	this->sceneNodeBase->setPosition(this->turret->position - Ogre::Vector3::UNIT_Y * 11);
 	this->sceneNodeGuard->setPosition(this->turret->position - Ogre::Vector3::UNIT_Y * 11);
