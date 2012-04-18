@@ -10,6 +10,33 @@
 
 #include <OGRE/OgreVector3.h>
 
+// sorry this isn't in a better place
+#include "TowerChunk.h"
+
+unsigned BoundingVolume::sector_left_layer(Tower *tower, unsigned layer)
+{
+    unsigned divisions = tower->blocks[0][layer].size();
+
+    double ratio = divisions / (double) tower->sectors;
+    int left = (int) (this->sector_left * ratio) % divisions;
+    int right = (int) (this->sector_right * ratio) % divisions;
+    
+    return left;
+}
+
+unsigned BoundingVolume::sector_right_layer(Tower *tower, unsigned layer)
+{
+    unsigned divisions = tower->blocks[0][layer].size();
+
+    double ratio = divisions / (double) tower->sectors;
+    int left = (int) (this->sector_left * ratio) % divisions;
+    int right = (int) (this->sector_right * ratio) % divisions;
+    
+    return right;
+}
+
+// ---
+
 Tower::Tower(unsigned levels, std::vector<unsigned> structure)
 {
     this->levels = levels;
