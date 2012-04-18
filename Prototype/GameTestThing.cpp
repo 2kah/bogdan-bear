@@ -175,7 +175,7 @@ void GameTestThing::destroyScene()
 		delete this->localPlayer;
 	}
 	this->game->objects.clear();
-	//this->game->objects.insert(this->network);
+	this->game->objects.insert(this->network);
 	this->removeQueue.clear();
 	Turret *turret;
 	for(std::set<Turret *>::iterator i = this->turrets.begin(); i != this->turrets.end(); ++i)
