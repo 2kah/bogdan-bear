@@ -171,7 +171,7 @@ void GameTestThing::destroyScene()
 	printf("hello\n");
 	if(this->localPlayer != NULL)
 	{
-		this->localPlayer->enteredTurret();
+		this->localPlayerPhysics->~PlayerPhysics();
 		delete this->localPlayer;
 	}
 	printf("hello\n");
@@ -182,13 +182,13 @@ void GameTestThing::destroyScene()
 	printf("hello\n");
 	this->game->mSceneMgr->destroyAllEntities();
 	printf("hello\n");
-	this->network->tb = NULL;
+	//this->network->tb = NULL;
 	printf("hello\n");
-	this->towerBuilder = NULL;
+	//this->towerBuilder = NULL;
 	printf("hello\n");
-	delete this->towerBuilder;
+	//delete this->towerBuilder;
 	printf("hello\n");
-	this->game->mSceneMgr->destroyAllManualObjects();
+	//this->game->mSceneMgr->destroyAllManualObjects();
 	printf("hello\n");
 	for (int i=this->game->dynamicsWorld->getNumCollisionObjects()-1; i>=0 ;i--)
         {
@@ -529,8 +529,8 @@ void GameTestThing::setLocalPlayer(Player *player)
     player->addInput(this->game->playerInput);
 
     // Add player physics and link local input to it
-    PlayerPhysics* playerPhysics = new PlayerPhysics(player, this->game->dynamicsWorld);
-	playerPhysics->addInput(this->game->playerInput);
+    localPlayerPhysics = new PlayerPhysics(player, this->game->dynamicsWorld);
+	localPlayerPhysics->addInput(this->game->playerInput);
 }
 
 void GameTestThing::addPlayer(Player *player)

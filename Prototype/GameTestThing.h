@@ -16,6 +16,7 @@ class NetworkTestStuff;
 class Sounds;
 class Turret;
 class Player;
+class PlayerPhysics;
 class Platform;
 class Rocket;
 class Explosion;
@@ -82,6 +83,7 @@ private:
     std::vector<Player *> players;
 
     Player *localPlayer;
+	PlayerPhysics *localPlayerPhysics;
 };
 
 #endif // #ifndef __GameTestThing_h_
