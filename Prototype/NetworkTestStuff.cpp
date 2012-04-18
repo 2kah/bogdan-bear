@@ -26,6 +26,7 @@
 #include <OGRE/OgreVector3.h>
 #include <OGRE/OgreQuaternion.h>
 #include "Player.h"
+#include "Tower.h"
 
 static const char *SERVER_IP_ADDRESS="127.0.0.1";
 static const unsigned short SERVER_PORT=12345;
@@ -52,7 +53,7 @@ static const unsigned char ID_EXIST_ROCKET = 172;
 static const unsigned char ID_UPDATE_ROCKET = 173;
 static const unsigned char ID_DESTROY_ROCKET = 174;
 
-static const unsigned char ID_FULL_TOWER = 175;
+static const unsigned char ID_UPDATE_TOWER = 175;
 
 //static const unsigned char ID_INSERT_PLAYER = 175;
 //static const unsigned char ID_UPDATE_PLAYER = 176;
@@ -253,9 +254,9 @@ void NetworkTestStuff::update()
 			case ID_DISCONNECTION_NOTIFICATION:
 				std::cout << "ID_DISCONNECTION_NOTIFICATION" << std::endl;
 				break;
-			case ID_FULL_TOWER:
-				receiveFullTower(packet);
-				std::cout << "Received Full Tower" << std::endl;
+			case ID_UPDATE_TOWER:
+				receiveUpdateTower(packet);
+				std::cout << "Received Tower Update" << std::endl;
 				break;
 			}
 
@@ -316,7 +317,7 @@ void NetworkTestStuff::clientConnected(RakNet::Packet *packet)
 	insertNetPlayer(np);
 	sendNetPlayer(np, ID_INSERT_PLAYER); //Creates new player across all clients
 	sendNetPlayer(np, ID_ASSIGN_PLAYER, packet->guid); //assigns new player to client
-	
+	this->tb->isPaused=false;
 
 	
 	
@@ -433,26 +434,46 @@ void NetworkTestStuff::sendPlayers(RakNet::Packet *packet)
 
 void NetworkTestStuff::sendFullTower(RakNet::Packet *packet)
 {
-	printf("maxblocks %d\n",this->tb->maxBlocks);
-	bool* tower = new bool[this->tb->maxBlocks+1];
-	this->tb->GetTowerState(tower);
-	unsigned long total = 0;
-	for (int i = 1; i < this->tb->maxBlocks+1; i++) 
-		if (tower[i])
-			total++;
-	((unsigned char*)tower)[0] = ID_FULL_TOWER;
-	rakPeer->Send((char*)tower,this->tb->maxBlocks+1 , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
-	std::cout << "Sent full tower: " << tb->maxBlocks+1 <<std::endl;
-	printf("network total: %d\n",total);
-	
+	broadcastUpdateTower(0,this->tb->tower->levels, 0,this->tb->tower->layers);
 }
 
-void NetworkTestStuff::receiveFullTower(RakNet::Packet *packet)
+void NetworkTestStuff::broadcastUpdateTower(int low_level, int high_level, int low_layer, int high_layer)
 {
-	printf("maxblocks %d\n",this->tb->maxBlocks);
-	//bool* tower = new bool[this->tb->maxBlocks+1];
-	//memcpy(tower,packet->data+1,this->tb->maxBlocks);
-	this->tb->FullSync((bool*)(packet->data+1));
+	if (rakPeer > 0)
+	{
+	Tower* tower = this->tb->tower;
+	int count = 0;
+	unsigned long total = 0;
+	for (int i =low_level; i < high_level; i++)
+	{
+		for (int j =low_layer; j < high_layer; j++)
+		{
+			for (int k =0; k < tower->blocks[i][j].size() ; k++)
+			{
+				this->towerBuffer.data[count] = (tower->blocks[i][j][k]);
+				if (this->towerBuffer.data[count]) total++;
+				count++;
+			}
+		}
+	}
+	this->towerBuffer.size = count;
+	this->towerBuffer.low_layer = low_layer;
+	this->towerBuffer.low_level = low_level;
+	this->towerBuffer.high_layer= high_layer;
+	this->towerBuffer.high_level= high_level;
+	//printf("MaxBlocks: %d\n",this->tb->maxBlocks);
+	this->towerBuffer.typeId = ID_UPDATE_TOWER;
+	//printf("max size: %d actual size: %d\n",sizeof(NetTower),this->towerBuffer.size+29);
+	rakPeer->Send((char*)&(this->towerBuffer),this->towerBuffer.size+29 , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+	printf("Sending %d blocks, %d active.\n",count,total);
+	}
+}
+
+void NetworkTestStuff::receiveUpdateTower(RakNet::Packet *packet)
+{
+	printf("Incoming tower update: %d bytes\n",packet->length);
+	NetTower* towerData = (NetTower*)packet->data;
+	this->tb->Sync(towerData->data, towerData->low_level,towerData->high_level, towerData->low_layer, towerData->high_layer);
 }
 
 

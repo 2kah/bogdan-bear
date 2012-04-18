@@ -228,6 +228,7 @@ void GameTestThing::startLocal()
     // Create a tower builder and generate the tower with it
     this->towerBuilder = new TowerBuilder(this->game->tower);
 	this->network->tb = this->towerBuilder;
+	this->towerBuilder->isPaused=true;
 	//this->game->tower->synchronise();
 	this->towerBuilder->generate();
 
@@ -291,7 +292,7 @@ void GameTestThing::startClient()
 
     // Create a tower builder and generate the tower with it
     this->towerBuilder = new TowerBuilder(this->game->tower);
-
+	this->towerBuilder->isPaused=true;
 	this->towerBuilder->Init();
 	this->network->tb = this->towerBuilder;
 
@@ -314,7 +315,7 @@ void GameTestThing::startServer()
 {
 	isLocal = false;
 	isServer = true;
-
+	printf("size of nettower %d\n",sizeof(NetTower));
 	unsigned divisions[] = {8, 16, 16, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 128, 128, 128, 128, 128, 128, 128};
     std::vector<unsigned> structure(divisions, divisions + 14 + 8);
 
@@ -322,10 +323,12 @@ void GameTestThing::startServer()
 
     // Create a tower builder and generate the tower with it
     this->towerBuilder = new TowerBuilder(this->game->tower);
-
+	this->towerBuilder->isPaused=true;
 	this->towerBuilder->Init();
-	this->towerBuilder->generate();
+	this->towerBuilder->network = this->network;
 	this->network->tb = this->towerBuilder;
+	this->towerBuilder->generate();
+	
 
     new TowerGraphics(this->game->tower, this->game->mSceneMgr);
     new TowerPhysics(this->game->tower, this->game->dynamicsWorld);
@@ -371,6 +374,7 @@ void GameTestThing::netSendChat(std::string message)
 {
 	this->network->sendChat(message);
 }
+
 void GameTestThing::netSendExplosion(Ogre::Vector3 position)
 {
 	this->network->sendExplosion(position);

@@ -10,6 +10,7 @@
 #include <OGRE/OgreColourValue.h>
 
 #include "TowerChunk.h"
+#include "NetworkTestStuff.h"
 
 // Points as shown in http://you.mongle.me/tower/circles/gamesproject.png
 // base: a1, b1, c1, d1

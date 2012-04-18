@@ -13,6 +13,10 @@
 
 class MetaShapeBuilder;
 class Tower;
+class NetworkTestStuff;
+
+
+
 
 struct Triple {
 	Triple() {}
@@ -20,6 +24,7 @@ struct Triple {
 
 	int level, layer, sector;
 };
+
 
 struct MetaShape {
 	MetaShape() {}
@@ -41,6 +46,7 @@ public:
 class TowerBuilder : public Updatable, public boost::signals::trackable
 {
 public:
+	NetworkTestStuff* network;
 	int maxBlocks;
 	bool isPaused;
     TowerBuilder(Tower *tower);
@@ -51,10 +57,11 @@ public:
     virtual void regenerate(void);
 
     virtual void blocksUpdated(int blocksDestroyed);
-	void FullSync(bool* data);
+	void Sync(bool* data, int low_level, int high_level, int low_layer, int high_layer);
 	void Init();
 	void InitFull();
-	void GetTowerState(bool* Output);
+	void GetFullTowerState();
+	void GetPartialTowerState();
 
     Tower *tower;
 	MetaShapeBuilder *metaShapeBuilder;
