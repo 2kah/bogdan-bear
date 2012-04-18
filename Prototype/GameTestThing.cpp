@@ -140,10 +140,10 @@ void GameTestThing::buildScene()
     //this->game->objects.insert(builder);
 
     // Add four turrets
-    Turret *turret1 = new Turret(Ogre::Vector3(0, 90, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y));
-	Turret *turret2 = new Turret(Ogre::Vector3(0, 90, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y));
-	Turret *turret3 = new Turret(Ogre::Vector3(400, 90, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y));
-	Turret *turret4 = new Turret(Ogre::Vector3(-400, 90, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y));
+    Turret *turret1 = new Turret(Ogre::Vector3(0, 70, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y));
+	Turret *turret2 = new Turret(Ogre::Vector3(0, 70, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y));
+	Turret *turret3 = new Turret(Ogre::Vector3(400, 70, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y));
+	Turret *turret4 = new Turret(Ogre::Vector3(-400, 70, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y));
 
     this->addTurret(turret1);
     this->addTurret(turret2);
@@ -168,25 +168,34 @@ void GameTestThing::destroyScene()
 {
 	//this->game->tower = NULL;
 	//this->towerBuilder = NULL;
+	printf("hello\n");
 	if(this->localPlayer != NULL)
 	{
 		this->localPlayer->enteredTurret();
 		delete this->localPlayer;
 	}
+	printf("hello\n");
 	this->game->objects.clear();
+	this->game->objects.insert(this->network);
+	printf("hello\n");
 	this->turrets.clear();
+	printf("hello\n");
 	this->game->mSceneMgr->destroyAllEntities();
+	printf("hello\n");
+	this->network->tb = NULL;
+	printf("hello\n");
+	this->towerBuilder = NULL;
+	printf("hello\n");
+	delete this->towerBuilder;
+	printf("hello\n");
 	this->game->mSceneMgr->destroyAllManualObjects();
+	printf("hello\n");
 	for (int i=this->game->dynamicsWorld->getNumCollisionObjects()-1; i>=0 ;i--)
         {
                 btCollisionObject* obj = this->game->dynamicsWorld->getCollisionObjectArray()[i];
                 this->game->dynamicsWorld->removeCollisionObject( obj );
-				    //delete obj->getBroadphaseHandle();
-				    //delete obj->getUserPointer();
                 delete obj;
         }
-	delete this->towerBuilder;
-	this->towerBuilder = NULL;
 	//this->game->dynamicsWorld->getBroadphase()->~btBroadphaseInterface();
 	//delete this->game->dynamicsWorld;
 	//this->game->setUpPhysicsWorld();
@@ -217,10 +226,10 @@ void GameTestThing::startLocal()
     //this->game->objects.insert(builder);
 
     // Add four turrets
-    Turret *turret1 = new Turret(Ogre::Vector3(0, 90, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y));
-	Turret *turret2 = new Turret(Ogre::Vector3(0, 90, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y));
-	Turret *turret3 = new Turret(Ogre::Vector3(400, 90, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y));
-	Turret *turret4 = new Turret(Ogre::Vector3(-400, 90, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y));
+    Turret *turret1 = new Turret(Ogre::Vector3(0, 70, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y));
+	Turret *turret2 = new Turret(Ogre::Vector3(0, 70, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y));
+	Turret *turret3 = new Turret(Ogre::Vector3(400, 70, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y));
+	Turret *turret4 = new Turret(Ogre::Vector3(-400, 70, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y));
 
     this->addTurret(turret1);
     this->addTurret(turret2);
