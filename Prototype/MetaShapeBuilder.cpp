@@ -33,20 +33,27 @@ void MetaShapeBuilder::makePlatform(BuilderChunk *chunk, MetaShape *metaShape)
 	int depth = (rand() % (chunk->bounds.layer_outer - chunk->bounds.layer_inner)) + 1;
 	int width = (rand() % (chunk->bounds.sector_right - chunk->bounds.sector_left)) + 1;*/
 
+	boost::random::uniform_int_distribution<> levelDist(0, ((chunk->bounds.level_top - chunk->bounds.level_bottom) - height) - 1);
+	int levelPlacement = levelDist(gen);
+	boost::random::uniform_int_distribution<> layerDist(0, ((chunk->bounds.layer_outer - chunk->bounds.layer_inner) - depth) - 1);
+	int layerPlacement = layerDist(gen);
+	boost::random::uniform_int_distribution<> sectorDist(0, ((chunk->bounds.sector_right - chunk->bounds.sector_left) - width) - 1);
+	int sectorPlacement = sectorDist(gen);
+
 	/*//randomly generate the placement of the platform within the chunk (guard against 0 modulus)
 	unsigned levelPlacement = ((chunk->bounds.level_top - chunk->bounds.level_bottom) - height) == 0 ? 0 : rand() % ((chunk->bounds.level_top - chunk->bounds.level_bottom) - height);
 	unsigned layerPlacement = ((chunk->bounds.layer_outer - chunk->bounds.layer_inner) - depth) == 0 ? 0 : rand() % ((chunk->bounds.layer_outer - chunk->bounds.layer_inner) - depth);
-	unsigned sectorPlacement = ((chunk->bounds.sector_right - chunk->bounds.sector_left) - width) == 0 ? 0 : rand() % ((chunk->bounds.sector_right - chunk->bounds.sector_left) - width);
+	unsigned sectorPlacement = ((chunk->bounds.sector_right - chunk->bounds.sector_left) - width) == 0 ? 0 : rand() % ((chunk->bounds.sector_right - chunk->bounds.sector_left) - width);*/
 
 	height += levelPlacement;
 	depth += layerPlacement;
-	width += sectorPlacement;*/
+	width += sectorPlacement;
 
-	for(int levels = 0; levels < height; levels++) //zero replaces levelPlacement
+	for(int levels = levelPlacement; levels < height; levels++) //zero replaces levelPlacement
 	{
-		for(int layers = 0; layers < depth; layers++) //zero replaces layerPlacement
+		for(int layers = layerPlacement; layers < depth; layers++) //zero replaces layerPlacement
 		{
-			for(int sectors = 0; sectors < width; sectors++) //zero replaces sectorPlacement
+			for(int sectors = sectorPlacement; sectors < width; sectors++) //zero replaces sectorPlacement
 			{
 				metaShape->coords.push_back(Triple(levels + chunk->bounds.level_bottom, layers + chunk->bounds.layer_inner, sectors + chunk->bounds.sector_left));
 			}
