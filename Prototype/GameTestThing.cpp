@@ -84,13 +84,13 @@ GameTestThing::GameTestThing(Game *game)
     this->game->dynamicsWorld->addRigidBody(groundRigidBody); // , 4, 2);
     
     // Add the bowl
-    Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowl.mesh");
+    /*Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowl.mesh");
     Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
     sceneNode->attachObject(bowl);
     //sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
 
     btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
-	fileLoader->loadFile("bowl.bullet");
+	fileLoader->loadFile("bowl.bullet");*/
 
     // Create and add a falling object
     /*FallingObject *object = new FallingObject(Ogre::Vector3(40.5, 64, 40.15));
@@ -120,6 +120,88 @@ void GameTestThing::resetTower()
 {
 }
 
+void GameTestThing::buildScene()
+{
+	isLocal = true;
+	isServer = false;
+    // Create an empty tower
+    unsigned divisions[] = {8, 16, 16, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 128, 128, 128, 128, 128, 128, 128};
+    std::vector<unsigned> structure(divisions, divisions + 14 + 8);
+    //unsigned divisions[] = {32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32};
+    //std::vector<unsigned> structure(divisions, divisions + 14);
+
+    this->game->tower = new Tower(256, structure);
+
+    // Create a tower builder and generate the tower with it
+    this->towerBuilder = new TowerBuilder(this->game->tower);
+    this->towerBuilder->generate();
+
+    // Add the tower builder to the set of things to update
+    //this->game->objects.insert(builder);
+
+    // Add four turrets
+    Turret *turret1 = new Turret(Ogre::Vector3(0, 70, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y));
+	Turret *turret2 = new Turret(Ogre::Vector3(0, 70, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y));
+	Turret *turret3 = new Turret(Ogre::Vector3(400, 70, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y));
+	Turret *turret4 = new Turret(Ogre::Vector3(-400, 70, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y));
+
+    this->addTurret(turret1);
+    this->addTurret(turret2);
+    this->addTurret(turret3);
+    this->addTurret(turret4);
+
+    // Add tower graphics and physics
+    new TowerGraphics(this->game->tower, this->game->mSceneMgr);
+    new TowerPhysics(this->game->tower, this->game->dynamicsWorld);
+
+	Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowl.mesh");
+    Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
+    sceneNode->attachObject(bowl);
+    //sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
+
+    btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
+	fileLoader->loadFile("bowl.bullet");
+
+}
+
+void GameTestThing::destroyScene()
+{
+	//this->game->tower = NULL;
+	//this->towerBuilder = NULL;
+	printf("hello\n");
+	if(this->localPlayer != NULL)
+	{
+		this->localPlayerPhysics->~PlayerPhysics();
+		delete this->localPlayer;
+	}
+	printf("hello\n");
+	this->game->objects.clear();
+	this->game->objects.insert(this->network);
+	printf("hello\n");
+	this->turrets.clear();
+	printf("hello\n");
+	this->game->mSceneMgr->destroyAllEntities();
+	printf("hello\n");
+	//this->network->tb = NULL;
+	printf("hello\n");
+	//this->towerBuilder = NULL;
+	printf("hello\n");
+	//delete this->towerBuilder;
+	printf("hello\n");
+	//this->game->mSceneMgr->destroyAllManualObjects();
+	printf("hello\n");
+	for (int i=this->game->dynamicsWorld->getNumCollisionObjects()-1; i>=0 ;i--)
+        {
+                btCollisionObject* obj = this->game->dynamicsWorld->getCollisionObjectArray()[i];
+                this->game->dynamicsWorld->removeCollisionObject( obj );
+                delete obj;
+        }
+	//this->game->dynamicsWorld->getBroadphase()->~btBroadphaseInterface();
+	//delete this->game->dynamicsWorld;
+	//this->game->setUpPhysicsWorld();
+	//this->game->mSceneMgr->clearScene();
+}
+
 void GameTestThing::startLocal()
 {
 	isLocal = true;
@@ -143,10 +225,21 @@ void GameTestThing::startLocal()
     // Add the tower builder to the set of things to update
     //this->game->objects.insert(builder);
 
+    // Add four turrets
+    Turret *turret1 = new Turret(Ogre::Vector3(0, 70, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y));
+	Turret *turret2 = new Turret(Ogre::Vector3(0, 70, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y));
+	Turret *turret3 = new Turret(Ogre::Vector3(400, 70, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y));
+	Turret *turret4 = new Turret(Ogre::Vector3(-400, 70, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y));
+
+    this->addTurret(turret1);
+    this->addTurret(turret2);
+    this->addTurret(turret3);
+    this->addTurret(turret4);
+
     // Add tower graphics and physics
     new TowerGraphics(this->game->tower, this->game->mSceneMgr);
     new TowerPhysics(this->game->tower, this->game->dynamicsWorld);
-
+	
     // Add a player
     Player *player = new Player(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height + 10, 10));
     Player *enemy = new Player(Ogre::Vector3(100, 0, 100));
@@ -157,22 +250,18 @@ void GameTestThing::startLocal()
     this->addPlayer(enemy);
 
 	//Add the goal
-	Goal *goal = new Goal(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height, 0), player);
+	Goal *goal = new Goal(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height, 0), player, this->game->mSceneMgr, this->game->dynamicsWorld);
 	this->game->objects.insert(goal);
 	this->goal = goal;
-
-    // Add four turrets
-    Turret *turret1 = new Turret(Ogre::Vector3(0, 150, 400), Ogre::Quaternion());
-	Turret *turret2 = new Turret(Ogre::Vector3(0, 150, -400), Ogre::Quaternion());
-	Turret *turret3 = new Turret(Ogre::Vector3(400, 150, 0), Ogre::Quaternion());
-	Turret *turret4 = new Turret(Ogre::Vector3(-400, 150, 0), Ogre::Quaternion());
-
-    this->addTurret(turret1);
-    this->addTurret(turret2);
-    this->addTurret(turret3);
-    this->addTurret(turret4);
     
+	
+	Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowl.mesh");
+    Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
+    sceneNode->attachObject(bowl);
+    //sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
 
+    btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
+	fileLoader->loadFile("bowl.bullet");
     // Set the turret to aim at the player always. Setting it to NULL makes it shoot randomly at the tower.
 	//turret1->setTarget(player);
 	//turret2->setTarget(player);
@@ -440,8 +529,8 @@ void GameTestThing::setLocalPlayer(Player *player)
     player->addInput(this->game->playerInput);
 
     // Add player physics and link local input to it
-    PlayerPhysics* playerPhysics = new PlayerPhysics(player, this->game->dynamicsWorld);
-	playerPhysics->addInput(this->game->playerInput);
+    localPlayerPhysics = new PlayerPhysics(player, this->game->dynamicsWorld);
+	localPlayerPhysics->addInput(this->game->playerInput);
 }
 
 void GameTestThing::addPlayer(Player *player)

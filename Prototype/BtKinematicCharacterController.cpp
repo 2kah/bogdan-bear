@@ -591,8 +591,10 @@ bool btKinematicCharacterController::canJump () const
 
 void btKinematicCharacterController::jump ()
 {
-	if (!canJump())
-		return;
+	//if (!canJump())
+	//	return;
+	//m_wasOnGround = onGround();
+	if(!m_wasOnGround) return;
 
 	m_verticalVelocity = m_jumpSpeed;
 	m_wasJumping = true;

@@ -10,13 +10,19 @@
 #include <btBulletCollisionCommon.h>
 #include <BulletCollision/CollisionDispatch/btGhostObject.h>
 
+#include <btBulletWorldImporter.h>
+
+#include <OGRE/OgreSceneManager.h>
+#include <OGRE/OgreSceneNode.h>
+#include <OGRE/OgreEntity.h>
+
 #include "PhysicsObject.h"
 #include "Goal.h"
 #include "Player.h"
 
 //holdingTeam :0 redTeam, 1 blueTeam, 2 greenTeam, 3 orangeTeam
 //PlayerTracked should be a list of players to loop over.
-Goal::Goal(Ogre::Vector3 position, Player *playerTracked)
+Goal::Goal(Ogre::Vector3 position, Player *playerTracked, Ogre::SceneManager *sceneManager, btDiscreteDynamicsWorld *dynamicsWorld)
 {
 	player = playerTracked;
 	goalPosition = position;
@@ -33,6 +39,20 @@ Goal::Goal(Ogre::Vector3 position, Player *playerTracked)
 	this->teamPoints[4] = 0;
 	this->gameOver = false;
 	this->signals.updated(this);
+    
+	this->sceneManager = sceneManager;
+    this->entity = sceneManager->createEntity("goal.mesh");
+    this->sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode();
+    this->sceneNode->attachObject(this->entity);
+
+    //this->sceneNode->setScale(Ogre::Vector3::UNIT_SCALE * 4);
+	this->sceneNode->setPosition(0,goalPosition.y + 15, 0);
+
+	btBulletWorldImporter* fileLoader = new btBulletWorldImporter(dynamicsWorld);
+	fileLoader->loadFile("goal.bullet");
+	
+	btCollisionObject* obj = dynamicsWorld->getCollisionObjectArray()[dynamicsWorld->getNumCollisionObjects()-1];
+	obj->setWorldTransform(btTransform(btQuaternion(), btVector3(0,goalPosition.y + 15, 0)));
 }
 
 Goal::~Goal()
