@@ -55,7 +55,7 @@ bool BaseApplication::configure(void)
     // Show the configuration dialog and initialise the system
     // You can skip this and use root.restoreConfig() to load configuration
     // settings if you were sure there are valid ones saved in ogre.cfg
-    /*if(mRoot->showConfigDialog())
+    if(mRoot->showConfigDialog())
     {
         // If returned true, user clicked OK so initialise
         // Here we choose to let the system create a default rendering window by passing 'true'
@@ -73,14 +73,14 @@ bool BaseApplication::configure(void)
     else
     {
         return false;
-    }*/
+    }
 	// Do not add this to the application
-    Ogre::RenderSystem *rs = mRoot->getRenderSystemByName("Direct3D9 Rendering Subsystem");
+    //Ogre::RenderSystem *rs = mRoot->getRenderSystemByName("Direct3D9 Rendering Subsystem");
     // or use "OpenGL Rendering Subsystem"
-    mRoot->setRenderSystem(rs);
-    rs->setConfigOption("Full Screen", "No");
-    rs->setConfigOption("Video Mode", "800 x 600 @ 32-bit colour");
-	mWindow = mRoot->initialise(true, "OgrePlayground Render Window");
+    //mRoot->setRenderSystem(rs);
+    //rs->setConfigOption("Full Screen", "No");
+    //rs->setConfigOption("Video Mode", "800 x 600 @ 32-bit colour");
+	//mWindow = mRoot->initialise(true, "OgrePlayground Render Window");
 
 	return true;
 }
@@ -142,7 +142,7 @@ void BaseApplication::createFrameListener(void)
     mDetailsPanel->hide();
 
 	//Added for ever so slightly off cross hair that can be fixed later
-    /*Ogre::OverlayManager& overlayManager = Ogre::OverlayManager::getSingleton();
+    Ogre::OverlayManager& overlayManager = Ogre::OverlayManager::getSingleton();
     
     // Create a panel
     Ogre::OverlayContainer* panel = static_cast<Ogre::OverlayContainer*>(
@@ -162,7 +162,7 @@ void BaseApplication::createFrameListener(void)
     overlay->add2D(panel);
     
     // Show the overlay
-    overlay->show();*/
+    overlay->show();
 
     mRoot->addFrameListener(this);
 }
@@ -291,8 +291,8 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 
     mTrayMgr->frameRenderingQueued(evt);
 
-    if (!mTrayMgr->isDialogVisible())
-    {
+    //if (!mTrayMgr->isDialogVisible())
+    //{
         //mCameraMan->frameRenderingQueued(evt);   // if dialog isn't up, then update the camera
         //if (mDetailsPanel->isVisible())   // if details panel is visible, then update its contents
         //{
@@ -304,7 +304,7 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
         //    mDetailsPanel->setParamValue(6, Ogre::StringConverter::toString(mCamera->getDerivedOrientation().y));
         //    mDetailsPanel->setParamValue(7, Ogre::StringConverter::toString(mCamera->getDerivedOrientation().z));
         //}
-    }
+    //}
 
     return true;
 }

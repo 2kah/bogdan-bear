@@ -175,22 +175,35 @@ void GameTestThing::destroyScene()
 		delete this->localPlayer;
 	}
 	this->game->objects.clear();
-	this->game->objects.insert(this->network);
+	//this->game->objects.insert(this->network);
+	this->removeQueue.clear();
+	Turret *turret;
+	for(std::set<Turret *>::iterator i = this->turrets.begin(); i != this->turrets.end(); ++i)
+    {
+        turret = *i;
+		delete turret;
+    }
 	this->turrets.clear();
+	//delete this->towerBuilder;
+	this->game->mSceneMgr->getRootSceneNode()->removeAndDestroyAllChildren();
 	this->game->mSceneMgr->destroyAllEntities();
 	//this->network->tb = NULL;
 	//this->towerBuilder = NULL;
 	//delete this->towerBuilder;
 	//this->game->tower->~Tower();
-	delete this->game->tower;
-	//this->game->mSceneMgr->destroyAllManualObjects();
-	//printf("hello\n");
-	//for (int i=this->game->dynamicsWorld->getNumCollisionObjects()-1; i>=0 ;i--)
-    //    {
-    //            btCollisionObject* obj = this->game->dynamicsWorld->getCollisionObjectArray()[i];
-    //            this->game->dynamicsWorld->removeCollisionObject( obj );
-    //            delete obj;
-    //    }
+	//delete this->game->tower;
+	//this->game->mSceneMgr->clearSpecialCaseRenderQueues();
+	//this->game->mSceneMgr->clearScene();
+	this->game->mSceneMgr->destroyAllManualObjects();
+
+
+	printf("hello\n");
+	for (int i=this->game->dynamicsWorld->getNumCollisionObjects()-1; i>=0 ;i--)
+        {
+                btCollisionObject* obj = this->game->dynamicsWorld->getCollisionObjectArray()[i];
+                this->game->dynamicsWorld->removeCollisionObject( obj );
+                delete obj;
+        }
 	//this->game->mSceneMgr->destroyAllManualObjects();
 	//this->game->dynamicsWorld->getBroadphase()->~btBroadphaseInterface();
 	//delete this->game->dynamicsWorld;

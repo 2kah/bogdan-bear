@@ -408,15 +408,13 @@ void Game::endRound()
 //This destroys what is there from the previous round and displays a "crosshair" (single pixel) in the middle.
 void Game::startRound()
 {
-	//this->gameTestThing->destroyScene();
+	this->mRoot->clearEventTimes();
+	this->gameTestThing->destroyScene();
 	//setUpPhysicsWorld();
 	this->gameTestThing->startLocal();
-	if(mTrayMgr != NULL) 
-	{
-	    mTrayMgr->hideCursor();
-    	mTrayMgr->destroyAllWidgets();
-	    mTrayMgr->clearAllTrays();
-	}
+	mTrayMgr->hideCursor();
+    mTrayMgr->destroyAllWidgets();
+	mTrayMgr->clearAllTrays();
 
 	Ogre::OverlayManager& overlayManager = Ogre::OverlayManager::getSingleton();
 
