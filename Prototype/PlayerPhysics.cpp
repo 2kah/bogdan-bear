@@ -39,14 +39,17 @@ PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWo
 
 	//TODO: make these both cvars
 	//Terminal velocity for falling
-	m_character->setFallSpeed(btScalar(60.0));
+	m_character->setFallSpeed(btScalar(50.0));
 	//Defines how quickly terminal velocity is reached
 	m_character->setGravity(btScalar(100.0));
 
 	//TODO: make this a cvar
 	m_character->setJumpSpeed(btScalar(60.0));
-	//The max horizontal movement speed while airborne
-	airMovementSpeed = btScalar(0.5);
+	//The horizontal movement speed while airborne
+	//was 0.4
+	airMovementSpeed = btScalar(0.01);
+	//The max movement speed while airborne
+	maxMoveSpeed = btScalar(1);
 
 	dynamicsWorld->addCollisionObject(m_ghostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::AllFilter);//btBroadphaseProxy::AllFilter /*btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter*/);
 	dynamicsWorld->addAction(m_character);
@@ -54,6 +57,7 @@ PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWo
 	walkDirection.setZero();
 	oldWalkDirection.setZero();
 	pushDirection.setZero();
+	oldPosition = BtOgre::Convert::toBullet(player->position);
 	local = false;
 
 	playerUpdateConnection = this->player->signals.updated.connect(boost::bind(&PlayerPhysics::playerUpdated, this, _1));
@@ -95,7 +99,13 @@ void PlayerPhysics::playerUpdated(Player *player)
 {
 	btTransform xform;
 	xform = m_ghostObject->getWorldTransform();
-	
+
+	//might be useful for interpolation, if not then delete
+	//determine the horizontal speed
+	btVector3 direction = xform.getOrigin() - oldPosition;
+	btScalar currentSpeed = btSqrt((direction.x() * direction.x()) + (direction.y() * direction.y()));
+	//std::cout << "currentSpeed = " << currentSpeed << std::endl;
+
 	Ogre::Vector3 oPosition(xform.getOrigin().x(), xform.getOrigin().y() - 5, xform.getOrigin().z());
 	this->player->position = oPosition;
 
@@ -117,16 +127,22 @@ void PlayerPhysics::playerUpdated(Player *player)
 		//if airborne then use previous movement plus a dampened amount of wanted movement
 		else
 		{
-			walk = walk * btScalar(0.2);
-			walk += (oldWalkDirection * btScalar(0.99));
-			if(walk.length() > airMovementSpeed)
+			if(walk.length() > 0)
 			{
-				walk = walk / (walk.length() / airMovementSpeed);
+				walk = walk.normalize();
+				//walk /= (1 / oldWalkDirection.length());
+				walk *= airMovementSpeed;
 			}
+			walk += (oldWalkDirection * btScalar(0.99));
+			
 			actualMovement += walk;
+			
+			if(actualMovement.length() > maxMoveSpeed)
+				actualMovement = actualMovement.normalize();
 		}
 		m_character->setWalkDirection(actualMovement);
-		oldWalkDirection = walk;
+		oldWalkDirection = actualMovement;
+		oldPosition = xform.getOrigin();
 	}
 }
 
@@ -136,7 +152,7 @@ void PlayerPhysics::playerStateSet(Player *player)
 	//std::cout << "external player velocity = " << player->velocity << std::endl;
     // update position/velocity here
 	m_character->warp(BtOgre::Convert::toBullet(player->position));
-	//should make the kinematic character controller have the given velocity, no idea what units the time interval is in
+	//should make the kinematic character controller have the given velocity, no idea what units the time interval is in so assuming ms
 	//hopefully will have another update before time interval ends or player will stop moving
 	m_character->setVelocityForTimeInterval(BtOgre::Convert::toBullet(player->velocity), btScalar(1000));
 }
