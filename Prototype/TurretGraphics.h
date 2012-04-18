@@ -20,7 +20,9 @@ protected:
     Turret *turret;
 
     Ogre::SceneManager *sceneManager;
-    Ogre::SceneNode *sceneNode;
+    Ogre::SceneNode *sceneNodeBase;
+	Ogre::SceneNode *sceneNodeGuard;
+	Ogre::SceneNode *sceneNodeGuns;
     Ogre::Entity *entity;
 };
 

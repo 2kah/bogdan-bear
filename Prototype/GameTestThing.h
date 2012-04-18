@@ -16,6 +16,7 @@ class NetworkTestStuff;
 class Sounds;
 class Turret;
 class Player;
+class PlayerPhysics;
 class Platform;
 class Rocket;
 class Explosion;
@@ -27,6 +28,9 @@ public:
     GameTestThing(Game *game);
     ~GameTestThing();
 	virtual void resetTower();
+	virtual void buildScene();
+	virtual void destroyScene();
+
     virtual void startLocal();
     virtual void startServer();
     virtual void startClient();
@@ -45,11 +49,11 @@ public:
     virtual void addExplosion(Explosion *explosion);
 
 	Goal *goal;
+    Player *player;
 
 protected:
     Game *game;
     NetworkTestStuff *network;
-    Player *player;
     Sounds *sounds;
 	TowerBuilder *towerBuilder;
 
@@ -79,6 +83,7 @@ private:
     std::vector<Player *> players;
 
     Player *localPlayer;
+	PlayerPhysics *localPlayerPhysics;
 };
 
 #endif // #ifndef __GameTestThing_h_

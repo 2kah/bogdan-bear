@@ -55,7 +55,7 @@ bool BaseApplication::configure(void)
     // Show the configuration dialog and initialise the system
     // You can skip this and use root.restoreConfig() to load configuration
     // settings if you were sure there are valid ones saved in ogre.cfg
-    if(mRoot->showConfigDialog())
+    /*if(mRoot->showConfigDialog())
     {
         // If returned true, user clicked OK so initialise
         // Here we choose to let the system create a default rendering window by passing 'true'
@@ -73,7 +73,16 @@ bool BaseApplication::configure(void)
     else
     {
         return false;
-    }
+    }*/
+	// Do not add this to the application
+    Ogre::RenderSystem *rs = mRoot->getRenderSystemByName("Direct3D9 Rendering Subsystem");
+    // or use "OpenGL Rendering Subsystem"
+    mRoot->setRenderSystem(rs);
+    rs->setConfigOption("Full Screen", "No");
+    rs->setConfigOption("Video Mode", "800 x 600 @ 32-bit colour");
+	mWindow = mRoot->initialise(true, "OgrePlayground Render Window");
+
+	return true;
 }
 //-------------------------------------------------------------------------------------
 void BaseApplication::chooseSceneManager(void)
@@ -108,11 +117,11 @@ void BaseApplication::createFrameListener(void)
     this->manager->keyboard->setEventCallback(this);
 
     mTrayMgr = new OgreBites::SdkTrayManager("InterfaceName", mWindow, this->manager->mouse, this);
-    mTrayMgr->showFrameStats(OgreBites::TL_BOTTOMLEFT);
-    mTrayMgr->showLogo(OgreBites::TL_BOTTOMRIGHT);
+    //mTrayMgr->showFrameStats(OgreBites::TL_BOTTOMLEFT);
+    //mTrayMgr->showLogo(OgreBites::TL_BOTTOMRIGHT);
 	//OgreBites::Button* b = mTrayMgr->createButton(OgreBites::TL_TOPRIGHT, "MyButton", "Click Me!");
-    mTrayMgr->hideCursor();
-
+    //mTrayMgr->hideCursor();
+	
     // create a params panel for displaying sample details
     Ogre::StringVector items;
     items.push_back("cam.pX");
@@ -131,6 +140,29 @@ void BaseApplication::createFrameListener(void)
     mDetailsPanel->setParamValue(9, "Bilinear");
     mDetailsPanel->setParamValue(10, "Solid");
     mDetailsPanel->hide();
+
+	//Added for ever so slightly off cross hair that can be fixed later
+    /*Ogre::OverlayManager& overlayManager = Ogre::OverlayManager::getSingleton();
+    
+    // Create a panel
+    Ogre::OverlayContainer* panel = static_cast<Ogre::OverlayContainer*>(
+    overlayManager.createOverlayElement("Panel", "PanelName"));
+    panel->setMetricsMode(Ogre::GMM_PIXELS);
+    panel->setPosition((mWindow->getWidth()/2), (mWindow->getHeight()/2));
+    panel->_setDimensions((mWindow->getWidth()/64), (mWindow->getHeight()/64));
+    
+    Ogre::MaterialPtr crosshair = Ogre::MaterialManager::getSingleton().create("crosshair", "General");
+    crosshair->getTechnique(0)->getPass(0)->createTextureUnitState("crosshair.png");
+    crosshair->getTechnique(0)->getPass(0)->setDepthCheckEnabled(true);
+    crosshair->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+    panel->setMaterialName("crosshair");
+    
+    // Create an overlay, and add the panel
+    Ogre::Overlay* overlay = overlayManager.create("OverlayName");
+    overlay->add2D(panel);
+    
+    // Show the overlay
+    overlay->show();*/
 
     mRoot->addFrameListener(this);
 }
@@ -153,6 +185,7 @@ void BaseApplication::setupResources(void)
 {
     // Load resource paths from config file
     Ogre::ConfigFile cf;
+	
     cf.load(mResourcesCfg);
 
     // Go through all sections & settings in the file
@@ -218,16 +251,29 @@ bool BaseApplication::setup(void)
 
     // Set default mipmap level (NB some APIs ignore this)
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
-
+	
+	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Essential");
     // Create any resource listeners (for loading screens)
     createResourceListener();
+    createFrameListener();
+
+	Ogre::Camera* mCamera = mSceneMgr->createCamera("playerCam");
+	Ogre::Viewport* vp = mWindow->addViewport(mCamera);
+    vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
+
+    // Alter the camera aspect ratio to match the viewport
+    mCamera->setAspectRatio(Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
+
+    mTrayMgr->showLoadingBar();
+	//printf("HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE\n\n\n\n\n\n");
     // Load resources
     loadResources();
 
+	mTrayMgr->hideLoadingBar();
+	//printf("HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE\n\n\n\n\n\n");
     // Create the scene
     createScene();
-
-    createFrameListener();
+	
     
 	return true;
 };
