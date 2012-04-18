@@ -35,6 +35,19 @@ struct NetworkSignals {
 }
 
 #pragma pack(push, 1)
+struct NetTower
+{
+	unsigned char typeId;
+	int size;
+	int low_level;
+	int high_level;
+	int low_layer;
+	int high_layer;
+	bool data [420000];
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
 struct NetExplosion
 {
 unsigned char typeId;
@@ -94,10 +107,12 @@ public:
 	
     NetworkTestStuff();
     virtual ~NetworkTestStuff();
+	NetTower towerBuffer;
 	TowerBuilder* tb;
     NetworkSignals signals;
+	void broadcastUpdateTower(int low_level, int high_level, int low_layer, int high_layer);
 	void sendFullTower(RakNet::Packet *packet);
-	void receiveFullTower(RakNet::Packet *packet);
+	void receiveUpdateTower(RakNet::Packet *packet);
 	virtual void startNetwork(bool asServer);
 	virtual void sendChat(std::string message);
 	virtual void sendChat(std::string message, RakNet::AddressOrGUID target);

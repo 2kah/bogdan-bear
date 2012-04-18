@@ -98,39 +98,22 @@ TowerBuilder::~TowerBuilder(void)
 void TowerBuilder::Init(void)
 {
 	this->maxBlocks = 0;
-	
-		for (int i =0; i < this->tower->levels; i++)
+	for (int i =0; i < this->tower->levels; i++)
 		for (int j =0; j < this->tower->layers; j++)
 			for (int k =0; k < this->tower->blocks[i][j].size(); k++)
 			{
 				this->maxBlocks++;
 				this->tower->blocks[i][j][k] = false;
 			}
-			this->blocksAvailable=this->maxBlocks;
-
+	this->blocksAvailable=this->maxBlocks;
 }
 
-void TowerBuilder::InitFull(void)
-{
-	this->maxBlocks = 0;
-	
-		for (int i =0; i < this->tower->levels; i++)
-		for (int j =0; j < this->tower->layers; j++)
-			for (int k =0; k < this->tower->blocks[i][j].size(); k++)
-			{
-				this->maxBlocks++;
-				this->tower->blocks[i][j][k] = true;
-			}
-			this->blocksAvailable=0;
-
-}
-
-void TowerBuilder::FullSync(bool* data)
+void TowerBuilder::Sync(bool* data, int low_level, int high_level, int low_layer, int high_layer)
 {
 	unsigned long total = 0;
 	int count = 0;
-		for (int i =0; i < this->tower->levels; i++)
-		for (int j =0; j < this->tower->layers; j++)
+	for (int i =low_level; i < high_level; i++)
+		for (int j =low_layer; j < high_layer; j++)
 			for (int k =0; k < this->tower->blocks[i][j].size(); k++)
 			{
 				this->tower->blocks[i][j][k] = data[count];
@@ -138,24 +121,11 @@ void TowerBuilder::FullSync(bool* data)
 					total ++;
 				count++;
 			}
-			printf("total active blocks: %d\n", total);
-			this->tower->signals.updated(this->tower, BoundingVolume(0,tower->levels,0,tower->layers,0,tower->sectors), -count);
+	printf("Updated %d blocks, total active: %d\n", count, total);
+	
+	this->tower->signals.updated(this->tower, BoundingVolume(low_level,high_level,low_layer,high_layer,0,tower->sectors), -count);
 }
 
-void TowerBuilder::GetTowerState(bool* Output)
-{
-	int count = 1;
-	unsigned long total = 0;
-	for (int i =0; i < this->tower->levels; i++)
-		for (int j =0; j < this->tower->layers; j++)
-			for (int k =0; k < this->tower->blocks[i][j].size(); k++)
-			{
-				Output[count] = (this->tower->blocks[i][j][k]);
-				total += Output[count];
-				count++;
-			}
-			printf("total: %d\n", total);
-}
 
 void TowerBuilder::update(void)
 {
@@ -163,7 +133,7 @@ void TowerBuilder::update(void)
 	{
 	this->timer++;
 
-	if(this->timer == 50)
+	if(this->timer == 100)
 	{
 		this->timer = 0;
 		this->regenerate();
@@ -216,7 +186,7 @@ void TowerBuilder::generate()
 	this->regeneratingMetaShapes = 1;
 
 	//TODO: make this generic
-	while(this->blocksAvailable > 999)
+	while(this->blocksAvailable > 9999)
 	{
 		this->regenerate();
 	}
@@ -317,6 +287,8 @@ void TowerBuilder::regenerate(void)
 				break;
 			}
 		}
+	BoundingVolume& b = this->chunks[metaShape.chunk.level][metaShape.chunk.layer][metaShape.chunk.sector].bounds;
+	this->network->broadcastUpdateTower(b.level_bottom, b.level_top, b.layer_inner, b.layer_outer);
 		this->tower->signals.updated(this->tower, this->chunks[metaShape.chunk.level][metaShape.chunk.layer][metaShape.chunk.sector].bounds, -blocksAdded);
 	}
     //for (unsigned level = 0; level < this->tower->levels; ++level)
