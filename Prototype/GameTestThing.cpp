@@ -164,38 +164,34 @@ void GameTestThing::buildScene()
 
 }
 
+//removes the player and physics so a new one can be made. clears the objects so the old ones don't get updated, re adds the network, destroys old graphics (except tower). need to delete tower.
 void GameTestThing::destroyScene()
 {
 	//this->game->tower = NULL;
 	//this->towerBuilder = NULL;
-	printf("hello\n");
 	if(this->localPlayer != NULL)
 	{
 		this->localPlayerPhysics->~PlayerPhysics();
 		delete this->localPlayer;
 	}
-	printf("hello\n");
 	this->game->objects.clear();
 	this->game->objects.insert(this->network);
-	printf("hello\n");
 	this->turrets.clear();
-	printf("hello\n");
 	this->game->mSceneMgr->destroyAllEntities();
-	printf("hello\n");
 	//this->network->tb = NULL;
-	printf("hello\n");
 	//this->towerBuilder = NULL;
-	printf("hello\n");
 	//delete this->towerBuilder;
-	printf("hello\n");
+	//this->game->tower->~Tower();
+	delete this->game->tower;
 	//this->game->mSceneMgr->destroyAllManualObjects();
-	printf("hello\n");
-	for (int i=this->game->dynamicsWorld->getNumCollisionObjects()-1; i>=0 ;i--)
-        {
-                btCollisionObject* obj = this->game->dynamicsWorld->getCollisionObjectArray()[i];
-                this->game->dynamicsWorld->removeCollisionObject( obj );
-                delete obj;
-        }
+	//printf("hello\n");
+	//for (int i=this->game->dynamicsWorld->getNumCollisionObjects()-1; i>=0 ;i--)
+    //    {
+    //            btCollisionObject* obj = this->game->dynamicsWorld->getCollisionObjectArray()[i];
+    //            this->game->dynamicsWorld->removeCollisionObject( obj );
+    //            delete obj;
+    //    }
+	//this->game->mSceneMgr->destroyAllManualObjects();
 	//this->game->dynamicsWorld->getBroadphase()->~btBroadphaseInterface();
 	//delete this->game->dynamicsWorld;
 	//this->game->setUpPhysicsWorld();
