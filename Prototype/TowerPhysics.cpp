@@ -23,6 +23,11 @@ PhysicsChunk::PhysicsChunk(Tower *tower, BoundingVolume bounds, btDiscreteDynami
 
 PhysicsChunk::~PhysicsChunk()
 {
+    if (this->body != NULL) {
+        this->dynamicsWorld->removeRigidBody(this->body);
+        delete this->body;
+        delete this->mesh;
+    }
 }
 
 void PhysicsChunk::rebuild()
@@ -70,8 +75,9 @@ TowerPhysics::TowerPhysics(Tower *tower, btDiscreteDynamicsWorld *dynamicsWorld)
     this->tower = tower;
     this->dynamicsWorld = dynamicsWorld;
 
-    tower->signals.updated.connect(boost::bind(&TowerPhysics::towerUpdated, this, _1, _2));
-    
+    this->tower->signals.updated.connect(boost::bind(&TowerPhysics::towerUpdated, this, _1, _2));
+    this->tower->signals.removed.connect(boost::bind(&TowerPhysics::towerRemoved, this, _1));
+
     for (unsigned level = 0; level < this->tower->levels / 8; ++level)
     {
         for (unsigned layer = 0; layer < this->tower->layers / 11; ++layer)
@@ -133,6 +139,12 @@ TowerPhysics::TowerPhysics(Tower *tower, btDiscreteDynamicsWorld *dynamicsWorld)
 
 TowerPhysics::~TowerPhysics()
 {
+    for (std::vector<PhysicsChunk *>::iterator it = this->chunks.begin(); it != this->chunks.end(); ++it)
+    {
+        PhysicsChunk *chunk = *it;
+
+        delete chunk;
+    }
 }
 
 void TowerPhysics::towerUpdated(Tower *tower, BoundingVolume bounds)
@@ -150,4 +162,9 @@ void TowerPhysics::towerUpdated(Tower *tower, BoundingVolume bounds)
     }
 
     //std::cout << "REBUILT: " << rebuilt << " / " << this->chunks.size() << std::endl;
+}
+
+void TowerPhysics::towerRemoved(Tower *tower)
+{
+    delete this;
 }

@@ -53,6 +53,7 @@ Tower::Tower(unsigned levels, std::vector<unsigned> structure)
 
 Tower::~Tower()
 {
+    this->signals.removed(this);
 }
 
 void Tower::update()

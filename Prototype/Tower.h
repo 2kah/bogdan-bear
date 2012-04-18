@@ -47,10 +47,11 @@ namespace {
 struct TowerSignals {
     boost::signal<void (Tower *, unsigned level)> levelUpdated;
     boost::signal<void (Tower *, BoundingVolume bounds, int blocksRemoved)> updated;
+    boost::signal<void (Tower *)> removed;
 };
 }
 
-class Tower
+class Tower : public boost::signals::trackable
 {
 public:
     static const short COLLISION_GROUP = 1; // 0000 0001

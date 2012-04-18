@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include <boost/signal.hpp>
+
 #include "PhysicsObject.h"
 #include "TowerChunk.h"
 
@@ -26,13 +28,14 @@ protected:
     btRigidBody *body;
 };
 
-class TowerPhysics
+class TowerPhysics : public boost::signals::trackable
 {
 public:
     TowerPhysics(Tower *tower, btDiscreteDynamicsWorld *dynamicsWorld);
     virtual ~TowerPhysics();
 protected:
     virtual void towerUpdated(Tower *tower, BoundingVolume bounds);
+    virtual void towerRemoved(Tower *tower);
 
     Tower *tower;
     btDiscreteDynamicsWorld *dynamicsWorld;

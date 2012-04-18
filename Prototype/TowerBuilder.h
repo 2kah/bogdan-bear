@@ -5,6 +5,8 @@
 #include <boost/random/uniform_int_distribution.hpp>
 #include <boost/random/mersenne_twister.hpp>
 
+#include <boost/signal.hpp>
+
 #include "Updatable.h"
 #include "PhysicsObject.h"
 #include "TowerChunk.h"
@@ -36,7 +38,7 @@ public:
 	virtual bool empty();
 };
 
-class TowerBuilder : public Updatable
+class TowerBuilder : public Updatable, public boost::signals::trackable
 {
 public:
 	int maxBlocks;
@@ -61,6 +63,8 @@ public:
 	boost::random::mt19937 gen;
 
 protected:
+    void towerRemoved(Tower *tower);
+
     unsigned timer;
     unsigned level;
 

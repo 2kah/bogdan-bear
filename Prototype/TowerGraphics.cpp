@@ -37,6 +37,7 @@ GraphicsChunk::GraphicsChunk(Tower *tower, BoundingVolume bounds, Ogre::SceneMan
 
 GraphicsChunk::~GraphicsChunk()
 {
+    this->sceneManager->destroyManualObject(this->object);
 }
 
 void GraphicsChunk::rebuild()
@@ -77,6 +78,7 @@ TowerGraphics::TowerGraphics(Tower *tower, Ogre::SceneManager *sceneManager)
     
     // Listen for changes to the tower that may need to be reflected in the graphics
     this->tower->signals.updated.connect(boost::bind(&TowerGraphics::towerUpdated, this, _1, _2));
+    this->tower->signals.removed.connect(boost::bind(&TowerGraphics::towerRemoved, this, _1));
 
     for (unsigned level = 0; level < this->tower->levels / CHUNK_HEIGHT; ++level)
     {
@@ -90,6 +92,12 @@ TowerGraphics::TowerGraphics(Tower *tower, Ogre::SceneManager *sceneManager)
 
 TowerGraphics::~TowerGraphics()
 {
+    for (std::vector<GraphicsChunk *>::iterator it = this->chunks.begin(); it != this->chunks.end(); ++it)
+    {
+        GraphicsChunk *chunk = *it;
+        
+        delete chunk;
+    }
 }
 
 void TowerGraphics::towerUpdated(Tower *tower, BoundingVolume bounds)
@@ -102,4 +110,9 @@ void TowerGraphics::towerUpdated(Tower *tower, BoundingVolume bounds)
             chunk->rebuild();
         }
     }
+}
+
+void TowerGraphics::towerRemoved(Tower *tower)
+{
+    delete this;
 }

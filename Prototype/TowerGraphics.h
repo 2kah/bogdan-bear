@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include <boost/signal.hpp>
+
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreEntity.h>
 #include <OGRE/OgreStaticGeometry.h>
@@ -24,7 +26,7 @@ protected:
     Ogre::ManualObject *object;
 };
 
-class TowerGraphics
+class TowerGraphics : public boost::signals::trackable
 {
 public:
     TowerGraphics() {};
@@ -33,7 +35,8 @@ public:
 
     static const unsigned CHUNK_HEIGHT;
 protected:
-    void towerUpdated(Tower *tower, BoundingVolume bounds);
+    virtual void towerUpdated(Tower *tower, BoundingVolume bounds);
+    virtual void towerRemoved(Tower *tower);
 
     Tower *tower;
     Ogre::SceneManager *sceneManager;
