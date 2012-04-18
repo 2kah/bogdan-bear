@@ -81,7 +81,8 @@ void Game::run(void)
 
     this->gameTestThing = new GameTestThing(this);
 
-	this->gameTestThing->buildScene();
+	//---------------This builds the view at the start for the menu.
+	//this->gameTestThing->buildScene();
 
 	Ogre::FontManager::getSingleton().getByName("SdkTrays/Caption")->load();
 	OgreBites::Button* b = mTrayMgr->createButton(OgreBites::TL_CENTER, "StartLocalGame", "Start Local Game");
@@ -125,6 +126,7 @@ void Game::run(void)
         {
             //previousState = currentState;
             //integrate (physics) (currentState, simTime, dt);
+			//---------------This stops everything getting updated once the game has finished.
 			if(game == true) {
 
                 dynamicsWorld->stepSimulation(simFrameLength, 1, simFrameLength);
@@ -163,6 +165,7 @@ void Game::run(void)
 		if(this->gameTestThing->goal != NULL) 
 		{
 			if(this->gameTestThing->goal->isGameOver()) {
+				//This prints the stuff once if the game has ended and then you can press enter to restart a new game
 				if(game == true) 
 				{
 					endRound();
@@ -330,6 +333,7 @@ bool Game::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id)
     return true;
 }
 
+//This is for the menu buttons
 void Game::buttonHit(OgreBites::Button *button)
 {
     if(button->getName() == "StartLocalGame")
@@ -354,6 +358,7 @@ void Game::buttonHit(OgreBites::Button *button)
 	}
 }
 
+//This would show an overlay with scores on and who has won the game and set the camera up in the sky for a nice frozen view of the end of the game
 void Game::endRound()
 {
 	//this->gameTestThing->destroyScene();
@@ -400,9 +405,10 @@ void Game::endRound()
     mCamera->setNearClipDistance(1);
 }
 
+//This destroys what is there from the previous round and displays a "crosshair" (single pixel) in the middle.
 void Game::startRound()
 {
-	this->gameTestThing->destroyScene();
+	//this->gameTestThing->destroyScene();
 	//setUpPhysicsWorld();
 	this->gameTestThing->startLocal();
 	if(mTrayMgr != NULL) 
@@ -452,6 +458,7 @@ void Game::startRound()
 	}
 }
 
+//This hse just been moved from the beginning of the game loop to make stuff clearer.
 void Game::setUpPhysicsWorld()
 {
 
