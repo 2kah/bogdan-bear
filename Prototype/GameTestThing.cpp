@@ -248,7 +248,7 @@ void GameTestThing::startLocal()
     // Create a tower builder and generate the tower with it
     this->towerBuilder = new TowerBuilder(this->game->tower);
 	this->network->tb = this->towerBuilder;
-	this->towerBuilder->isPaused=true;
+	this->towerBuilder->isPaused=false;
 	//this->game->tower->synchronise();
 	this->towerBuilder->generate();
 
