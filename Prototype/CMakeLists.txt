@@ -106,6 +106,7 @@ set(HDRS
     ./Game.h
     
     ./GameTestThing.h
+    ./GlowMaterialListener.h
     
     ./NetworkTestStuff.h
     
@@ -132,6 +133,7 @@ set(HDRS
     ./PlayerGraphics.h
     ./PlayerCamera.h
     ./PlayerProperties.h
+    ./PlayerSound.h
     ./BtKinematicCharacterController.h
     
     ./Platform.h
@@ -148,6 +150,7 @@ set(HDRS
     ./ExplosionGraphics.h
     
     ./Goal.h
+    ./GlowMaterialListener.h
     
     ./FallingObject.h
     
@@ -183,6 +186,7 @@ set(SRCS
     ./PlayerPhysics.cpp
     ./PlayerGraphics.cpp
     ./PlayerCamera.cpp
+    ./PlayerSound.cpp
     ./PlayerProperties.cpp
     ./BtKinematicCharacterController.cpp
     
@@ -200,6 +204,7 @@ set(SRCS
     ./ExplosionGraphics.cpp
     
     ./Goal.cpp
+    ./MaterialListener.cpp
     
     ./FallingObject.cpp
     

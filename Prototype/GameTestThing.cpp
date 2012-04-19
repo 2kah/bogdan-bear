@@ -14,7 +14,6 @@
 #include <OGRE/OgreOverlayManager.h>
 
 #include "Game.h"
-
 #include "NetworkTestStuff.h"
 
 #include "Sounds.h"
@@ -32,6 +31,7 @@
 #include "PlayerGraphics.h"
 #include "PlayerCamera.h"
 #include "PlayerProperties.h"
+#include "PlayerSound.h"
 
 #include "Platform.h"
 #include "PlatformGraphics.h"
@@ -41,6 +41,7 @@
 #include "RocketGraphics.h"
 #include "RocketPhysics.h"
 #include "RocketSound.h"
+#include "GlowMaterialListener.h"
 
 #include "Explosion.h"
 #include "ExplosionPhysics.h"
@@ -68,7 +69,6 @@ GameTestThing::GameTestThing(Game *game)
 	this->network->signals.removePlayer.connect(boost::bind(&GameTestThing::removePlayer, this, _1));
 	this->network->signals.assignLocalPlayer.connect(boost::bind(&GameTestThing::setLocalPlayer, this, _1));
 	
-
     this->sounds = new Sounds();
 
 	//TODO: remove this - needed because networking is hacky
@@ -84,13 +84,19 @@ GameTestThing::GameTestThing(Game *game)
     this->game->dynamicsWorld->addRigidBody(groundRigidBody); // , 4, 2);
     
     // Add the bowl
-    /*Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowl.mesh");
+
+	Ogre::CompositorManager::getSingleton().addCompositor(this->game->mCamera->getViewport(), "Glow");
+	Ogre::CompositorManager::getSingleton().setCompositorEnabled(this->game->mCamera->getViewport(), "Glow", true);
+	GlowMaterialListener *gml = new GlowMaterialListener();
+	Ogre::MaterialManager::getSingleton().addListener(gml);
+
+    Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowlchip.mesh");
     Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
     sceneNode->attachObject(bowl);
-    //sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
+    sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
 
     btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
-	fileLoader->loadFile("bowl.bullet");*/
+	fileLoader->loadFile("BowlBul.bullet");
 
     // Create and add a falling object
     /*FallingObject *object = new FallingObject(Ogre::Vector3(40.5, 64, 40.15));
@@ -98,8 +104,22 @@ GameTestThing::GameTestThing(Game *game)
     object->addToPhysics(this->game->dynamicsWorld);
     this->game->objects.insert(object);*/
 
-    this->game->mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
-
+	//Fog for gradient
+	Ogre::ColourValue fadeColour(0.005, 0.005, 0.005);
+    this->game->mSceneMgr->setFog(Ogre::FOG_LINEAR, fadeColour, 0.0, 10, 1200);
+    this->game->mWindow->getViewport(0)->setBackgroundColour(fadeColour);
+	//Loads up nebula sky
+	this->game->mSceneMgr->setSkyBox(true, "nebulaBox", 700, true);
+    
+	//Ambient Light
+	this->game->mSceneMgr->setAmbientLight(Ogre::ColourValue(0,255,246));
+	//Spot Light
+	Ogre::Light *spot2 = this->game->mSceneMgr->createLight();
+	spot2->setType(Ogre::Light::LT_POINT);
+	spot2->setPosition(0,200,0);
+    spot2->setDiffuseColour(0,255,246);
+    spot2->setSpecularColour(Ogre::ColourValue::White);
+	//Directional Light
     Ogre::Light *moon = this->game->mSceneMgr->createLight();
     moon->setType(Ogre::Light::LT_DIRECTIONAL);
     moon->setDirection(Ogre::Vector3(0.5, -1, 0.5));
@@ -140,10 +160,10 @@ void GameTestThing::buildScene()
     //this->game->objects.insert(builder);
 
     // Add four turrets
-    Turret *turret1 = new Turret(Ogre::Vector3(0, 70, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y));
-	Turret *turret2 = new Turret(Ogre::Vector3(0, 70, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y));
-	Turret *turret3 = new Turret(Ogre::Vector3(400, 70, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y));
-	Turret *turret4 = new Turret(Ogre::Vector3(-400, 70, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y));
+    Turret *turret1 = new Turret(Ogre::Vector3(0, 130, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y));
+	Turret *turret2 = new Turret(Ogre::Vector3(0, 130, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y));
+	Turret *turret3 = new Turret(Ogre::Vector3(400, 130, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y));
+	Turret *turret4 = new Turret(Ogre::Vector3(-400, 130, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y));
 
     this->addTurret(turret1);
     this->addTurret(turret2);
@@ -154,13 +174,13 @@ void GameTestThing::buildScene()
     new TowerGraphics(this->game->tower, this->game->mSceneMgr);
     new TowerPhysics(this->game->tower, this->game->dynamicsWorld);
 
-	Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowl.mesh");
+	Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowlchip.mesh");
     Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
     sceneNode->attachObject(bowl);
-    //sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
+    sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
 
     btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
-	fileLoader->loadFile("bowl.bullet");
+	fileLoader->loadFile("BowlBul.bullet");
 
 }
 
@@ -236,10 +256,10 @@ void GameTestThing::startLocal()
     //this->game->objects.insert(builder);
 
     // Add four turrets
-    Turret *turret1 = new Turret(Ogre::Vector3(0, 70, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y));
-	Turret *turret2 = new Turret(Ogre::Vector3(0, 70, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y));
-	Turret *turret3 = new Turret(Ogre::Vector3(400, 70, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y));
-	Turret *turret4 = new Turret(Ogre::Vector3(-400, 70, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y));
+    Turret *turret1 = new Turret(Ogre::Vector3(0, 130, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y));
+	Turret *turret2 = new Turret(Ogre::Vector3(0, 130, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y));
+	Turret *turret3 = new Turret(Ogre::Vector3(400, 130, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y));
+	Turret *turret4 = new Turret(Ogre::Vector3(-400, 130, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y));
 
     this->addTurret(turret1);
     this->addTurret(turret2);
@@ -252,7 +272,7 @@ void GameTestThing::startLocal()
 	
     // Add a player
     Player *player = new Player(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height + 10, 10));
-    Player *enemy = new Player(Ogre::Vector3(100, 0, 100));
+	Player *enemy = new Player(Ogre::Vector3(100, 0, 100));
 
     this->addPlayer(player);
     this->setLocalPlayer(player);
@@ -265,13 +285,13 @@ void GameTestThing::startLocal()
 	this->goal = goal;
     
 	
-	Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowl.mesh");
+	Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowlchip.mesh");
     Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
     sceneNode->attachObject(bowl);
-    //sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
+    sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
 
     btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
-	fileLoader->loadFile("bowl.bullet");
+	fileLoader->loadFile("BowlBul.bullet");
     // Set the turret to aim at the player always. Setting it to NULL makes it shoot randomly at the tower.
 	//turret1->setTarget(player);
 	//turret2->setTarget(player);
@@ -449,7 +469,7 @@ void GameTestThing::platformCreated(Player *player, Platform *platform)
 
     PlatformGraphics *platfromGraphics = new PlatformGraphics(platform, this->game->mSceneMgr);
 	PlatformPhysics *platformPhysics = new PlatformPhysics(platform, this->game->dynamicsWorld);
-
+	this->sounds->createPlatformSound(player);
     platform->signals.expired.connect(boost::bind(&GameTestThing::platformExpired, this, _1));
     platform->signals.destroyed.connect(boost::bind(&GameTestThing::platformExpired, this, _1));
 }
@@ -457,6 +477,7 @@ void GameTestThing::platformCreated(Player *player, Platform *platform)
 void GameTestThing::platformExpired(Platform *platform)
 {
     this->removeQueue.insert(platform);
+	this->sounds->createPlatformStop();
 }
 
 void GameTestThing::chatReceived(std::string message)
@@ -520,7 +541,9 @@ void GameTestThing::playerUsed(Player *player)
 	    	player->enteredTurret();
 			player->setTurret(turret);
 			turret->setOccupied(true);
+			this->sounds->enterTurretSound(turret);
 	        player->position = turret->position;
+
 			//turret->setTarget(player);
 	    }
 	}
@@ -591,7 +614,7 @@ void GameTestThing::addRocket(Rocket *rocket)
 
     new RocketGraphics(rocket, this->game->mSceneMgr);
     new RocketPhysics(rocket, this->game->dynamicsWorld);
-    new RocketSound(rocket, this->sounds->engine);
+    //new RocketSound(rocket, this->sounds->engine);
 
     rocket->signals.exploded.connect(boost::bind(&GameTestThing::rocketExploded, this, _1, _2));
 }
