@@ -114,17 +114,35 @@ GameTestThing::GameTestThing(Game *game)
 	//Ambient Light
 	this->game->mSceneMgr->setAmbientLight(Ogre::ColourValue(0,255,246));
 	//Spot Light
-	Ogre::Light *spot2 = this->game->mSceneMgr->createLight();
-	spot2->setType(Ogre::Light::LT_POINT);
-	spot2->setPosition(0,200,0);
-    spot2->setDiffuseColour(0,255,246);
-    spot2->setSpecularColour(Ogre::ColourValue::White);
+	//Ogre::Light *spot2 = this->game->mSceneMgr->createLight();
+	//spot2->setType(Ogre::Light::LT_POINT);
+	//spot2->setPosition(0,200,0);
+    //spot2->setDiffuseColour(0,255,246);
+    //spot2->setSpecularColour(Ogre::ColourValue::White);
 	//Directional Light
     Ogre::Light *moon = this->game->mSceneMgr->createLight();
     moon->setType(Ogre::Light::LT_DIRECTIONAL);
-    moon->setDirection(Ogre::Vector3(0.5, -1, 0.5));
+    moon->setDirection(Ogre::Vector3(1, 0, 0));
     moon->setDiffuseColour(Ogre::ColourValue::White);
     moon->setSpecularColour(Ogre::ColourValue::White);
+
+	Ogre::Light *moon2 = this->game->mSceneMgr->createLight();
+    moon2->setType(Ogre::Light::LT_DIRECTIONAL);
+    moon2->setDirection(Ogre::Vector3(-1, 0, 0));
+    moon2->setDiffuseColour(Ogre::ColourValue::White);
+    moon2->setSpecularColour(Ogre::ColourValue::White);
+
+	Ogre::Light *moon3 = this->game->mSceneMgr->createLight();
+    moon3->setType(Ogre::Light::LT_DIRECTIONAL);
+    moon3->setDirection(Ogre::Vector3(0, 0, 1));
+    moon3->setDiffuseColour(Ogre::ColourValue::White);
+    moon3->setSpecularColour(Ogre::ColourValue::White);
+
+	Ogre::Light *moon4 = this->game->mSceneMgr->createLight();
+    moon4->setType(Ogre::Light::LT_DIRECTIONAL);
+    moon4->setDirection(Ogre::Vector3(0, 0, -1));
+    moon4->setDiffuseColour(Ogre::ColourValue::White);
+    moon4->setSpecularColour(Ogre::ColourValue::White);
 
     std::cout << "PRESS F11 FOR LOCAL TEST GAME" << std::endl;
     std::cout << "PRESS F9 FOR LOCAL SERVER GAME" << std::endl;
@@ -272,7 +290,7 @@ void GameTestThing::startLocal()
 	
     // Add a player
     Player *player = new Player(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height + 10, 10));
-	Player *enemy = new Player(Ogre::Vector3(100, 0, 100));
+	Player *enemy = new Player(Ogre::Vector3(100, 20, 100));
 
     this->addPlayer(player);
     this->setLocalPlayer(player);

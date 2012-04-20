@@ -22,7 +22,7 @@ int PlayerProperties::getTeam()
 string PlayerProperties::getCostumeName()
 {
     if(this->team == 0) {
-		return "ninja.mesh";
+		return "warrior.mesh";
 	}
 	else if(this->team == 1) {
 		return "penguin.mesh";

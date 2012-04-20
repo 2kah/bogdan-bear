@@ -15,7 +15,8 @@ PlayerGraphics::PlayerGraphics(Player *player, Ogre::SceneManager *sceneManager)
     this->entity = sceneManager->createEntity(this->player->prop->getCostumeName());
     this->sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode();
     this->sceneNode->attachObject(this->entity);
-    this->sceneNode->setScale(Ogre::Vector3::UNIT_SCALE / 16.0);
+    //this->sceneNode->setScale(Ogre::Vector3::UNIT_SCALE / 16.0);
+	this->sceneNode->setScale(0.8,0.8,0.8);
 
     this->playerUpdated(this->player);
 
