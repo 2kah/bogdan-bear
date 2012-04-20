@@ -16,6 +16,7 @@
 #include <OGRE/OgreVector3.h>
 #include <OGRE/OgreQuaternion.h>
 #include "TowerBuilder.h"
+#include "Goal.h"
 
 class Object;
 class Player;
@@ -24,7 +25,7 @@ class Player;
 namespace {
 struct NetworkSignals {
     //boost::signal<void (Player *player)> playerReplicated;
-	boost::signal<void (Player *player)> addPlayer;
+	boost::signal<void (Player *player, int team)> addPlayer;
     boost::signal<void (Player *player)> removePlayer;
 	boost::signal<void (Player *player)> assignLocalPlayer;
 
@@ -81,6 +82,7 @@ struct NetPlayer
 {
 	unsigned char typeId;
 	int playerID;
+	int team;
 	char name [NAME_LENGTH];
 	uint64_t GUID;
 	Player* player;
@@ -104,15 +106,20 @@ struct NetPlatform
 class NetworkTestStuff : public Updatable
 {
 public:
-	
+    bool hosting;
+	Goal* g;
+	TowerBuilder* tb;
+	NetTower towerBuffer;
+    NetworkSignals signals;
+	int teamScores[4];
+
     NetworkTestStuff();
     virtual ~NetworkTestStuff();
-	NetTower towerBuffer;
-	TowerBuilder* tb;
-    NetworkSignals signals;
+	
 	void broadcastUpdateTower(int low_level, int high_level, int low_layer, int high_layer);
 	void sendFullTower(RakNet::Packet *packet);
 	void receiveUpdateTower(RakNet::Packet *packet);
+	void updateScores();
 	virtual void startNetwork(bool asServer);
 	virtual void sendChat(std::string message);
 	virtual void sendChat(std::string message, RakNet::AddressOrGUID target);
@@ -160,8 +167,8 @@ public:
     void sendRockets() {};
     void sendExplosions() {};
     void sendPlatforms() {};
+	void printScores();
 
-    bool hosting;
 };
 
 #endif // #ifndef __NetworkTestStuff_h_
