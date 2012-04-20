@@ -27,7 +27,8 @@ PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWo
 	m_ghostObject = new btPairCachingGhostObject();
 	m_ghostObject->setWorldTransform(startTransform);
 	m_ghostObject->CO_COLLISION_OBJECT;
-	btConvexShape* capsule = new btCapsuleShape(2, 8);
+	//btConvexShape* capsule = new btCapsuleShape(2, 8);
+	btConvexShape* capsule = new btBoxShape(btVector3(1, 8, 1));
 	m_ghostObject->setCollisionShape(capsule);
 	m_ghostObject->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
 	this->m_ghostObject->setUserPointer(this);
