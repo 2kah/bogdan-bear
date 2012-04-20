@@ -28,8 +28,8 @@
 #include "Player.h"
 #include "Tower.h"
 
-//static const char *SERVER_IP_ADDRESS="127.0.0.1";
-static const char *SERVER_IP_ADDRESS="192.168.11.4";
+static const char *SERVER_IP_ADDRESS="127.0.0.1";
+//static const char *SERVER_IP_ADDRESS="192.168.11.4";
 static const unsigned short SERVER_PORT=12345;
 
 static const unsigned char ID_TEXT = 140;
@@ -56,9 +56,6 @@ static const unsigned char ID_DESTROY_ROCKET = 174;
 
 static const unsigned char ID_UPDATE_TOWER = 175;
 
-//static const unsigned char ID_INSERT_PLAYER = 175;
-//static const unsigned char ID_UPDATE_PLAYER = 176;
-
 std::tr1::unordered_map<uint64_t, NetPlayer*> NetPlayerByGUID;
 std::tr1::unordered_map<int, NetPlayer*> NetPlayerByPlayerID;
 NetPlayer* myNetPlayer = 0;
@@ -74,6 +71,7 @@ NetworkTestStuff::NetworkTestStuff()
 	: lastID(0)
 {
 	std::cout << "Init Network" << std::endl;
+	teamScores[0] = teamScores[1] = teamScores[2] = teamScores[3] = 0;
 }
 
 NetworkTestStuff::~NetworkTestStuff()
@@ -112,7 +110,7 @@ void NetworkTestStuff::startNetwork(bool asServer)
 void NetworkTestStuff::insertNetPlayer(NetPlayer* np)
 {
 	std::cout << "Inserting Player '" << np->name << "'" << std::endl;
-	this->signals.addPlayer(np->player);
+	this->signals.addPlayer(np->player, np->team);
 	NetPlayerByGUID.insert(std::pair<uint64_t, NetPlayer*>(np->GUID, np));
 	NetPlayerByPlayerID.insert(std::pair<int, NetPlayer*>(np->playerID, np));
 	listNetPlayers();
@@ -134,7 +132,7 @@ void NetworkTestStuff::listNetPlayers()
 	std::tr1::unordered_map<int, NetPlayer*>::const_iterator It;
 	for (It = NetPlayerByPlayerID.begin(); It != NetPlayerByPlayerID.end(); ++It)
    {
-	   std::cout << It->first << " = " << It->second->name << " GUID: " << It->second->GUID << std::endl;
+	   std::cout << It->first << " = " << It->second->name << " GUID: " << It->second->GUID << " Team: " << It->second->team << std::endl;
    }
 	std::cout << "---------------" <<std::endl;
 }
@@ -262,6 +260,59 @@ void NetworkTestStuff::update()
 			}
 
 		}
+
+		if (this->hosting)
+		{
+			updateDelay++;
+			if (updateDelay > 5)
+			{
+			updateDelay = 0;
+			updateScores();
+			}
+		}
+			
+
+	}
+}
+
+void NetworkTestStuff::updateScores()
+{
+	int teams[4];
+	teams[0] = teams[1] = teams[2] = teams[3]= 0;
+	std::tr1::unordered_map<int, NetPlayer*>::const_iterator It;
+	for (It = NetPlayerByPlayerID.begin(); It != NetPlayerByPlayerID.end(); ++It)
+   {
+	   NetPlayer& np = *(It->second);
+	   if (g->isPlayerInRange(np.player->position))
+	   {
+		  teams[np.team] ++;
+	   }
+   }
+	int maxPlayerCount = 0;
+	int bestTeam = -1;
+	for (int i = 0; i < 4; i++)
+	{
+		if (teams[i] > maxPlayerCount)
+		{
+			maxPlayerCount = teams[i];
+			bestTeam = i;
+		}
+	}
+	if (bestTeam > -1)
+	{
+		this->teamScores[bestTeam]+= 2;
+		if ((teamScores[bestTeam] % 100) == 0)
+			printScores();
+	}
+	//printf("Team %d is holding goal\n", bestTeam);	
+}
+
+void NetworkTestStuff::printScores()
+{
+	std::cout << "Team Scores" << std::endl;
+	for (int i = 0; i < 4; i++)
+	{
+		printf("Team %d: %d\n",i, teamScores[i]);
 	}
 }
 
@@ -313,6 +364,7 @@ void NetworkTestStuff::clientConnected(RakNet::Packet *packet)
 	sprintf(np->name,"Player %d",playerCounter);
 	np->player = p;
 	np->playerID = playerCounter;
+	np->team = playerCounter % 4;
 	playerCounter++;
 	np->GUID=packet->guid.g;
 	insertNetPlayer(np);
@@ -359,6 +411,7 @@ void NetworkTestStuff::receiveInsertPlayer(RakNet::Packet *packet)
 	NetPlayer* inc = (NetPlayer*)packet->data;
 	Player* p = new Player(Ogre::Vector3(100, 0, 100));
 	NetPlayer* np = new NetPlayer;
+	np->team = inc->team;
 	np->GUID = inc->GUID;
 	strncpy(np->name,inc->name,NAME_LENGTH);
 	np->playerID = inc->playerID;

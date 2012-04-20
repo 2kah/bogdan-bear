@@ -41,7 +41,7 @@ public:
 	virtual void netSendExplosion(Ogre::Vector3 position);
 	virtual void netSendRocket(Ogre::Vector3 position, Ogre::Quaternion orientation);
 
-    virtual void addPlayer(Player *player);
+    virtual void addPlayer(Player *player, int team);
     virtual void removePlayer(Player *player);
 
     virtual void addTurret(Turret *turret);
