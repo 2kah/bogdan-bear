@@ -305,10 +305,10 @@ void GameTestThing::startClient()
 	isServer = false;
 
 
-	unsigned divisions[] = {8, 16, 16, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 128, 128, 128, 128, 128, 128, 128};
-    std::vector<unsigned> structure(divisions, divisions + 14 + 8);
+	unsigned divisions[] = {8, 16, 16, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 256, 256, 256, 256, 256, 256, 256};
+    std::vector<unsigned> structure(divisions, divisions + 14 + 8 + 11);
 
-    this->game->tower = new Tower(256, structure);
+    this->game->tower = new Tower(192, structure);
 
     // Create a tower builder and generate the tower with it
     this->towerBuilder = new TowerBuilder(this->game->tower);
@@ -336,10 +336,10 @@ void GameTestThing::startServer()
 	isLocal = false;
 	isServer = true;
 	printf("size of nettower %d\n",sizeof(NetTower));
-	unsigned divisions[] = {8, 16, 16, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 128, 128, 128, 128, 128, 128, 128};
-    std::vector<unsigned> structure(divisions, divisions + 14 + 8);
+	unsigned divisions[] = {8, 16, 16, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 256, 256, 256, 256, 256, 256, 256};
+    std::vector<unsigned> structure(divisions, divisions + 14 + 8 + 11);
 
-    this->game->tower = new Tower(256, structure);
+    this->game->tower = new Tower(192, structure);
 
     // Create a tower builder and generate the tower with it
     this->towerBuilder = new TowerBuilder(this->game->tower);
