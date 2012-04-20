@@ -16,7 +16,7 @@ PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWo
 	
 	//TODO: make this a cvar
 	//Defines walk speed
-	walkSpeed = btScalar(0.8);
+	walkSpeed = btScalar(0.4);
 
 	btTransform startTransform;
 	startTransform.setIdentity();
@@ -49,7 +49,7 @@ PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWo
 	//was 0.4
 	airMovementSpeed = btScalar(0.01);
 	//The max movement speed while airborne
-	maxMoveSpeed = btScalar(1);
+	maxMoveSpeed = btScalar(0.5);
 
 	dynamicsWorld->addCollisionObject(m_ghostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::AllFilter);//btBroadphaseProxy::AllFilter /*btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter*/);
 	dynamicsWorld->addAction(m_character);
@@ -102,8 +102,8 @@ void PlayerPhysics::playerUpdated(Player *player)
 
 	//might be useful for interpolation, if not then delete
 	//determine the horizontal speed
-	btVector3 direction = xform.getOrigin() - oldPosition;
-	btScalar currentSpeed = btSqrt((direction.x() * direction.x()) + (direction.y() * direction.y()));
+	//btVector3 direction = xform.getOrigin() - oldPosition;
+	//btScalar currentSpeed = btSqrt((direction.x() * direction.x()) + (direction.y() * direction.y()));
 	//std::cout << "currentSpeed = " << currentSpeed << std::endl;
 
 	Ogre::Vector3 oPosition(xform.getOrigin().x(), xform.getOrigin().y() - 5, xform.getOrigin().z());
@@ -130,7 +130,6 @@ void PlayerPhysics::playerUpdated(Player *player)
 			if(walk.length() > 0)
 			{
 				walk = walk.normalize();
-				//walk /= (1 / oldWalkDirection.length());
 				walk *= airMovementSpeed;
 			}
 			walk += (oldWalkDirection * btScalar(0.99));
@@ -138,11 +137,15 @@ void PlayerPhysics::playerUpdated(Player *player)
 			actualMovement += walk;
 			
 			if(actualMovement.length() > maxMoveSpeed)
+			{
 				actualMovement = actualMovement.normalize();
+				actualMovement *= maxMoveSpeed;
+			}
+
 		}
 		m_character->setWalkDirection(actualMovement);
+		//oldPosition = xform.getOrigin();
 		oldWalkDirection = actualMovement;
-		oldPosition = xform.getOrigin();
 	}
 }
 

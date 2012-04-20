@@ -161,8 +161,11 @@ void Player::fire(bool state)
 
 void Player::create(bool state)
 {
-    if (state) {
-        this->signals.platform(this, new Platform(this->position, this->orientation));
+    if (state)
+	{
+		Ogre::Vector3 platformPosition = this->position;
+		platformPosition.y -= 2;
+		this->signals.platform(this, new Platform(platformPosition, this->orientation));
     }
 }
 
