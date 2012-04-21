@@ -45,6 +45,11 @@ Tower::Tower(unsigned levels, std::vector<unsigned> structure)
 
     this->blocks = std::vector<std::vector<std::vector<bool> > >(levels, std::vector<std::vector<bool> >(layers, std::vector<bool>(1, false)));
 
+    for (unsigned layer = 0; layer < this->layers; ++layer)
+    {
+        this->blocksPerLevel += structure[layer];
+    }
+
     // Fill each layer in the blocks with a vector of missing blocks of the right size
     for (unsigned level = 0; level < this->levels; ++level)
     {

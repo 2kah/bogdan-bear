@@ -58,6 +58,8 @@ public:
     static const short COLLISION_GROUP = 1; // 0000 0001
     static const short COLLISION_MASK  = 2; // 0000 0010
 
+    unsigned blocksPerLevel;
+
     Tower(unsigned levels, std::vector<unsigned> structure);
     virtual ~Tower();
 
