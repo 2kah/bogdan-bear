@@ -126,7 +126,6 @@ void TowerBuilder::Sync(bool* data, int low_level, int high_level, int low_layer
 	this->tower->signals.updated(this->tower, BoundingVolume(low_level,high_level,low_layer,high_layer,0,tower->sectors), -count);
 }
 
-
 void TowerBuilder::update(void)
 {
 	if (!isPaused)
@@ -169,7 +168,6 @@ void TowerBuilder::blocksUpdated(int blocksDestroyed)
 	{
 		this->blocksAvailable += blocksDestroyed;
 	}
-	std::cout << "blocks available = " << blocksAvailable << std::endl;
 }
 
 void TowerBuilder::generate()
@@ -186,7 +184,7 @@ void TowerBuilder::generate()
 	this->regeneratingMetaShapes = 1;
 
 	//TODO: make this generic
-	while(this->blocksAvailable > 9999)
+	while(this->blocksAvailable > 999)
 	{
 		this->regenerate();
 	}
@@ -294,9 +292,10 @@ void TowerBuilder::regenerate(void)
 				break;
 			}
 		}
-	BoundingVolume& b = this->chunks[metaShape.chunk.level][metaShape.chunk.layer][metaShape.chunk.sector].bounds;
-	this->network->broadcastUpdateTower(b.level_bottom, b.level_top, b.layer_inner, b.layer_outer);
+		BoundingVolume& b = this->chunks[metaShape.chunk.level][metaShape.chunk.layer][metaShape.chunk.sector].bounds;
+		this->network->broadcastUpdateTower(b.level_bottom, b.level_top, b.layer_inner, b.layer_outer);
 		this->tower->signals.updated(this->tower, this->chunks[metaShape.chunk.level][metaShape.chunk.layer][metaShape.chunk.sector].bounds, -blocksAdded);
+
 	}
     //for (unsigned level = 0; level < this->tower->levels; ++level)
     //{

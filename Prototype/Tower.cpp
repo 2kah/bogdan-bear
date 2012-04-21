@@ -184,9 +184,11 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
 
                     bool untouched = distance > radius + this->block_height / 2;
 
-                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && untouched;
+					bool exists = this->blocks[level][layer][sector];
 
-					if(!this->blocks[level][layer][sector] && !untouched)
+                    this->blocks[level][layer][sector] = exists && untouched;
+
+					if(!this->blocks[level][layer][sector] && exists && !untouched)
 						blocksRemoved++;
                 }
             } else {
@@ -197,9 +199,11 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
 
                     bool untouched = distance > radius + this->block_height / 2;
 
-                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && untouched;
+                    bool exists = this->blocks[level][layer][sector];
 
-					if(!this->blocks[level][layer][sector] && !untouched)
+                    this->blocks[level][layer][sector] = exists && untouched;
+
+					if(!this->blocks[level][layer][sector] && exists && !untouched)
 						blocksRemoved++;
                 }
                 for (int sector = 0; sector <= right; ++sector)
@@ -209,9 +213,11 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
 
                     bool untouched = distance > radius + this->block_height / 2;
 
-                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && untouched;
+					bool exists = this->blocks[level][layer][sector];
 
-					if(!this->blocks[level][layer][sector] && !untouched)
+                    this->blocks[level][layer][sector] = exists && untouched;
+
+					if(!this->blocks[level][layer][sector] && exists && !untouched)
 						blocksRemoved++;
                 }
             }
