@@ -101,7 +101,15 @@ void PlayerPhysics::playerUpdated(Player *player)
 	btTransform xform;
 	xform = m_ghostObject->getWorldTransform();
 
-
+	//prevent vibration when stood on flat surface
+	btVector3 currentPosition = xform.getOrigin();
+	float yPos = currentPosition.getY();
+	float oldYPos = oldPosition.getY();
+	float verticalDistMoved = yPos - oldYPos;
+	if(verticalDistMoved < 0.03 && verticalDistMoved > -0.03)
+		currentPosition.setY((yPos + oldYPos) / 2);
+		//currentPosition.setY(min(yPos, oldYPos));
+	xform.setOrigin(currentPosition);
 
 	//might be useful for interpolation, if not then delete
 	//determine the horizontal speed
@@ -147,7 +155,7 @@ void PlayerPhysics::playerUpdated(Player *player)
 
 		}
 		m_character->setWalkDirection(actualMovement);
-		//oldPosition = xform.getOrigin();
+		oldPosition = xform.getOrigin();
 		oldWalkDirection = actualMovement;
 	}
 }
