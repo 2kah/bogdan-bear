@@ -291,11 +291,22 @@ void GameTestThing::startLocal()
     // Add a player
     Player *player = new Player(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height + 10, 10));
 	Player *enemy = new Player(Ogre::Vector3(100, 20, 100));
-
+	Player *enemy1 = new Player(Ogre::Vector3(85, 20, 100));
+	Player *enemy2 = new Player(Ogre::Vector3(70, 20, 100));
+	Player *enemy3 = new Player(Ogre::Vector3(55, 20, 100));
+	
+	player->prop = new PlayerProperties(0, true);
     this->addPlayer(player);
     this->setLocalPlayer(player);
-
+	
+	enemy->prop = new PlayerProperties(0, false);
     this->addPlayer(enemy);
+	enemy1->prop = new PlayerProperties(1, false);
+	this->addPlayer(enemy1);
+	enemy2->prop = new PlayerProperties(2, false);
+	this->addPlayer(enemy2);
+	enemy3->prop = new PlayerProperties(3, false);
+	this->addPlayer(enemy3);
 
 	//Add the goal
 	Goal *goal = new Goal(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height, 0), player, this->game->mSceneMgr, this->game->dynamicsWorld);
@@ -337,7 +348,13 @@ void GameTestThing::startClient()
     new TowerGraphics(this->game->tower, this->game->mSceneMgr);
     new TowerPhysics(this->game->tower, this->game->dynamicsWorld);
 
+	Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowlchip.mesh");
+    Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
+    sceneNode->attachObject(bowl);
+    sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
 
+    btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
+	fileLoader->loadFile("BowlBul.bullet");
 
 
 
@@ -370,6 +387,14 @@ void GameTestThing::startServer()
 
     new TowerGraphics(this->game->tower, this->game->mSceneMgr);
     new TowerPhysics(this->game->tower, this->game->dynamicsWorld);
+
+	Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowlchip.mesh");
+    Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
+    sceneNode->attachObject(bowl);
+    sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
+
+    btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
+	fileLoader->loadFile("BowlBul.bullet");
 
 
     Player *player = new Player(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height + 10, 10));
@@ -589,7 +614,7 @@ void GameTestThing::setLocalPlayer(Player *player)
 
 void GameTestThing::addPlayer(Player *player)
 {
-	player->prop = new PlayerProperties(0);
+	//player->prop = new PlayerProperties(0);
 
     // Add player graphics
     new PlayerGraphics(player, this->game->mSceneMgr);

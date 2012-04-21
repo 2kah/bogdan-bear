@@ -4,9 +4,10 @@
 
 using namespace std;
 
-PlayerProperties::PlayerProperties(int team)
+PlayerProperties::PlayerProperties(int team, bool isLocal)
 {
 	this->team = team;
+	this->isLocal = isLocal;
 }
 
 PlayerProperties::~PlayerProperties()
@@ -22,15 +23,20 @@ int PlayerProperties::getTeam()
 string PlayerProperties::getCostumeName()
 {
     if(this->team == 0) {
-		return "warrior.mesh";
+		return "newWarriorPurple";
 	}
 	else if(this->team == 1) {
-		return "penguin.mesh";
+		return "newWarriorOrange";
 	}
 	else if(this->team == 2) {
-		return "ninja.mesh";
+		return "newWarriorGreen";
 	}
 	else if(this->team == 3) {
-		return "ninja.mesh";
+		return "newWarriorRed";
 	}
+}
+
+bool PlayerProperties::isPlayerLocal()
+{
+	return this->isLocal;
 }

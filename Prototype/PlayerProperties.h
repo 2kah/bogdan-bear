@@ -8,12 +8,14 @@ using namespace std;
 class PlayerProperties
 {
 public:
-    PlayerProperties(int team);
+    PlayerProperties(int team, bool isLocal);
     virtual ~PlayerProperties();
 	virtual int getTeam();
 	virtual string getCostumeName();
+	virtual bool isPlayerLocal();
 protected:
     int team;
+	bool isLocal;
 };
 
 #endif // #ifndef __PlayerProperties_h_
