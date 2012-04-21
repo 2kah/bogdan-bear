@@ -111,7 +111,8 @@ void Player::addInput(PlayerInput &input)
 
 void Player::movement(DIRECTION direction, bool state)
 {
-    if (direction == FORWARD)
+	//velocity should be controlled by the physics
+    /*if (direction == FORWARD)
     {
         this->velocity.z = -Player::MOVEMENT_SPEED * state;
     }
@@ -126,7 +127,7 @@ void Player::movement(DIRECTION direction, bool state)
     else if (direction == RIGHT)
     {
         this->velocity.x = Player::MOVEMENT_SPEED * state;
-    }
+    }*/
 
     if (!this->stepping && this->velocity.length() > 0) {
         this->stepping = true;

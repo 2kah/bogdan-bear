@@ -117,8 +117,9 @@ void PlayerPhysics::playerUpdated(Player *player)
 	//btScalar currentSpeed = btSqrt((direction.x() * direction.x()) + (direction.y() * direction.y()));
 	//std::cout << "currentSpeed = " << currentSpeed << std::endl;
 
-	Ogre::Vector3 oPosition(xform.getOrigin().x(), xform.getOrigin().y() - 5, xform.getOrigin().z());
-	this->player->position = oPosition;
+	this->player->position = BtOgre::Convert::toOgre(xform.getOrigin());
+	this->player->velocity = BtOgre::Convert::toOgre(oldWalkDirection);
+	std::cout << "velocity is: " << this->player->velocity << std::endl;
 
 	if(local)
 	{
@@ -168,6 +169,7 @@ void PlayerPhysics::playerStateSet(Player *player)
 	m_character->warp(BtOgre::Convert::toBullet(player->position));
 	//should make the kinematic character controller have the given velocity, no idea what units the time interval is in so assuming ms
 	//hopefully will have another update before time interval ends or player will stop moving
+	std::cout << "setting velocity: " << player->velocity << std::endl;
 	m_character->setVelocityForTimeInterval(BtOgre::Convert::toBullet(player->velocity), btScalar(1000));
 }
 

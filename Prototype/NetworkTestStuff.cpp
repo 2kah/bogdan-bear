@@ -28,7 +28,7 @@
 #include "Player.h"
 #include "Tower.h"
 
-static const char *SERVER_IP_ADDRESS="127.0.0.1";
+static const char *SERVER_IP_ADDRESS="192.168.1.233";
 //static const char *SERVER_IP_ADDRESS="192.168.11.4";
 static const unsigned short SERVER_PORT=12345;
 
@@ -537,6 +537,7 @@ void NetworkTestStuff::sendPlayerUpdate(NetPlayer* np)
 	pi.playerID = np->playerID;
 	pi.position = np->player->position;
 	pi.velocity = np->player->velocity;
+	std::cout << "sending velocity: " << np->player->velocity << std::endl;
 	pi.orientation = np->player->orientation;
 	pi.relativeAim = np->player->relativeAim;
 	pi.typeID = ID_UPDATE_PLAYER;
