@@ -38,7 +38,8 @@ public:
 	virtual bool isGameOver();
 
 	GoalSignals signals;
-
+	bool Goal::isPlayerInRange(Ogre::Vector3 position);
+	Ogre::Vector3 goalPosition;
 protected:
 
     btDiscreteDynamicsWorld *dynamicsWorld;
@@ -46,9 +47,9 @@ protected:
     btGhostObject *ghost;
 
 	bool gameOver;
-
+	
     Tower *tower;
-	Ogre::Vector3 goalPosition;
+	
 	Player *player;
 	int currentHold;
 	int holdingTeam[5]; //0 red, 1 blue, 2 green, 3 yellow

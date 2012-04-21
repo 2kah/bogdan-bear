@@ -52,6 +52,12 @@ void Player::update()
 	this->orientation = this->orientation * Ogre::Quaternion(Ogre::Radian(rotX), Ogre::Vector3::UNIT_Y);
     this->relativeAim = this->relativeAim * Ogre::Quaternion(Ogre::Radian(rotY), Ogre::Vector3::UNIT_X);
 
+	if(this->relativeAim.getPitch() > Ogre::Radian(Ogre::Math::PI / 2))
+		this->relativeAim = Ogre::Quaternion(Ogre::Radian(Ogre::Math::PI / 2), Ogre::Vector3::UNIT_X);
+	
+	if(this->relativeAim.getPitch() < Ogre::Radian(-Ogre::Math::PI / 1.8))
+		this->relativeAim = Ogre::Quaternion(Ogre::Radian(-Ogre::Math::PI / 1.8), Ogre::Vector3::UNIT_X);
+
     rotX = 0;
     rotY = 0;
     
@@ -105,7 +111,8 @@ void Player::addInput(PlayerInput &input)
 
 void Player::movement(DIRECTION direction, bool state)
 {
-    if (direction == FORWARD)
+	//velocity should be controlled by the physics
+    /*if (direction == FORWARD)
     {
         this->velocity.z = -Player::MOVEMENT_SPEED * state;
     }
@@ -120,7 +127,7 @@ void Player::movement(DIRECTION direction, bool state)
     else if (direction == RIGHT)
     {
         this->velocity.x = Player::MOVEMENT_SPEED * state;
-    }
+    }*/
 
     if (!this->stepping && this->velocity.length() > 0) {
         this->stepping = true;

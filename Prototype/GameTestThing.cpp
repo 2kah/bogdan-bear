@@ -65,7 +65,7 @@ GameTestThing::GameTestThing(Game *game)
 	this->network->signals.recvRocket.connect(boost::bind(&GameTestThing::networkRocket, this, _1, _2));
     this->game->objects.insert(this->network);
 
-	this->network->signals.addPlayer.connect(boost::bind(&GameTestThing::addPlayer, this, _1));
+	this->network->signals.addPlayer.connect(boost::bind(&GameTestThing::addPlayer, this, _1, _2));
 	this->network->signals.removePlayer.connect(boost::bind(&GameTestThing::removePlayer, this, _1));
 	this->network->signals.assignLocalPlayer.connect(boost::bind(&GameTestThing::setLocalPlayer, this, _1));
 	
@@ -334,10 +334,10 @@ void GameTestThing::startClient()
 	isServer = false;
 
 
-	unsigned divisions[] = {8, 16, 16, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 128, 128, 128, 128, 128, 128, 128};
-    std::vector<unsigned> structure(divisions, divisions + 14 + 8);
+	unsigned divisions[] = {8, 16, 16, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 256, 256, 256, 256, 256, 256, 256};
+    std::vector<unsigned> structure(divisions, divisions + 14 + 8 + 11);
 
-    this->game->tower = new Tower(256, structure);
+    this->game->tower = new Tower(192, structure);
 
     // Create a tower builder and generate the tower with it
     this->towerBuilder = new TowerBuilder(this->game->tower);
@@ -348,10 +348,18 @@ void GameTestThing::startClient()
     new TowerGraphics(this->game->tower, this->game->mSceneMgr);
     new TowerPhysics(this->game->tower, this->game->dynamicsWorld);
 
+	Goal *goal = new Goal(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height, 0), player, this->game->mSceneMgr, this->game->dynamicsWorld);
+	this->game->objects.insert(goal);
+	this->goal = goal;
+    
+	
 	Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowlchip.mesh");
     Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
     sceneNode->attachObject(bowl);
     sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
+
+    btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
+	fileLoader->loadFile("BowlBul.bullet");
 
     btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
 	fileLoader->loadFile("BowlBul.bullet");
@@ -371,10 +379,10 @@ void GameTestThing::startServer()
 	isLocal = false;
 	isServer = true;
 	printf("size of nettower %d\n",sizeof(NetTower));
-	unsigned divisions[] = {8, 16, 16, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 128, 128, 128, 128, 128, 128, 128};
-    std::vector<unsigned> structure(divisions, divisions + 14 + 8);
+	unsigned divisions[] = {8, 16, 16, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 256, 256, 256, 256, 256, 256, 256};
+    std::vector<unsigned> structure(divisions, divisions + 14 + 8 + 11);
 
-    this->game->tower = new Tower(256, structure);
+    this->game->tower = new Tower(192, structure);
 
     // Create a tower builder and generate the tower with it
     this->towerBuilder = new TowerBuilder(this->game->tower);
@@ -400,12 +408,23 @@ void GameTestThing::startServer()
     Player *player = new Player(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height + 10, 10));
     
 
-    this->addPlayer(player);
+    this->addPlayer(player, 0);
     this->setLocalPlayer(player);
 
 
+	Goal *goal = new Goal(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height, 0), player, this->game->mSceneMgr, this->game->dynamicsWorld);
+	this->game->objects.insert(goal);
+	this->goal = goal;
+    
+	
+	Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowlchip.mesh");
+    Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
+    sceneNode->attachObject(bowl);
+    sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
 
-
+    btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
+	fileLoader->loadFile("BowlBul.bullet");
+	this->network->g = this->goal;
 	this->network->startNetwork(true);
     
     //// listen for new players, adding them when they come
@@ -612,13 +631,12 @@ void GameTestThing::setLocalPlayer(Player *player)
 	localPlayerPhysics->addInput(this->game->playerInput);
 }
 
-void GameTestThing::addPlayer(Player *player)
+void GameTestThing::addPlayer(Player *player, int team)
 {
-	//player->prop = new PlayerProperties(0);
+	player->prop = new PlayerProperties(team);
 
     // Add player graphics
     new PlayerGraphics(player, this->game->mSceneMgr);
-	
 
     // Add player to updatable objects
     this->game->objects.insert(player);

@@ -27,7 +27,8 @@ PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWo
 	m_ghostObject = new btPairCachingGhostObject();
 	m_ghostObject->setWorldTransform(startTransform);
 	m_ghostObject->CO_COLLISION_OBJECT;
-	btConvexShape* capsule = new btCapsuleShape(2, 8);
+	//btConvexShape* capsule = new btCapsuleShape(2, 8);
+	btConvexShape* capsule = new btCylinderShape(btVector3(2, 5, 2));
 	m_ghostObject->setCollisionShape(capsule);
 	m_ghostObject->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
 	this->m_ghostObject->setUserPointer(this);
@@ -100,14 +101,25 @@ void PlayerPhysics::playerUpdated(Player *player)
 	btTransform xform;
 	xform = m_ghostObject->getWorldTransform();
 
+	//prevent vibration when stood on flat surface
+	btVector3 currentPosition = xform.getOrigin();
+	float yPos = currentPosition.getY();
+	float oldYPos = oldPosition.getY();
+	float verticalDistMoved = yPos - oldYPos;
+	if(verticalDistMoved < 0.03 && verticalDistMoved > -0.03)
+		currentPosition.setY((yPos + oldYPos) / 2);
+		//currentPosition.setY(min(yPos, oldYPos));
+	xform.setOrigin(currentPosition);
+
 	//might be useful for interpolation, if not then delete
 	//determine the horizontal speed
 	//btVector3 direction = xform.getOrigin() - oldPosition;
 	//btScalar currentSpeed = btSqrt((direction.x() * direction.x()) + (direction.y() * direction.y()));
 	//std::cout << "currentSpeed = " << currentSpeed << std::endl;
 
-	Ogre::Vector3 oPosition(xform.getOrigin().x(), xform.getOrigin().y() - 5, xform.getOrigin().z());
-	this->player->position = oPosition;
+	this->player->position = BtOgre::Convert::toOgre(xform.getOrigin());
+	this->player->velocity = BtOgre::Convert::toOgre(oldWalkDirection);
+	std::cout << "velocity is: " << this->player->velocity << std::endl;
 
 	if(local)
 	{
@@ -144,7 +156,7 @@ void PlayerPhysics::playerUpdated(Player *player)
 
 		}
 		m_character->setWalkDirection(actualMovement);
-		//oldPosition = xform.getOrigin();
+		oldPosition = xform.getOrigin();
 		oldWalkDirection = actualMovement;
 	}
 }
@@ -157,6 +169,7 @@ void PlayerPhysics::playerStateSet(Player *player)
 	m_character->warp(BtOgre::Convert::toBullet(player->position));
 	//should make the kinematic character controller have the given velocity, no idea what units the time interval is in so assuming ms
 	//hopefully will have another update before time interval ends or player will stop moving
+	std::cout << "setting velocity: " << player->velocity << std::endl;
 	m_character->setVelocityForTimeInterval(BtOgre::Convert::toBullet(player->velocity), btScalar(1000));
 }
 

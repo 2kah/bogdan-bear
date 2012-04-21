@@ -45,6 +45,11 @@ Tower::Tower(unsigned levels, std::vector<unsigned> structure)
 
     this->blocks = std::vector<std::vector<std::vector<bool> > >(levels, std::vector<std::vector<bool> >(layers, std::vector<bool>(1, false)));
 
+    for (unsigned layer = 0; layer < this->layers; ++layer)
+    {
+        this->blocksPerLevel += structure[layer];
+    }
+
     // Fill each layer in the blocks with a vector of missing blocks of the right size
     for (unsigned level = 0; level < this->levels; ++level)
     {
@@ -179,9 +184,11 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
 
                     bool untouched = distance > radius + this->block_height / 2;
 
-                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && untouched;
+					bool exists = this->blocks[level][layer][sector];
 
-					if(!this->blocks[level][layer][sector] && !untouched)
+                    this->blocks[level][layer][sector] = exists && untouched;
+
+					if(!this->blocks[level][layer][sector] && exists && !untouched)
 						blocksRemoved++;
                 }
             } else {
@@ -192,9 +199,11 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
 
                     bool untouched = distance > radius + this->block_height / 2;
 
-                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && untouched;
+                    bool exists = this->blocks[level][layer][sector];
 
-					if(!this->blocks[level][layer][sector] && !untouched)
+                    this->blocks[level][layer][sector] = exists && untouched;
+
+					if(!this->blocks[level][layer][sector] && exists && !untouched)
 						blocksRemoved++;
                 }
                 for (int sector = 0; sector <= right; ++sector)
@@ -204,9 +213,11 @@ void Tower::carveSphere(Ogre::Vector3 position, double radius)
 
                     bool untouched = distance > radius + this->block_height / 2;
 
-                    this->blocks[level][layer][sector] = this->blocks[level][layer][sector] && untouched;
+					bool exists = this->blocks[level][layer][sector];
 
-					if(!this->blocks[level][layer][sector] && !untouched)
+                    this->blocks[level][layer][sector] = exists && untouched;
+
+					if(!this->blocks[level][layer][sector] && exists && !untouched)
 						blocksRemoved++;
                 }
             }
