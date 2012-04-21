@@ -59,42 +59,49 @@ Goal::~Goal()
 {
 }
 
+bool Goal::isPlayerInRange(Ogre::Vector3 position)
+{
+	if (position.y > this->goalPosition.y && position.distance(this->goalPosition) < 40.0)
+		return true;
+	return false;
+}
+
 void Goal::update(void)
 {
-	//Loop over players
-	if((this->goalPosition - player->position).length() < 40 && player->position.y > this->goalPosition.y)
-	{
-		//flag the team to add points to
-		//If goal contains both then add points to neither
-		this->holdingTeam[player->prop->getTeam()] = 1;
-	}
-	//end loop of players
-	//Add the points to the relevant team: loop to see if only one team is in the hill (count is how many teams are in the hill,
-	//currentHold is the team holding the hill (will get awarded points if there is only one team)
-	int count = 0;
-	int currentHold = 4;
-	for(int i = 0; i < 4; i++)
-	{
-		if(this->holdingTeam[i] > 0)
-		{
-			count++;
-			currentHold = i;
-		}
-		this->holdingTeam[i] = 0;
-	}
-	if(count == 1)
-	{
-	    this->teamPoints[currentHold]++;
-		if(this->teamPoints[currentHold] > 3000)
-		{
-			std::cout<<"GAME OVER " << currentHold << "WINS WITH " << this->teamPoints[currentHold] <<std::endl;
-			this->gameOver = true;
-		}
-	}
+	////Loop over players
+	//if((this->goalPosition - player->position).length() < 40 && player->position.y > this->goalPosition.y)
+	//{
+	//	//flag the team to add points to
+	//	//If goal contains both then add points to neither
+	//	this->holdingTeam[player->prop->getTeam()] = 1;
+	//}
+	////end loop of players
+	////Add the points to the relevant team: loop to see if only one team is in the hill (count is how many teams are in the hill,
+	////currentHold is the team holding the hill (will get awarded points if there is only one team)
+	//int count = 0;
+	//int currentHold = 4;
+	//for(int i = 0; i < 4; i++)
+	//{
+	//	if(this->holdingTeam[i] > 0)
+	//	{
+	//		count++;
+	//		currentHold = i;
+	//	}
+	//	this->holdingTeam[i] = 0;
+	//}
+	//if(count == 1)
+	//{
+	//    this->teamPoints[currentHold]++;
+	//	if(this->teamPoints[currentHold] > 3000)
+	//	{
+	//		std::cout<<"GAME OVER " << currentHold << "WINS WITH " << this->teamPoints[currentHold] <<std::endl;
+	//		this->gameOver = true;
+	//	}
+	//}
 
-	int points = this->teamPoints[0];
-	if(points % 100 == 0)std::cout<<"Team points:" << this->teamPoints[0] <<std::endl;
-	this->signals.updated(this);
+	//int points = this->teamPoints[0];
+	//if(points > 0 && points % 100 == 0)std::cout<<"Team points:" << this->teamPoints[0] <<std::endl;
+	//this->signals.updated(this);
 
 }
 

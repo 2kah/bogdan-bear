@@ -78,7 +78,7 @@ protected:
 	int blocksAvailable;
 	int maxRegeneratingMetaShapes;
 	int regeneratingMetaShapes;
-	int activeBlocks;
+	//int activeBlocks;
 
 	std::vector<std::vector<std::vector<BuilderChunk>>> chunks;
 	std::vector<MetaShape> metaShapes;
