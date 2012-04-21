@@ -44,7 +44,7 @@ struct NetTower
 	int high_level;
 	int low_layer;
 	int high_layer;
-	bool data [420000];
+	bool data [840000];
 };
 #pragma pack(pop)
 
