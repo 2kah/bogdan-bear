@@ -74,6 +74,9 @@ public:
 
 	virtual void setTurret(Turret *newTurret);
 
+	virtual double getAmmo();
+	virtual int getAmmoAmount();
+
     Ogre::Quaternion relativeAim;
     Ogre::Vector3 velocity;
 

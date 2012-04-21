@@ -73,7 +73,7 @@ void Player::update()
 			this->rocketAmmo++;
 			std::cout << "Ammo " << this->rocketAmmo << std::endl;
 			this->reloadTimer = 200;
-			if(rocketAmmo < 4) {
+			if(this->rocketAmmo < 4) {
 				this->needsReload = true;
 			}
 			else {
@@ -198,4 +198,27 @@ void Player::setTurret(Turret *newTurret)
 {
 	this->turret = newTurret;
 }
+
+double Player::getAmmo()
+{
+	//double ammoClips[] = {-0.4, -0.4, -0.4, -0.4};
+	//for(int i = 0; i < this->rocketAmmo; i++)
+	//{
+	//	ammoClips[i] = 0;
+	//}
+	//if(this->rocketAmmo < 4) {
+	
+	double	ammoClips = -0.3*(this->reloadTimer/(double)200);
+	//}
+	//printf("%i,   %lf\n", this->reloadTimer, -0.3*(this->reloadTimer/200));
+	//printf("%lf, %lf, %lf, %lf\n", ammoClips[0], ammoClips[1], ammoClips[2], ammoClips[3]);
+	return ammoClips;
+}
+
+int Player::getAmmoAmount()
+{
+	return this->rocketAmmo;
+}
+
+
 
