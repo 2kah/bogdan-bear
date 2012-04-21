@@ -23,17 +23,18 @@ int PlayerProperties::getTeam()
 string PlayerProperties::getCostumeName()
 {
     if(this->team == 0) {
-		return "newWarriorPurple";
+		return "newWarriorRed";
 	}
 	else if(this->team == 1) {
 		return "newWarriorOrange";
 	}
 	else if(this->team == 2) {
-		return "newWarriorGreen";
+		return "newWarriorPurple";
 	}
 	else if(this->team == 3) {
-		return "newWarriorRed";
+		return "newWarriorGreen";
 	}
+	else return "";
 }
 
 bool PlayerProperties::isPlayerLocal()

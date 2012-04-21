@@ -17,6 +17,7 @@ class Sounds;
 class Turret;
 class Player;
 class PlayerPhysics;
+class PlayerGraphics;
 class Platform;
 class Rocket;
 class Explosion;
@@ -84,6 +85,7 @@ private:
 
     Player *localPlayer;
 	PlayerPhysics *localPlayerPhysics;
+	PlayerGraphics *localPlayerGraphics;
 };
 
 #endif // #ifndef __GameTestThing_h_

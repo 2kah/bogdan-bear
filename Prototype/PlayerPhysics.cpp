@@ -119,7 +119,7 @@ void PlayerPhysics::playerUpdated(Player *player)
 
 	this->player->position = BtOgre::Convert::toOgre(xform.getOrigin());
 	this->player->velocity = BtOgre::Convert::toOgre(oldWalkDirection);
-	std::cout << "velocity is: " << this->player->velocity << std::endl;
+	//std::cout << "velocity is: " << this->player->velocity << std::endl;
 
 	if(local)
 	{
