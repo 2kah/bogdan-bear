@@ -77,6 +77,9 @@ public:
 	virtual double getAmmo();
 	virtual int getAmmoAmount();
 
+	virtual void setScores(int newScores[]);
+	virtual int getScore(int team);
+
     Ogre::Quaternion relativeAim;
     Ogre::Vector3 velocity;
 
@@ -93,6 +96,7 @@ private:
 	int reloadTimer;
 	bool canFire;
 	int cooldown;
+	int scores[4];
 
 	Turret *turret;
 

@@ -112,7 +112,7 @@ GameTestThing::GameTestThing(Game *game)
 	this->game->mSceneMgr->setSkyBox(true, "nebulaBox", 700, true);
     
 	//Ambient Light
-	this->game->mSceneMgr->setAmbientLight(Ogre::ColourValue(0,255,246));
+	this->game->mSceneMgr->setAmbientLight(Ogre::ColourValue::White);
 	//Spot Light
 	//Ogre::Light *spot2 = this->game->mSceneMgr->createLight();
 	//spot2->setType(Ogre::Light::LT_POINT);
@@ -124,25 +124,26 @@ GameTestThing::GameTestThing(Game *game)
     moon->setType(Ogre::Light::LT_DIRECTIONAL);
     moon->setDirection(Ogre::Vector3(1, 0, 0));
     moon->setDiffuseColour(Ogre::ColourValue::White);
-    moon->setSpecularColour(Ogre::ColourValue::White);
 
 	Ogre::Light *moon2 = this->game->mSceneMgr->createLight();
     moon2->setType(Ogre::Light::LT_DIRECTIONAL);
     moon2->setDirection(Ogre::Vector3(-1, 0, 0));
     moon2->setDiffuseColour(Ogre::ColourValue::White);
-    moon2->setSpecularColour(Ogre::ColourValue::White);
 
 	Ogre::Light *moon3 = this->game->mSceneMgr->createLight();
     moon3->setType(Ogre::Light::LT_DIRECTIONAL);
     moon3->setDirection(Ogre::Vector3(0, 0, 1));
     moon3->setDiffuseColour(Ogre::ColourValue::White);
-    moon3->setSpecularColour(Ogre::ColourValue::White);
 
 	Ogre::Light *moon4 = this->game->mSceneMgr->createLight();
     moon4->setType(Ogre::Light::LT_DIRECTIONAL);
     moon4->setDirection(Ogre::Vector3(0, 0, -1));
     moon4->setDiffuseColour(Ogre::ColourValue::White);
-    moon4->setSpecularColour(Ogre::ColourValue::White);
+
+	Ogre::Light *moon5 = this->game->mSceneMgr->createLight();
+    moon4->setType(Ogre::Light::LT_DIRECTIONAL);
+    moon4->setDirection(Ogre::Vector3(0, -1, 0));
+    moon4->setDiffuseColour(Ogre::ColourValue(0, 255, 246));
 
     std::cout << "PRESS F11 FOR LOCAL TEST GAME" << std::endl;
     std::cout << "PRESS F9 FOR LOCAL SERVER GAME" << std::endl;
@@ -295,18 +296,13 @@ void GameTestThing::startLocal()
 	Player *enemy2 = new Player(Ogre::Vector3(70, 20, 100));
 	Player *enemy3 = new Player(Ogre::Vector3(55, 20, 100));
 	
-	player->prop = new PlayerProperties(0, true);
-    this->addPlayer(player);
+    this->addPlayer(player, 0);
     this->setLocalPlayer(player);
 	
-	enemy->prop = new PlayerProperties(0, false);
-    this->addPlayer(enemy);
-	enemy1->prop = new PlayerProperties(1, false);
-	this->addPlayer(enemy1);
-	enemy2->prop = new PlayerProperties(2, false);
-	this->addPlayer(enemy2);
-	enemy3->prop = new PlayerProperties(3, false);
-	this->addPlayer(enemy3);
+    this->addPlayer(enemy, 0);
+	this->addPlayer(enemy1, 1);
+	this->addPlayer(enemy2, 2);
+	this->addPlayer(enemy3, 3);
 
 	//Add the goal
 	Goal *goal = new Goal(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height, 0), player, this->game->mSceneMgr, this->game->dynamicsWorld);
@@ -361,8 +357,8 @@ void GameTestThing::startClient()
     btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
 	fileLoader->loadFile("BowlBul.bullet");
 
-    btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
-	fileLoader->loadFile("BowlBul.bullet");
+    //btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
+	//fileLoader->loadFile("BowlBul.bullet");
 
 
 
@@ -396,13 +392,13 @@ void GameTestThing::startServer()
     new TowerGraphics(this->game->tower, this->game->mSceneMgr);
     new TowerPhysics(this->game->tower, this->game->dynamicsWorld);
 
-	Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowlchip.mesh");
-    Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
-    sceneNode->attachObject(bowl);
-    sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
+	//Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowlchip.mesh");
+    //Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
+    //sceneNode->attachObject(bowl);
+    //sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
 
-    btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
-	fileLoader->loadFile("BowlBul.bullet");
+    //btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
+	//fileLoader->loadFile("BowlBul.bullet");
 
 
     Player *player = new Player(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height + 10, 10));
@@ -485,6 +481,10 @@ void GameTestThing::update()
 	if(this->towerBuilder != NULL)
 	{
 		this->towerBuilder->update();
+	}
+
+	if(this->network != NULL && this->localPlayer != NULL) {
+	    this->localPlayer->setScores(this->network->teamScores);
 	}
 }
 
@@ -616,7 +616,10 @@ void GameTestThing::playerUsed(Player *player)
 void GameTestThing::setLocalPlayer(Player *player)
 {
     this->localPlayer = player;
-
+	this->localPlayer->prop = new PlayerProperties(this->localPlayer->prop->getTeam(), true);
+	
+	localPlayerGraphics->~PlayerGraphics();
+    new PlayerGraphics(player, this->game->mSceneMgr);
     // link the local camera to the player
     new PlayerCamera(player, this->game->mCamera);
 
@@ -633,10 +636,10 @@ void GameTestThing::setLocalPlayer(Player *player)
 
 void GameTestThing::addPlayer(Player *player, int team)
 {
-	player->prop = new PlayerProperties(team);
+	player->prop = new PlayerProperties(team, false);
 
     // Add player graphics
-    new PlayerGraphics(player, this->game->mSceneMgr);
+    localPlayerGraphics = new PlayerGraphics(player, this->game->mSceneMgr);
 
     // Add player to updatable objects
     this->game->objects.insert(player);

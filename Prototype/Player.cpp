@@ -227,5 +227,18 @@ int Player::getAmmoAmount()
 	return this->rocketAmmo;
 }
 
+void Player::setScores(int newScores[])
+{
+	this->scores[0] = newScores[0];
+	this->scores[1] = newScores[1];
+	this->scores[2] = newScores[2];
+	this->scores[3] = newScores[3];
+}
+
+int Player::getScore(int team)
+{
+	return this->scores[team];
+}
+
 
 

@@ -1,18 +1,18 @@
-material lambert4
+material newWarriorOrange
 {
 	technique
 	{
 		pass
 		{
-			ambient 0 0 0 0.7
-			diffuse 1 1 1 1
-			specular 0 0 0 0.7
-			emissive 0 0 0
+			ambient 0 0 0 1
+			scene_blend alpha_blend
+
 			texture_unit
 			{
-				texture BowlMaterial.png 2 0
+				texture warriorRocketOrange.psd
 			}
 		}
+
 	}
 
 	technique
@@ -22,12 +22,14 @@ material lambert4
 		{
 			texture_unit
 			{
-			texture BowlMaterial.png
+			    texture warriorRocketOrangeMask.psd
 			}
 			ambient 0.7 0.7 0.7
-			diffuse 1 1 1
+			diffuse 0.5 0.5 0.5
 			specular 0 0 0 0
 			emissive 0 0 0
 		}
 	}
 }
+
+
