@@ -15,7 +15,7 @@ PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWo
 	this->dynamicsWorld = dynamicsWorld;
 	
 	halfHeight = 8;
-	width = 4.5;
+	width = 4;
 	
 	//Defines walk speed
 	walkSpeed = btScalar(0.4);
