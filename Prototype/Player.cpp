@@ -55,8 +55,8 @@ void Player::update()
 	if(this->relativeAim.getPitch() > Ogre::Radian(Ogre::Math::PI / 2))
 		this->relativeAim = Ogre::Quaternion(Ogre::Radian(Ogre::Math::PI / 2), Ogre::Vector3::UNIT_X);
 	
-	if(this->relativeAim.getPitch() < Ogre::Radian(-Ogre::Math::PI / 1.8))
-		this->relativeAim = Ogre::Quaternion(Ogre::Radian(-Ogre::Math::PI / 1.8), Ogre::Vector3::UNIT_X);
+	if(this->relativeAim.getPitch() < Ogre::Radian(-Ogre::Math::PI / 2))
+		this->relativeAim = Ogre::Quaternion(Ogre::Radian(-Ogre::Math::PI / 2), Ogre::Vector3::UNIT_X);
 
     rotX = 0;
     rotY = 0;
@@ -171,7 +171,8 @@ void Player::create(bool state)
     if (state)
 	{
 		Ogre::Vector3 platformPosition = this->position;
-		platformPosition.y -= 2;
+		//make platform spawn beneath you, not inside you
+		platformPosition.y -= 6;
 		this->signals.platform(this, new Platform(platformPosition, this->orientation));
     }
 }
