@@ -295,7 +295,7 @@ void GameTestThing::startLocal()
 	Player *enemy1 = new Player(Ogre::Vector3(85, 20, 100));
 	Player *enemy2 = new Player(Ogre::Vector3(70, 20, 100));
 	Player *enemy3 = new Player(Ogre::Vector3(55, 20, 100));
-	
+
     this->addPlayer(player, 0);
     this->setLocalPlayer(player);
 	

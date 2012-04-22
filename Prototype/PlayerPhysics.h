@@ -35,6 +35,9 @@ public:
 	virtual void deactivate();
 	virtual void reactivate();
 
+	int halfHeight;
+	int width;
+
 	btKinematicCharacterController* m_character;
 	class btPairCachingGhostObject* m_ghostObject;
 protected:
