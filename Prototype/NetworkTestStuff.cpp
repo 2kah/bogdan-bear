@@ -493,41 +493,82 @@ void NetworkTestStuff::sendFullTower(RakNet::Packet *packet)
 
 void NetworkTestStuff::broadcastUpdateTower(int low_level, int high_level, int low_layer, int high_layer)
 {
+	RakNet::BitStream b;
+	b.Write(ID_UPDATE_TOWER);
+	b.Write(low_layer);
+	b.Write(low_level);
+	b.Write(high_layer);
+	b.Write(high_level);
 	if (rakPeer > 0)
 	{
 	Tower* tower = this->tb->tower;
-	int count = 0;
-	unsigned long total = 0;
+	int totalCount = 0;
+	unsigned long totalActive = 0;
 	for (int i =low_level; i < high_level; i++)
 	{
 		for (int j =low_layer; j < high_layer; j++)
 		{
 			for (int k =0; k < tower->blocks[i][j].size() ; k++)
 			{
-				this->towerBuffer.data[count] = (tower->blocks[i][j][k]);
-				if (this->towerBuffer.data[count]) total++;
-				count++;
+				if (tower->blocks[i][j][k])
+				{
+					b.Write(true);
+					totalActive++;
+				}
+				else
+				{
+					b.Write(false);
+				}
+				
+				totalCount++;
 			}
 		}
 	}
-	this->towerBuffer.size = count;
-	this->towerBuffer.low_layer = low_layer;
-	this->towerBuffer.low_level = low_level;
-	this->towerBuffer.high_layer= high_layer;
-	this->towerBuffer.high_level= high_level;
-	//printf("MaxBlocks: %d\n",this->tb->maxBlocks);
-	this->towerBuffer.typeId = ID_UPDATE_TOWER;
-	//printf("max size: %d actual size: %d\n",sizeof(NetTower),this->towerBuffer.size+29);
-	rakPeer->Send((char*)&(this->towerBuffer),this->towerBuffer.size+29 , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
-	printf("Sending %d blocks, %d active.\n",count,total);
+	
+	rakPeer->Send(&b , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+	printf("Sending %d blocks, %d active.\n",totalCount,totalActive);
+	printf("(%d, %d, %d, %d)\n",low_level, high_level, low_layer, high_layer);
 	}
 }
 
 void NetworkTestStuff::receiveUpdateTower(RakNet::Packet *packet)
 {
+	int low_level, high_level, low_layer, high_layer;
+	Tower* tower = this->tb->tower;
+	RakNet::BitStream b(packet->data, packet->length, false);
 	printf("Incoming tower update: %d bytes\n",packet->length);
-	NetTower* towerData = (NetTower*)packet->data;
-	this->tb->Sync(towerData->data, towerData->low_level,towerData->high_level, towerData->low_layer, towerData->high_layer);
+	unsigned char head;
+	b.Read(head);
+	b.Read(low_layer);
+	b.Read(low_level);
+	b.Read(high_layer);
+	b.Read(high_level);
+	printf("(%d, %d, %d, %d)\n",low_level, high_level, low_layer, high_layer);
+	bool temp;
+	unsigned long totalActive = 0;
+	int totalCount = 0;
+	for (int i =low_level; i < high_level; i++)
+	{
+		for (int j =low_layer; j < high_layer; j++)
+		{
+			for (int k =0; k < tower->blocks[i][j].size(); k++)
+			{
+				b.Read(temp);
+				if (temp)
+				{
+					tower->blocks[i][j][k] = true;
+					totalActive ++;
+				}
+				else
+				{
+					tower->blocks[i][j][k] = false;
+				}
+				totalCount++;
+			}
+		}
+	}
+	tower->signals.updated(tower, BoundingVolume(low_level,high_level,low_layer,high_layer,0,tower->sectors), -totalCount);
+	printf("Updated %d blocks, total active: %d\n", totalCount, totalActive);
 }
 
 

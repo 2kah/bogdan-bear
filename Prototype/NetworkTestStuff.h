@@ -39,7 +39,6 @@ struct NetworkSignals {
 struct NetTower
 {
 	unsigned char typeId;
-	int size;
 	int low_level;
 	int high_level;
 	int low_layer;
