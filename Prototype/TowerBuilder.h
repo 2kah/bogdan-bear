@@ -57,11 +57,8 @@ public:
     virtual void regenerate(void);
 
     virtual void blocksUpdated(int blocksDestroyed);
-	void Sync(bool* data, int low_level, int high_level, int low_layer, int high_layer);
 	void Init();
-	void InitFull();
-	void GetFullTowerState();
-	void GetPartialTowerState();
+
 
     Tower *tower;
 	MetaShapeBuilder *metaShapeBuilder;
