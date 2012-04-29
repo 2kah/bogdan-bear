@@ -51,6 +51,8 @@ public:
 
 	Goal *goal;
     Player *player;
+	int count;
+
 
 protected:
     Game *game;
