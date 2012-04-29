@@ -68,7 +68,6 @@ GameTestThing::GameTestThing(Game *game)
 	this->network->signals.addPlayer.connect(boost::bind(&GameTestThing::addPlayer, this, _1, _2));
 	this->network->signals.removePlayer.connect(boost::bind(&GameTestThing::removePlayer, this, _1));
 	this->network->signals.assignLocalPlayer.connect(boost::bind(&GameTestThing::setLocalPlayer, this, _1));
-	
     this->sounds = new Sounds();
 
 	//TODO: remove this - needed because networking is hacky
@@ -84,7 +83,6 @@ GameTestThing::GameTestThing(Game *game)
     this->game->dynamicsWorld->addRigidBody(groundRigidBody); // , 4, 2);
     
     // Add the bowl
-
 	Ogre::CompositorManager::getSingleton().addCompositor(this->game->mCamera->getViewport(), "Glow");
 	Ogre::CompositorManager::getSingleton().setCompositorEnabled(this->game->mCamera->getViewport(), "Glow", true);
 	GlowMaterialListener *gml = new GlowMaterialListener();
@@ -106,44 +104,49 @@ GameTestThing::GameTestThing(Game *game)
 
 	//Fog for gradient
 	Ogre::ColourValue fadeColour(0.005, 0.005, 0.005);
-    this->game->mSceneMgr->setFog(Ogre::FOG_LINEAR, fadeColour, 0.0, 10, 1200);
-    this->game->mWindow->getViewport(0)->setBackgroundColour(fadeColour);
+    //this->game->mSceneMgr->setFog(Ogre::FOG_LINEAR, fadeColour, 0.0, 10, 1200);
+    //this->game->mWindow->getViewport(0)->setBackgroundColour(fadeColour);
 	//Loads up nebula sky
 	this->game->mSceneMgr->setSkyBox(true, "nebulaBox", 700, true);
-    
-	//Ambient Light
+	//Ambient light
 	this->game->mSceneMgr->setAmbientLight(Ogre::ColourValue::White);
-	//Spot Light
+
+	this->game->mSceneMgr->setAmbientLight(Ogre::ColourValue::White);
 	//Ogre::Light *spot2 = this->game->mSceneMgr->createLight();
 	//spot2->setType(Ogre::Light::LT_POINT);
 	//spot2->setPosition(0,200,0);
     //spot2->setDiffuseColour(0,255,246);
     //spot2->setSpecularColour(Ogre::ColourValue::White);
-	//Directional Light
-    Ogre::Light *moon = this->game->mSceneMgr->createLight();
+	Ogre::Light *moon = this->game->mSceneMgr->createLight();
     moon->setType(Ogre::Light::LT_DIRECTIONAL);
-    moon->setDirection(Ogre::Vector3(1, 0, 0));
+    moon->setDirection(Ogre::Vector3(-1, -1, -1));
     moon->setDiffuseColour(Ogre::ColourValue::White);
+	//moon->setDiffuseColour(Ogre::ColourValue(100, 100, 100));
 
-	Ogre::Light *moon2 = this->game->mSceneMgr->createLight();
+    Ogre::Light *moon2 = this->game->mSceneMgr->createLight();
     moon2->setType(Ogre::Light::LT_DIRECTIONAL);
-    moon2->setDirection(Ogre::Vector3(-1, 0, 0));
+    moon2->setDirection(Ogre::Vector3(1, 1, 1));
     moon2->setDiffuseColour(Ogre::ColourValue::White);
+	//moon2->setDiffuseColour(Ogre::ColourValue(100, 100, 100));
 
-	Ogre::Light *moon3 = this->game->mSceneMgr->createLight();
+	/*Ogre::Light *moon3 = this->game->mSceneMgr->createLight();
     moon3->setType(Ogre::Light::LT_DIRECTIONAL);
     moon3->setDirection(Ogre::Vector3(0, 0, 1));
     moon3->setDiffuseColour(Ogre::ColourValue::White);
+	//moon3->setDiffuseColour(Ogre::ColourValue(100, 100, 100));
 
 	Ogre::Light *moon4 = this->game->mSceneMgr->createLight();
     moon4->setType(Ogre::Light::LT_DIRECTIONAL);
     moon4->setDirection(Ogre::Vector3(0, 0, -1));
     moon4->setDiffuseColour(Ogre::ColourValue::White);
+	//moon4->setDiffuseColour(Ogre::ColourValue(100, 100, 100));
 
 	Ogre::Light *moon5 = this->game->mSceneMgr->createLight();
-    moon4->setType(Ogre::Light::LT_DIRECTIONAL);
-    moon4->setDirection(Ogre::Vector3(0, -1, 0));
-    moon4->setDiffuseColour(Ogre::ColourValue(0, 255, 246));
+    moon5->setType(Ogre::Light::LT_DIRECTIONAL);
+    moon5->setDirection(Ogre::Vector3(0, -1, 0));
+    //moon5->setDiffuseColour(Ogre::ColourValue(0, 255, 246));
+    moon5->setDiffuseColour(Ogre::ColourValue::White);
+	//moon5->setDiffuseColour(Ogre::ColourValue(100, 100, 100));*/
 
     std::cout << "PRESS F11 FOR LOCAL TEST GAME" << std::endl;
     std::cout << "PRESS F9 FOR LOCAL SERVER GAME" << std::endl;
@@ -234,9 +237,6 @@ void GameTestThing::destroyScene()
 	//this->game->mSceneMgr->clearSpecialCaseRenderQueues();
 	//this->game->mSceneMgr->clearScene();
 	this->game->mSceneMgr->destroyAllManualObjects();
-
-
-	printf("hello\n");
 	for (int i=this->game->dynamicsWorld->getNumCollisionObjects()-1; i>=0 ;i--)
         {
                 btCollisionObject* obj = this->game->dynamicsWorld->getCollisionObjectArray()[i];
@@ -291,7 +291,7 @@ void GameTestThing::startLocal()
 	
     // Add a player
     Player *player = new Player(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height + 10, 10));
-	Player *enemy = new Player(Ogre::Vector3(100, 20, 100));
+	Player *enemy =  new Player(Ogre::Vector3(100, 20, 100));
 	Player *enemy1 = new Player(Ogre::Vector3(85, 20, 100));
 	Player *enemy2 = new Player(Ogre::Vector3(70, 20, 100));
 	Player *enemy3 = new Player(Ogre::Vector3(55, 20, 100));
@@ -317,6 +317,7 @@ void GameTestThing::startLocal()
 
     btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
 	fileLoader->loadFile("BowlBul.bullet");
+
     // Set the turret to aim at the player always. Setting it to NULL makes it shoot randomly at the tower.
 	//turret1->setTarget(player);
 	//turret2->setTarget(player);
@@ -328,7 +329,6 @@ void GameTestThing::startClient()
 {
 	isLocal = false;
 	isServer = false;
-
 
 	unsigned divisions[] = {8, 16, 16, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 256, 256, 256, 256, 256, 256, 256};
     std::vector<unsigned> structure(divisions, divisions + 14 + 8 + 11);
@@ -356,13 +356,8 @@ void GameTestThing::startClient()
 
     btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
 	fileLoader->loadFile("BowlBul.bullet");
-
     //btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
 	//fileLoader->loadFile("BowlBul.bullet");
-
-
-
-
 	this->network->startNetwork(false);
 
     // wait to receive game state
@@ -388,10 +383,8 @@ void GameTestThing::startServer()
 	this->network->tb = this->towerBuilder;
 	this->towerBuilder->generate();
 	
-
     new TowerGraphics(this->game->tower, this->game->mSceneMgr);
     new TowerPhysics(this->game->tower, this->game->dynamicsWorld);
-
 	//Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowlchip.mesh");
     //Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
     //sceneNode->attachObject(bowl);
@@ -400,13 +393,10 @@ void GameTestThing::startServer()
     //btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
 	//fileLoader->loadFile("BowlBul.bullet");
 
-
     Player *player = new Player(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height + 10, 10));
     
-
     this->addPlayer(player, 0);
     this->setLocalPlayer(player);
-
 
 	Goal *goal = new Goal(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height, 0), player, this->game->mSceneMgr, this->game->dynamicsWorld);
 	this->game->objects.insert(goal);
@@ -417,7 +407,6 @@ void GameTestThing::startServer()
     Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
     sceneNode->attachObject(bowl);
     sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
-
     btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
 	fileLoader->loadFile("BowlBul.bullet");
 	this->network->g = this->goal;
@@ -507,12 +496,11 @@ void GameTestThing::playerFired(Player *player, Rocket *rocket)
 void GameTestThing::rocketExploded(Rocket *rocket, Explosion *explosion)
 {
     this->removeQueue.insert(rocket);
-
     // TODO: refactor
 
 	this->addExplosion(explosion);
-    if (isServer) this->network->sendExplosion(explosion->position);
 
+    if (isServer) this->network->sendExplosion(explosion->position);
     if (isLocal) 
 	{
 		std::cout<<"Local Explosion" <<std::endl;
@@ -585,9 +573,9 @@ void GameTestThing::playerUsed(Player *player)
             j = this->turrets.end();
 	    }
     }
-	printf("%f\n", minDis);
+	/*printf("%f\n", minDis);
 	printf("%f,%f,%f\n",turret->position.x, turret->position.y, turret->position.z);
-	printf("%f,%f,%f\n",min.x, min.y, min.z);
+	printf("%f,%f,%f\n",min.x, min.y, min.z);*/
 	if(minDis < 180)
 	{
 	    if(player->position == min)
@@ -678,17 +666,18 @@ void GameTestThing::addRocket(Rocket *rocket)
 
     new RocketGraphics(rocket, this->game->mSceneMgr);
     new RocketPhysics(rocket, this->game->dynamicsWorld);
-    //new RocketSound(rocket, this->sounds->engine);
+    new RocketSound(rocket, this->sounds->engine);
 
     rocket->signals.exploded.connect(boost::bind(&GameTestThing::rocketExploded, this, _1, _2));
 }
 
 void GameTestThing::addExplosion(Explosion *explosion)
 {
-    this->game->objects.insert(explosion);
-
-    explosion->signals.finished.connect(boost::bind(&GameTestThing::explosionFinished, this, _1));
+	this->game->objects.insert(explosion);
+	explosion->signals.finished.connect(boost::bind(&GameTestThing::explosionFinished, this, _1));
+	
+    new ExplosionGraphics(explosion, this->game->mSceneMgr, int(this->count));
+	new ExplosionPhysics(explosion, this->game->dynamicsWorld);
+	this->count = this->count++;
     
-    new ExplosionGraphics(explosion, this->game->mSceneMgr);
-    new ExplosionPhysics(explosion, this->game->dynamicsWorld);
 }

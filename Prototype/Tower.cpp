@@ -309,6 +309,14 @@ void Tower::getBlockTriangles(std::vector<BlockTriangle> &triangles, unsigned le
 
     double red = ratio, green = level / (double) this->levels, blue = layer / (double) this->layers;
 
+	if(red < 0.2) red = 0.2;
+	if(green < 0.25) green = 0.25;
+	if(blue < 0.3) blue = 0.3;
+
+	if(red > 0.5) red = 0.5;
+	if(green > 0.6) green = 0.6;
+	if(blue > 0.7) blue = 0.7;
+
     Ogre::ColourValue colour(red, green, blue);
 
     // back face
