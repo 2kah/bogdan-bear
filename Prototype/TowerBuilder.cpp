@@ -108,24 +108,6 @@ void TowerBuilder::Init(void)
 	this->blocksAvailable=this->maxBlocks;
 }
 
-void TowerBuilder::Sync(bool* data, int low_level, int high_level, int low_layer, int high_layer)
-{
-	unsigned long total = 0;
-	int count = 0;
-	for (int i =low_level; i < high_level; i++)
-		for (int j =low_layer; j < high_layer; j++)
-			for (int k =0; k < this->tower->blocks[i][j].size(); k++)
-			{
-				this->tower->blocks[i][j][k] = data[count];
-				if (data[count])
-					total ++;
-				count++;
-			}
-	printf("Updated %d blocks, total active: %d\n", count, total);
-	
-	this->tower->signals.updated(this->tower, BoundingVolume(low_level,high_level,low_layer,high_layer,0,tower->sectors), -count);
-}
-
 void TowerBuilder::update(void)
 {
 	if (!isPaused)
