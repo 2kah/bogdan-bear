@@ -11,11 +11,13 @@ PlatformGraphics::PlatformGraphics(Platform *platform, Ogre::SceneManager *scene
     this->platform = platform;
     
     this->sceneManager = sceneManager;
-    this->entity = sceneManager->createEntity("WoodPallet.mesh");
+    this->entity = sceneManager->createEntity("Platform.mesh");
     this->sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode();
     this->sceneNode->attachObject(this->entity);
 
-    this->sceneNode->setScale(Ogre::Vector3::UNIT_SCALE / 2);
+    //this->sceneNode->setScale(Ogre::Vector3::UNIT_SCALE / 2);
+	this->sceneNode->setScale(Ogre::Vector3::UNIT_SCALE * 3);
+
 
     this->platformUpdated(this->platform);
 

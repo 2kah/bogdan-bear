@@ -82,7 +82,7 @@ void Game::run(void)
     this->gameTestThing = new GameTestThing(this);
 
 	//---------------This builds the view at the start for the menu.
-	//this->gameTestThing->buildScene();
+	this->gameTestThing->buildScene();
 
 	Ogre::FontManager::getSingleton().getByName("SdkTrays/Caption")->load();
 	OgreBites::Button* b = mTrayMgr->createButton(OgreBites::TL_CENTER, "StartLocalGame", "Start Local Game");
