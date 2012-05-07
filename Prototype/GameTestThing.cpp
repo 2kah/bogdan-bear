@@ -63,7 +63,7 @@ GameTestThing::GameTestThing(Game *game)
     this->network->signals.chat.connect(boost::bind(&GameTestThing::chatReceived, this, _1));
     this->network->signals.explosion.connect(boost::bind(&GameTestThing::networkExplosion, this, _1, _2, _3));
 	this->network->signals.recvRocket.connect(boost::bind(&GameTestThing::networkRocket, this, _1, _2));
-    this->game->objects.insert(this->network);
+    //this->game->objects.insert(this->network);
 
 	this->network->signals.addPlayer.connect(boost::bind(&GameTestThing::addPlayer, this, _1, _2));
 	this->network->signals.removePlayer.connect(boost::bind(&GameTestThing::removePlayer, this, _1));

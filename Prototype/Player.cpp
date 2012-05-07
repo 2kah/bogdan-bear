@@ -146,6 +146,20 @@ void Player::look(int x, int y)
 {
     this->rotX += Ogre::Degree(-x * Player::ROTATION_SPEED);
     this->rotY += Ogre::Degree(-y * Player::ROTATION_SPEED);
+
+	this->orientation = this->orientation * Ogre::Quaternion(Ogre::Radian(rotX), Ogre::Vector3::UNIT_Y);
+    this->relativeAim = this->relativeAim * Ogre::Quaternion(Ogre::Radian(rotY), Ogre::Vector3::UNIT_X);
+
+	if(this->relativeAim.getPitch() > Ogre::Radian(Ogre::Math::PI / 2))
+		this->relativeAim = Ogre::Quaternion(Ogre::Radian(Ogre::Math::PI / 2), Ogre::Vector3::UNIT_X);
+	
+	if(this->relativeAim.getPitch() < Ogre::Radian(-Ogre::Math::PI / 2))
+		this->relativeAim = Ogre::Quaternion(Ogre::Radian(-Ogre::Math::PI / 2), Ogre::Vector3::UNIT_X);
+
+	rotX = 0;
+    rotY = 0;
+
+	this->signals.updated(this);
 }
 
 void Player::fire(bool state)
