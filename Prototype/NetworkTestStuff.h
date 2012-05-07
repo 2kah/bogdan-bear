@@ -20,6 +20,7 @@
 
 class Object;
 class Player;
+class Game;
 
 
 namespace {
@@ -118,6 +119,7 @@ public:
     bool hosting;
 	Goal* g;
 	TowerBuilder* tb;
+	Game* game_obj;
 	NetTower towerBuffer;
     NetworkSignals signals;
 	int teamScores[4];
@@ -133,6 +135,8 @@ public:
 	virtual void sendChat(std::string message);
 	virtual void sendChat(std::string message, RakNet::AddressOrGUID target);
     virtual void update();
+
+	virtual void sendStartGame();
 
     virtual void sendExplosion(Ogre::Vector3 position);
 	virtual void sendRocket(Ogre::Vector3 position, Ogre::Quaternion orientation);
@@ -171,6 +175,7 @@ public:
 	void receiveNewRocket(RakNet::Packet *packet);
 	void receiveChat(RakNet::Packet *packet);
 	void receiveScores(RakNet::Packet *packet);
+	void recvStartGame(RakNet::Packet *packet);
 
     //
     void sendWorld(RakNet::Packet *packet);
