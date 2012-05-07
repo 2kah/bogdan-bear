@@ -131,6 +131,7 @@ void NetworkTestStuff::deleteNetPlayer(NetPlayer* np)
 {
 	std::cout << "Deleting Player '" << np->name << "'" << std::endl;
 	this->signals.removePlayer(np->player);
+    np->player->signals.removed(np->player);
 	NetPlayerByGUID.erase(np->GUID);
 	NetPlayerByPlayerID.erase(np->playerID);
     listNetPlayers();
