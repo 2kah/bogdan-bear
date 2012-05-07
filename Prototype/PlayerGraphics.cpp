@@ -116,26 +116,25 @@ void PlayerGraphics::playerUpdated(Player *player)
 	    this->sceneNode->setPosition(this->player->position);
 	    this->camNode->setOrientation(this->player->orientation * this->player->relativeAim * Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y));
 	    //printf("x %f, y %f, z %f\n", this->player->position.x, this->player->position.y, this->player->position.z);
-	    if(this->check >= 0.25) this->check = 0;
-	    this->check += 0.001;
-		
-	    /*this->team1->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->player->getScore(0));
-	    this->team2->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->player->getScore(1));
-	    this->team3->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->player->getScore(2));
-	    this->team4->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->player->getScore(3));
-	    this->team1->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->player->getScore(0));
-	    this->team2->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->player->getScore(1));
-	    this->team3->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->player->getScore(2));
-	    this->team4->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->player->getScore(3));*/
+	    //if(this->check >= 0.25) this->check = 0;
+	    //this->check += 0.001;
+	    this->team1->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->player->getScore(0)/(double)12000);
+	    this->team2->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->player->getScore(1)/(double)12000);
+	    this->team3->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->player->getScore(2)/(double)12000);
+	    this->team4->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->player->getScore(3)/(double)12000);
+	    this->team1->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->player->getScore(0)/(double)12000);
+	    this->team2->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->player->getScore(1)/(double)12000);
+	    this->team3->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->player->getScore(2)/(double)12000);
+	    this->team4->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->player->getScore(3)/(double)12000);
 
-		this->team1->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->check);
+		/*this->team1->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->check);
 	    this->team2->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->check);
 	    this->team3->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->check);
 	    this->team4->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->check);
 	    this->team1->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->check);
 	    this->team2->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->check);
 	    this->team3->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->check);
-	    this->team4->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->check);
+	    this->team4->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->check);*/
 
 	    double ammo = this->player->getAmmo();
 		int reloading = this->player->getAmmoAmount();
