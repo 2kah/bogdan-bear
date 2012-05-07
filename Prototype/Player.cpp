@@ -28,6 +28,7 @@ Player::Player(Ogre::Vector3 position)
 	, rocketAmmo(4)
 	, canFire(true)
 	, cooldown(50)
+	, platformTimer(0)
 {
 }
 
@@ -87,6 +88,9 @@ void Player::update()
 			}
 		}
 	}
+
+	if(this->platformTimer > 0)
+		this->platformTimer--;
 
 	if(this->turret != NULL) {
 		this->turret->setOccupant(this->orientation, this->relativeAim);
@@ -170,10 +174,15 @@ void Player::create(bool state)
 {
     if (state)
 	{
-		Ogre::Vector3 platformPosition = this->position;
-		//make platform spawn beneath you, not inside you
-		platformPosition.y -= 6;
-		this->signals.platform(this, new Platform(platformPosition, this->orientation));
+		if(this->platformTimer == 0)
+		{
+			Ogre::Vector3 platformPosition = this->position;
+			//make platform spawn beneath you, not inside you
+			platformPosition.y -= 6;
+			this->signals.platform(this, new Platform(platformPosition, this->orientation));
+			//TODO: tweak
+			this->platformTimer = 1000;
+		}
     }
 }
 

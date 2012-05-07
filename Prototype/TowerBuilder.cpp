@@ -56,9 +56,9 @@ TowerBuilder::TowerBuilder(Tower *tower)
 	this->tower->signals.updated.connect(boost::bind(&TowerBuilder::blocksUpdated, this, _3));
     this->tower->signals.removed.connect(boost::bind(&TowerBuilder::towerRemoved, this, _1));
 
-	//TODO: uncomment the next 2 lines and sync if necessary
-	//int seed = std::time(NULL);
-	//gen.seed(seed);
+	//seed the random number generator with the time
+	int seed = std::time(NULL);
+	gen.seed(seed);
 	this->metaShapeBuilder = new MetaShapeBuilder(gen, this->tower);
 
 	//TODO: tweak
