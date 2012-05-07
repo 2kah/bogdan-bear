@@ -34,7 +34,7 @@ struct PlayerSignals {
     boost::signal<void (Player *)> startedStepping;
     boost::signal<void (Player *)> stoppedStepping;
 
-    // TODO: not sure about these
+    // TODO: remove these
     boost::signal<void (Player * /*, Turret **/)> enteredTurret;
     boost::signal<void (Player * /*, Turret **/)> exitedTurret;
 };
