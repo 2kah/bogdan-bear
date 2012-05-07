@@ -115,7 +115,7 @@ void PlayerGraphics::playerUpdated(Player *player)
 	{
 	    this->sceneNode->setPosition(this->player->position);
 	    this->camNode->setOrientation(this->player->orientation * this->player->relativeAim * Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y));
-	    
+	    //printf("x %f, y %f, z %f\n", this->player->position.x, this->player->position.y, this->player->position.z);
 	    if(this->check >= 0.25) this->check = 0;
 	    this->check += 0.001;
 		
