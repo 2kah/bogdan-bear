@@ -370,12 +370,13 @@ void NetworkTestStuff::clientConnected(RakNet::Packet *packet)
 
 	// world state sent - create and assign player
 	float angle = spawn_angles[current_spawn];
+    float radius = 200.0;
 
     if (++current_spawn > 15) {
         current_spawn = 0;
     }
     
-    Player *p = new Player(Ogre::Vector3(std::cos(angle), 250, std::sin(angle)));
+    Player *p = new Player(Ogre::Vector3(radius * std::cos(angle), 250, radius * std::sin(angle)));
 	
 	NetPlayer* np = new NetPlayer;
 	sprintf(np->name,"Player %d",playerCounter);
