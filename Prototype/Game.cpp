@@ -25,7 +25,7 @@
 #include "GameTestThing.h"
 
 Game::Game()
-	: game(true)
+	: game(false)
 {
 #ifdef _DEBUG
     mResourcesCfg = "resources_d.cfg";
@@ -124,6 +124,7 @@ void Game::run(void)
 
         while (simTimeQueued >= simFrameLength)
         {
+			this->gameTestThing->network->update();
             //previousState = currentState;
             //integrate (physics) (currentState, simTime, dt);
 			//---------------This stops everything getting updated once the game has finished.
@@ -162,6 +163,7 @@ void Game::run(void)
         {
             break;
         }
+
 		if(this->gameTestThing->goal != NULL) 
 		{
 			if(this->gameTestThing->goal->isGameOver()) {
@@ -186,6 +188,15 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
     
     if (mTrayMgr->isDialogVisible()) return true;   // don't process any more keys if dialog is up
     
+	if (arg.key == OIS::KC_RETURN && this->gameTestThing->network->hosting && game == false) {
+		//startRound();
+		this->gameTestThing->network->sendStartGame();
+		game = true;
+		//TODO: tell clients that game has started
+	}
+
+	if (!game) return true;
+
     if (arg.key == OIS::KC_UP|| arg.key == OIS::KC_W)
 	{
         this->playerInput.signals.move(FORWARD, true);
@@ -247,20 +258,16 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
     {
         this->playerInput.signals.use(true);
 	}
-	else if (arg.key == OIS::KC_RETURN)
-    {
-        if(game == false)
-		{
-			startRound();
-			game = true;
-		}
-	}
+
     return true;
 }
 
 bool Game::keyReleased(const OIS::KeyEvent &arg)
 {
     BaseApplication::keyReleased(arg);
+	
+	if (!game) return true;
+	
 	//Ogre::Overlay *ol;
     switch (arg.key)
     {
@@ -302,9 +309,12 @@ bool Game::mouseMoved(const OIS::MouseEvent &arg)
 
 bool Game::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id)
 {
-    BaseApplication::mousePressed(arg, id);
+	BaseApplication::mousePressed(arg, id);
 	if (mTrayMgr->injectMouseDown(arg, id)) return true;
-    if (id == OIS::MB_Right)
+    
+	if (!game) return true;
+	
+	if (id == OIS::MB_Right)
 	{
         this->playerInput.signals.create(true);
 	}
@@ -319,6 +329,8 @@ bool Game::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id)
 bool Game::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id)
 {
     BaseApplication::mouseReleased(arg, id);
+
+	if (!game) return true;
 
     if (id == OIS::MB_Right)
 	{

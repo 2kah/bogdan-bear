@@ -51,10 +51,11 @@ public:
 
 	Goal *goal;
     Player *player;
+    NetworkTestStuff *network;
+
 
 protected:
     Game *game;
-    NetworkTestStuff *network;
     Sounds *sounds;
 	TowerBuilder *towerBuilder;
 
