@@ -288,7 +288,7 @@ void NetworkTestStuff::update()
 				break;
 			case ID_UPDATE_SCORES:
 				receiveScores(packet);
-				std::cout << "Received Scores Update" << std::endl;
+				//std::cout << "Received Scores Update" << std::endl;
 				break;
 			case ID_START_GAME:
 				recvStartGame(packet);
@@ -353,7 +353,7 @@ void NetworkTestStuff::receiveScores(RakNet::Packet *packet)
 	this->teamScores[1] = ns->scores[1];
 	this->teamScores[2] = ns->scores[2];
 	this->teamScores[3] = ns->scores[3];
-	printScores();
+	//printScores();
 }
 
 
