@@ -31,7 +31,7 @@
 //TODO: make this a command line argument or something
 //static const char *SERVER_IP_ADDRESS="127.0.0.1";
 //static const char *SERVER_IP_ADDRESS="192.168.11.4";
-static const char *SERVER_IP_ADDRESS="192.168.56.1";
+static const char *SERVER_IP_ADDRESS="192.168.1.233";
 static const unsigned short SERVER_PORT=12345;
 
 static const unsigned char ID_TEXT = 140;
@@ -366,7 +366,8 @@ void NetworkTestStuff::clientConnected(RakNet::Packet *packet)
 	sprintf(np->name,"Player %d",playerCounter);
 	np->player = p;
 	np->playerID = playerCounter;
-	np->team = playerCounter % 4;
+	//TODO: the % 2 defines how many teams there are, should make it dynamic in some way
+	np->team = playerCounter % 2;
 	playerCounter++;
 	np->GUID=packet->guid.g;
 	insertNetPlayer(np);
