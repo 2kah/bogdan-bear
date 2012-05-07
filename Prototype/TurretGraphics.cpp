@@ -17,11 +17,13 @@ TurretGraphics::TurretGraphics(Turret *turret, Ogre::SceneManager *sceneManager)
 	this->sceneNodeBase->setOrientation(this->turret->orientation);// * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_Y));
 
 	this->entity = sceneManager->createEntity("turretGuard.mesh");
+	this->entity->setMaterialName("turretGuard");
 	//this->sceneNodeGuard = this->sceneNodeBase->createChildSceneNode();
 	this->sceneNodeGuard = this->sceneManager->getRootSceneNode()->createChildSceneNode();
 	this->sceneNodeGuard->attachObject(this->entity);
 
 	this->entity = sceneManager->createEntity("turretGuns.mesh");
+	this->entity->setMaterialName("turretGuns");
 	//this->sceneNodeGuard = this->sceneNodeBase->createChildSceneNode();
 	this->sceneNodeGuns = this->sceneManager->getRootSceneNode()->createChildSceneNode();
 	this->sceneNodeGuns->attachObject(this->entity);
