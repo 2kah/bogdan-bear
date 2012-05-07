@@ -27,6 +27,7 @@
 #include <OGRE/OgreQuaternion.h>
 #include "Player.h"
 #include "Tower.h"
+#include "Game.h"
 
 #include <boost/math/constants/constants.hpp>
 
@@ -60,10 +61,13 @@ static const unsigned char ID_DESTROY_ROCKET = 174;
 
 static const unsigned char ID_UPDATE_TOWER = 175;
 static const unsigned char ID_UPDATE_SCORES = 176;
+static const unsigned char ID_START_GAME = 186;
 
 std::tr1::unordered_map<uint64_t, NetPlayer*> NetPlayerByGUID;
 std::tr1::unordered_map<int, NetPlayer*> NetPlayerByPlayerID;
 NetPlayer* myNetPlayer = 0;
+
+
 
 int playerCounter = 0;
 bool shouldUpload = false;
@@ -87,6 +91,19 @@ NetworkTestStuff::NetworkTestStuff()
 
 NetworkTestStuff::~NetworkTestStuff()
 {
+}
+
+void NetworkTestStuff::sendStartGame()
+{
+	char buf [1];
+	buf[0] = ID_START_GAME;
+	rakPeer->Send(buf,1, HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+}
+
+void NetworkTestStuff::recvStartGame(RakNet::Packet *packet)
+{
+	printf("in recvstart\n");
+	//TODO
 }
 
 void NetworkTestStuff::startNetwork(bool asServer)
@@ -272,6 +289,10 @@ void NetworkTestStuff::update()
 			case ID_UPDATE_SCORES:
 				receiveScores(packet);
 				std::cout << "Received Scores Update" << std::endl;
+				break;
+			case ID_START_GAME:
+				recvStartGame(packet);
+				std::cout << "Received Start Game" << std::endl;
 				break;
 			}
 
