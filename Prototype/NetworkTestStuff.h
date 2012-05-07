@@ -31,7 +31,7 @@ struct NetworkSignals {
 	boost::signal<void (Player *player)> assignLocalPlayer;
 
     boost::signal<void (std::string message)> chat;
-    boost::signal<void (double x, double y, double z)> explosion;
+    boost::signal<void (double x, double y, double z, bool isBig)> explosion;
 	boost::signal<void (Ogre::Vector3 position, Ogre::Quaternion orientation)> recvRocket;
 	boost::signal<void (Ogre::Vector3 position, Ogre::Quaternion orientation)> recvPlatform;
 };
@@ -54,6 +54,7 @@ struct NetExplosion
 {
 unsigned char typeId;
 Ogre::Vector3 vector;
+bool isMassive;
 };
 #pragma pack(pop)
 
@@ -139,6 +140,7 @@ public:
 	virtual void sendStartGame();
 
     virtual void sendExplosion(Ogre::Vector3 position);
+	virtual void sendExplosion(Ogre::Vector3 position, bool isMassive);
 	virtual void sendRocket(Ogre::Vector3 position, Ogre::Quaternion orientation);
 	virtual void sendNetScores();
 	virtual void sendPlatform(Ogre::Vector3 position, Ogre::Quaternion orientation);

@@ -60,8 +60,9 @@ GameTestThing::GameTestThing(Game *game)
 	, goal(NULL)
 {
     this->network = new NetworkTestStuff();
+	this->network->game_obj = this->game;
     this->network->signals.chat.connect(boost::bind(&GameTestThing::chatReceived, this, _1));
-    this->network->signals.explosion.connect(boost::bind(&GameTestThing::networkExplosion, this, _1, _2, _3));
+    this->network->signals.explosion.connect(boost::bind(&GameTestThing::networkExplosion, this, _1, _2, _3, _4));
 	this->network->signals.recvRocket.connect(boost::bind(&GameTestThing::networkRocket, this, _1, _2));
     //this->game->objects.insert(this->network);
 
@@ -557,9 +558,9 @@ void GameTestThing::chatReceived(std::string message)
     std::cout << "CHAT: " << message << std::endl;
 }
 
-void GameTestThing::networkExplosion(double x, double y, double z)
+void GameTestThing::networkExplosion(double x, double y, double z, bool isMassive)
 {
-    Explosion *explosion = new Explosion(Ogre::Vector3(x, y, z));
+    Explosion *explosion = new Explosion(Ogre::Vector3(x, y, z), isMassive);
 
     this->addExplosion(explosion);
 }

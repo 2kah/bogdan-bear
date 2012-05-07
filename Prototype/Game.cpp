@@ -189,10 +189,9 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
     if (mTrayMgr->isDialogVisible()) return true;   // don't process any more keys if dialog is up
     
 	if (arg.key == OIS::KC_RETURN && this->gameTestThing->network->hosting && game == false) {
-		//startRound();
 		this->gameTestThing->network->sendStartGame();
 		game = true;
-		//TODO: tell clients that game has started
+		this->gameTestThing->network->sendExplosion((Ogre::Vector3(0, 240, 0)),true);
 	}
 
 	if (!game) return true;

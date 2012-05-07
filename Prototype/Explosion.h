@@ -23,6 +23,7 @@ public:
     static const double SIZE;
 
     Explosion(Ogre::Vector3 position);
+	Explosion(Ogre::Vector3 position, bool isMassive);
     virtual ~Explosion();
 
     virtual void update();
@@ -30,6 +31,7 @@ public:
     ExplosionSignals signals;
 //protected:
     int size;
+	bool isMassive;
 };
 
 #endif // #ifndef __Explosion_h_

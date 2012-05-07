@@ -83,10 +83,21 @@ NetworkTestStuff::NetworkTestStuff()
 	teamScores[0] = teamScores[1] = teamScores[2] = teamScores[3] = 0;
 
     // generate spawn angles
-    for (int i = 0; i < 16; ++i) {
-        spawn_angles[i] = boost::math::constants::two_pi<float>() / (float) i;
+	float radius = 200.0;
+    for (int i = 0; i < 16; ++i) 
+{
+        spawn_angles[i] = i * boost::math::constants::two_pi<float>() / (float) 16.0;
+		float angle =spawn_angles[i];
+		std::cout << spawn_angles[i] << std::endl;
+		std::cout << radius * std::cos(spawn_angles[i]) << std::endl;
+		Ogre::Vector3 v = Ogre::Vector3(radius * std::cos(angle), 250, radius * std::sin(angle));
+		std::cout << ", " << v.x << ", " << v.y << ", " << v.z <<std::endl;
+    
+
     }
     current_spawn = 0;
+
+	
 }
 
 NetworkTestStuff::~NetworkTestStuff()
@@ -103,6 +114,7 @@ void NetworkTestStuff::sendStartGame()
 void NetworkTestStuff::recvStartGame(RakNet::Packet *packet)
 {
 	printf("in recvstart\n");
+	this->game_obj->game=true;
 	//TODO
 }
 
@@ -203,8 +215,22 @@ void NetworkTestStuff::sendExplosion(Ogre::Vector3 position)
 		NetExplosion exp;
 		exp.typeId=ID_NEW_EXPLOSION;
 		exp.vector=position;
+		exp.isMassive = false;
 		rakPeer->Send((char*)&exp,sizeof(exp) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
 		std::cout << "Sending Explosion at: " << "(" << position.x << "," << position.y << "," << position.z << ")"  << std::endl;
+	}
+}
+
+void NetworkTestStuff::sendExplosion(Ogre::Vector3 position, bool isMassive)
+{
+	if (rakPeer >0)
+	{
+		NetExplosion exp;
+		exp.typeId=ID_NEW_EXPLOSION;
+		exp.vector=position;
+		exp.isMassive = isMassive;
+		rakPeer->Send((char*)&exp,sizeof(exp) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+		std::cout << "Sending Massive Explosion at: " << "(" << position.x << "," << position.y << "," << position.z << ")"  << std::endl;
 	}
 }
 
@@ -288,11 +314,11 @@ void NetworkTestStuff::update()
 				break;
 			case ID_UPDATE_SCORES:
 				receiveScores(packet);
-				std::cout << "Received Scores Update" << std::endl;
+				//std::cout << "Received Scores Update" << std::endl;
 				break;
 			case ID_START_GAME:
 				recvStartGame(packet);
-				std::cout << "Received Start Game" << std::endl;
+				//std::cout << "Received Start Game" << std::endl;
 				break;
 			}
 
@@ -347,7 +373,7 @@ void NetworkTestStuff::updateScores()
 
 void NetworkTestStuff::receiveScores(RakNet::Packet *packet)
 {
-	printf("received scores from server\n");
+	//printf("received scores from server\n");
 	NetScore* ns = (NetScore*)packet->data;
 	this->teamScores[0] = ns->scores[0];
 	this->teamScores[1] = ns->scores[1];
@@ -387,14 +413,16 @@ void NetworkTestStuff::receiveNewExplosion(RakNet::Packet *packet)
 {
 	std::cout << "Received Explosion at: ";
 	NetExplosion* exp = (NetExplosion*)packet->data;
+	if (exp->isMassive) std::cout << "MAHOOOOSIVE EXPLOOOSION" << std::endl;
 	Ogre::Vector3 v = exp->vector;
+	
 	std::cout << "(" << v.x << "," << v.y << "," << v.z << ")"  << std::endl;
 	if (hosting)
 	{
 		std::cout << "Broadcasting explosion" << std::endl;
 		rakPeer->Send((char*)exp,sizeof(*exp) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
 	}
-	this->signals.explosion(v.x, v.y, v.z);
+	this->signals.explosion(v.x, v.y, v.z, exp->isMassive);
 }
 
 void NetworkTestStuff::receiveNewRocket(RakNet::Packet *packet)
@@ -428,12 +456,11 @@ void NetworkTestStuff::clientConnected(RakNet::Packet *packet)
 	float angle = spawn_angles[current_spawn];
     float radius = 200.0;
 
-    if (++current_spawn > 15) {
+    
+    Player *p = new Player(Ogre::Vector3(0,0,0));
+	if (++current_spawn > 15) {
         current_spawn = 0;
     }
-    
-    Player *p = new Player(Ogre::Vector3(radius * std::cos(angle), 250, radius * std::sin(angle)));
-	
 	NetPlayer* np = new NetPlayer;
 	sprintf(np->name,"Player %d",playerCounter);
 	np->player = p;
@@ -480,7 +507,15 @@ void NetworkTestStuff::receiveAssignPlayer(RakNet::Packet *packet)
 void NetworkTestStuff::receiveInsertPlayer(RakNet::Packet *packet)
 {
 	NetPlayer* inc = (NetPlayer*)packet->data;
-	Player* p = new Player(Ogre::Vector3(100, 0, 100));
+	float angle = spawn_angles[current_spawn];
+    float radius = 25.0;
+
+	
+
+	Player* p = new Player(Ogre::Vector3(radius * std::cos(angle), 250, radius * std::sin(angle)));
+	Ogre::Vector3 v = Ogre::Vector3(radius * std::cos(angle), 250, radius * std::sin(angle));
+	std::cout << ", " << v.x << ", " << v.y << ", " << v.z <<std::endl;
+	std::cout<<"-------------------!!!!!!!!!!!!!!!!_---------------" <<std::endl;
 	NetPlayer* np = new NetPlayer;
 	np->team = inc->team;
 	np->GUID = inc->GUID;

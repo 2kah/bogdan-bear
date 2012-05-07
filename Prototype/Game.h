@@ -26,6 +26,7 @@ class GameTestThing;
 class Game : public BaseApplication
 {
 public:
+	bool game;
     Game();
     virtual ~Game(void);
 
@@ -55,7 +56,7 @@ protected:
 private:
     std::set<Updatable *> objects;
     Ogre::Camera* mCamera;
-	bool game;
+	
     friend class GameTestThing;
 };
 

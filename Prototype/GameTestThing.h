@@ -69,7 +69,7 @@ private:
     void platformExpired(Platform *platform);
 
     void chatReceived(std::string message);
-    void networkExplosion(double x, double y, double z);
+    void networkExplosion(double x, double y, double z, bool isMassive);
 	void networkRocket(Ogre::Vector3 position, Ogre::Quaternion orientation);
 
     void playerUsed(Player *player);
