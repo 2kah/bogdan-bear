@@ -261,7 +261,7 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
 bool Game::keyReleased(const OIS::KeyEvent &arg)
 {
     BaseApplication::keyReleased(arg);
-	Ogre::Overlay *ol;
+	//Ogre::Overlay *ol;
     switch (arg.key)
     {
     case OIS::KC_UP:
