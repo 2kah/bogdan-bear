@@ -32,6 +32,7 @@ struct NetworkSignals {
     boost::signal<void (std::string message)> chat;
     boost::signal<void (double x, double y, double z)> explosion;
 	boost::signal<void (Ogre::Vector3 position, Ogre::Quaternion orientation)> recvRocket;
+	boost::signal<void (Ogre::Vector3 position, Ogre::Quaternion orientation)> recvPlatform;
 };
 }
 
@@ -65,6 +66,15 @@ Ogre::Quaternion orientation;
 #pragma pack(pop)
 
 #pragma pack(push, 1)
+struct NetPlatform
+{
+unsigned char typeId;
+Ogre::Vector3 position;
+Ogre::Quaternion orientation;	
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
 struct PlayerInfo
 {
 	unsigned char typeID;
@@ -88,15 +98,10 @@ struct NetPlayer
 };
 #pragma pack(pop)
 
-
-#pragma pack(push, 1)
-struct NetPlatform
+struct NetScore
 {
 	unsigned char typeId;
-	int playerID;
-	char name [NAME_LENGTH];
-	uint64_t GUID;
-	Player* player;
+	int scores[4];
 };
 #pragma pack(pop)
 
@@ -105,6 +110,11 @@ struct NetPlatform
 class NetworkTestStuff : public Updatable
 {
 public:
+    // for spawn positions
+	float spawn_angles[16];
+    int current_spawn;
+    //
+
     bool hosting;
 	Goal* g;
 	TowerBuilder* tb;
@@ -126,7 +136,8 @@ public:
 
     virtual void sendExplosion(Ogre::Vector3 position);
 	virtual void sendRocket(Ogre::Vector3 position, Ogre::Quaternion orientation);
-
+	virtual void sendNetScores();
+	virtual void sendPlatform(Ogre::Vector3 position, Ogre::Quaternion orientation);
     // object index
     unsigned lastID;
     std::map<unsigned, Object *> objectsByID;
@@ -159,6 +170,7 @@ public:
 	void receiveNewExplosion(RakNet::Packet *packet);
 	void receiveNewRocket(RakNet::Packet *packet);
 	void receiveChat(RakNet::Packet *packet);
+	void receiveScores(RakNet::Packet *packet);
 
     //
     void sendWorld(RakNet::Packet *packet);

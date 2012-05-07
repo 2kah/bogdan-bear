@@ -81,6 +81,8 @@ Tower::Tower(unsigned levels, std::vector<unsigned> structure)
     this->heights[this->layers-1] = boost::math::constants::two_pi<double>() * this->radii[this->layers-1] / (structure[this->layers-1] - boost::math::constants::pi<double>());
 
     this->block_height = boost::math::constants::two_pi<double>() * this->radii[this->layers - 1] / this->sectors / 2; // / 3; //2;
+
+    std::cout << "Tower is " << this->block_height * this->levels << " high." << std::endl;
 }
 
 Tower::~Tower()

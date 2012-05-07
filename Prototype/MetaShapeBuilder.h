@@ -1,8 +1,8 @@
 #ifndef __MetaShapeBuilder_h_
 #define __MetaShapeBuilder_h_
 
-#include "TowerBuilder.h";
-#include "Tower.h";
+#include "TowerBuilder.h"
+#include "Tower.h"
 
 class MetaShapeBuilder
 {

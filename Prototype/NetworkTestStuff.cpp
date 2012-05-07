@@ -28,10 +28,12 @@
 #include "Player.h"
 #include "Tower.h"
 
+#include <boost/math/constants/constants.hpp>
+
 //TODO: make this a command line argument or something
-static const char *SERVER_IP_ADDRESS="127.0.0.1";
+//static const char *SERVER_IP_ADDRESS="127.0.0.1";
 //static const char *SERVER_IP_ADDRESS="192.168.11.4";
-//static const char *SERVER_IP_ADDRESS="192.168.56.1";
+static const char *SERVER_IP_ADDRESS="192.168.1.233";
 static const unsigned short SERVER_PORT=12345;
 
 static const unsigned char ID_TEXT = 140;
@@ -57,6 +59,7 @@ static const unsigned char ID_UPDATE_ROCKET = 173;
 static const unsigned char ID_DESTROY_ROCKET = 174;
 
 static const unsigned char ID_UPDATE_TOWER = 175;
+static const unsigned char ID_UPDATE_SCORES = 176;
 
 std::tr1::unordered_map<uint64_t, NetPlayer*> NetPlayerByGUID;
 std::tr1::unordered_map<int, NetPlayer*> NetPlayerByPlayerID;
@@ -74,6 +77,12 @@ NetworkTestStuff::NetworkTestStuff()
 {
 	std::cout << "Init Network" << std::endl;
 	teamScores[0] = teamScores[1] = teamScores[2] = teamScores[3] = 0;
+
+    // generate spawn angles
+    for (int i = 0; i < 16; ++i) {
+        spawn_angles[i] = boost::math::constants::two_pi<float>() / (float) i;
+    }
+    current_spawn = 0;
 }
 
 NetworkTestStuff::~NetworkTestStuff()
@@ -122,6 +131,7 @@ void NetworkTestStuff::deleteNetPlayer(NetPlayer* np)
 {
 	std::cout << "Deleting Player '" << np->name << "'" << std::endl;
 	this->signals.removePlayer(np->player);
+    np->player->signals.removed(np->player);
 	NetPlayerByGUID.erase(np->GUID);
 	NetPlayerByPlayerID.erase(np->playerID);
     listNetPlayers();
@@ -259,6 +269,10 @@ void NetworkTestStuff::update()
 				receiveUpdateTower(packet);
 				std::cout << "Received Tower Update" << std::endl;
 				break;
+			case ID_UPDATE_SCORES:
+				receiveScores(packet);
+				std::cout << "Received Scores Update" << std::endl;
+				break;
 			}
 
 		}
@@ -306,7 +320,37 @@ void NetworkTestStuff::updateScores()
 		if ((teamScores[bestTeam] % 100) == 0)
 			printScores();
 	}
-	//printf("Team %d is holding goal\n", bestTeam);	
+	//printf("Team %d is holding goal\n", bestTeam);
+	sendNetScores();
+}
+
+void NetworkTestStuff::receiveScores(RakNet::Packet *packet)
+{
+	printf("received scores from server\n");
+	NetScore* ns = (NetScore*)packet->data;
+	this->teamScores[0] = ns->scores[0];
+	this->teamScores[1] = ns->scores[1];
+	this->teamScores[2] = ns->scores[2];
+	this->teamScores[3] = ns->scores[3];
+	//printScores();
+}
+
+
+void NetworkTestStuff::sendNetScores()
+{
+	NetScore ns;
+	ns.scores[0] = this->teamScores[0];
+	ns.scores[1] = this->teamScores[1];
+	ns.scores[2] = this->teamScores[2];
+	ns.scores[3] = this->teamScores[3];
+	ns.typeId = ID_UPDATE_SCORES;
+	rakPeer->Send((char*)&ns,sizeof(ns) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+
+}
+
+void NetworkTestStuff::sendPlatform(Ogre::Vector3 pos, Ogre::Quaternion orient)
+{
+
 }
 
 void NetworkTestStuff::printScores()
@@ -360,23 +404,27 @@ void NetworkTestStuff::clientConnected(RakNet::Packet *packet)
 	// send all the world state
 
 	// world state sent - create and assign player
-	Player* p = new Player(Ogre::Vector3(0, 0, 0));
+	float angle = spawn_angles[current_spawn];
+    float radius = 200.0;
+
+    if (++current_spawn > 15) {
+        current_spawn = 0;
+    }
+    
+    Player *p = new Player(Ogre::Vector3(radius * std::cos(angle), 250, radius * std::sin(angle)));
 	
 	NetPlayer* np = new NetPlayer;
 	sprintf(np->name,"Player %d",playerCounter);
 	np->player = p;
 	np->playerID = playerCounter;
-	np->team = playerCounter % 4;
+	//TODO: the % 2 defines how many teams there are, should make it dynamic in some way
+	np->team = playerCounter % 2;
 	playerCounter++;
 	np->GUID=packet->guid.g;
 	insertNetPlayer(np);
 	sendNetPlayer(np, ID_INSERT_PLAYER); //Creates new player across all clients
 	sendNetPlayer(np, ID_ASSIGN_PLAYER, packet->guid); //assigns new player to client
 	this->tb->isPaused=false;
-
-	
-	
-	
 
 	//Notify Of Complete Client Connection
 	/*std::stringstream msgstream;
