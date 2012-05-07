@@ -28,8 +28,11 @@
 #include "Player.h"
 #include "Tower.h"
 
+#include <boost/math/constants/constants.hpp>
+
 //TODO: make this a command line argument or something
 static const char *SERVER_IP_ADDRESS="127.0.0.1";
+//static const char *SERVER_IP_ADDRESS="192.168.1.233";
 //static const char *SERVER_IP_ADDRESS="192.168.11.4";
 //static const char *SERVER_IP_ADDRESS="192.168.56.1";
 static const unsigned short SERVER_PORT=12345;
@@ -74,6 +77,12 @@ NetworkTestStuff::NetworkTestStuff()
 {
 	std::cout << "Init Network" << std::endl;
 	teamScores[0] = teamScores[1] = teamScores[2] = teamScores[3] = 0;
+
+    // generate spawn angles
+    for (int i = 0; i < 16; ++i) {
+        spawn_angles[i] = boost::math::constants::two_pi<float>() / (float) i;
+    }
+    current_spawn = 0;
 }
 
 NetworkTestStuff::~NetworkTestStuff()
@@ -360,7 +369,13 @@ void NetworkTestStuff::clientConnected(RakNet::Packet *packet)
 	// send all the world state
 
 	// world state sent - create and assign player
-	Player* p = new Player(Ogre::Vector3(0, 0, 0));
+	float angle = spawn_angles[current_spawn];
+
+    if (++current_spawn > 15) {
+        current_spawn = 0;
+    }
+    
+    Player *p = new Player(Ogre::Vector3(std::cos(angle), 250, std::sin(angle)));
 	
 	NetPlayer* np = new NetPlayer;
 	sprintf(np->name,"Player %d",playerCounter);
@@ -373,10 +388,6 @@ void NetworkTestStuff::clientConnected(RakNet::Packet *packet)
 	sendNetPlayer(np, ID_INSERT_PLAYER); //Creates new player across all clients
 	sendNetPlayer(np, ID_ASSIGN_PLAYER, packet->guid); //assigns new player to client
 	this->tb->isPaused=false;
-
-	
-	
-	
 
 	//Notify Of Complete Client Connection
 	/*std::stringstream msgstream;

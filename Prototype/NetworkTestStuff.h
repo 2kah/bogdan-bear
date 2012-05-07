@@ -105,6 +105,11 @@ struct NetPlatform
 class NetworkTestStuff : public Updatable
 {
 public:
+    // for spawn positions
+	float spawn_angles[16];
+    int current_spawn;
+    //
+
     bool hosting;
 	Goal* g;
 	TowerBuilder* tb;
