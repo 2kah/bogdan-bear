@@ -60,6 +60,7 @@ static const unsigned char ID_UPDATE_ROCKET = 173;
 static const unsigned char ID_DESTROY_ROCKET = 174;
 
 static const unsigned char ID_UPDATE_TOWER = 175;
+static const unsigned char ID_UPDATE_SCORES = 176;
 
 std::tr1::unordered_map<uint64_t, NetPlayer*> NetPlayerByGUID;
 std::tr1::unordered_map<int, NetPlayer*> NetPlayerByPlayerID;
@@ -269,6 +270,10 @@ void NetworkTestStuff::update()
 				receiveUpdateTower(packet);
 				std::cout << "Received Tower Update" << std::endl;
 				break;
+			case ID_UPDATE_SCORES:
+				receiveScores(packet);
+				std::cout << "Received Scores Update" << std::endl;
+				break;
 			}
 
 		}
@@ -316,7 +321,37 @@ void NetworkTestStuff::updateScores()
 		if ((teamScores[bestTeam] % 100) == 0)
 			printScores();
 	}
-	//printf("Team %d is holding goal\n", bestTeam);	
+	//printf("Team %d is holding goal\n", bestTeam);
+	sendNetScores();
+}
+
+void NetworkTestStuff::receiveScores(RakNet::Packet *packet)
+{
+	printf("received scores from server\n");
+	NetScore* ns = (NetScore*)packet->data;
+	this->teamScores[0] = ns->scores[0];
+	this->teamScores[1] = ns->scores[1];
+	this->teamScores[2] = ns->scores[2];
+	this->teamScores[3] = ns->scores[3];
+	//printScores();
+}
+
+
+void NetworkTestStuff::sendNetScores()
+{
+	NetScore ns;
+	ns.scores[0] = this->teamScores[0];
+	ns.scores[1] = this->teamScores[1];
+	ns.scores[2] = this->teamScores[2];
+	ns.scores[3] = this->teamScores[3];
+	ns.typeId = ID_UPDATE_SCORES;
+	rakPeer->Send((char*)&ns,sizeof(ns) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+
+}
+
+void NetworkTestStuff::sendPlatform(Ogre::Vector3 pos, Ogre::Quaternion orient)
+{
+
 }
 
 void NetworkTestStuff::printScores()
