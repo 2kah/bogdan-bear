@@ -536,6 +536,7 @@ void GameTestThing::explosionFinished(Explosion *explosion)
 
 void GameTestThing::platformCreated(Player *player, Platform *platform)
 {
+	printf("in GameTestThing::platformCreated\n");
     this->game->objects.insert(platform);
 
     PlatformGraphics *platfromGraphics = new PlatformGraphics(platform, this->game->mSceneMgr);
