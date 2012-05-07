@@ -52,6 +52,7 @@ public:
 	Goal *goal;
     Player *player;
     NetworkTestStuff *network;
+	int count;
 
 
 protected:

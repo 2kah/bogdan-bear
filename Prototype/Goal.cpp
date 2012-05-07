@@ -42,17 +42,18 @@ Goal::Goal(Ogre::Vector3 position, Player *playerTracked, Ogre::SceneManager *sc
     
 	this->sceneManager = sceneManager;
     this->entity = sceneManager->createEntity("goal.mesh");
+	this->entity->setMaterialName("goal");
     this->sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode();
     this->sceneNode->attachObject(this->entity);
 
     //this->sceneNode->setScale(Ogre::Vector3::UNIT_SCALE * 4);
-	this->sceneNode->setPosition(0,goalPosition.y + 15, 0);
+	this->sceneNode->setPosition(0,goalPosition.y + 20, 0);
 
 	btBulletWorldImporter* fileLoader = new btBulletWorldImporter(dynamicsWorld);
 	fileLoader->loadFile("goal.bullet");
 	
 	btCollisionObject* obj = dynamicsWorld->getCollisionObjectArray()[dynamicsWorld->getNumCollisionObjects()-1];
-	obj->setWorldTransform(btTransform(btQuaternion(), btVector3(0,goalPosition.y + 15, 0)));
+	obj->setWorldTransform(btTransform(btQuaternion(), btVector3(0,goalPosition.y + 20, 0)));
 }
 
 Goal::~Goal()

@@ -1,4 +1,4 @@
-material goal
+material turretGuard
 {
 	technique
 	{
@@ -9,7 +9,7 @@ material goal
 			
 			texture_unit
 			{
-				texture goal_pCylinderShape1.psd
+				turretwip_polySurfaceShape10.psd
 			}
 		}
 	}
@@ -21,7 +21,7 @@ material goal
 		{
 			texture_unit
 			{
-			texture goal_pCylinderShape1Mask.psd
+			texture turretwip_polySurfaceShape10.psd
 			}
 			ambient 0.7 0.7 0.7
 			diffuse 0.5 0.5 0.5
