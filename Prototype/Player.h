@@ -97,6 +97,7 @@ private:
 	bool canFire;
 	int cooldown;
 	int scores[4];
+	int platformTimer;
 
 	Turret *turret;
 
