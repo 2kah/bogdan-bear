@@ -483,6 +483,7 @@ void GameTestThing::update()
 
 	if(this->network != NULL && this->localPlayer != NULL) {
 	    this->localPlayer->setScores(this->network->teamScores);
+	    //printf("---------------------%d %d %d %d\n", this->network->teamScores[0], this->network->teamScores[1], this->network->teamScores[2], this->network->teamScores[3]);
 	}
 }
 

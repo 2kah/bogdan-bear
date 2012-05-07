@@ -31,9 +31,9 @@
 #include <boost/math/constants/constants.hpp>
 
 //TODO: make this a command line argument or something
-//static const char *SERVER_IP_ADDRESS="127.0.0.1";
+static const char *SERVER_IP_ADDRESS="127.0.0.1";
 //static const char *SERVER_IP_ADDRESS="192.168.11.4";
-static const char *SERVER_IP_ADDRESS="192.168.1.233";
+//static const char *SERVER_IP_ADDRESS="192.168.1.233";
 static const unsigned short SERVER_PORT=12345;
 
 static const unsigned char ID_TEXT = 140;
@@ -326,13 +326,13 @@ void NetworkTestStuff::updateScores()
 
 void NetworkTestStuff::receiveScores(RakNet::Packet *packet)
 {
-	printf("received scores from server\n");
+	//printf("received scores from server\n");
 	NetScore* ns = (NetScore*)packet->data;
 	this->teamScores[0] = ns->scores[0];
 	this->teamScores[1] = ns->scores[1];
 	this->teamScores[2] = ns->scores[2];
 	this->teamScores[3] = ns->scores[3];
-	//printScores();
+	printScores();
 }
 
 
