@@ -47,7 +47,7 @@ PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWo
 	m_character->setGravity(btScalar(100.0));
 
 	//TODO: make this a cvar
-	m_character->setJumpSpeed(btScalar(60.0));
+	m_character->setJumpSpeed(btScalar(80.0));
 	//The horizontal movement speed while airborne
 	//was 0.4
 	airMovementSpeed = btScalar(0.01);
