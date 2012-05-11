@@ -32,9 +32,10 @@
 #include <boost/math/constants/constants.hpp>
 
 //TODO: make this a command line argument or something
-static const char *SERVER_IP_ADDRESS="127.0.0.1";
+//static const char *SERVER_IP_ADDRESS="127.0.0.1";
 //static const char *SERVER_IP_ADDRESS="192.168.11.4";
 //static const char *SERVER_IP_ADDRESS="192.168.1.233";
+//static const char *SERVER_IP_ADDRESS="5.37.252.128";
 static const unsigned short SERVER_PORT=12345;
 
 static const unsigned char ID_TEXT = 140;
@@ -76,11 +77,12 @@ int updateDelay = 0;
 RakNet::RakPeerInterface *rakPeer;
 RakNet::SocketDescriptor sd;
 
-NetworkTestStuff::NetworkTestStuff()
+NetworkTestStuff::NetworkTestStuff(char *hostIP)
 	: lastID(0)
 {
 	std::cout << "Init Network" << std::endl;
 	teamScores[0] = teamScores[1] = teamScores[2] = teamScores[3] = 0;
+	this->SERVER_IP_ADDRESS = hostIP;
 
     // generate spawn angles
 	float radius = 200.0;
@@ -115,7 +117,6 @@ void NetworkTestStuff::recvStartGame(RakNet::Packet *packet)
 {
 	printf("in recvstart\n");
 	this->game_obj->game=true;
-	//TODO
 }
 
 void NetworkTestStuff::startNetwork(bool asServer)

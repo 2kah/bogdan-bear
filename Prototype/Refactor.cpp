@@ -23,10 +23,12 @@ extern "C" {
     {
 		//HWND hWnd = GetConsoleWindow(); //NEED TO HIDE CONSOLE WINDOW
         //ShowWindow( hWnd, SW_HIDE ); //NEED TO HIDE CONSOLE WINDOW
+		if(argc != 2)
+			std::cout << "Please enter the IP address of the server as an argument" << std::endl;
 		
         Game game;
 
-        game.run();
+        game.run(argv[1]);
 
         return 0;
     }
