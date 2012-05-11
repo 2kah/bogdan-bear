@@ -129,7 +129,8 @@ void PlayerPhysics::playerUpdated(Player *player)
 		Ogre::Vector3 movement = this->player->orientation * Ogre::Vector3(walkDirection.x(), walkDirection.y(), walkDirection.z());
 		btVector3 walk(movement.x, movement.y, movement.z);
 		btVector3 actualMovement = pushDirection;
-		pushDirection *= btScalar(0.95);
+		//reduce the effects of any explosion
+		pushDirection *= btScalar(0.92);
 
 		//if on ground then allow whatever movement the player wants
 		if(m_character->onGround())
@@ -237,8 +238,8 @@ void PlayerPhysics::jump(bool state)
 void PlayerPhysics::explode(Explosion *explosion)
 {
 	std::cout << "Explosion has hit player" << std::endl;
-
-	pushDirection = BtOgre::Convert::toBullet(this->player->position - explosion->position) * btScalar(0.1);
+	//set the push direction to be player position - explosion position, then scale
+	pushDirection = BtOgre::Convert::toBullet(this->player->position - explosion->position) * btScalar(0.15);
 	//offset the vertical
 	pushDirection.setY(pushDirection.y() + (halfHeight * 0.1));
 }
