@@ -54,12 +54,12 @@
 bool isLocal = false;
 bool isServer = false;
 
-GameTestThing::GameTestThing(Game *game)
+GameTestThing::GameTestThing(Game *game, char *hostIP)
     : game(game)
     , localPlayer(NULL)
 	, goal(NULL)
 {
-    this->network = new NetworkTestStuff();
+    this->network = new NetworkTestStuff(hostIP);
 	this->network->game_obj = this->game;
     this->network->signals.chat.connect(boost::bind(&GameTestThing::chatReceived, this, _1));
     this->network->signals.explosion.connect(boost::bind(&GameTestThing::networkExplosion, this, _1, _2, _3, _4));
