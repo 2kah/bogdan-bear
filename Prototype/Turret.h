@@ -9,6 +9,7 @@
 #include "Updatable.h"
 #include "Object.h"
 
+class Player;
 class Turret;
 class Rocket;
 
@@ -31,7 +32,7 @@ public:
 
     virtual void setTarget(Ogre::Vector3 positionTarget);
 
-	virtual void setOccupied(bool set);
+	virtual void setOccupied(bool set, Player *player);
 
 	virtual bool isOccupied();
 
@@ -47,6 +48,8 @@ protected:
 	Ogre::Quaternion occupantOrientation;
 	Ogre::Quaternion occupantRelativeAim;
 	bool occ;
+	int rockets;
+	Player *player;
 };
 
 #endif // #ifndef __Turret_h_
