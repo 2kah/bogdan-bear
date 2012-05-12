@@ -17,6 +17,7 @@ Turret::Turret(Ogre::Vector3 position, Ogre::Quaternion orientation)
 	, currenttarget(0,0,0)
 	, occ(false)
 	, rockets(0)
+	, playerTimer(0)
 {
 }
 
@@ -81,6 +82,8 @@ void Turret::update()
         {
             ++this->timer;
         }
+		if(this->playerTimer > 0)
+			this->playerTimer--;
 	}
 	else
 	{
@@ -96,12 +99,22 @@ void Turret::setTarget(Ogre::Vector3 target)
     this->currenttarget = target;
 }
 
-void Turret::setOccupied(bool set, Player *player)
+bool Turret::setOccupied(bool set, Player *player)
 {
+	//if someone is trying to enter the turret, but it's already inhabited, return false
+	if(set && this->occ)
+		return false;
+	//if the same player is trying to enter, but the timer isn't finished, return false
+	if(player == this->player && this->playerTimer != 0)
+		return false;
+	//player is getting out of the turret, set the timer for 10 seconds
+	if(!set)
+		this->playerTimer = 1000;
 	this->occ = set;
 	this->player = player;
 	//TODO: tweak
 	rockets = 10;
+	return true;
 }
 
 bool Turret::isOccupied()
