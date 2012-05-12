@@ -47,6 +47,7 @@ TurretGraphics::~TurretGraphics()
     this->sceneManager->destroyEntity(this->entity);
 	this->sceneManager->destroySceneNode(this->sceneNodeGuard);
     this->sceneManager->destroySceneNode(this->sceneNodeBase);
+    this->sceneManager->destroySceneNode(this->sceneNodeGuns);
 }
 
 void TurretGraphics::turretUpdated(Turret *turret)

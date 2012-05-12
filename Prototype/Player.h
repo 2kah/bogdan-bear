@@ -80,11 +80,14 @@ public:
 	virtual void setScores(int newScores[]);
 	virtual int getScore(int team);
 
+	virtual double getPlatformReload();
+
     Ogre::Quaternion relativeAim;
     Ogre::Vector3 velocity;
 
 	PlayerProperties* prop;
 
+	bool anim;
 
     bool stepping;
 private:
@@ -98,6 +101,9 @@ private:
 	int cooldown;
 	int scores[4];
 	int platformTimer;
+
+	Ogre::Vector3 oldPosition;
+	Ogre::Vector3 newPosition;
 
 	Turret *turret;
 

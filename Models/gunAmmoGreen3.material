@@ -1,4 +1,4 @@
-material gunTeamWin
+material gunAmmoGreen3
 {
 	technique
 	{
@@ -9,7 +9,7 @@ material gunTeamWin
 
 			texture_unit
 			{
-				texture gun_pCubeShape11.psd
+				texture gunAmmoGreen3.psd
 			}
 		}
 
@@ -22,7 +22,7 @@ material gunTeamWin
 		{
 			texture_unit
 			{
-			    texture gun_pCubeShape11.psd
+			    texture gunAmmoGreen3.psd
 			}
 			ambient 0.7 0.7 0.7
 			diffuse 0.5 0.5 0.5

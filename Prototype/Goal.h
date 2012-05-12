@@ -37,6 +37,10 @@ public:
 
 	virtual bool isGameOver();
 
+	virtual void setGameOver();
+
+	virtual void setNotGameOver();
+
 	GoalSignals signals;
 	bool Goal::isPlayerInRange(Ogre::Vector3 position);
 	Ogre::Vector3 goalPosition;

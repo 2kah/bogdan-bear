@@ -14,6 +14,8 @@ class PlayerGraphics : public boost::signals::trackable
 public:
     PlayerGraphics(Player *player, Ogre::SceneManager *sceneManager);
     virtual ~PlayerGraphics();
+
+	virtual void disconnectSignals();
 protected:
     virtual void playerRemoved(Player *player);
     virtual void playerUpdated(Player *player);
@@ -36,6 +38,11 @@ protected:
 	Ogre::Entity *ammo2;
 	Ogre::Entity *ammo3;
 	Ogre::Entity *ammo4;
+	Ogre::Entity *platforms;
+
+	boost::signals::connection rem;
+	boost::signals::connection up;
+	boost::signals::connection set;
 
 	double check;
 };

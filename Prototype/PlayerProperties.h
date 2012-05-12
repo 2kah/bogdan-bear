@@ -12,6 +12,8 @@ public:
     virtual ~PlayerProperties();
 	virtual int getTeam();
 	virtual string getCostumeName();
+	virtual string getGunPlatformsName();
+	virtual string getGunAmmoName();
 	virtual bool isPlayerLocal();
 protected:
     int team;

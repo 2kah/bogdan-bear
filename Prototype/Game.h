@@ -33,6 +33,7 @@ public:
     virtual void run(void);
 
 	void setUpPhysicsWorld(void);
+	void restartClient();
 protected:
     virtual bool keyPressed(const OIS::KeyEvent &arg);
     virtual bool keyReleased(const OIS::KeyEvent &arg);
@@ -45,6 +46,7 @@ protected:
 	void endRound();
 	void startRound();
 
+
     btDiscreteDynamicsWorld* dynamicsWorld;
     BtOgre::DebugDrawer *mDebugDrawer;
 
@@ -52,10 +54,13 @@ protected:
     GameTestThing *gameTestThing;
 
     PlayerInput playerInput;
+	int gameCount;
+	bool leaderBoard;
 	
 private:
     std::set<Updatable *> objects;
     Ogre::Camera* mCamera;
+
 	
     friend class GameTestThing;
 };

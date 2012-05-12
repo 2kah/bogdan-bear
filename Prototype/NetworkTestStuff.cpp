@@ -65,7 +65,7 @@ static const unsigned char ID_START_GAME = 186;
 
 std::tr1::unordered_map<uint64_t, NetPlayer*> NetPlayerByGUID;
 std::tr1::unordered_map<int, NetPlayer*> NetPlayerByPlayerID;
-NetPlayer* myNetPlayer = 0;
+//NetPlayer* myNetPlayer = 0;
 
 
 
@@ -114,7 +114,8 @@ void NetworkTestStuff::sendStartGame()
 void NetworkTestStuff::recvStartGame(RakNet::Packet *packet)
 {
 	printf("in recvstart\n");
-	this->game_obj->game=true;
+	//this->game_obj->game=true;
+	this->game_obj->restartClient();
 	//TODO
 }
 
@@ -158,7 +159,7 @@ void NetworkTestStuff::insertNetPlayer(NetPlayer* np)
 
 void NetworkTestStuff::deleteNetPlayer(NetPlayer* np)
 {
-	std::cout << "Deleting Player '" << np->name << "'" << std::endl;
+	//std::cout << "Deleting Player '" << np->name << "'" << std::endl;
 	this->signals.removePlayer(np->player);
     np->player->signals.removed(np->player);
 	NetPlayerByGUID.erase(np->GUID);
@@ -173,7 +174,7 @@ void NetworkTestStuff::listNetPlayers()
 	std::tr1::unordered_map<int, NetPlayer*>::const_iterator It;
 	for (It = NetPlayerByPlayerID.begin(); It != NetPlayerByPlayerID.end(); ++It)
    {
-	   std::cout << It->first << " = " << It->second->name << " GUID: " << It->second->GUID << " Team: " << It->second->team << std::endl;
+	   std::cout << It->first << " = " << It->second->name << " GUID: " << It->second->GUID << " Team: " << It->second->team << "Position:" << It->second->player->position.x << ", "<< It->second->player->position.y << ", " << It->second->player->position.z <<std::endl;
    }
 	std::cout << "---------------" <<std::endl;
 }
@@ -502,6 +503,8 @@ void NetworkTestStuff::receiveAssignPlayer(RakNet::Packet *packet)
 	std::cout << "Being assigned Player '" << np->name << "'" << std::endl;
 	this->signals.assignLocalPlayer(p);
 	shouldUpload=true;
+
+	//this->localPlayer = np;
 }
 
 void NetworkTestStuff::receiveInsertPlayer(RakNet::Packet *packet)

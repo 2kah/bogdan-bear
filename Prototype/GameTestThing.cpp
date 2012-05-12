@@ -212,21 +212,25 @@ void GameTestThing::destroyScene()
 {
 	//this->game->tower = NULL;
 	//this->towerBuilder = NULL;
-	if(this->localPlayer != NULL)
-	{
-		this->localPlayerPhysics->~PlayerPhysics();
-		delete this->localPlayer;
-	}
 	this->game->objects.clear();
 	this->game->objects.insert(this->network);
 	this->removeQueue.clear();
-	Turret *turret;
+
+	PlayerGraphics *playerG;
+	for(std::vector<PlayerGraphics *>::iterator it2 = this->playersGraphics.begin(); it2 != this->playersGraphics.end(); ++it2) {
+		playerG = *it2;
+
+		playerG->disconnectSignals();
+		delete playerG;
+	}
+	this->playersGraphics.clear();
+	/*Turret *turret;
 	for(std::set<Turret *>::iterator i = this->turrets.begin(); i != this->turrets.end(); ++i)
     {
         turret = *i;
 		delete turret;
     }
-	this->turrets.clear();
+	this->turrets.clear();*/
 	//delete this->towerBuilder;
 	this->game->mSceneMgr->getRootSceneNode()->removeAndDestroyAllChildren();
 	this->game->mSceneMgr->destroyAllEntities();
@@ -249,6 +253,43 @@ void GameTestThing::destroyScene()
 	//delete this->game->dynamicsWorld;
 	//this->game->setUpPhysicsWorld();
 	//this->game->mSceneMgr->clearScene();
+	Player *player;
+	//PlayerProperties *playerProp;
+	printf("---------------------%i graphics, %i players, %i props\n", this->playersGraphics.size(), this->players.size(), this->playersProp.size());
+	//for(std::vector<PlayerGraphics *>::iterator it2 = this->playersGraphics.begin(); it2 != this->playersGraphics.end(); it2) {
+	//for(std::vector<PlayerProperties *>::iterator it2 = this->playersProp.begin(); it2 != this->playersProp.end(); it2) {
+		for(std::vector<Player *>::iterator it = this->players.begin(); it != this->players.end(); ++it) {
+            player = *it;
+			//playerProp = *it2;
+			//playerG = *it2;
+			//this->playersGraphics.pop_back();
+			//delete playerG;
+			//playerG->disconnectSignals();
+			//playerG = new PlayerGraphics(player, this->game->mSceneMgr);
+			//playerG->disconnectSignals();
+			localPlayerGraphics = new PlayerGraphics(player, this->game->mSceneMgr);
+			this->playersGraphics.push_back(localPlayerGraphics);
+			//new PlayerGraphics(player, this->game->mSceneMgr);
+			//player->prop = playerProp;
+			//this->playersGraphics.erase(it2);
+			//this->playersGraphics.push_back(localPlayerGraphics);
+			//this->playersGraphics.insert(it2, localPlayerGraphics);
+			this->game->objects.insert(player);
+
+		    //addPlayer(player, playerProp->getTeam());
+			//if(it2 != this->playersGraphics.end()) ++it2;
+		}
+	//}
+	this->network->listNetPlayers();
+}
+
+void GameTestThing::destroyLocalPlayer()
+{
+	if(this->localPlayer != NULL)
+	{
+		this->localPlayerPhysics->~PlayerPhysics();
+		delete this->localPlayer;
+	}
 }
 
 void GameTestThing::startLocal()
@@ -356,10 +397,11 @@ void GameTestThing::startClient()
 	Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowlchip.mesh");
     Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
     sceneNode->attachObject(bowl);
+    sceneNode->setPosition(Ogre::Vector3(0,14,0));
     sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
 
     btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
-	fileLoader->loadFile("BowlBul.bullet");
+	fileLoader->loadFile("harshna3.bullet");
     //btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
 	//fileLoader->loadFile("BowlBul.bullet");
 	this->network->startNetwork(false);
@@ -416,9 +458,10 @@ void GameTestThing::startServer()
 	Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowlchip.mesh");
     Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
     sceneNode->attachObject(bowl);
+    sceneNode->setPosition(Ogre::Vector3(0,14,0));
     sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
     btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
-	fileLoader->loadFile("BowlBul.bullet");
+	fileLoader->loadFile("harshna3.bullet");
 	this->network->g = this->goal;
 	this->network->startNetwork(true);
     
@@ -445,6 +488,138 @@ void GameTestThing::startServer()
     //test1->signals.removed(test1);
     //test2->signals.removed(test2);
     //test3->signals.removed(test3);
+}
+
+void GameTestThing::startNewRoundServer()
+{
+		isLocal = false;
+	isServer = true;
+	//printf("size of nettower %d\n",sizeof(NetTower));
+	unsigned divisions[] = {8, 16, 16, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 256, 256, 256, 256, 256, 256, 256};
+    std::vector<unsigned> structure(divisions, divisions + 14 + 8 + 11);
+
+	
+	/*unsigned divisions[] = {8, 16, 16, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 128, 128, 128, 128, 128, 128, 128};
+    std::vector<unsigned> structure(divisions, divisions + 14 + 8);*/
+
+
+
+    this->game->tower = new Tower(192, structure);
+
+    // Create a tower builder and generate the tower with it
+    this->towerBuilder = new TowerBuilder(this->game->tower);
+	this->towerBuilder->isPaused=true;
+	this->towerBuilder->Init();
+	this->towerBuilder->network = this->network;
+	this->network->tb = this->towerBuilder;
+	this->towerBuilder->generate();
+	
+    new TowerGraphics(this->game->tower, this->game->mSceneMgr);
+    new TowerPhysics(this->game->tower, this->game->dynamicsWorld);
+	//Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowlchip.mesh");
+    //Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
+    //sceneNode->attachObject(bowl);
+    //sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
+
+    //btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
+	//fileLoader->loadFile("BowlBul.bullet");
+
+	
+	//this->localPlayer->signals.removed(this->localPlayer);
+    Player *player = new Player(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height + 10, 10));
+    
+	//delete prevPlayerGraphics;
+	prevPlayerGraphics->disconnectSignals();
+    this->addPlayer(player, 0);
+    this->setLocalPlayer(player);
+
+	Goal *goal = new Goal(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height, 0), player, this->game->mSceneMgr, this->game->dynamicsWorld);
+	this->game->objects.insert(goal);
+	this->goal = goal;
+    
+	
+	Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowlchip.mesh");
+    Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
+    sceneNode->attachObject(bowl);
+    sceneNode->setPosition(Ogre::Vector3(0,14,0));
+    sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
+    btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
+	fileLoader->loadFile("harshna3.bullet");
+	this->network->g = this->goal;
+    
+    //// listen for new players, adding them when they come
+    //this->network->signals.playerCreated.connect(boost::bind(&GameTestThing::addPlayer, this, _1));
+
+    //// create local player
+    //Player *player = new Player(Ogre::Vector3(0, 0, 0));
+    //this->addPlayer(player);
+    //this->setLocalPlayer(player);
+
+    //// register local player
+    //this->network->registerObject(player);
+
+    //Player *test1 = new Player(Ogre::Vector3(100, 0, 0));
+    //this->addPlayer(test1);
+
+    //Player *test2 = new Player(Ogre::Vector3(100, 0, 100));
+    //this->addPlayer(test2);
+
+    //Player *test3 = new Player(Ogre::Vector3(100, 0, -100));
+    //this->addPlayer(test3);
+
+    //test1->signals.removed(test1);
+    //test2->signals.removed(test2);
+    //test3->signals.removed(test3);
+}
+
+void GameTestThing::startNewRoundClient()
+{
+	isLocal = false;
+	isServer = false;
+
+	unsigned divisions[] = {8, 16, 16, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 256, 256, 256, 256, 256, 256, 256};
+    std::vector<unsigned> structure(divisions, divisions + 14 + 8 + 11);
+
+	/*unsigned divisions[] = {8, 16, 16, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 128, 128, 128, 128, 128, 128, 128};
+    std::vector<unsigned> structure(divisions, divisions + 14 + 8);*/
+
+    this->game->tower = new Tower(192, structure);
+
+    // Create a tower builder and generate the tower with it
+    this->towerBuilder = new TowerBuilder(this->game->tower);
+	this->towerBuilder->isPaused=true;
+	this->towerBuilder->Init();
+	this->network->tb = this->towerBuilder;
+
+    new TowerGraphics(this->game->tower, this->game->mSceneMgr);
+    new TowerPhysics(this->game->tower, this->game->dynamicsWorld);
+
+	//this->network->myNetPlayer->player->signals.removed(this->network->myNetPlayer->player);
+	Player *player = new Player(Ogre::Vector3(0, 260, 0));
+	//this->localPlayer = new Player(Ogre::Vector3(0, 260, 0));
+	//delete prevPlayerGraphics;
+	//prevPlayerGraphics->playerRemoved(player);
+	prevPlayerGraphics->disconnectSignals();
+    this->addPlayer(player, this->localPlayerTeam);
+    this->setLocalPlayer(player);
+	//this->network->localPlayer->player = player;
+	this->network->myNetPlayer->player = player;
+	//this->network->signals.assignLocalPlayer(player);
+
+	Goal *goal = new Goal(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height, 0), player, this->game->mSceneMgr, this->game->dynamicsWorld);
+	this->game->objects.insert(goal);
+	this->goal = goal;
+    
+	Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowlchip.mesh");
+    Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
+    sceneNode->attachObject(bowl);
+    sceneNode->setPosition(Ogre::Vector3(0,14,0));
+    sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
+
+    btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
+	fileLoader->loadFile("harshna3.bullet");
+    //btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
+	//fileLoader->loadFile("BowlBul.bullet");
 }
 
 void GameTestThing::netSendChat(std::string message)
@@ -484,7 +659,7 @@ void GameTestThing::update()
 
 	if(this->network != NULL && this->localPlayer != NULL) {
 	    this->localPlayer->setScores(this->network->teamScores);
-	    //printf("---------------------%d %d %d %d\n", this->network->teamScores[0], this->network->teamScores[1], this->network->teamScores[2], this->network->teamScores[3]);
+	    if(this->network->teamScores[0] > 500 || this->network->teamScores[1] > 3000 || this->network->teamScores[2] > 3000 || this->network->teamScores[3] > 3000) this->goal->setGameOver();
 	}
 }
 
@@ -534,6 +709,9 @@ void GameTestThing::platformCreated(Player *player, Platform *platform)
 	this->sounds->createPlatformSound(player);
     platform->signals.expired.connect(boost::bind(&GameTestThing::platformExpired, this, _1));
     platform->signals.destroyed.connect(boost::bind(&GameTestThing::platformExpired, this, _1));
+
+	this->network->listNetPlayers();
+	printf("---------------------%i graphics, %i players, %i props\n", this->playersGraphics.size(), this->players.size(), this->playersProp.size());
 }
 
 void GameTestThing::platformExpired(Platform *platform)
@@ -619,7 +797,7 @@ void GameTestThing::setLocalPlayer(Player *player)
 	this->localPlayer->prop = new PlayerProperties(this->localPlayer->prop->getTeam(), true);
 	
 	localPlayerGraphics->~PlayerGraphics();
-    new PlayerGraphics(player, this->game->mSceneMgr);
+    prevPlayerGraphics = new PlayerGraphics(player, this->game->mSceneMgr);
     // link the local camera to the player
     new PlayerCamera(player, this->game->mCamera);
 
@@ -632,14 +810,27 @@ void GameTestThing::setLocalPlayer(Player *player)
     // Add player physics and link local input to it
     localPlayerPhysics = new PlayerPhysics(player, this->game->dynamicsWorld);
 	localPlayerPhysics->addInput(this->game->playerInput);
+
+	if(this->game->gameCount == 0) {
+		this->players.pop_back();
+		this->playersProp.pop_back();
+		this->playersGraphics.pop_back();
+	}
 }
 
 void GameTestThing::addPlayer(Player *player, int team)
 {
 	player->prop = new PlayerProperties(team, false);
+	this->localPlayerTeam = team;
 
     // Add player graphics
     localPlayerGraphics = new PlayerGraphics(player, this->game->mSceneMgr);
+
+	if(this->game->gameCount == 0) {
+	    this->players.push_back(player);
+		this->playersProp.push_back(player->prop);
+		this->playersGraphics.push_back(localPlayerGraphics);
+	}
 
     // Add player to updatable objects
     this->game->objects.insert(player);
@@ -692,4 +883,17 @@ void GameTestThing::addExplosion(Explosion *explosion)
 	new ExplosionPhysics(explosion, this->game->dynamicsWorld);
 	this->count = this->count++;
     
+}
+
+void GameTestThing::resetScores()
+{
+	if(this->network != NULL) {
+	    this->network->teamScores[0] = 0;
+		this->network->teamScores[1] = 0;
+		this->network->teamScores[2] = 0;
+		this->network->teamScores[3] = 0;
+	}
+	if(this->goal != NULL) {
+	    this->goal->setNotGameOver();
+	}
 }

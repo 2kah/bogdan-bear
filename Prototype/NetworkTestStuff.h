@@ -187,6 +187,9 @@ public:
     void sendPlatforms() {};
 	void printScores();
 
+	NetPlayer* localPlayer;
+	NetPlayer* myNetPlayer;
+
 };
 
 #endif // #ifndef __NetworkTestStuff_h_

@@ -264,6 +264,28 @@ bool BaseApplication::setup(void)
     // Alter the camera aspect ratio to match the viewport
     mCamera->setAspectRatio(Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
 
+Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().create("Background", "General");
+material->getTechnique(0)->getPass(0)->createTextureUnitState("splash.png");
+material->getTechnique(0)->getPass(0)->setDepthCheckEnabled(false);
+material->getTechnique(0)->getPass(0)->setDepthWriteEnabled(false);
+material->getTechnique(0)->getPass(0)->setLightingEnabled(false);
+
+// Create background rectangle covering the whole screen
+Ogre::Rectangle2D* rect = new Ogre::Rectangle2D(true);
+rect->setCorners(-1.0,1.0,1.0,-1.0);
+rect->setMaterial("Background");
+
+// Render the background before everything else
+rect->setRenderQueueGroup(Ogre::RENDER_QUEUE_BACKGROUND);
+
+// Hacky, but we need to set the bounding box to something big
+// NOTE: If you are using Eihort (v1.4), please see the note below on setting the bounding box
+rect->setBoundingBox(Ogre::AxisAlignedBox(-100000.0*Ogre::Vector3::UNIT_SCALE, 100000.0*Ogre::Vector3::UNIT_SCALE));
+
+// Attach background to the scene
+Ogre::SceneNode* node = mSceneMgr->getRootSceneNode()->createChildSceneNode("Background");
+node->attachObject(rect);
+
     mTrayMgr->showLoadingBar();
 	//printf("HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE\n\n\n\n\n\n");
     // Load resources

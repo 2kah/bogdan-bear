@@ -38,9 +38,16 @@ Player::~Player()
 
 void Player::setState(Ogre::Vector3 position, Ogre::Vector3 velocity, Ogre::Quaternion orientation)
 {
+	this->oldPosition = this->position;
     this->position = position;
     this->velocity = velocity;
     this->orientation = orientation;
+
+	this->newPosition = this->position;
+
+	Ogre::Vector3 difference = this->oldPosition - this->newPosition;
+	if(sqrt(pow(difference.x,2) + pow(difference.z,2)) > 1) this->anim = true;
+	else this->anim = false;
 
     //this->update();
 
@@ -195,7 +202,8 @@ void Player::create(bool state)
 			platformPosition.y -= 6;
 			this->signals.platform(this, new Platform(platformPosition, this->orientation));
 			//TODO: tweak
-			this->platformTimer = 1000;
+			//this->platformTimer = 1000;
+			this->platformTimer = 200;
 		}
     }
 }
@@ -262,6 +270,11 @@ void Player::setScores(int newScores[])
 int Player::getScore(int team)
 {
 	return this->scores[team];
+}
+
+double Player::getPlatformReload() 
+{
+	return (1/(double)6)*(this->platformTimer/(double)200);
 }
 
 

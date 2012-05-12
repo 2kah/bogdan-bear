@@ -110,3 +110,13 @@ bool Goal::isGameOver()
 {
 	return this->gameOver;
 }
+
+void Goal::setGameOver()
+{
+	this->gameOver = true;
+}
+
+void Goal::setNotGameOver()
+{
+	this->gameOver = false;
+}

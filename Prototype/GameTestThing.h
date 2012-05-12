@@ -18,6 +18,7 @@ class Turret;
 class Player;
 class PlayerPhysics;
 class PlayerGraphics;
+class PlayerProperties;
 class Platform;
 class Rocket;
 class Explosion;
@@ -31,10 +32,14 @@ public:
 	virtual void resetTower();
 	virtual void buildScene();
 	virtual void destroyScene();
+	virtual void destroyLocalPlayer();
 
     virtual void startLocal();
     virtual void startServer();
     virtual void startClient();
+
+	virtual void startNewRoundServer();
+	virtual void startNewRoundClient();
 
     virtual void update();
 
@@ -48,6 +53,8 @@ public:
     virtual void addTurret(Turret *turret);
     virtual void addRocket(Rocket *rocket);
     virtual void addExplosion(Explosion *explosion);
+
+	virtual void resetScores();
 
 	Goal *goal;
     Player *player;
@@ -84,10 +91,15 @@ private:
     Player *replicatePlayer(Ogre::Vector3 position, Ogre::Vector3 velocity, Ogre::Quaternion orientation) {};
 
     std::vector<Player *> players;
+	std::vector<PlayerProperties *> playersProp;
+	std::vector<PlayerGraphics *> playersGraphics;
 
     Player *localPlayer;
 	PlayerPhysics *localPlayerPhysics;
 	PlayerGraphics *localPlayerGraphics;
+	PlayerGraphics *prevPlayerGraphics;
+
+	int localPlayerTeam;
 };
 
 #endif // #ifndef __GameTestThing_h_

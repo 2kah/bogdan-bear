@@ -85,9 +85,12 @@ void Game::run(void)
 	this->gameTestThing->buildScene();
 
 	Ogre::FontManager::getSingleton().getByName("SdkTrays/Caption")->load();
-	OgreBites::Button* b = mTrayMgr->createButton(OgreBites::TL_CENTER, "StartLocalGame", "Start Local Game");
+	//OgreBites::Button* b = mTrayMgr->createButton(OgreBites::TL_CENTER, "StartLocalGame", "Start Local Game");
 	OgreBites::Button* b1 = mTrayMgr->createButton(OgreBites::TL_CENTER, "HostGame", "Host Game");
 	OgreBites::Button* b2 = mTrayMgr->createButton(OgreBites::TL_CENTER, "JoinGame", "Join Game");
+	OgreBites::Button* b3 = mTrayMgr->createButton(OgreBites::TL_CENTER, "Controls", "Controls");
+    OgreBites::Button* b4 = mTrayMgr->createButton(OgreBites::TL_CENTER, "Exit", "Exit");
+	mTrayMgr->showLogo(OgreBites::TL_TOPLEFT);
 	//mTrayMgr->moveWidgetToTray(b, OgreBites::TL_CENTER);
 	//mTrayMgr->moveWidgetToTray(b1, OgreBites::TL_CENTER);
 	//mTrayMgr->moveWidgetToTray(b2, OgreBites::TL_CENTER);
@@ -104,6 +107,8 @@ void Game::run(void)
     double simTimeQueued = 0.0;
 
     int counted = 0;
+	this->gameCount = 0;
+	this->leaderBoard = false;
 	//bool game = true;
     while (true)
     {
@@ -128,7 +133,7 @@ void Game::run(void)
             //previousState = currentState;
             //integrate (physics) (currentState, simTime, dt);
 			//---------------This stops everything getting updated once the game has finished.
-			if(game == true) {
+			if(game == true && leaderBoard == false) {
 
                 dynamicsWorld->stepSimulation(simFrameLength, 1, simFrameLength);
 
@@ -173,7 +178,9 @@ void Game::run(void)
 					endRound();
 					std::cout << "You have been eaten by Bogdan!" << std::endl;
 					std::cout << "*** GAME OVER ***" << std::endl;
+					this->gameCount++;
 				    game = false;
+					this->leaderBoard = true;
 				}
 			}
 		}
@@ -189,9 +196,23 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
     if (mTrayMgr->isDialogVisible()) return true;   // don't process any more keys if dialog is up
     
 	if (arg.key == OIS::KC_RETURN && this->gameTestThing->network->hosting && game == false) {
-		this->gameTestThing->network->sendStartGame();
-		game = true;
-		this->gameTestThing->network->sendExplosion((Ogre::Vector3(0, 240, 0)),true);
+		if(!this->leaderBoard) {
+		    this->gameTestThing->network->sendStartGame();
+		    game = true;
+		    this->gameTestThing->network->sendExplosion((Ogre::Vector3(0, 240, 0)),true);
+		}
+		else {
+			startRound();
+	        this->mRoot->clearEventTimes();
+	        this->gameTestThing->destroyScene();
+	        this->gameTestThing->resetScores();
+			this->gameTestThing->network->sendStartGame();
+		    this->gameTestThing->startNewRoundServer();
+			for(int i = 0; i < 10000; i++) {
+			    //printf("%i\n", i);
+		    }
+			leaderBoard = false;
+		}
 	}
 
 	if (!game) return true;
@@ -349,11 +370,14 @@ void Game::buttonHit(OgreBites::Button *button)
 {
     if(button->getName() == "StartLocalGame")
 	{
-		startRound();
+		//startRound();
 	}
     else if(button->getName() == "JoinGame")
 	{
-		this->gameTestThing->destroyScene();
+		//this->gameTestThing->destroyScene();
+		startRound();
+	    this->mRoot->clearEventTimes();
+	    this->gameTestThing->destroyScene();
 		this->gameTestThing->startClient();
 		mTrayMgr->hideCursor();
 		mTrayMgr->destroyAllWidgets();
@@ -361,7 +385,10 @@ void Game::buttonHit(OgreBites::Button *button)
 	}
 	else if(button->getName() == "HostGame")
 	{
-		this->gameTestThing->destroyScene();
+		//this->gameTestThing->destroyScene();
+		startRound();
+	    this->mRoot->clearEventTimes();
+	    this->gameTestThing->destroyScene();
 		this->gameTestThing->startServer();
 		mTrayMgr->hideCursor();
 		mTrayMgr->destroyAllWidgets();
@@ -384,7 +411,8 @@ void Game::endRound()
     overlayManager.createOverlayElement("Panel", "PanelName2"));
     panel2->setMetricsMode(Ogre::GMM_PIXELS);
     panel2->setPosition(10, 10);
-	panel2->_setDimensions(200, 200);
+	//panel2->_setDimensions(200, 200);
+	panel2->setDimensions(200, 200);
     
 	/*Ogre::TextAreaOverlayElement* textArea = static_cast<Ogre::TextAreaOverlayElement*>(
     overlayManager.createOverlayElement("TextArea", "win/lose"));
@@ -394,10 +422,19 @@ void Game::endRound()
     textArea->setCaption("Hello OGRE!");
 	printf("here\n");
     panel2->addChild(textArea);*/
+	/*Ogre::TextAreaOverlayElement* textArea2 = static_cast<Ogre::TextAreaOverlayElement*>(overlayManager.createOverlayElement("TextArea2", "TextAreaName2"));
+    textArea2->setMetricsMode(Ogre::GMM_PIXELS);
+    textArea2->setPosition(0, 0);
+    textArea2->setDimensions(100, 100);
+    textArea2->setCaption("Hello, World!");
+    textArea2->setCharHeight(16);
+    textArea2->setFontName("TrebuchetMSBold");
+    textArea2->setColourBottom(Ogre::ColourValue(0.3, 0.5, 0.3));
+    textArea2->setColourTop(Ogre::ColourValue(0.5, 0.7, 0.5));*/
 
 	Ogre::MaterialPtr crosshair2 = Ogre::MaterialManager::getSingleton().create("crosshair2", "General");
     crosshair2->getTechnique(0)->getPass(0)->createTextureUnitState("grass_1024.jpg");
-    crosshair2->getTechnique(0)->getPass(0)->setDepthCheckEnabled(true);
+    //crosshair2->getTechnique(0)->getPass(0)->setDepthCheckEnabled(true);
     crosshair2->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
     panel2->setMaterialName("crosshair2");
     
@@ -405,8 +442,10 @@ void Game::endRound()
     Ogre::Overlay* overlay = overlayManager.getByName("OverlayName");
     //overlay->add2D(panel2);
 
+	//panel2->addChild(textArea2);
+
     // Show the overlay
-    //overlay->show();
+    overlay->show();
 
 	// camera/viewport
 	//this->gameTestThing->player->enteredTurret();
@@ -419,10 +458,10 @@ void Game::endRound()
 //This destroys what is there from the previous round and displays a "crosshair" (single pixel) in the middle.
 void Game::startRound()
 {
-	this->mRoot->clearEventTimes();
-	this->gameTestThing->destroyScene();
+	this->gameTestThing->destroyLocalPlayer();
+	this->gameTestThing->resetScores();
 	//setUpPhysicsWorld();
-	this->gameTestThing->startLocal();
+	//this->gameTestThing->startLocal();
 	mTrayMgr->hideCursor();
     mTrayMgr->destroyAllWidgets();
 	mTrayMgr->clearAllTrays();
@@ -487,4 +526,26 @@ void Game::setUpPhysicsWorld()
     // Set up a debug drawer
     this->mDebugDrawer = new BtOgre::DebugDrawer(mSceneMgr->getRootSceneNode(), dynamicsWorld);
     this->dynamicsWorld->setDebugDrawer(this->mDebugDrawer);
+}
+
+void Game::restartClient()
+{
+	if(this->leaderBoard) {
+		startRound();
+	    this->mRoot->clearEventTimes();
+	    this->gameTestThing->destroyScene();
+		//for(int i = 0; i < 10000; i++) {
+			//printf("%i\n", i);
+		//}
+		this->gameTestThing->startNewRoundClient();
+		mTrayMgr->hideCursor();
+		mTrayMgr->destroyAllWidgets();
+		mTrayMgr->clearAllTrays();
+		this->leaderBoard = false;
+		//printf("WAIT AT TOP...\n");
+	}
+	else {
+		//printf("START GAME FOR LOCAL\n");
+	    this->game = true;
+	}
 }
