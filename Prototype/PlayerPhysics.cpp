@@ -130,7 +130,7 @@ void PlayerPhysics::playerUpdated(Player *player)
 		btVector3 walk(movement.x, movement.y, movement.z);
 		btVector3 actualMovement = pushDirection;
 		//reduce the effects of any explosion
-		pushDirection *= btScalar(0.92);
+		pushDirection *= btScalar(0.95);
 
 		//if on ground then allow whatever movement the player wants
 		if(m_character->onGround())
@@ -239,9 +239,9 @@ void PlayerPhysics::explode(Explosion *explosion)
 {
 	std::cout << "Explosion has hit player" << std::endl;
 	//set the push direction to be player position - explosion position, then scale
-	pushDirection = BtOgre::Convert::toBullet(this->player->position - explosion->position) * btScalar(0.15);
+	pushDirection = BtOgre::Convert::toBullet(this->player->position - explosion->position) * btScalar(0.25);
 	//offset the vertical
-	pushDirection.setY(pushDirection.y() + (halfHeight * 0.1));
+	pushDirection.setY(pushDirection.y() + (halfHeight * 0.25));
 }
 
 void PlayerPhysics::deactivate()
