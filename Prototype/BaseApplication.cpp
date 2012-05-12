@@ -313,6 +313,7 @@ bool BaseApplication::keyPressed( const OIS::KeyEvent &arg )
 {
     if (mTrayMgr->isDialogVisible()) return true;   // don't process any more keys if dialog is up
 
+    /*
     if (arg.key == OIS::KC_F)   // toggle visibility of advanced frame stats
     {
         mTrayMgr->toggleAdvancedFrameStats();
@@ -368,7 +369,7 @@ bool BaseApplication::keyPressed( const OIS::KeyEvent &arg )
         Ogre::String newVal;
         Ogre::PolygonMode pm;
 
-        /*switch (mCamera->getPolygonMode())
+        switch (mCamera->getPolygonMode())
         {
         case Ogre::PM_SOLID:
             newVal = "Wireframe";
@@ -381,7 +382,7 @@ bool BaseApplication::keyPressed( const OIS::KeyEvent &arg )
         default:
             newVal = "Solid";
             pm = Ogre::PM_SOLID;
-        }*/
+        }
 
         //mCamera->setPolygonMode(pm);
         mDetailsPanel->setParamValue(10, newVal);
@@ -398,6 +399,7 @@ bool BaseApplication::keyPressed( const OIS::KeyEvent &arg )
     {
         mShutDown = true;
     }
+    */
 
     //mCameraMan->injectKeyDown(arg);
     return true;
