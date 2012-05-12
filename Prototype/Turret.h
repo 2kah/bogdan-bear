@@ -32,7 +32,7 @@ public:
 
     virtual void setTarget(Ogre::Vector3 positionTarget);
 
-	virtual void setOccupied(bool set, Player *player);
+	virtual bool setOccupied(bool set, Player *player);
 
 	virtual bool isOccupied();
 
@@ -50,6 +50,7 @@ protected:
 	bool occ;
 	int rockets;
 	Player *player;
+	unsigned playerTimer;
 };
 
 #endif // #ifndef __Turret_h_
