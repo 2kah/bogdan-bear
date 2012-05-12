@@ -54,12 +54,12 @@
 bool isLocal = false;
 bool isServer = false;
 
-GameTestThing::GameTestThing(Game *game)
+GameTestThing::GameTestThing(Game *game, char *hostIP)
     : game(game)
     , localPlayer(NULL)
 	, goal(NULL)
 {
-    this->network = new NetworkTestStuff();
+    this->network = new NetworkTestStuff(hostIP);
 	this->network->game_obj = this->game;
     this->network->signals.chat.connect(boost::bind(&GameTestThing::chatReceived, this, _1));
     this->network->signals.explosion.connect(boost::bind(&GameTestThing::networkExplosion, this, _1, _2, _3, _4));
@@ -168,12 +168,12 @@ void GameTestThing::buildScene()
 	isLocal = true;
 	isServer = false;
     // Create an empty tower
-    unsigned divisions[] = {8, 16, 16, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 128, 128, 128, 128, 128, 128, 128};
-    std::vector<unsigned> structure(divisions, divisions + 14 + 8);
+    unsigned divisions[] = {8, 16, 16, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 256, 256, 256, 256, 256, 256, 256};
+    std::vector<unsigned> structure(divisions, divisions + 14 + 8 + 11);
     //unsigned divisions[] = {32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32};
     //std::vector<unsigned> structure(divisions, divisions + 14);
 
-    this->game->tower = new Tower(256, structure);
+    this->game->tower = new Tower(192, structure);
 
     // Create a tower builder and generate the tower with it
     this->towerBuilder = new TowerBuilder(this->game->tower);
@@ -770,7 +770,7 @@ void GameTestThing::playerUsed(Player *player)
 	{
 	    if(player->position == min)
 	    {
-			turret->setOccupied(false);
+			turret->setOccupied(false, player);
 			//turret->setTarget(NULL);
 			player->setTurret(NULL);
 	        player->exitedTurret();
@@ -778,12 +778,14 @@ void GameTestThing::playerUsed(Player *player)
 	    }
 	    else
 	    {
-	    	player->enteredTurret();
-			player->setTurret(turret);
-			turret->setOccupied(true);
-			this->sounds->enterTurretSound(turret);
-	        player->position = turret->position;
-
+			//check whether turret allows player to enter
+			if(turret->setOccupied(true, player))
+			{
+	    		player->enteredTurret();
+				player->setTurret(turret);
+				this->sounds->enterTurretSound(turret);
+				player->position = turret->position;
+			}
 			//turret->setTarget(player);
 	    }
 	}

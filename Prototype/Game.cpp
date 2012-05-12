@@ -40,7 +40,7 @@ Game::~Game(void)
 {
 }
 
-void Game::run(void)
+void Game::run(char *hostIP)
 {    
     if (!this->setup())
     {
@@ -79,7 +79,7 @@ void Game::run(void)
     // Alter the camera aspect ratio to match the viewport
     //mCamera->setAspectRatio(Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
 
-    this->gameTestThing = new GameTestThing(this);
+    this->gameTestThing = new GameTestThing(this, hostIP);
 
 	//---------------This builds the view at the start for the menu.
 	this->gameTestThing->buildScene();

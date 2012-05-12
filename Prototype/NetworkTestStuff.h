@@ -117,6 +117,8 @@ public:
     int current_spawn;
     //
 
+	char *SERVER_IP_ADDRESS;
+
     bool hosting;
 	Goal* g;
 	TowerBuilder* tb;
@@ -125,7 +127,7 @@ public:
     NetworkSignals signals;
 	int teamScores[4];
 
-    NetworkTestStuff();
+    NetworkTestStuff(char *hostIP);
     virtual ~NetworkTestStuff();
 	
 	void broadcastUpdateTower(int low_level, int high_level, int low_layer, int high_layer);
