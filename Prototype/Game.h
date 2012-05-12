@@ -30,7 +30,7 @@ public:
     Game();
     virtual ~Game(void);
 
-    virtual void run(void);
+    virtual void run(char *hostIP);
 
 	void setUpPhysicsWorld(void);
 	void restartClient();

@@ -5,7 +5,7 @@
 
 #include "Explosion.h"
 
-const double Rocket::SPEED = 1.0;
+const double Rocket::SPEED = 1.3;
 
 Rocket::Rocket(Ogre::Vector3 position, Ogre::Quaternion orientation)
 {

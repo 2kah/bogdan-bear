@@ -27,7 +27,7 @@ class TowerBuilder;
 class GameTestThing : public Updatable
 {
 public:
-    GameTestThing(Game *game);
+    GameTestThing(Game *game, char *hostIP);
     ~GameTestThing();
 	virtual void resetTower();
 	virtual void buildScene();
