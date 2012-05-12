@@ -170,7 +170,7 @@ void Player::fire(bool state)
                 Ogre::Quaternion orientation = this->orientation * this->relativeAim;
                 orientation = orientation * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
 		    
-                this->signals.fired(this, new Rocket(this->position + Ogre::Vector3::UNIT_Y * 180 / 16.0 + (orientation * Ogre::Vector3::UNIT_X * 10), orientation));
+                this->signals.fired(this, new Rocket(this->position + Ogre::Vector3::UNIT_Y * 180 / 16.0 + (orientation * Ogre::Vector3::UNIT_X * 16), orientation));
 		    	this->rocketAmmo--;
 		    	std::cout << "Ammo " << this->rocketAmmo << std::endl;
 		    	this->needsReload = true;
