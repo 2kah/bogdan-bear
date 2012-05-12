@@ -592,7 +592,7 @@ void GameTestThing::playerUsed(Player *player)
 	{
 	    if(player->position == min)
 	    {
-			turret->setOccupied(false);
+			turret->setOccupied(false, NULL);
 			//turret->setTarget(NULL);
 			player->setTurret(NULL);
 	        player->exitedTurret();
@@ -602,7 +602,7 @@ void GameTestThing::playerUsed(Player *player)
 	    {
 	    	player->enteredTurret();
 			player->setTurret(turret);
-			turret->setOccupied(true);
+			turret->setOccupied(true, player);
 			this->sounds->enterTurretSound(turret);
 	        player->position = turret->position;
 
