@@ -10,7 +10,9 @@
 #include <OGRE/OgreOverlay.h>
 #include <OGRE/OgreOverlayManager.h>
 #include <OGRE/OgreTextAreaOverlayElement.h>
+#include <OgreFont.h>
 #include <OgreFrameListener.h>
+#include <OgreStringConverter.h>
 
 #include "Game.h"
 #include "Updatable.h"
@@ -412,7 +414,7 @@ void Game::endRound()
     panel2->setMetricsMode(Ogre::GMM_PIXELS);
     panel2->setPosition(10, 10);
 	//panel2->_setDimensions(200, 200);
-	panel2->setDimensions(200, 200);
+	panel2->setDimensions(1000, 1000);
     
 	/*Ogre::TextAreaOverlayElement* textArea = static_cast<Ogre::TextAreaOverlayElement*>(
     overlayManager.createOverlayElement("TextArea", "win/lose"));
@@ -422,27 +424,121 @@ void Game::endRound()
     textArea->setCaption("Hello OGRE!");
 	printf("here\n");
     panel2->addChild(textArea);*/
-	/*Ogre::TextAreaOverlayElement* textArea2 = static_cast<Ogre::TextAreaOverlayElement*>(overlayManager.createOverlayElement("TextArea2", "TextAreaName2"));
-    textArea2->setMetricsMode(Ogre::GMM_PIXELS);
-    textArea2->setPosition(0, 0);
-    textArea2->setDimensions(100, 100);
-    textArea2->setCaption("Hello, World!");
-    textArea2->setCharHeight(16);
-    textArea2->setFontName("TrebuchetMSBold");
-    textArea2->setColourBottom(Ogre::ColourValue(0.3, 0.5, 0.3));
-    textArea2->setColourTop(Ogre::ColourValue(0.5, 0.7, 0.5));*/
+	//Ogre::TextAreaOverlayElement* textArea2 = static_cast<Ogre::TextAreaOverlayElement*>(overlayManager.createOverlayElement("TextArea2", "TextAreaName2"));
+	Ogre::FontPtr mFont = Ogre::FontManager::getSingleton().create("MyFont", "General");
+    mFont->setType(Ogre::FT_TRUETYPE);
+    mFont->setSource("solo5.ttf");
+    mFont->setTrueTypeSize(26);
+    mFont->setTrueTypeResolution(96);
+	mFont->load();
+
+	Ogre::OverlayElement* teamWins = overlayManager.createOverlayElement("TextArea", "teamWins");
+    teamWins->setMetricsMode(Ogre::GMM_PIXELS);
+    teamWins->setPosition(0, 0);
+    teamWins->setDimensions(mWindow->getWidth(), (mWindow->getHeight()/4));
+	teamWins->setParameter("char_height", "55");
+	teamWins->setParameter("font_name", "MyFont");
+    teamWins->setCaption(this->gameTestThing->winningTeam + " TEAM WINS");
+    teamWins->setColour(Ogre::ColourValue(0, 0.984, 0.925));
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	float time;
+	Ogre::OverlayElement* redTeamPoints = overlayManager.createOverlayElement("TextArea", "redTeamPoints");
+    redTeamPoints->setMetricsMode(Ogre::GMM_PIXELS);
+    redTeamPoints->setPosition(0, (mWindow->getHeight()/4)*2);
+    redTeamPoints->setDimensions((mWindow->getWidth()/4), (mWindow->getHeight()/4));
+	redTeamPoints->setParameter("char_height", "26");
+	redTeamPoints->setParameter("font_name", "MyFont");
+	time = this->gameTestThing->network->teamScores[0];
+    redTeamPoints->setCaption(Ogre::StringConverter::toString(this->gameTestThing->network->teamScores[0]));
+    redTeamPoints->setColour(Ogre::ColourValue(0, 0.984, 0.925));
+
+	Ogre::OverlayElement* orangeTeamPoints = overlayManager.createOverlayElement("TextArea", "orangeTeamPoints");
+    orangeTeamPoints->setMetricsMode(Ogre::GMM_PIXELS);
+    orangeTeamPoints->setPosition((mWindow->getWidth()/4), (mWindow->getHeight()/4)*2);
+    orangeTeamPoints->setDimensions((mWindow->getWidth()/4), (mWindow->getHeight()/4));
+	orangeTeamPoints->setParameter("char_height", "26");
+	orangeTeamPoints->setParameter("font_name", "MyFont");
+	time = this->gameTestThing->network->teamScores[1];
+    orangeTeamPoints->setCaption(Ogre::StringConverter::toString(this->gameTestThing->network->teamScores[1]));
+    orangeTeamPoints->setColour(Ogre::ColourValue(0, 0.984, 0.925));
+
+	Ogre::OverlayElement* purpleTeamPoints = overlayManager.createOverlayElement("TextArea", "purpleTeamPoints");
+    purpleTeamPoints->setMetricsMode(Ogre::GMM_PIXELS);
+    purpleTeamPoints->setPosition((mWindow->getWidth()/4)*2, (mWindow->getHeight()/4)*2);
+    purpleTeamPoints->setDimensions((mWindow->getWidth()/4), (mWindow->getHeight()/4));
+	purpleTeamPoints->setParameter("char_height", "26");
+	purpleTeamPoints->setParameter("font_name", "MyFont");
+	time = this->gameTestThing->network->teamScores[2];
+    orangeTeamPoints->setCaption(Ogre::StringConverter::toString(this->gameTestThing->network->teamScores[2]));
+    purpleTeamPoints->setColour(Ogre::ColourValue(0, 0.984, 0.925));
+
+	Ogre::OverlayElement* greenTeamPoints = overlayManager.createOverlayElement("TextArea", "greenTeamPoints");
+    greenTeamPoints->setMetricsMode(Ogre::GMM_PIXELS);
+    greenTeamPoints->setPosition((mWindow->getWidth()/4)*3, (mWindow->getHeight()/4)*2);
+    greenTeamPoints->setDimensions((mWindow->getWidth()/4), (mWindow->getHeight()/4));
+	greenTeamPoints->setParameter("char_height", "26");
+	greenTeamPoints->setParameter("font_name", "MyFont");
+	time = this->gameTestThing->network->teamScores[3];
+    orangeTeamPoints->setCaption(Ogre::StringConverter::toString(this->gameTestThing->network->teamScores[3]));
+    greenTeamPoints->setColour(Ogre::ColourValue(0, 0.984, 0.925));
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	Ogre::OverlayElement* redTeamWins = overlayManager.createOverlayElement("TextArea", "redTeamWins");
+    redTeamWins->setMetricsMode(Ogre::GMM_PIXELS);
+    redTeamWins->setPosition(0, (mWindow->getHeight()/4)*3);
+    redTeamWins->setDimensions((mWindow->getWidth()/4), (mWindow->getHeight()/4));
+	redTeamWins->setParameter("char_height", "50");
+	redTeamWins->setParameter("font_name", "MyFont");
+    redTeamWins->setCaption(Ogre::StringConverter::toString(this->gameTestThing->wins[0]));
+    redTeamWins->setColour(Ogre::ColourValue(0, 0.984, 0.925));
+
+	Ogre::OverlayElement* orangeTeamWins = overlayManager.createOverlayElement("TextArea", "orangeTeamWins");
+    orangeTeamWins->setMetricsMode(Ogre::GMM_PIXELS);
+    orangeTeamWins->setPosition((mWindow->getWidth()/4), (mWindow->getHeight()/4)*3);
+    orangeTeamWins->setDimensions((mWindow->getWidth()/4), (mWindow->getHeight()/4));
+	orangeTeamWins->setParameter("char_height", "50");
+	orangeTeamWins->setParameter("font_name", "MyFont");
+    orangeTeamWins->setCaption(Ogre::StringConverter::toString(this->gameTestThing->wins[1]));
+    orangeTeamWins->setColour(Ogre::ColourValue(0, 0.984, 0.925));
+
+	Ogre::OverlayElement* purpleTeamWins = overlayManager.createOverlayElement("TextArea", "purpleTeamWins");
+    purpleTeamWins->setMetricsMode(Ogre::GMM_PIXELS);
+    purpleTeamWins->setPosition((mWindow->getWidth()/4)*2, (mWindow->getHeight()/4)*3);
+    purpleTeamWins->setDimensions((mWindow->getWidth()/4), (mWindow->getHeight()/4));
+	purpleTeamWins->setParameter("char_height", "50");
+	purpleTeamWins->setParameter("font_name", "MyFont");
+    purpleTeamWins->setCaption(Ogre::StringConverter::toString(this->gameTestThing->wins[2]));
+    purpleTeamWins->setColour(Ogre::ColourValue(0, 0.984, 0.925));
+
+	Ogre::OverlayElement* greenTeamWins = overlayManager.createOverlayElement("TextArea", "greenTeamWins");
+    greenTeamWins->setMetricsMode(Ogre::GMM_PIXELS);
+    greenTeamWins->setPosition((mWindow->getWidth()/4)*3, (mWindow->getHeight()/4)*3);
+    greenTeamWins->setDimensions((mWindow->getWidth()/4), (mWindow->getHeight()/4));
+	greenTeamWins->setParameter("char_height", "50");
+	greenTeamWins->setParameter("font_name", "MyFont");
+    greenTeamWins->setCaption(Ogre::StringConverter::toString(this->gameTestThing->wins[3]));
+    greenTeamWins->setColour(Ogre::ColourValue(0, 0.984, 0.925));
 
 	Ogre::MaterialPtr crosshair2 = Ogre::MaterialManager::getSingleton().create("crosshair2", "General");
     crosshair2->getTechnique(0)->getPass(0)->createTextureUnitState("grass_1024.jpg");
     //crosshair2->getTechnique(0)->getPass(0)->setDepthCheckEnabled(true);
     crosshair2->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
-    panel2->setMaterialName("crosshair2");
+    //panel2->setMaterialName("crosshair2");
     
 	// Create an overlay, and add the panel
     Ogre::Overlay* overlay = overlayManager.getByName("OverlayName");
-    //overlay->add2D(panel2);
+    overlay->add2D(panel2);
 
-	//panel2->addChild(textArea2);
+	panel2->addChild(teamWins);
+	panel2->addChild(redTeamPoints);
+	panel2->addChild(orangeTeamPoints);
+	panel2->addChild(purpleTeamPoints);
+	panel2->addChild(greenTeamPoints);
+	panel2->addChild(redTeamWins);
+	panel2->addChild(orangeTeamWins);
+	panel2->addChild(purpleTeamWins);
+	panel2->addChild(greenTeamWins);
 
     // Show the overlay
     overlay->show();

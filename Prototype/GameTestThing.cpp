@@ -148,6 +148,11 @@ GameTestThing::GameTestThing(Game *game, char *hostIP)
     //moon5->setDiffuseColour(Ogre::ColourValue(0, 255, 246));
     moon5->setDiffuseColour(Ogre::ColourValue::White);
 	//moon5->setDiffuseColour(Ogre::ColourValue(100, 100, 100));*/
+	this->wins[0] = 0;
+	this->wins[1] = 0;
+	this->wins[2] = 0;
+	this->wins[3] = 0;
+
 
     std::cout << "PRESS F11 FOR LOCAL TEST GAME" << std::endl;
     std::cout << "PRESS F9 FOR LOCAL SERVER GAME" << std::endl;
@@ -659,7 +664,26 @@ void GameTestThing::update()
 
 	if(this->network != NULL && this->localPlayer != NULL) {
 	    this->localPlayer->setScores(this->network->teamScores);
-	    if(this->network->teamScores[0] > 500 || this->network->teamScores[1] > 3000 || this->network->teamScores[2] > 3000 || this->network->teamScores[3] > 3000) this->goal->setGameOver();
+	    if(this->network->teamScores[0] > 500) {
+			this->winningTeam = "RED";
+			this->wins[0]++;
+			this->goal->setGameOver();
+		}
+	    else if(this->network->teamScores[1] > 3000) {
+			this->winningTeam = "ORANGE";
+			this->wins[1]++;
+			this->goal->setGameOver();
+		}
+		else if(this->network->teamScores[2] > 3000) {
+			this->winningTeam = "PURPLE";
+			this->wins[2]++;
+			this->goal->setGameOver();
+		}
+		else if(this->network->teamScores[3] > 3000) {
+			this->winningTeam = "GREEN";
+			this->wins[3]++;
+			this->goal->setGameOver();
+		}
 	}
 }
 
