@@ -63,6 +63,9 @@ public:
     NetworkTestStuff *network;
 	int count;
 
+	string winningTeam;
+	int wins[4];
+
 
 protected:
     Game *game;
