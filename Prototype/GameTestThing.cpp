@@ -407,7 +407,7 @@ void GameTestThing::startClient()
     sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
 
     btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
-	fileLoader->loadFile("harshna3.bullet");
+	fileLoader->loadFile("bowlup.bullet");
     //btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
 	//fileLoader->loadFile("BowlBul.bullet");
 	this->network->startNetwork(false);
@@ -467,7 +467,7 @@ void GameTestThing::startServer()
     sceneNode->setPosition(Ogre::Vector3(0,14,0));
     sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
     btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
-	fileLoader->loadFile("harshna3.bullet");
+	fileLoader->loadFile("bowlup.bullet");
 	this->network->g = this->goal;
 	this->network->startNetwork(true);
     
@@ -550,7 +550,7 @@ void GameTestThing::startNewRoundServer()
     sceneNode->setPosition(Ogre::Vector3(0,14,0));
     sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
     btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
-	fileLoader->loadFile("harshna3.bullet");
+	fileLoader->loadFile("bowlup.bullet");
 	this->network->g = this->goal;
     
     //// listen for new players, adding them when they come
@@ -623,7 +623,7 @@ void GameTestThing::startNewRoundClient()
     sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
 
     btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
-	fileLoader->loadFile("harshna3.bullet");
+	fileLoader->loadFile("bowlup.bullet");
     //btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
 	//fileLoader->loadFile("BowlBul.bullet");
 }
@@ -665,7 +665,7 @@ void GameTestThing::update()
 
 	if(this->network != NULL && this->localPlayer != NULL) {
 	    this->localPlayer->setScores(this->network->teamScores);
-	    if(this->network->teamScores[0] > 500) {
+	    if(this->network->teamScores[0] > 3000) {
 			this->winningTeam = "RED";
 			this->wins[0]++;
 			this->goal->setGameOver();

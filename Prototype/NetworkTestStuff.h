@@ -205,7 +205,7 @@ public:
 	void printScores();
 
 	NetPlayer* localPlayer;
-	NetPlayer* myNetPlayer;
+	//NetPlayer* myNetPlayer;
 
 };
 
