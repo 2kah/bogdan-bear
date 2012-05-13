@@ -65,7 +65,7 @@ GameTestThing::GameTestThing(Game *game, char *hostIP)
     this->network->signals.explosion.connect(boost::bind(&GameTestThing::networkExplosion, this, _1, _2, _3, _4));
 	this->network->signals.recvRocket.connect(boost::bind(&GameTestThing::networkRocket, this, _1, _2));
     //this->game->objects.insert(this->network);
-
+	this->network->signals.recvPlatform.connect(boost::bind(&GameTestThing::platformReceived, this, _1));
 	this->network->signals.addPlayer.connect(boost::bind(&GameTestThing::addPlayer, this, _1, _2));
 	this->network->signals.removePlayer.connect(boost::bind(&GameTestThing::removePlayer, this, _1));
 	this->network->signals.assignLocalPlayer.connect(boost::bind(&GameTestThing::setLocalPlayer, this, _1));
@@ -360,6 +360,7 @@ void GameTestThing::startLocal()
     btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
 	fileLoader->loadFile("BowlBul.bullet");
 
+	this->game->game=true;
     // Set the turret to aim at the player always. Setting it to NULL makes it shoot randomly at the tower.
 	//turret1->setTarget(player);
 	//turret2->setTarget(player);
@@ -706,13 +707,25 @@ void GameTestThing::platformCreated(Player *player, Platform *platform)
 
     PlatformGraphics *platfromGraphics = new PlatformGraphics(platform, this->game->mSceneMgr);
 	PlatformPhysics *platformPhysics = new PlatformPhysics(platform, this->game->dynamicsWorld);
-	this->sounds->createPlatformSound(player);
+	this->sounds->createPlatformSound(platform);
     platform->signals.expired.connect(boost::bind(&GameTestThing::platformExpired, this, _1));
     platform->signals.destroyed.connect(boost::bind(&GameTestThing::platformExpired, this, _1));
 
 	this->network->listNetPlayers();
 	printf("---------------------%i graphics, %i players, %i props\n", this->playersGraphics.size(), this->players.size(), this->playersProp.size());
 }
+
+void GameTestThing::platformReceived(Platform *platform)
+{
+	printf("in GameTestThing::platformReceived\n");
+    this->game->objects.insert(platform);
+    PlatformGraphics *platfromGraphics = new PlatformGraphics(platform, this->game->mSceneMgr);
+	PlatformPhysics *platformPhysics = new PlatformPhysics(platform, this->game->dynamicsWorld);
+	this->sounds->createPlatformSound(platform);
+    platform->signals.expired.connect(boost::bind(&GameTestThing::platformExpired, this, _1));
+    platform->signals.destroyed.connect(boost::bind(&GameTestThing::platformExpired, this, _1));
+}
+
 
 void GameTestThing::platformExpired(Platform *platform)
 {

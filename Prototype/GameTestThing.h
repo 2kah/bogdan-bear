@@ -34,6 +34,8 @@ public:
 	virtual void destroyScene();
 	virtual void destroyLocalPlayer();
 
+	virtual void platformReceived(Platform *platform);
+
     virtual void startLocal();
     virtual void startServer();
     virtual void startClient();

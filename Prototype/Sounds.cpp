@@ -4,6 +4,7 @@
 #include "include/irrKlang.h"
 #include "Player.h"
 #include "Turret.h"
+#include "Platform.h"
 
 
 
@@ -46,11 +47,11 @@ void Sounds::listenerUpdated(Player *player)
 }
 
 
-void Sounds::createPlatformSound(Player *player)
+void Sounds::createPlatformSound(Platform *platform)
 {
-    float x = player->position.x;
-	float y = player->position.y;
-	float z = player->position.z;
+    float x = platform->position.x;
+	float y = platform->position.y;
+	float z = platform->position.z;
 
 	irrklang::vec3df position(x, y, z);
 	/*BtOgre convert wasn't recognised here?*/
@@ -76,8 +77,12 @@ void Sounds::ReloadSound(Player *player)
 
 void Sounds::createPlatformStop()
 {
+try
+{
     create->stop();
-
+	}
+catch (char* ex){
+}
 }
 
 void Sounds::enterTurretSound(Turret *turret)

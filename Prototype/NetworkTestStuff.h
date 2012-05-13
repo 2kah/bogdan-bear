@@ -33,7 +33,7 @@ struct NetworkSignals {
     boost::signal<void (std::string message)> chat;
     boost::signal<void (double x, double y, double z, bool isBig)> explosion;
 	boost::signal<void (Ogre::Vector3 position, Ogre::Quaternion orientation)> recvRocket;
-	boost::signal<void (Ogre::Vector3 position, Ogre::Quaternion orientation)> recvPlatform;
+	boost::signal<void (Platform *p)> recvPlatform;
 };
 }
 
@@ -89,6 +89,19 @@ struct PlayerInfo
 #pragma pack(pop)
 
 #pragma pack(push, 1)
+struct TurretInfo
+{
+	unsigned char typeID;
+	int turretID;
+	Ogre::Vector3 position;
+	Ogre::Vector3 velocity;
+	Ogre::Quaternion orientation;
+	Ogre::Quaternion relativeAim;
+};
+#pragma pack(pop)
+
+
+#pragma pack(push, 1)
 struct NetPlayer
 {
 	unsigned char typeId;
@@ -112,6 +125,7 @@ struct NetScore
 class NetworkTestStuff : public Updatable
 {
 public:
+	NetPlayer* myNetPlayer;
     // for spawn positions
 	float spawn_angles[16];
     int current_spawn;
@@ -129,7 +143,7 @@ public:
 
     NetworkTestStuff(char *hostIP);
     virtual ~NetworkTestStuff();
-	
+	void setLocalPlayer(Player * p);
 	void broadcastUpdateTower(int low_level, int high_level, int low_layer, int high_layer);
 	void sendFullTower(RakNet::Packet *packet);
 	void receiveUpdateTower(RakNet::Packet *packet);
@@ -180,6 +194,7 @@ public:
 	void receiveChat(RakNet::Packet *packet);
 	void receiveScores(RakNet::Packet *packet);
 	void recvStartGame(RakNet::Packet *packet);
+	void recvPlatform(RakNet::Packet *packet);
 
     //
     void sendWorld(RakNet::Packet *packet);

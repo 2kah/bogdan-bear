@@ -28,6 +28,7 @@ struct PlayerSignals {
 
     boost::signal<void (Player *, Rocket *)> fired;
     boost::signal<void (Player *, Platform *)> platform;
+	boost::signal<void (Ogre::Vector3 position, Ogre::Quaternion orientation)> sendPlatform;
 
     boost::signal<void (Player *)> used;
 

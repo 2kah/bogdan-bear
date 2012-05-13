@@ -200,6 +200,8 @@ void Player::create(bool state)
 			Ogre::Vector3 platformPosition = this->position;
 			//make platform spawn beneath you, not inside you
 			platformPosition.y -= 6;
+			this->signals.sendPlatform(platformPosition, this->orientation);
+
 			this->signals.platform(this, new Platform(platformPosition, this->orientation));
 			//TODO: tweak
 			//number of seconds until player can place another platform (* 100)

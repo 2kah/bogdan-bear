@@ -8,6 +8,7 @@
 class Player;
 class Turret;
 class Rocket;
+class Platform;
 
 class Sounds
 {
@@ -16,7 +17,7 @@ public:
     virtual ~Sounds();
 
     virtual void setListener(Player *player);
-	virtual void createPlatformSound(Player *player);
+	virtual void createPlatformSound(Platform *player);
 	virtual void ReloadSound(Player *player);
     virtual void createPlatformStop();
 	virtual void enterTurretSound(Turret *turret);

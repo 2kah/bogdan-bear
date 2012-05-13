@@ -20,7 +20,7 @@
 #include <string>
 #include <unordered_map>
 
-//
+
 #include <vector>
 
 #include <OGRE/OgreVector3.h>
@@ -28,6 +28,7 @@
 #include "Player.h"
 #include "Tower.h"
 #include "Game.h"
+#include "Platform.h"
 
 #include <boost/math/constants/constants.hpp>
 
@@ -80,10 +81,10 @@ RakNet::SocketDescriptor sd;
 NetworkTestStuff::NetworkTestStuff(char *hostIP)
 	: lastID(0)
 {
+	this->myNetPlayer = 0;
 	std::cout << "Init Network" << std::endl;
 	teamScores[0] = teamScores[1] = teamScores[2] = teamScores[3] = 0;
 	this->SERVER_IP_ADDRESS = hostIP;
-
     // generate spawn angles
 	float radius = 200.0;
     for (int i = 0; i < 16; ++i) 
@@ -104,6 +105,12 @@ NetworkTestStuff::NetworkTestStuff(char *hostIP)
 
 NetworkTestStuff::~NetworkTestStuff()
 {
+}
+
+void NetworkTestStuff::setLocalPlayer(Player* p)
+{
+	this->myNetPlayer->player = p;
+	p->signals.sendPlatform.connect(boost::bind(&NetworkTestStuff::sendPlatform, this, _1, _2));
 }
 
 void NetworkTestStuff::sendStartGame()
@@ -322,6 +329,10 @@ void NetworkTestStuff::update()
 				recvStartGame(packet);
 				//std::cout << "Received Start Game" << std::endl;
 				break;
+			case ID_NEW_PLATFORM:
+				recvPlatform(packet);
+				//std::cout << "Received Start Game" << std::endl;
+				break;
 			}
 
 		}
@@ -399,8 +410,29 @@ void NetworkTestStuff::sendNetScores()
 
 void NetworkTestStuff::sendPlatform(Ogre::Vector3 pos, Ogre::Quaternion orient)
 {
-
+	printf("sending platform (%f, %f, %f)\n",pos.x, pos.y, pos.z);
+	NetPlatform np;
+	np.orientation = orient;
+	np.position=pos;
+	np.typeId=ID_NEW_PLATFORM;
+	rakPeer->Send((char*)&np,sizeof(np) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
 }
+
+void NetworkTestStuff::recvPlatform(RakNet::Packet *packet)
+{
+	printf("in recvplatform\n");
+	NetPlatform* np = (NetPlatform*)packet->data;
+
+	if (hosting)
+	{
+		rakPeer->Send((char*)np,sizeof(NetPlatform) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+	}
+	Platform* p = new Platform(np->position, np->orientation);
+	this->signals.recvPlatform(p);
+	//this->game_obj->game=true;
+	//TODO
+}
+
 
 void NetworkTestStuff::printScores()
 {
@@ -501,6 +533,7 @@ void NetworkTestStuff::receiveAssignPlayer(RakNet::Packet *packet)
 	NetPlayer* np = getNetPlayer(inc->playerID);
 	myNetPlayer = np;
 	Player* p = np->player;
+	setLocalPlayer(p);
 	std::cout << "Being assigned Player '" << np->name << "'" << std::endl;
 	this->signals.assignLocalPlayer(p);
 	shouldUpload=true;
