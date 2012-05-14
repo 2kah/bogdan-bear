@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Popcorn" Collapsed="true">
+    <Position X="11.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAUDAgAAAAAAgAgwAAQAIAIAACRAECAAiARAAACABAQ=</HashCode>
+      <FileName>WinMain.cpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PopcornSampleConnection" Collapsed="true">
+    <Position X="8" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAAAAAAAIAAAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>WinMain.cpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PopcornDemoRM3" Collapsed="true">
+    <Position X="13.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>WinMain.cpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ExampleApp" Collapsed="true">
+    <Position X="5.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQgAEgAACAAAEAAAAAACEAAAAAAEAAAARIBQAIEAkA=</HashCode>
+      <FileName>WinMain.cpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TransformationHistory" Collapsed="true">
+    <Position X="11.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAACAAAAAAAAgAABAAAAAAAACAQFAAgA=</HashCode>
+      <FileName>TransformationHistory.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="App3D" Collapsed="true">
+    <Position X="5.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAQGBEAIAiAIEAAABBhiCAAQAAAAFAEIABAYBAAEEgA=</HashCode>
+      <FileName>App3D.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AppInterface" Collapsed="true">
+    <Position X="5.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIQABMAUACACAQCAAQBGAAACAAMQAAAAAAQREAAGAwg=</HashCode>
+      <FileName>AppInterface.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FSM" Collapsed="true">
+    <Position X="11.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAIEgAAAAAAAhAAAAEECAAAAAAAAAAAAAAAABACgA=</HashCode>
+      <FileName>FSM.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OverlayHelper" Collapsed="true">
+    <Position X="9.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQQAAAAAAAAAAkAAAAEAAUQAAAAAIAEAhAAAQAAAAAA=</HashCode>
+      <FileName>OverlayHelper.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RunnableState" Collapsed="true">
+    <Position X="2.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CIQAhAAAAAAAAABAAAAAAAAAAAAAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>RunnableState.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="State" Collapsed="true">
+    <Position X="1.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAEAAAABAAAAAAAAAAAJAAFBAAAAA=</HashCode>
+      <FileName>State.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ManagedState" Collapsed="true">
+    <Position X="0.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>State.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Ogre::Root" Collapsed="true">
+    <Position X="13.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>6QmedgQFExgFoCTvRSvapAnpnI06wFyj9TAiEzk0VF4=</HashCode>
+      <FileName>c:\program files\ogresdk_vc10_v1-7-2\include\ogre\ogreroot.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Ogre::Camera" Collapsed="true">
+    <Position X="9.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>WBBqqzwAlQwO7DSJQDiYsSQzRgACEugilQyHBEEGCxI=</HashCode>
+      <FileName>c:\program files\ogresdk_vc10_v1-7-2\include\ogre\ogrecamera.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Ogre::SceneManager" Collapsed="true">
+    <Position X="8" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>+df2+f67v/3vZ39/ft/7+o7/73/+vV32+//+P3//v/w=</HashCode>
+      <FileName>c:\program files\ogresdk_vc10_v1-7-2\include\ogre\ogrescenemanager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Ogre::RenderWindow" Collapsed="true">
+    <Position X="11.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AoACAAkQCAgQAAAAEDAAAFCAYAAAAAACAQDAAAAEAAA=</HashCode>
+      <FileName>c:\program files\ogresdk_vc10_v1-7-2\include\ogre\ogrerenderwindow.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Ogre::Viewport" Collapsed="true">
+    <Position X="13.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>esCKAi5AyRIEyAo2BAUEMKBECIUMYAJSgghAARAcAgA=</HashCode>
+      <FileName>c:\program files\ogresdk_vc10_v1-7-2\include\ogre\ogreviewport.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Ogre::SceneNode" Collapsed="true">
+    <Position X="9.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AUBgBnxQEQgEKAEIAAkACgHhgKEAAIACIBAiAEFGkBA=</HashCode>
+      <FileName>c:\program files\ogresdk_vc10_v1-7-2\include\ogre\ogrescenenode.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Ogre::Math" Collapsed="true">
+    <Position X="13.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CICOoRAZRgo+AphAwABEAECoUA2CAgABAAAwigKpBJM=</HashCode>
+      <FileName>c:\program files\ogresdk_vc10_v1-7-2\include\ogre\ogremath.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Ogre::Overlay" Collapsed="true">
+    <Position X="8" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BEABLABAAAAAhAAYEBEQUJCLDSAgwCQCBAk0AgAAEAE=</HashCode>
+      <FileName>c:\program files\ogresdk_vc10_v1-7-2\include\ogre\ogreoverlay.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Ogre::OverlayContainer" Collapsed="true">
+    <Position X="0.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAACIBAAxAEIQAEQABEEAAQDAAABACEAAACAEABAkAI=</HashCode>
+      <FileName>c:\program files\ogresdk_vc10_v1-7-2\include\ogre\ogreoverlaycontainer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Ogre::TextAreaOverlayElement" Collapsed="true">
+    <Position X="2.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UIBAAAjBARQQSJEgCCECIIARxBABQUUYSAAAEBAAggE=</HashCode>
+      <FileName>c:\program files\ogresdk_vc10_v1-7-2\include\ogre\ogretextareaoverlayelement.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Ogre::BorderPanelOverlayElement" Collapsed="true">
+    <Position X="8" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIBnAAQjMAQBDJWgiCHAABAkBUBBAI0IYABg2BAqBTA=</HashCode>
+      <FileName>c:\program files\ogresdk_vc10_v1-7-2\include\ogre\ogreborderpaneloverlayelement.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Ogre::OverlayElement" Collapsed="true">
+    <Position X="1.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>RhqCJghNTECIldEQBjFYwZQDm+AJYT3cDMiGlRBIBMM=</HashCode>
+      <FileName>c:\program files\ogresdk_vc10_v1-7-2\include\ogre\ogreoverlayelement.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RakNet::RakNetRandom" Collapsed="true">
+    <Position X="9.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEABAEAAAAAAAgAACIBAAEAAAAAAIABAA=</HashCode>
+      <FileName>C:\Users\James\Downloads\RakNet_PC-4.035\Source\Rand.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="TransformationHistoryCell" Collapsed="true">
+    <Position X="8" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAQAAAIAAAA=</HashCode>
+      <FileName>TransformationHistory.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Typedef Name="AppTime" Collapsed="true">
+    <Position X="8" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AppTypes.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
