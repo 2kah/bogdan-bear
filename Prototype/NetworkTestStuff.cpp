@@ -358,24 +358,29 @@ void NetworkTestStuff::updateScores()
 	   NetPlayer& np = *(It->second);
 	   if (g->isPlayerInRange(np.player->position))
 	   {
-		  teams[np.team] ++;
+		  teams[np.team] = 1;
+		  //teams[np.team]++;
 	   }
    }
 	int maxPlayerCount = 0;
 	int bestTeam = -1;
-	for (int i = 0; i < 4; i++)
+	if(teams[0] + teams[1] + teams[2] + teams[3] == 1) 
 	{
-		if (teams[i] > maxPlayerCount)
-		{
-			maxPlayerCount = teams[i];
-			bestTeam = i;
-		}
-	}
-	if (bestTeam > -1)
-	{
-		this->teamScores[bestTeam]+= 2;
-		if ((teamScores[bestTeam] % 100) == 0)
-			printScores();
+	    for (int i = 0; i < 4; i++)
+	    {
+	    	/*if (teams[i] > maxPlayerCount)
+	    	{
+	    		maxPlayerCount = teams[i];
+	    		bestTeam = i;
+	    	}*/
+			if(teams[i] == 1) bestTeam = i;
+	    }
+	    if (bestTeam > -1)
+	    {
+	    	this->teamScores[bestTeam]+= 2;
+	    	if ((teamScores[bestTeam] % 100) == 0)
+	    		printScores();
+	    }
 	}
 	//printf("Team %d is holding goal\n", bestTeam);
 	sendNetScores();

@@ -324,7 +324,9 @@ bool Game::mouseMoved(const OIS::MouseEvent &arg)
     BaseApplication::mouseMoved(arg);
     const OIS::MouseState &ms = mMouse->getMouseState();
 
-    this->playerInput.signals.look(ms.X.rel, ms.Y.rel);
+	if(!leaderBoard) {
+        this->playerInput.signals.look(ms.X.rel, ms.Y.rel);
+	}
 
     return true;
 }
@@ -407,12 +409,104 @@ void Game::endRound()
 
 	overlayManager.destroyAllOverlayElements();
 	overlayManager.getByName("OverlayName")->clear();
+
+	Ogre::OverlayContainer* panel3 = static_cast<Ogre::OverlayContainer*>(
+    overlayManager.createOverlayElement("Panel", "AAAPanelName3"));
+    panel3->setMetricsMode(Ogre::GMM_PIXELS);
+    panel3->setPosition(10, 10);
+	panel3->setDimensions(mWindow->getWidth() - 20, (mWindow->getHeight()/7));
+	Ogre::MaterialPtr crosshair3 = Ogre::MaterialManager::getSingleton().create("crosshair3", "General");
+    crosshair3->getTechnique(0)->getPass(0)->createTextureUnitState("shadow.png");
+    crosshair3->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+    panel3->setMaterialName("crosshair3");
+
+	Ogre::OverlayContainer* panel4 = static_cast<Ogre::OverlayContainer*>(
+    overlayManager.createOverlayElement("Panel", "AAAPanelName4"));
+    panel4->setMetricsMode(Ogre::GMM_PIXELS);
+    panel4->setPosition(10, (mWindow->getHeight()/7) + 20);
+	panel4->setDimensions((mWindow->getWidth()/4) - 20, ((mWindow->getHeight()/7)*6) - 30);
+	Ogre::MaterialPtr crosshair4 = Ogre::MaterialManager::getSingleton().create("crosshair4", "General");
+    crosshair4->getTechnique(0)->getPass(0)->createTextureUnitState("shadow.png");
+    crosshair4->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+    panel4->setMaterialName("crosshair4");
+
+	Ogre::OverlayContainer* panel5 = static_cast<Ogre::OverlayContainer*>(
+    overlayManager.createOverlayElement("Panel", "AAAPanelName5"));
+    panel5->setMetricsMode(Ogre::GMM_PIXELS);
+    panel5->setPosition((mWindow->getWidth()/4) + 10, (mWindow->getHeight()/7) + 20);
+	panel5->setDimensions((mWindow->getWidth()/4) - 20, ((mWindow->getHeight()/7)*6) - 30);
+	Ogre::MaterialPtr crosshair5 = Ogre::MaterialManager::getSingleton().create("crosshair5", "General");
+    crosshair5->getTechnique(0)->getPass(0)->createTextureUnitState("shadow.png");
+    crosshair5->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+    panel5->setMaterialName("crosshair5");
+	
+	Ogre::OverlayContainer* panel6 = static_cast<Ogre::OverlayContainer*>(
+    overlayManager.createOverlayElement("Panel", "AAAPanelName6"));
+    panel6->setMetricsMode(Ogre::GMM_PIXELS);
+    panel6->setPosition((mWindow->getWidth()/4)*2 + 10, (mWindow->getHeight()/7) + 20);
+	panel6->setDimensions((mWindow->getWidth()/4) - 20, ((mWindow->getHeight()/7)*6) - 30);
+	Ogre::MaterialPtr crosshair6 = Ogre::MaterialManager::getSingleton().create("crosshair6", "General");
+    crosshair6->getTechnique(0)->getPass(0)->createTextureUnitState("shadow.png");
+    crosshair6->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+    panel6->setMaterialName("crosshair6");
+	
+	Ogre::OverlayContainer* panel7 = static_cast<Ogre::OverlayContainer*>(
+    overlayManager.createOverlayElement("Panel", "AAAPanelName7"));
+    panel7->setMetricsMode(Ogre::GMM_PIXELS);
+    panel7->setPosition((mWindow->getWidth()/4)*3 + 10, (mWindow->getHeight()/7) + 20);
+	panel7->setDimensions((mWindow->getWidth()/4) - 20, ((mWindow->getHeight()/7)*6) - 30);
+	Ogre::MaterialPtr crosshair7 = Ogre::MaterialManager::getSingleton().create("crosshair7", "General");
+    crosshair7->getTechnique(0)->getPass(0)->createTextureUnitState("shadow.png");
+    crosshair7->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+    panel7->setMaterialName("crosshair7");
+
+	float width = (mWindow->getWidth()/4) - 20;
+	float height = width * 1.130769;
+	Ogre::OverlayContainer* panel8 = static_cast<Ogre::OverlayContainer*>(
+    overlayManager.createOverlayElement("Panel", "CharRedPanel"));
+    panel8->setMetricsMode(Ogre::GMM_PIXELS);
+    panel8->setPosition(10, (mWindow->getHeight()/7) + 25);
+	panel8->setDimensions(width, height);
+	Ogre::MaterialPtr crosshair8 = Ogre::MaterialManager::getSingleton().create("redChar", "General");
+    crosshair8->getTechnique(0)->getPass(0)->createTextureUnitState("redChar.png");
+    crosshair8->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+    panel8->setMaterialName("redChar");
+
+	Ogre::OverlayContainer* panel9 = static_cast<Ogre::OverlayContainer*>(
+    overlayManager.createOverlayElement("Panel", "CharOrangePanel"));
+    panel9->setMetricsMode(Ogre::GMM_PIXELS);
+    panel9->setPosition((mWindow->getWidth()/4) + 10, (mWindow->getHeight()/7) + 25);
+	panel9->setDimensions(width, height);
+	Ogre::MaterialPtr crosshair9 = Ogre::MaterialManager::getSingleton().create("orangeChar", "General");
+    crosshair9->getTechnique(0)->getPass(0)->createTextureUnitState("orangeChar.png");
+    crosshair9->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+    panel9->setMaterialName("orangeChar");
+	
+	Ogre::OverlayContainer* panel10 = static_cast<Ogre::OverlayContainer*>(
+    overlayManager.createOverlayElement("Panel", "CharPurplePanel"));
+    panel10->setMetricsMode(Ogre::GMM_PIXELS);
+    panel10->setPosition((mWindow->getWidth()/4)*2 + 10, (mWindow->getHeight()/7) + 25);
+	panel10->setDimensions(width, height);
+	Ogre::MaterialPtr crosshair10 = Ogre::MaterialManager::getSingleton().create("purpleChar", "General");
+    crosshair10->getTechnique(0)->getPass(0)->createTextureUnitState("purpleChar.png");
+    crosshair10->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+    panel10->setMaterialName("purpleChar");
+	
+	Ogre::OverlayContainer* panel11 = static_cast<Ogre::OverlayContainer*>(
+    overlayManager.createOverlayElement("Panel", "CharGreenPanel"));
+    panel11->setMetricsMode(Ogre::GMM_PIXELS);
+    panel11->setPosition((mWindow->getWidth()/4)*3 + 10, (mWindow->getHeight()/7) + 25);
+	panel11->setDimensions(width, height);
+	Ogre::MaterialPtr crosshair11 = Ogre::MaterialManager::getSingleton().create("greenChar", "General");
+    crosshair11->getTechnique(0)->getPass(0)->createTextureUnitState("greenChar.png");
+    crosshair11->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+    panel11->setMaterialName("greenChar");
     
     // Create a panel
     Ogre::OverlayContainer* panel2 = static_cast<Ogre::OverlayContainer*>(
     overlayManager.createOverlayElement("Panel", "PanelName2"));
     panel2->setMetricsMode(Ogre::GMM_PIXELS);
-    panel2->setPosition(10, 10);
+    panel2->setPosition(0, 0);
 	//panel2->_setDimensions(200, 200);
 	panel2->setDimensions(1000, 1000);
     
@@ -432,9 +526,18 @@ void Game::endRound()
     mFont->setTrueTypeResolution(96);
 	mFont->load();
 
-	Ogre::OverlayElement* teamWins = overlayManager.createOverlayElement("TextArea", "teamWins");
+	/*Ogre::OverlayElement* teamWins = overlayManager.createOverlayElement("TextArea", "teamWins");
     teamWins->setMetricsMode(Ogre::GMM_PIXELS);
     teamWins->setPosition(0, 0);
+    teamWins->setDimensions(mWindow->getWidth(), (mWindow->getHeight()/4));
+	teamWins->setParameter("char_height", "55");
+	teamWins->setParameter("font_name", "MyFont");
+    teamWins->setCaption(this->gameTestThing->winningTeam + " TEAM WINS");
+    teamWins->setColour(Ogre::ColourValue(0, 0.984, 0.925));*/
+	Ogre::TextAreaOverlayElement* teamWins = static_cast<Ogre::TextAreaOverlayElement*>(overlayManager.createOverlayElement("TextArea", "teamWins"));
+    teamWins->setMetricsMode(Ogre::GMM_PIXELS);
+    teamWins->setPosition(0 + (mWindow->getWidth()/2), 25);
+	teamWins->setAlignment(Ogre::TextAreaOverlayElement::Alignment::Center);
     teamWins->setDimensions(mWindow->getWidth(), (mWindow->getHeight()/4));
 	teamWins->setParameter("char_height", "55");
 	teamWins->setParameter("font_name", "MyFont");
@@ -442,83 +545,115 @@ void Game::endRound()
     teamWins->setColour(Ogre::ColourValue(0, 0.984, 0.925));
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	float time;
-	Ogre::OverlayElement* redTeamPoints = overlayManager.createOverlayElement("TextArea", "redTeamPoints");
+	int time;
+	int minutes;
+	int seconds;
+	height = (mWindow->getHeight()/4)*2 + 20;
+	Ogre::TextAreaOverlayElement* redTeamPoints = static_cast<Ogre::TextAreaOverlayElement*>(overlayManager.createOverlayElement("TextArea", "redTeamPoints"));
     redTeamPoints->setMetricsMode(Ogre::GMM_PIXELS);
-    redTeamPoints->setPosition(0, (mWindow->getHeight()/4)*2);
+    redTeamPoints->setPosition(0 + ((mWindow->getWidth()/4)/2), height);
+	redTeamPoints->setAlignment(Ogre::TextAreaOverlayElement::Alignment::Center);
     redTeamPoints->setDimensions((mWindow->getWidth()/4), (mWindow->getHeight()/4));
 	redTeamPoints->setParameter("char_height", "26");
 	redTeamPoints->setParameter("font_name", "MyFont");
 	time = this->gameTestThing->network->teamScores[0];
-    redTeamPoints->setCaption(Ogre::StringConverter::toString(this->gameTestThing->network->teamScores[0]));
+	if(this->gameTestThing->winningTeam == "RED") time = time - 2;
+	time = time/(double)100;
+	minutes = floor(time/(double)60);
+	seconds = time % 60;
+	//printf("%i\n", this->gameTestThing->network->teamScores[0]);
+    redTeamPoints->setCaption(Ogre::StringConverter::toString(minutes) + "m " + Ogre::StringConverter::toString(seconds) + "s");
     redTeamPoints->setColour(Ogre::ColourValue(0, 0.984, 0.925));
 
-	Ogre::OverlayElement* orangeTeamPoints = overlayManager.createOverlayElement("TextArea", "orangeTeamPoints");
+	Ogre::TextAreaOverlayElement* orangeTeamPoints = static_cast<Ogre::TextAreaOverlayElement*>(overlayManager.createOverlayElement("TextArea", "orangeTeamPoints"));
     orangeTeamPoints->setMetricsMode(Ogre::GMM_PIXELS);
-    orangeTeamPoints->setPosition((mWindow->getWidth()/4), (mWindow->getHeight()/4)*2);
+    orangeTeamPoints->setPosition((mWindow->getWidth()/4) + ((mWindow->getWidth()/4)/2), height);
+	orangeTeamPoints->setAlignment(Ogre::TextAreaOverlayElement::Alignment::Center);
     orangeTeamPoints->setDimensions((mWindow->getWidth()/4), (mWindow->getHeight()/4));
 	orangeTeamPoints->setParameter("char_height", "26");
 	orangeTeamPoints->setParameter("font_name", "MyFont");
 	time = this->gameTestThing->network->teamScores[1];
-    orangeTeamPoints->setCaption(Ogre::StringConverter::toString(this->gameTestThing->network->teamScores[1]));
+	if(this->gameTestThing->winningTeam == "ORANGE") time = time - 2;
+	time = time/(double)100;
+	minutes = floor(time/(double)60);
+	seconds = time % 60;
+	//printf("%i\n", this->gameTestThing->network->teamScores[1]);
+    orangeTeamPoints->setCaption(Ogre::StringConverter::toString(minutes) + "m " + Ogre::StringConverter::toString(seconds) + "s");
     orangeTeamPoints->setColour(Ogre::ColourValue(0, 0.984, 0.925));
 
-	Ogre::OverlayElement* purpleTeamPoints = overlayManager.createOverlayElement("TextArea", "purpleTeamPoints");
+	Ogre::TextAreaOverlayElement* purpleTeamPoints = static_cast<Ogre::TextAreaOverlayElement*>(overlayManager.createOverlayElement("TextArea", "purpleTeamPoints"));
     purpleTeamPoints->setMetricsMode(Ogre::GMM_PIXELS);
-    purpleTeamPoints->setPosition((mWindow->getWidth()/4)*2, (mWindow->getHeight()/4)*2);
+    purpleTeamPoints->setPosition((mWindow->getWidth()/4)*2 + ((mWindow->getWidth()/4)/2), height);
+	purpleTeamPoints->setAlignment(Ogre::TextAreaOverlayElement::Alignment::Center);
     purpleTeamPoints->setDimensions((mWindow->getWidth()/4), (mWindow->getHeight()/4));
 	purpleTeamPoints->setParameter("char_height", "26");
 	purpleTeamPoints->setParameter("font_name", "MyFont");
 	time = this->gameTestThing->network->teamScores[2];
-    orangeTeamPoints->setCaption(Ogre::StringConverter::toString(this->gameTestThing->network->teamScores[2]));
+	if(this->gameTestThing->winningTeam == "PURPLE") time = time - 2;
+	time = time/(double)100;
+	minutes = floor(time/(double)60);
+	seconds = time % 60;
+	//printf("%i\n", this->gameTestThing->network->teamScores[2]);
+    purpleTeamPoints->setCaption(Ogre::StringConverter::toString(minutes) + "m " + Ogre::StringConverter::toString(seconds) + "s");
     purpleTeamPoints->setColour(Ogre::ColourValue(0, 0.984, 0.925));
 
-	Ogre::OverlayElement* greenTeamPoints = overlayManager.createOverlayElement("TextArea", "greenTeamPoints");
+	Ogre::TextAreaOverlayElement* greenTeamPoints = static_cast<Ogre::TextAreaOverlayElement*>(overlayManager.createOverlayElement("TextArea", "greenTeamPoints"));
     greenTeamPoints->setMetricsMode(Ogre::GMM_PIXELS);
-    greenTeamPoints->setPosition((mWindow->getWidth()/4)*3, (mWindow->getHeight()/4)*2);
+    greenTeamPoints->setPosition((mWindow->getWidth()/4)*3 + ((mWindow->getWidth()/4)/2), height);
+	greenTeamPoints->setAlignment(Ogre::TextAreaOverlayElement::Alignment::Center);
     greenTeamPoints->setDimensions((mWindow->getWidth()/4), (mWindow->getHeight()/4));
 	greenTeamPoints->setParameter("char_height", "26");
 	greenTeamPoints->setParameter("font_name", "MyFont");
 	time = this->gameTestThing->network->teamScores[3];
-    orangeTeamPoints->setCaption(Ogre::StringConverter::toString(this->gameTestThing->network->teamScores[3]));
+	if(this->gameTestThing->winningTeam == "GREEN") time = time - 2;
+	time = time/(double)100;
+	minutes = floor(time/(double)60);
+	seconds = time % 60;
+	//printf("%i\n", this->gameTestThing->network->teamScores[3]);
+    greenTeamPoints->setCaption(Ogre::StringConverter::toString(minutes) + "m " + Ogre::StringConverter::toString(seconds) + "s");
     greenTeamPoints->setColour(Ogre::ColourValue(0, 0.984, 0.925));
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	Ogre::OverlayElement* redTeamWins = overlayManager.createOverlayElement("TextArea", "redTeamWins");
+	Ogre::TextAreaOverlayElement* redTeamWins = static_cast<Ogre::TextAreaOverlayElement*>(overlayManager.createOverlayElement("TextArea", "redTeamWins"));
     redTeamWins->setMetricsMode(Ogre::GMM_PIXELS);
-    redTeamWins->setPosition(0, (mWindow->getHeight()/4)*3);
+    redTeamWins->setPosition(0 + ((mWindow->getWidth()/4)/2), (mWindow->getHeight()/4)*3);
+	redTeamWins->setAlignment(Ogre::TextAreaOverlayElement::Alignment::Center);
     redTeamWins->setDimensions((mWindow->getWidth()/4), (mWindow->getHeight()/4));
 	redTeamWins->setParameter("char_height", "50");
 	redTeamWins->setParameter("font_name", "MyFont");
     redTeamWins->setCaption(Ogre::StringConverter::toString(this->gameTestThing->wins[0]));
     redTeamWins->setColour(Ogre::ColourValue(0, 0.984, 0.925));
 
-	Ogre::OverlayElement* orangeTeamWins = overlayManager.createOverlayElement("TextArea", "orangeTeamWins");
+	Ogre::TextAreaOverlayElement* orangeTeamWins = static_cast<Ogre::TextAreaOverlayElement*>(overlayManager.createOverlayElement("TextArea", "orangeTeamWins"));
     orangeTeamWins->setMetricsMode(Ogre::GMM_PIXELS);
-    orangeTeamWins->setPosition((mWindow->getWidth()/4), (mWindow->getHeight()/4)*3);
+    orangeTeamWins->setPosition((mWindow->getWidth()/4) + ((mWindow->getWidth()/4)/2), (mWindow->getHeight()/4)*3);
+	orangeTeamWins->setAlignment(Ogre::TextAreaOverlayElement::Alignment::Center);
     orangeTeamWins->setDimensions((mWindow->getWidth()/4), (mWindow->getHeight()/4));
 	orangeTeamWins->setParameter("char_height", "50");
 	orangeTeamWins->setParameter("font_name", "MyFont");
     orangeTeamWins->setCaption(Ogre::StringConverter::toString(this->gameTestThing->wins[1]));
     orangeTeamWins->setColour(Ogre::ColourValue(0, 0.984, 0.925));
 
-	Ogre::OverlayElement* purpleTeamWins = overlayManager.createOverlayElement("TextArea", "purpleTeamWins");
+	Ogre::TextAreaOverlayElement* purpleTeamWins = static_cast<Ogre::TextAreaOverlayElement*>(overlayManager.createOverlayElement("TextArea", "purpleTeamWins"));
     purpleTeamWins->setMetricsMode(Ogre::GMM_PIXELS);
-    purpleTeamWins->setPosition((mWindow->getWidth()/4)*2, (mWindow->getHeight()/4)*3);
+    purpleTeamWins->setPosition((mWindow->getWidth()/4)*2 + ((mWindow->getWidth()/4)/2), (mWindow->getHeight()/4)*3);
+	purpleTeamWins->setAlignment(Ogre::TextAreaOverlayElement::Alignment::Center);
     purpleTeamWins->setDimensions((mWindow->getWidth()/4), (mWindow->getHeight()/4));
 	purpleTeamWins->setParameter("char_height", "50");
 	purpleTeamWins->setParameter("font_name", "MyFont");
     purpleTeamWins->setCaption(Ogre::StringConverter::toString(this->gameTestThing->wins[2]));
     purpleTeamWins->setColour(Ogre::ColourValue(0, 0.984, 0.925));
 
-	Ogre::OverlayElement* greenTeamWins = overlayManager.createOverlayElement("TextArea", "greenTeamWins");
+	Ogre::TextAreaOverlayElement* greenTeamWins = static_cast<Ogre::TextAreaOverlayElement*>(overlayManager.createOverlayElement("TextArea", "greenTeamWins"));
     greenTeamWins->setMetricsMode(Ogre::GMM_PIXELS);
-    greenTeamWins->setPosition((mWindow->getWidth()/4)*3, (mWindow->getHeight()/4)*3);
+    greenTeamWins->setPosition((mWindow->getWidth()/4)*3 + ((mWindow->getWidth()/4)/2), (mWindow->getHeight()/4)*3);
+	greenTeamWins->setAlignment(Ogre::TextAreaOverlayElement::Alignment::Center);
     greenTeamWins->setDimensions((mWindow->getWidth()/4), (mWindow->getHeight()/4));
 	greenTeamWins->setParameter("char_height", "50");
 	greenTeamWins->setParameter("font_name", "MyFont");
     greenTeamWins->setCaption(Ogre::StringConverter::toString(this->gameTestThing->wins[3]));
     greenTeamWins->setColour(Ogre::ColourValue(0, 0.984, 0.925));
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	Ogre::MaterialPtr crosshair2 = Ogre::MaterialManager::getSingleton().create("crosshair2", "General");
     crosshair2->getTechnique(0)->getPass(0)->createTextureUnitState("grass_1024.jpg");
@@ -539,6 +674,15 @@ void Game::endRound()
 	panel2->addChild(orangeTeamWins);
 	panel2->addChild(purpleTeamWins);
 	panel2->addChild(greenTeamWins);
+	panel2->addChild(panel3);
+	panel2->addChild(panel4);
+	panel2->addChild(panel5);
+	panel2->addChild(panel6);
+	panel2->addChild(panel7);
+	panel2->addChild(panel8);
+	panel2->addChild(panel9);
+	panel2->addChild(panel10);
+	panel2->addChild(panel11);
 
     // Show the overlay
     overlay->show();
