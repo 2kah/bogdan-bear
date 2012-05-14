@@ -37,7 +37,7 @@ PlayerGraphics::PlayerGraphics(Player *player, Ogre::SceneManager *sceneManager)
 	{
         Ogre::SceneNode* attach = this->sceneNode->createChildSceneNode();
 	    this->camNode = attach;
-	    attach->setPosition(0, 3.6 ,0);
+	    attach->setPosition(0, 3.0 ,0);
 	    
 	    this->entity = sceneManager->createEntity("gunBody2.mesh");
 	    Ogre::SceneNode* attach2 = attach->createChildSceneNode();
@@ -48,7 +48,8 @@ PlayerGraphics::PlayerGraphics(Player *player, Ogre::SceneManager *sceneManager)
 		//attach2->roll(Ogre::Radian(-0.1));
 	    this->sceneNode->setScale(3,3,3);
 		attach2->setScale(0.5, 0.5, 0.5);
-	    attach2->setPosition(-1.15, -0.4 ,-1);
+	    //attach2->setPosition(-1.15, -0.4 ,-1);
+	    attach2->setPosition(-1.15, -0.4 ,-0.9);
 		attach2->pitch(Ogre::Radian(0.1));
 		attach2->roll(Ogre::Radian(-0.1));
 	    //attach->setPosition(0,2.5,0);
