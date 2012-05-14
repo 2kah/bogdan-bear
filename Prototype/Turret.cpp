@@ -5,6 +5,7 @@
 
 #include "Rocket.h"
 #include "Player.h"
+#include "NetworkTestStuff.h"
 
 #define PI 3.14159265
 
@@ -30,8 +31,7 @@ void Turret::update()
     double pitch;
 	double yaw;
 	Ogre::Vector3 d;
-	
-	if(!occ)
+	if(!isClientSide && !occ)
 	{
         //if (this->target != NULL) {
 	    //	d = this->target - this->position;
@@ -124,7 +124,26 @@ bool Turret::isOccupied()
 
 void Turret::fireTurret() 
 {
-	this->signals.fired(this, new Rocket(this->position, this->orientation));
+	if (this->isClientSide)
+	{
+		
+		if (this->network_obj > 0)
+		{
+			printf("SENDING NETWORKED TURRET ROCKET (sorry for caps)\n");
+		this->network_obj->sendRocket(this->position, this->orientation);
+		}
+		else
+		{
+			printf("network fail\n");
+		}
+		
+	}
+	else
+	{
+		this->signals.fired(this, new Rocket(this->position, this->orientation));
+	}
+	//
+	
 	this->rockets--;
 	//if the player has run out of rockets, eject them from the turret
 	if(this->rockets == 0)
