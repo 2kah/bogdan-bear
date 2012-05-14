@@ -37,6 +37,7 @@ public:
 
 	float halfHeight;
 	float width;
+	float explosionEffect;
 
 	btKinematicCharacterController* m_character;
 	class btPairCachingGhostObject* m_ghostObject;

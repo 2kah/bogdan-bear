@@ -197,10 +197,10 @@ void GameTestThing::buildScene()
     //this->game->objects.insert(builder);
 
     // Add four turrets
-    Turret *turret1 = new Turret(Ogre::Vector3(0, 130, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y));
-	Turret *turret2 = new Turret(Ogre::Vector3(0, 130, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y));
-	Turret *turret3 = new Turret(Ogre::Vector3(400, 130, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y));
-	Turret *turret4 = new Turret(Ogre::Vector3(-400, 130, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y));
+	Turret *turret1 = new Turret(Ogre::Vector3(0, 130, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y),this->network);
+	Turret *turret2 = new Turret(Ogre::Vector3(0, 130, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y),this->network);
+	Turret *turret3 = new Turret(Ogre::Vector3(400, 130, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y),this->network);
+	Turret *turret4 = new Turret(Ogre::Vector3(-400, 130, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y),this->network);
 
     this->addTurret(turret1);
     this->addTurret(turret2);
@@ -336,10 +336,10 @@ void GameTestThing::startLocal()
     //this->game->objects.insert(builder);
 
     // Add four turrets
-    Turret *turret1 = new Turret(Ogre::Vector3(0, 130, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y));
-	Turret *turret2 = new Turret(Ogre::Vector3(0, 130, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y));
-	Turret *turret3 = new Turret(Ogre::Vector3(400, 130, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y));
-	Turret *turret4 = new Turret(Ogre::Vector3(-400, 130, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y));
+    Turret *turret1 = new Turret(Ogre::Vector3(0, 130, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y),this->network);
+	Turret *turret2 = new Turret(Ogre::Vector3(0, 130, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y),this->network);
+	Turret *turret3 = new Turret(Ogre::Vector3(400, 130, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y),this->network);
+	Turret *turret4 = new Turret(Ogre::Vector3(-400, 130, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y),this->network);
 
     this->addTurret(turret1);
     this->addTurret(turret2);
@@ -423,21 +423,34 @@ void GameTestThing::startClient()
     btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
 	fileLoader->loadFile("bowlup.bullet");
     //btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
-	//fileLoader->loadFile("BowlBul.bullet");
+	//fileLoader->loadFile("BowlBul.bullet");\\\\\\\\\\\\\\\
 
 
-	Turret *turret1 = new Turret(Ogre::Vector3(0, 130, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y));
-	Turret *turret2 = new Turret(Ogre::Vector3(0, 130, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y));
-	Turret *turret3 = new Turret(Ogre::Vector3(400, 130, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y));
-	Turret *turret4 = new Turret(Ogre::Vector3(-400, 130, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y));
+
+	this->network->startNetwork(false);
+
+	Turret *turret1 = new Turret(Ogre::Vector3(0, 130, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y),this->network);
+	Turret *turret2 = new Turret(Ogre::Vector3(0, 130, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y),this->network);
+	Turret *turret3 = new Turret(Ogre::Vector3(400, 130, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y),this->network);
+	Turret *turret4 = new Turret(Ogre::Vector3(-400, 130, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y),this->network);
+
+
+	turret1->isClientSide=true;
+	turret1->network_obj=this->network;
+	
+	turret2->isClientSide=true;
+	turret2->network_obj=this->network;
+
+	turret3->isClientSide=true;
+	turret3->network_obj=this->network;
+	
+	turret4->isClientSide=true;
+	turret4->network_obj=this->network;
 
     this->addTurret(turret1);
     this->addTurret(turret2);
     this->addTurret(turret3);
     this->addTurret(turret4);
-
-
-	this->network->startNetwork(false);
 
     // wait to receive game state
 
@@ -972,7 +985,7 @@ void GameTestThing::addExplosion(Explosion *explosion)
 	
     new ExplosionGraphics(explosion, this->game->mSceneMgr, int(this->count));
 	new ExplosionPhysics(explosion, this->game->dynamicsWorld);
-	this->count = this->count++;
+	this->count++;
     
 }
 
