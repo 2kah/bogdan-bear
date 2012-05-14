@@ -16,6 +16,7 @@ PlayerPhysics::PlayerPhysics(Player *player, btDiscreteDynamicsWorld *dynamicsWo
 	
 	halfHeight = 7.5;
 	width = 4.0;
+	explosionEffect = 50.0;
 	
 	//Defines walk speed
 	walkSpeed = btScalar(0.4);
@@ -239,9 +240,11 @@ void PlayerPhysics::explode(Explosion *explosion)
 {
 	std::cout << "Explosion has hit player" << std::endl;
 	//set the push direction to be player position - explosion position, then scale
-	pushDirection = BtOgre::Convert::toBullet(this->player->position - explosion->position) * btScalar(0.25);
+	pushDirection = BtOgre::Convert::toBullet(this->player->position - explosion->position);
 	//offset the vertical
-	pushDirection.setY(pushDirection.y() + (halfHeight * 0.25));
+	pushDirection.setY(pushDirection.y() + halfHeight);
+	pushDirection = pushDirection.normalize();
+	pushDirection *= explosionEffect;
 }
 
 void PlayerPhysics::deactivate()
