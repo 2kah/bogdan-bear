@@ -606,6 +606,7 @@ void GameTestThing::startNewRoundClient()
 	//delete prevPlayerGraphics;
 	//prevPlayerGraphics->playerRemoved(player);
 	prevPlayerGraphics->disconnectSignals();
+	//int team = this->localPlayer->prop->getTeam();
     this->addPlayer(player, this->localPlayerTeam);
     this->setLocalPlayer(player);
 	//this->network->localPlayer->player = player;
@@ -665,7 +666,7 @@ void GameTestThing::update()
 
 	if(this->network != NULL && this->localPlayer != NULL) {
 	    this->localPlayer->setScores(this->network->teamScores);
-	    if(this->network->teamScores[0] > 3000) {
+	    if(this->network->teamScores[0] > 500) {
 			this->winningTeam = "RED";
 			this->wins[0]++;
 			this->goal->setGameOver();
@@ -734,6 +735,8 @@ void GameTestThing::platformCreated(Player *player, Platform *platform)
 	this->sounds->createPlatformSound(platform);
     platform->signals.expired.connect(boost::bind(&GameTestThing::platformExpired, this, _1));
     platform->signals.destroyed.connect(boost::bind(&GameTestThing::platformExpired, this, _1));
+
+	this->network->sendPlatform(platform->position, platform->orientation);
 
 	this->network->listNetPlayers();
 	printf("---------------------%i graphics, %i players, %i props\n", this->playersGraphics.size(), this->players.size(), this->playersProp.size());
@@ -834,6 +837,7 @@ void GameTestThing::setLocalPlayer(Player *player)
 {
     this->localPlayer = player;
 	this->localPlayer->prop = new PlayerProperties(this->localPlayer->prop->getTeam(), true);
+	this->localPlayerTeam = this->localPlayer->prop->getTeam();
 	
 	localPlayerGraphics->~PlayerGraphics();
     prevPlayerGraphics = new PlayerGraphics(player, this->game->mSceneMgr);
@@ -860,7 +864,7 @@ void GameTestThing::setLocalPlayer(Player *player)
 void GameTestThing::addPlayer(Player *player, int team)
 {
 	player->prop = new PlayerProperties(team, false);
-	this->localPlayerTeam = team;
+	//this->localPlayerTeam = team;
 
     // Add player graphics
     localPlayerGraphics = new PlayerGraphics(player, this->game->mSceneMgr);
