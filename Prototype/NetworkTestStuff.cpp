@@ -548,8 +548,6 @@ void NetworkTestStuff::receiveInsertPlayer(RakNet::Packet *packet)
 	float angle = spawn_angles[current_spawn];
     float radius = 25.0;
 
-	
-
 	Player* p = new Player(Ogre::Vector3(radius * std::cos(angle), 250, radius * std::sin(angle)));
 	Ogre::Vector3 v = Ogre::Vector3(radius * std::cos(angle), 250, radius * std::sin(angle));
 	std::cout << ", " << v.x << ", " << v.y << ", " << v.z <<std::endl;
