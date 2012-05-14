@@ -690,7 +690,7 @@ void GameTestThing::update()
 
 	if(this->network != NULL && this->localPlayer != NULL) {
 	    this->localPlayer->setScores(this->network->teamScores);
-	    if(this->network->teamScores[0] > 500) {
+	    if(this->network->teamScores[0] > 3000) {
 			this->winningTeam = "RED";
 			this->wins[0]++;
 			this->goal->setGameOver();
@@ -950,7 +950,7 @@ void GameTestThing::addExplosion(Explosion *explosion)
 	
     new ExplosionGraphics(explosion, this->game->mSceneMgr, int(this->count));
 	new ExplosionPhysics(explosion, this->game->dynamicsWorld);
-	this->count = this->count++;
+	this->count++;
     
 }
 
