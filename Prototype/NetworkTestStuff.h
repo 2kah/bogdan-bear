@@ -125,7 +125,7 @@ struct NetScore
 class NetworkTestStuff : public Updatable
 {
 public:
-	NetPlayer* myNetPlayer;
+	//NetPlayer* myNetPlayer;
     // for spawn positions
 	float spawn_angles[16];
     int current_spawn;
@@ -205,7 +205,7 @@ public:
 	void printScores();
 
 	NetPlayer* localPlayer;
-	//NetPlayer* myNetPlayer;
+	NetPlayer* myNetPlayer;
 
 };
 
