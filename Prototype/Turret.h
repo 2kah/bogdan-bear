@@ -12,7 +12,7 @@
 class Player;
 class Turret;
 class Rocket;
-
+class NetworkTestStuff;
 namespace {
 struct TurretSignals {
     boost::signal<void (Turret *)> updated;
@@ -23,11 +23,12 @@ struct TurretSignals {
 class Turret: public Updatable, public Object
 {
 public:
+	bool isClientSide;
     Turret(Ogre::Vector3 position, Ogre::Quaternion orientaion);
     virtual ~Turret();
 
     virtual void update();
-
+	NetworkTestStuff* network_obj;
     TurretSignals signals;
 
     virtual void setTarget(Ogre::Vector3 positionTarget);
@@ -41,13 +42,14 @@ public:
 	virtual void setOccupant(Ogre::Quaternion newOO, Ogre::Quaternion newRA);
 
 protected:
+	bool occ;
     unsigned timer;
 	Ogre::Vector3 oldtarget;
 	Ogre::Vector3 nptarget;
 	Ogre::Vector3 currenttarget;
 	Ogre::Quaternion occupantOrientation;
 	Ogre::Quaternion occupantRelativeAim;
-	bool occ;
+	
 	int rockets;
 	Player *player;
 	unsigned playerTimer;
