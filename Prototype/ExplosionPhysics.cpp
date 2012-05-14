@@ -61,7 +61,7 @@ ExplosionPhysics::ExplosionPhysics(Explosion *explosion, btDiscreteDynamicsWorld
         }
     }
    
-    if (this->tower != NULL) {
+    if (this->tower != NULL && !this->explosion->isMassive) {
         this->tower->carveSphere(this->explosion->position, Explosion::SIZE);
     }
 }
