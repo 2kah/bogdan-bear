@@ -29,6 +29,7 @@ Player::Player(Ogre::Vector3 position)
 	, canFire(true)
 	, cooldown(50)
 	, platformTimer(0)
+    , spawnID(0)
 {
 }
 

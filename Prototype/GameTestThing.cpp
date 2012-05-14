@@ -6,6 +6,7 @@
 
 #include <boost/signal.hpp>
 #include <boost/bind.hpp>
+#include <boost/math/constants/constants.hpp>
 
 #include <OGRE/OgreVector3.h>
 
@@ -59,6 +60,14 @@ GameTestThing::GameTestThing(Game *game, char *hostIP)
     , localPlayer(NULL)
 	, goal(NULL)
 {
+    for (int i = 0; i < 8; ++i) 
+    {
+        const float radius = 200.0;
+        float angle = i * boost::math::constants::two_pi<float>() / 8.0f;
+		Ogre::Vector3 spawn = Ogre::Vector3(radius * std::cos(angle), 250, radius * std::sin(angle));
+        spawn_points[i] = spawn;
+    }
+    
     this->network = new NetworkTestStuff(hostIP);
 	this->network->game_obj = this->game;
     this->network->signals.chat.connect(boost::bind(&GameTestThing::chatReceived, this, _1));
@@ -451,7 +460,7 @@ void GameTestThing::startServer()
     //btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
 	//fileLoader->loadFile("BowlBul.bullet");
 
-    Player *player = new Player(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height + 10, 10));
+    Player *player = new Player(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height, 0) + 50);
     
     this->addPlayer(player, 0);
     this->setLocalPlayer(player);
@@ -532,7 +541,7 @@ void GameTestThing::startNewRoundServer()
 
 	
 	//this->localPlayer->signals.removed(this->localPlayer);
-    Player *player = new Player(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height + 10, 10));
+    Player *player = new Player(spawn_points[/*this->network->myNetPlayer->playerID*/0 % 8]);
     
 	//delete prevPlayerGraphics;
 	prevPlayerGraphics->disconnectSignals();
@@ -601,7 +610,9 @@ void GameTestThing::startNewRoundClient()
     new TowerPhysics(this->game->tower, this->game->dynamicsWorld);
 
 	//this->network->myNetPlayer->player->signals.removed(this->network->myNetPlayer->player);
-	Player *player = new Player(Ogre::Vector3(0, 260, 0));
+	
+    Player *player = new Player(spawn_points[this->network->myNetPlayer->playerID % 8]);
+
 	//this->localPlayer = new Player(Ogre::Vector3(0, 260, 0));
 	//delete prevPlayerGraphics;
 	//prevPlayerGraphics->playerRemoved(player);

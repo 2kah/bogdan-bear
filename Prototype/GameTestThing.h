@@ -66,6 +66,7 @@ public:
 	string winningTeam;
 	int wins[4];
 
+    Ogre::Vector3 spawn_points[8];
 
 protected:
     Game *game;

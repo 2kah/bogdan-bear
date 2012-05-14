@@ -533,6 +533,7 @@ void NetworkTestStuff::receiveAssignPlayer(RakNet::Packet *packet)
 	NetPlayer* np = getNetPlayer(inc->playerID);
 	myNetPlayer = np;
 	Player* p = np->player;
+    np->player->spawnID = inc->playerID;
 	setLocalPlayer(p);
 	std::cout << "Being assigned Player '" << np->name << "'" << std::endl;
 	this->signals.assignLocalPlayer(p);

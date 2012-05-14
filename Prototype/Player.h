@@ -91,6 +91,9 @@ public:
 	bool anim;
 
     bool stepping;
+
+    int spawnID;
+
 private:
     Ogre::Radian rotX;
     Ogre::Radian rotY;
