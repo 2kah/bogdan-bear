@@ -9,7 +9,9 @@
 
 #define PI 3.14159265
 
-Turret::Turret(Ogre::Vector3 position, Ogre::Quaternion orientation, NetworkTestStuff* net_stuff)
+int print_delay = 0;
+
+Turret::Turret(Ogre::Vector3 position, Ogre::Quaternion orientation, NetworkTestStuff* net_stuff, bool client)
     : Object(position, orientation)
     , timer(0)
     //, target(NULL)
@@ -20,6 +22,7 @@ Turret::Turret(Ogre::Vector3 position, Ogre::Quaternion orientation, NetworkTest
 	, rockets(0)
 	, playerTimer(0)
 	, network_obj(net_stuff)
+	, isClientSide(client)
 {
 }
 
@@ -33,8 +36,20 @@ void Turret::update()
     double pitch;
 	double yaw;
 	Ogre::Vector3 d;
-	if(!isClientSide && !occ)
+	print_delay++;
+
+	if (print_delay >200)
 	{
+	printf("turret update loop: ");
+	if (occ) 
+		printf("OCCUPIED!!\n");
+	else
+		printf("empty\n");
+	print_delay = 0;
+	}
+	if(!occ)
+	{
+		/*
         //if (this->target != NULL) {
 	    //	d = this->target - this->position;
 	    //}
@@ -83,12 +98,15 @@ void Turret::update()
         else
         {
             ++this->timer;
-        }
+        }f
 		if(this->playerTimer > 0)
 			this->playerTimer--;
+			*/
+		
 	}
 	else
 	{
+		printf("in fancy update loop\n");
 		Ogre::Quaternion orientation = occupantOrientation * occupantRelativeAim;
 		orientation = orientation * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
 		this->orientation = orientation;
@@ -113,6 +131,7 @@ bool Turret::setOccupied(bool set, Player *player)
 	if(!set)
 		this->playerTimer = 1000;
 	this->occ = set;
+	if (!this->occ) printf("OCC is now false\n");
 	this->player = player;
 	//TODO: tweak
 	rockets = 10;
