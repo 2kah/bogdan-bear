@@ -720,9 +720,11 @@ void GameTestThing::rocketExploded(Rocket *rocket, Explosion *explosion)
     this->removeQueue.insert(rocket);
     // TODO: refactor
 
-	this->addExplosion(explosion);
-
-    if (isServer) this->network->sendExplosion(explosion->position);
+    if (isServer)
+	{
+		this->addExplosion(explosion);
+		this->network->sendExplosion(explosion->position);
+	}
     if (isLocal) 
 	{
 		std::cout<<"Local Explosion" <<std::endl;
