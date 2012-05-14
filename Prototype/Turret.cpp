@@ -9,7 +9,7 @@
 
 #define PI 3.14159265
 
-Turret::Turret(Ogre::Vector3 position, Ogre::Quaternion orientation)
+Turret::Turret(Ogre::Vector3 position, Ogre::Quaternion orientation, NetworkTestStuff* net_stuff)
     : Object(position, orientation)
     , timer(0)
     //, target(NULL)
@@ -19,12 +19,14 @@ Turret::Turret(Ogre::Vector3 position, Ogre::Quaternion orientation)
 	, occ(false)
 	, rockets(0)
 	, playerTimer(0)
+	, network_obj(net_stuff)
 {
 }
 
 Turret::~Turret()
 {
 }
+
 
 void Turret::update()
 {

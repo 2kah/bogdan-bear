@@ -24,7 +24,7 @@ class Turret: public Updatable, public Object
 {
 public:
 	bool isClientSide;
-    Turret(Ogre::Vector3 position, Ogre::Quaternion orientaion);
+    Turret(Ogre::Vector3 position, Ogre::Quaternion orientaion, NetworkTestStuff* net_stuff);
     virtual ~Turret();
 
     virtual void update();
