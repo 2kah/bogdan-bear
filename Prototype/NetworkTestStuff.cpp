@@ -334,7 +334,7 @@ void NetworkTestStuff::update()
 
 		}
 
-		if (this->hosting)
+		if (this->hosting && this->game_obj->game)
 		{
 			updateDelay++;
 			if (updateDelay > 5)
