@@ -127,7 +127,7 @@ class NetworkTestStuff : public Updatable
 public:
 	NetPlayer* myNetPlayer;
     // for spawn positions
-	float spawn_angles[16];
+	Ogre::Vector3 spawn_points[8];
     int current_spawn;
     //
 

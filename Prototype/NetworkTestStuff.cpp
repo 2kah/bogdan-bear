@@ -86,18 +86,17 @@ NetworkTestStuff::NetworkTestStuff(char *hostIP)
 	teamScores[0] = teamScores[1] = teamScores[2] = teamScores[3] = 0;
 	this->SERVER_IP_ADDRESS = hostIP;
     // generate spawn angles
-	float radius = 200.0;
-    for (int i = 0; i < 16; ++i) 
-{
-        spawn_angles[i] = i * boost::math::constants::two_pi<float>() / (float) 16.0;
-		float angle =spawn_angles[i];
-		std::cout << spawn_angles[i] << std::endl;
-		std::cout << radius * std::cos(spawn_angles[i]) << std::endl;
-		Ogre::Vector3 v = Ogre::Vector3(radius * std::cos(angle), 250, radius * std::sin(angle));
-		std::cout << ", " << v.x << ", " << v.y << ", " << v.z <<std::endl;
-    
 
+    float radius = 50.0f;
+
+    for (int i = 0; i < 8; ++i) 
+    {
+        const float radius = 200.0;
+        float angle = i * boost::math::constants::two_pi<float>() / 8.0f;
+		Ogre::Vector3 spawn = Ogre::Vector3(radius * std::cos(angle), 250, radius * std::sin(angle));
+        spawn_points[i] = spawn;
     }
+
     current_spawn = 0;
 
 	
@@ -487,14 +486,7 @@ void NetworkTestStuff::clientConnected(RakNet::Packet *packet)
 	// send all the world state
 
 	// world state sent - create and assign player
-	float angle = spawn_angles[current_spawn];
-    float radius = 200.0;
-
-    
     Player *p = new Player(Ogre::Vector3(0,0,0));
-	if (++current_spawn > 15) {
-        current_spawn = 0;
-    }
 	NetPlayer* np = new NetPlayer;
 	sprintf(np->name,"Player %d",playerCounter);
 	np->player = p;
@@ -545,12 +537,8 @@ void NetworkTestStuff::receiveAssignPlayer(RakNet::Packet *packet)
 void NetworkTestStuff::receiveInsertPlayer(RakNet::Packet *packet)
 {
 	NetPlayer* inc = (NetPlayer*)packet->data;
-	float angle = spawn_angles[current_spawn];
-    float radius = 25.0;
 
-	Player* p = new Player(Ogre::Vector3(radius * std::cos(angle), 250, radius * std::sin(angle)));
-	Ogre::Vector3 v = Ogre::Vector3(radius * std::cos(angle), 250, radius * std::sin(angle));
-	std::cout << ", " << v.x << ", " << v.y << ", " << v.z <<std::endl;
+	Player* p = new Player(spawn_points[inc->playerID % 8]);
 	std::cout<<"-------------------!!!!!!!!!!!!!!!!_---------------" <<std::endl;
 	NetPlayer* np = new NetPlayer;
 	np->team = inc->team;
