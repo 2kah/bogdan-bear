@@ -1,0 +1,35 @@
+material gunPlatforms
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 1
+			scene_blend alpha_blend
+
+			texture_unit
+			{
+				texture gun_pCubeShape23.psd
+			}
+		}
+
+	}
+
+	technique
+	{
+		scheme glow
+		pass
+		{
+			texture_unit
+			{
+			    texture gun_pCubeShape23.psd
+			}
+			ambient 0.7 0.7 0.7
+			diffuse 0.5 0.5 0.5
+			specular 0 0 0 0
+			emissive 0 0 0
+		}
+	}
+}
+
+
