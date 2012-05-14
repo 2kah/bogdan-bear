@@ -7,8 +7,10 @@
 #include <BulletCollision/CollisionDispatch/btGhostObject.h>
 
 #include "Rocket.h"
+#include "PhysicsObject.h"
 
 RocketPhysics::RocketPhysics(Rocket *rocket, btDiscreteDynamicsWorld *dynamicsWorld)
+    : PhysicsObject(ROCKET)
 {
     this->rocket = rocket;
     this->dynamicsWorld = dynamicsWorld;
@@ -22,6 +24,7 @@ RocketPhysics::RocketPhysics(Rocket *rocket, btDiscreteDynamicsWorld *dynamicsWo
     
     this->rocketUpdated(rocket);
 
+    this->ghost->setUserPointer(this);
     this->ghost->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
     this->dynamicsWorld->addCollisionObject(this->ghost, btBroadphaseProxy::SensorTrigger, btBroadphaseProxy::AllFilter & ~btBroadphaseProxy::SensorTrigger);
 }
