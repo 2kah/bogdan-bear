@@ -418,9 +418,7 @@ void GameTestThing::startClient()
     btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
 	fileLoader->loadFile("bowlup.bullet");
     //btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
-	//fileLoader->loadFile("BowlBul.bullet");
-
-
+	//fileLoader->loadFile("BowlBul.bullet");\\\\\\\\\\\\\\\
 
 
 
