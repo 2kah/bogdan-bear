@@ -233,9 +233,10 @@ void GameTestThing::destroyScene()
 	PlayerGraphics *playerG;
 	for(std::vector<PlayerGraphics *>::iterator it2 = this->playersGraphics.begin(); it2 != this->playersGraphics.end(); ++it2) {
 		playerG = *it2;
-
-		playerG->disconnectSignals();
-		delete playerG;
+		if(playerG != NULL) {
+		    playerG->disconnectSignals();
+		    delete playerG;
+		}
 	}
 	this->playersGraphics.clear();
 	/*Turret *turret;
@@ -257,11 +258,11 @@ void GameTestThing::destroyScene()
 	//this->game->mSceneMgr->clearScene();
 	this->game->mSceneMgr->destroyAllManualObjects();
 	for (int i=this->game->dynamicsWorld->getNumCollisionObjects()-1; i>=0 ;i--)
-        {
-                btCollisionObject* obj = this->game->dynamicsWorld->getCollisionObjectArray()[i];
-                this->game->dynamicsWorld->removeCollisionObject( obj );
-                delete obj;
-        }
+    {
+        btCollisionObject* obj = this->game->dynamicsWorld->getCollisionObjectArray()[i];
+        this->game->dynamicsWorld->removeCollisionObject( obj );
+        delete obj;
+    }
 	//this->game->mSceneMgr->destroyAllManualObjects();
 	//this->game->dynamicsWorld->getBroadphase()->~btBroadphaseInterface();
 	//delete this->game->dynamicsWorld;
@@ -274,24 +275,28 @@ void GameTestThing::destroyScene()
 	//for(std::vector<PlayerProperties *>::iterator it2 = this->playersProp.begin(); it2 != this->playersProp.end(); it2) {
 		for(std::vector<Player *>::iterator it = this->players.begin(); it != this->players.end(); ++it) {
             player = *it;
-			//playerProp = *it2;
-			//playerG = *it2;
-			//this->playersGraphics.pop_back();
-			//delete playerG;
-			//playerG->disconnectSignals();
-			//playerG = new PlayerGraphics(player, this->game->mSceneMgr);
-			//playerG->disconnectSignals();
-			localPlayerGraphics = new PlayerGraphics(player, this->game->mSceneMgr);
-			this->playersGraphics.push_back(localPlayerGraphics);
-			//new PlayerGraphics(player, this->game->mSceneMgr);
-			//player->prop = playerProp;
-			//this->playersGraphics.erase(it2);
-			//this->playersGraphics.push_back(localPlayerGraphics);
-			//this->playersGraphics.insert(it2, localPlayerGraphics);
-			this->game->objects.insert(player);
-
-		    //addPlayer(player, playerProp->getTeam());
-			//if(it2 != this->playersGraphics.end()) ++it2;
+			if(player != NULL) {
+			    //playerProp = *it2;
+			    //playerG = *it2;
+			    //this->playersGraphics.pop_back();
+			    //delete playerG;
+			    //playerG->disconnectSignals();
+			    //playerG = new PlayerGraphics(player, this->game->mSceneMgr);
+			    //playerG->disconnectSignals();
+			    if(player != NULL) {
+			        localPlayerGraphics = new PlayerGraphics(player, this->game->mSceneMgr);
+			        this->playersGraphics.push_back(localPlayerGraphics);
+			        //new PlayerGraphics(player, this->game->mSceneMgr);
+			        //player->prop = playerProp;
+			        //this->playersGraphics.erase(it2);
+			        //this->playersGraphics.push_back(localPlayerGraphics);
+			        //this->playersGraphics.insert(it2, localPlayerGraphics);
+			        this->game->objects.insert(player);
+			    }
+			    
+		        //addPlayer(player, playerProp->getTeam());
+			    //if(it2 != this->playersGraphics.end()) ++it2;
+			}
 		}
 	//}
 	this->network->listNetPlayers();
@@ -916,19 +921,21 @@ void GameTestThing::removePlayer(Player *player)
     // Queue player for removal
 	std::cout << "In GameTestThing, Removing Player Object at (" << player->position.x <<", " << player->position.y<<", " << player->position.z<< ")" << std::endl;
 
-	/*PlayerGraphics *playerG;
+	PlayerGraphics *playerG;
 	Player *playerRem;
+	int position = 0;
 	for(std::vector<PlayerGraphics *>::iterator it2 = this->playersGraphics.begin(); it2 != this->playersGraphics.end(); it2) {
 	for(std::vector<Player *>::iterator it = this->players.begin(); it != this->players.end(); ++it) {
             playerRem = *it;
 		    playerG = *it2;
 			if(player == playerRem) {
-				this->players.erase(it);
-			    this->playersGraphics.erase(it2);
+			    this->players[position] = NULL;
+				this->playersGraphics[position] = NULL;
 			}
 			if(it2 != this->playersGraphics.end()) ++it2;
+			position++;
 		}
-	}*/
+	}
 
     this->removeQueue.insert(player);
 }
