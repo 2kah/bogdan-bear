@@ -26,7 +26,8 @@ PlayerGraphics::PlayerGraphics(Player *player, Ogre::SceneManager *sceneManager)
 	    this->entity->setMaterialName(this->player->prop->getCostumeName());//, Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
 	    //this->entity->setMaterial(Ogre::MaterialManager::getSingleton().getByName(this->player->prop->getCostumeName()));
 		this->sceneNode->attachObject(this->entity);
-	    this->sceneNode->setScale(0.8,0.8,0.8);
+		float scale = 0.7;
+	    this->sceneNode->setScale(scale, scale, scale);
 
 		animationState = this->entity->getAnimationState("Run");
 		animationState->setLoop(true);
