@@ -125,7 +125,7 @@ struct NetScore
 class NetworkTestStuff : public Updatable
 {
 public:
-	NetPlayer* myNetPlayer;
+	//NetPlayer* myNetPlayer;
     // for spawn positions
 	Ogre::Vector3 spawn_points[8];
     int current_spawn;
@@ -205,7 +205,7 @@ public:
 	void printScores();
 
 	NetPlayer* localPlayer;
-	//NetPlayer* myNetPlayer;
+	NetPlayer* myNetPlayer;
 
 };
 

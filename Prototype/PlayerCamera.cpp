@@ -29,6 +29,6 @@ void PlayerCamera::playerRemoved(Player *player)
 
 void PlayerCamera::playerUpdated(Player *player)
 {
-    this->camera->setPosition(this->player->position + Ogre::Vector3::UNIT_Y * 180 / 16.0);
+    this->camera->setPosition(this->player->position + Ogre::Vector3::UNIT_Y * 9.0);
     this->camera->setOrientation(this->player->orientation * this->player->relativeAim);
 }
