@@ -5,10 +5,11 @@
 
 #include "Rocket.h"
 #include "Player.h"
+#include "NetworkTestStuff.h"
 
 #define PI 3.14159265
 
-Turret::Turret(Ogre::Vector3 position, Ogre::Quaternion orientation)
+Turret::Turret(Ogre::Vector3 position, Ogre::Quaternion orientation, NetworkTestStuff* net_stuff)
     : Object(position, orientation)
     , timer(0)
     //, target(NULL)
@@ -18,6 +19,7 @@ Turret::Turret(Ogre::Vector3 position, Ogre::Quaternion orientation)
 	, occ(false)
 	, rockets(0)
 	, playerTimer(0)
+	, network_obj(net_stuff)
 {
 }
 
@@ -25,13 +27,13 @@ Turret::~Turret()
 {
 }
 
+
 void Turret::update()
 {
     double pitch;
 	double yaw;
 	Ogre::Vector3 d;
-	
-	if(!occ)
+	if(!isClientSide && !occ)
 	{
         //if (this->target != NULL) {
 	    //	d = this->target - this->position;
@@ -124,7 +126,26 @@ bool Turret::isOccupied()
 
 void Turret::fireTurret() 
 {
-	this->signals.fired(this, new Rocket(this->position, this->orientation));
+	if (this->isClientSide)
+	{
+		
+		if (this->network_obj > 0)
+		{
+			printf("SENDING NETWORKED TURRET ROCKET (sorry for caps)\n");
+		this->network_obj->sendRocket(this->position, this->orientation);
+		}
+		else
+		{
+			printf("network fail\n");
+		}
+		
+	}
+	else
+	{
+		this->signals.fired(this, new Rocket(this->position, this->orientation));
+	}
+	//
+	
 	this->rockets--;
 	//if the player has run out of rockets, eject them from the turret
 	if(this->rockets == 0)

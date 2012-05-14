@@ -7,7 +7,8 @@ enum PHYSICS_OBJECT_TYPE {
     UNDEFINED,
     TOWER_CHUNK,
     PLATFORM,
-	PLAYER
+	PLAYER,
+    ROCKET
 };
 
 class PhysicsObject

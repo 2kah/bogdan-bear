@@ -38,7 +38,8 @@ ExplosionGraphics::ExplosionGraphics(Explosion *explosion, Ogre::SceneManager *s
 ExplosionGraphics::~ExplosionGraphics()
 {
     //this->sceneManager->destroyEntity(this->entity);
-	this->sceneNode->detachObject(this->particleSystem);
+	//this->sceneNode->detachObject(this->particleSystem);
+    this->sceneManager->destroyParticleSystem(this->particleSystem);
     this->sceneManager->destroySceneNode(this->sceneNode);
 }
 
