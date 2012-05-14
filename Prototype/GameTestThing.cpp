@@ -690,7 +690,7 @@ void GameTestThing::update()
 
 	if(this->network != NULL && this->localPlayer != NULL) {
 	    this->localPlayer->setScores(this->network->teamScores);
-	    if(this->network->teamScores[0] > 500) {
+	    if(this->network->teamScores[0] > 3000) {
 			this->winningTeam = "RED";
 			this->wins[0]++;
 			this->goal->setGameOver();
@@ -915,6 +915,21 @@ void GameTestThing::removePlayer(Player *player)
 {
     // Queue player for removal
 	std::cout << "In GameTestThing, Removing Player Object at (" << player->position.x <<", " << player->position.y<<", " << player->position.z<< ")" << std::endl;
+
+	/*PlayerGraphics *playerG;
+	Player *playerRem;
+	for(std::vector<PlayerGraphics *>::iterator it2 = this->playersGraphics.begin(); it2 != this->playersGraphics.end(); it2) {
+	for(std::vector<Player *>::iterator it = this->players.begin(); it != this->players.end(); ++it) {
+            playerRem = *it;
+		    playerG = *it2;
+			if(player == playerRem) {
+				this->players.erase(it);
+			    this->playersGraphics.erase(it2);
+			}
+			if(it2 != this->playersGraphics.end()) ++it2;
+		}
+	}*/
+
     this->removeQueue.insert(player);
 }
 
