@@ -95,6 +95,7 @@ public:
     int spawnID;
 
 	bool isInTurret;
+	int inTurretNum;
 
 private:
     Ogre::Radian rotX;

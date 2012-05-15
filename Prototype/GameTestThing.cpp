@@ -670,7 +670,9 @@ void GameTestThing::startNewRoundClient()
     this->addPlayer(player, this->localPlayerTeam);
     this->setLocalPlayer(player);
 	//this->network->localPlayer->player = player;
-	this->network->myNetPlayer->player = player;
+	//this->network->myNetPlayer->player = player;
+
+	this->network->setLocalPlayer(player);
 	//this->network->signals.assignLocalPlayer(player);
 
 	Goal *goal = new Goal(Ogre::Vector3(0, this->game->tower->levels * this->game->tower->block_height, 0), player, this->game->mSceneMgr, this->game->dynamicsWorld);
