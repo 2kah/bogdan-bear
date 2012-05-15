@@ -1,6 +1,8 @@
 #ifndef __PlatformPhysics_h_
 #define __PlatformPhysics_h_
 
+#include <boost/signals.hpp>
+
 #include "PhysicsObject.h"
 
 class btDiscreteDynamicsWorld;
@@ -8,7 +10,7 @@ class btRigidBody;
 
 class Platform;
 
-class PlatformPhysics : public PhysicsObject
+class PlatformPhysics : public PhysicsObject, public boost::signals::trackable
 {
 public:
     PlatformPhysics(Platform *platform, btDiscreteDynamicsWorld *dynamicsWorld);
