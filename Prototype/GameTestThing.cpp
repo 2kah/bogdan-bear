@@ -1004,8 +1004,9 @@ void GameTestThing::addRocket(Rocket *rocket)
     this->game->objects.insert(rocket);
 
     new RocketGraphics(rocket, this->game->mSceneMgr);
-    new RocketPhysics(rocket, this->game->dynamicsWorld);
     new RocketSound(rocket, this->sounds->engine);
+	if(isServer)
+		new RocketPhysics(rocket, this->game->dynamicsWorld);
 
     rocket->signals.exploded.connect(boost::bind(&GameTestThing::rocketExploded, this, _1, _2));
 }
