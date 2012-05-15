@@ -64,9 +64,9 @@ GameTestThing::GameTestThing(Game *game, char *hostIP)
 {
     for (int i = 0; i < 8; ++i) 
     {
-        const float radius = 20.0;
+        const float radius = 300.0;
         float angle = i * boost::math::constants::two_pi<float>() / 8.0f;
-		Ogre::Vector3 spawn = Ogre::Vector3(radius * std::cos(angle), 250, radius * std::sin(angle));
+		Ogre::Vector3 spawn = Ogre::Vector3(radius * std::cos(angle), 200, radius * std::sin(angle));
         spawn_points[i] = spawn;
     }
     
