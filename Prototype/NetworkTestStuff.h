@@ -22,7 +22,7 @@
 class Object;
 class Player;
 class Game;
-
+class Rocket;
 
 namespace {
 struct NetworkSignals {
@@ -54,6 +54,7 @@ struct NetTower
 struct NetExplosion
 {
 unsigned char typeId;
+unsigned long rocketID;
 Ogre::Vector3 vector;
 bool isMassive;
 };
@@ -63,6 +64,7 @@ bool isMassive;
 struct NetRocket
 {
 unsigned char typeId;
+unsigned long rocketID;
 Ogre::Vector3 position;
 Ogre::Quaternion orientation;	
 };
@@ -157,6 +159,7 @@ static const unsigned char ID_TURRET_UPDATE = 188;
 class NetworkTestStuff : public Updatable
 {
 public:
+	std::tr1::unordered_map<unsigned long, Rocket*> RocketsByID;
 	//NetPlayer* myNetPlayer;
     // for spawn positions
 	Ogre::Vector3 spawn_points[8];
