@@ -908,7 +908,8 @@ void GameTestThing::playerUsed(Player *player)
 				else
 					printf("errm, logic fail?!\n");
 	    		player->enteredTurret();
-				player->setTurret(turret);
+				player->setTurret(turret); 
+				player->inTurretNum=turret->turretID;
 				this->sounds->enterTurretSound(turret);
 				player->position = turret->position;
 			}

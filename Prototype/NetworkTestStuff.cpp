@@ -54,19 +54,19 @@ NetworkTestStuff::NetworkTestStuff(char *hostIP)
 	std::cout << "Init Network" << std::endl;
 	teamScores[0] = teamScores[1] = teamScores[2] = teamScores[3] = 0;
 	this->SERVER_IP_ADDRESS = hostIP;
-    // generate spawn angles
+	// generate spawn angles
 
-    for (int i = 0; i < 8; ++i) 
-    {
+	for (int i = 0; i < 8; ++i) 
+	{
         const float radius = 300.0;
-        float angle = i * boost::math::constants::two_pi<float>() / 8.0f;
+		float angle = i * boost::math::constants::two_pi<float>() / 8.0f;
 		Ogre::Vector3 spawn = Ogre::Vector3(radius * std::cos(angle), 200, radius * std::sin(angle));
-        spawn_points[i] = spawn;
-    }
+		spawn_points[i] = spawn;
+	}
 
-    current_spawn = 0;
+	current_spawn = 0;
 
-	
+
 }
 
 NetworkTestStuff::~NetworkTestStuff()
@@ -82,7 +82,7 @@ void NetworkTestStuff::setLocalPlayer(Player* p)
 
 void NetworkTestStuff::sendTurretBusy(int turretID, bool busy)
 {
-	std:cout << "Sending turret " << turretID << " is " << busy << std::endl;
+std:cout << "Sending turret " << turretID << " is " << busy << std::endl;
 	TurretInfo ti;
 	ti.typeID = ID_TURRET_BUSY;
 	ti.turretID = turretID;
@@ -158,21 +158,21 @@ void NetworkTestStuff::deleteNetPlayer(NetPlayer* np)
 {
 	//std::cout << "Deleting Player '" << np->name << "'" << std::endl;
 	this->signals.removePlayer(np->player);
-    np->player->signals.removed(np->player);
+	np->player->signals.removed(np->player);
 	NetPlayerByGUID.erase(np->GUID);
 	NetPlayerByPlayerID.erase(np->playerID);
-    listNetPlayers();
+	listNetPlayers();
 }
 
 void NetworkTestStuff::listNetPlayers()
 {
 	std::cout << "----Players----" <<std::endl;
-	
+
 	std::tr1::unordered_map<int, NetPlayer*>::const_iterator It;
 	for (It = NetPlayerByPlayerID.begin(); It != NetPlayerByPlayerID.end(); ++It)
-   {
-	   std::cout << It->first << " = " << It->second->name << " GUID: " << It->second->GUID << " Team: " << It->second->team << "Position:" << It->second->player->position.x << ", "<< It->second->player->position.y << ", " << It->second->player->position.z <<std::endl;
-   }
+	{
+		std::cout << It->first << " = " << It->second->name << " GUID: " << It->second->GUID << " Team: " << It->second->team << "Position:" << It->second->player->position.x << ", "<< It->second->player->position.y << ", " << It->second->player->position.z <<std::endl;
+	}
 	std::cout << "---------------" <<std::endl;
 }
 
@@ -234,7 +234,7 @@ void NetworkTestStuff::sendExplosion(Ogre::Vector3 position, bool isMassive)
 
 void NetworkTestStuff::sendRocket(Ogre::Vector3 position, Ogre::Quaternion orientation)
 {
-		if (rakPeer >0)
+	if (rakPeer >0)
 	{
 		NetRocket rocket;
 		rocket.typeId=ID_NEW_ROCKET;
@@ -253,8 +253,17 @@ void NetworkTestStuff::update()
 			updateDelay++;
 			if (updateDelay > 5)
 			{
-			updateDelay = 0;
-			//std::cout << "Sending Own Player Update" << std::endl;
+				updateDelay = 0;
+				//if (myNetPlayer->player->isInTurret)
+				//{
+				//	myNetPlayer->isInTurret=myNetPlayer->player->isInTurret;
+				//	myNetPlayer->turretID=myNetPlayer->player->inTurretNum;
+				//	std::cout << "Player is in turret " << myNetPlayer->player->inTurretNum <<std::endl;
+				//}
+				//else
+				//{
+				//	myNetPlayer->isInTurret=false;
+				//}
 				sendPlayerUpdate(myNetPlayer);
 			}
 		}
@@ -339,11 +348,11 @@ void NetworkTestStuff::update()
 			updateDelay++;
 			if (updateDelay > 5)
 			{
-			updateDelay = 0;
-			updateScores();
+				updateDelay = 0;
+				updateScores();
 			}
 		}
-			
+
 
 	}
 }
@@ -354,33 +363,33 @@ void NetworkTestStuff::updateScores()
 	teams[0] = teams[1] = teams[2] = teams[3]= 0;
 	std::tr1::unordered_map<int, NetPlayer*>::const_iterator It;
 	for (It = NetPlayerByPlayerID.begin(); It != NetPlayerByPlayerID.end(); ++It)
-   {
-	   NetPlayer& np = *(It->second);
-	   if (g->isPlayerInRange(np.player->position))
-	   {
-		  teams[np.team] = 1;
-		  //teams[np.team]++;
-	   }
-   }
+	{
+		NetPlayer& np = *(It->second);
+		if (g->isPlayerInRange(np.player->position))
+		{
+			teams[np.team] = 1;
+			//teams[np.team]++;
+		}
+	}
 	int maxPlayerCount = 0;
 	int bestTeam = -1;
 	if(teams[0] + teams[1] + teams[2] + teams[3] == 1) 
 	{
-	    for (int i = 0; i < 4; i++)
-	    {
-	    	/*if (teams[i] > maxPlayerCount)
-	    	{
-	    		maxPlayerCount = teams[i];
-	    		bestTeam = i;
-	    	}*/
+		for (int i = 0; i < 4; i++)
+		{
+			/*if (teams[i] > maxPlayerCount)
+			{
+			maxPlayerCount = teams[i];
+			bestTeam = i;
+			}*/
 			if(teams[i] == 1) bestTeam = i;
-	    }
-	    if (bestTeam > -1)
-	    {
-	    	this->teamScores[bestTeam]+= 2;
-	    	if ((teamScores[bestTeam] % 100) == 0)
-	    		printScores();
-	    }
+		}
+		if (bestTeam > -1)
+		{
+			this->teamScores[bestTeam]+= 2;
+			if ((teamScores[bestTeam] % 100) == 0)
+				printScores();
+		}
 	}
 	//printf("Team %d is holding goal\n", bestTeam);
 	sendNetScores();
@@ -451,7 +460,7 @@ void NetworkTestStuff::receiveNewExplosion(RakNet::Packet *packet)
 	NetExplosion* exp = (NetExplosion*)packet->data;
 	if (exp->isMassive) std::cout << "MAHOOOOSIVE EXPLOOOSION" << std::endl;
 	Ogre::Vector3 v = exp->vector;
-	
+
 	std::cout << "(" << v.x << "," << v.y << "," << v.z << ")"  << std::endl;
 	if (hosting)
 	{
@@ -484,12 +493,12 @@ void NetworkTestStuff::clientConnected(RakNet::Packet *packet)
 {
 	std::cout << "ID_NEW_INCOMING_CONNECTION" << std::endl;
 	std::cout << "From: " << packet->guid.ToString() << std::endl;
-	
+
 	sendWorld(packet);
 	// send all the world state
 
 	// world state sent - create and assign player
-    Player *p = new Player(Ogre::Vector3(0,0,0));
+	Player *p = new Player(Ogre::Vector3(0,0,0));
 	NetPlayer* np = new NetPlayer;
 	sprintf(np->name,"Player %d",playerCounter);
 	np->player = p;
@@ -528,7 +537,7 @@ void NetworkTestStuff::receiveAssignPlayer(RakNet::Packet *packet)
 	NetPlayer* np = getNetPlayer(inc->playerID);
 	myNetPlayer = np;
 	Player* p = np->player;
-    np->player->spawnID = inc->playerID;
+	np->player->spawnID = inc->playerID;
 	setLocalPlayer(p);
 	std::cout << "Being assigned Player '" << np->name << "'" << std::endl;
 	this->signals.assignLocalPlayer(p);
@@ -580,7 +589,7 @@ NetPlayer* NetworkTestStuff::getNetPlayer(int playerID)
 	std::tr1::unordered_map<int, NetPlayer*>::iterator it = NetPlayerByPlayerID.find(playerID);
 	NetPlayer* np = it->second;
 	if (it == NetPlayerByPlayerID.end()) 
-			return 0;
+		return 0;
 	return np;
 }
 
@@ -613,9 +622,9 @@ void NetworkTestStuff::sendPlayers(RakNet::Packet *packet)
 	std::cout << "Begin listing:" <<std::endl;
 	std::tr1::unordered_map<int, NetPlayer*>::const_iterator It;
 	for (It = NetPlayerByPlayerID.begin(); It != NetPlayerByPlayerID.end(); ++It)
-   {
-	   sendNetPlayer(It->second,ID_INSERT_PLAYER,packet->guid);
-   }
+	{
+		sendNetPlayer(It->second,ID_INSERT_PLAYER,packet->guid);
+	}
 	std::cout << "End listing:" <<std::endl;
 }
 
@@ -634,33 +643,33 @@ void NetworkTestStuff::broadcastUpdateTower(int low_level, int high_level, int l
 	b.Write(high_level);
 	if (rakPeer > 0)
 	{
-	Tower* tower = this->tb->tower;
-	int totalCount = 0;
-	unsigned long totalActive = 0;
-	for (int i =low_level; i < high_level; i++)
-	{
-		for (int j =low_layer; j < high_layer; j++)
+		Tower* tower = this->tb->tower;
+		int totalCount = 0;
+		unsigned long totalActive = 0;
+		for (int i =low_level; i < high_level; i++)
 		{
-			for (int k =0; k < tower->blocks[i][j].size() ; k++)
+			for (int j =low_layer; j < high_layer; j++)
 			{
-				if (tower->blocks[i][j][k])
+				for (int k =0; k < tower->blocks[i][j].size() ; k++)
 				{
-					b.Write(true);
-					totalActive++;
+					if (tower->blocks[i][j][k])
+					{
+						b.Write(true);
+						totalActive++;
+					}
+					else
+					{
+						b.Write(false);
+					}
+
+					totalCount++;
 				}
-				else
-				{
-					b.Write(false);
-				}
-				
-				totalCount++;
 			}
 		}
-	}
-	
-	rakPeer->Send(&b , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
-	//printf("Sending %d blocks, %d active.\n",totalCount,totalActive);
-	//printf("(%d, %d, %d, %d)\n",low_level, high_level, low_layer, high_layer);
+
+		rakPeer->Send(&b , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+		//printf("Sending %d blocks, %d active.\n",totalCount,totalActive);
+		//printf("(%d, %d, %d, %d)\n",low_level, high_level, low_layer, high_layer);
 	}
 }
 
@@ -715,6 +724,8 @@ void NetworkTestStuff::sendPlayerUpdate(NetPlayer* np)
 	pi.orientation = np->player->orientation;
 	pi.relativeAim = np->player->relativeAim;
 	pi.typeID = ID_UPDATE_PLAYER;
+	pi.turretID=np->player->inTurretNum;
+	pi.isInTurret=np->player->isInTurret;
 	rakPeer->Send((char*)&pi,sizeof(pi) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
 	//std::cout << "Sending velocity: ";
 	//Ogre::Vector3 v = np->player->velocity;
@@ -728,17 +739,27 @@ void NetworkTestStuff::receiveUpdatePlayer(RakNet::Packet *packet)
 	NetPlayer* np = getNetPlayer(pi->playerID);
 	if (np != myNetPlayer)
 	{
-	//std::cout << "Updating '" << np->name << "'" << std::endl;
-	Player* p =np->player;
-	p->setState(pi->position, pi->velocity, pi->orientation);
-	/*p->position = pi->position;
-	p->velocity = pi->velocity;
-	p->orientation = pi->orientation;
-	p->relativeAim = pi->relativeAim;*/
-	}
-	if (hosting)
-	{
-		rakPeer->Send((char*)pi,sizeof(*pi) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+		//std::cout << "Updating '" << np->name << "'" << std::endl;
+		Player* p =np->player;
+		p->setState(pi->position, pi->velocity, pi->orientation);
+		/*p->position = pi->position;
+		p->velocity = pi->velocity;
+		p->orientation = pi->orientation;
+		p->relativeAim = pi->relativeAim;*/
+
+		if (hosting)
+		{
+			rakPeer->Send((char*)pi,sizeof(*pi) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+		}
+		else
+		{
+			//Update turret if applicable
+			if (pi->isInTurret)
+			{
+				//{printf("Player %d is in turret %d, updating orientation\n",pi->playerID, pi->turretID);
+			this->turrets[pi->turretID]->updateOrient(pi->orientation, pi->relativeAim);
+			}
+		}
 	}
 }
 
