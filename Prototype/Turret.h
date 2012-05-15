@@ -42,6 +42,7 @@ public:
 	virtual void fireTurret();
 
 	virtual void setOccupant(Ogre::Quaternion newOO, Ogre::Quaternion newRA);
+	virtual void updateOrient(Ogre::Quaternion newOO, Ogre::Quaternion newRA);
 
 protected:
 	bool occ;

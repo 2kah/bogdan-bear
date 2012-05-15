@@ -86,6 +86,8 @@ struct PlayerInfo
 	Ogre::Vector3 velocity;
 	Ogre::Quaternion orientation;
 	Ogre::Quaternion relativeAim;
+	int turretID;
+	bool isInTurret;
 };
 #pragma pack(pop)
 
