@@ -53,8 +53,6 @@ ExplosionPhysics::ExplosionPhysics(Explosion *explosion, btDiscreteDynamicsWorld
         if (object != NULL) {
             if (object->type == TOWER_CHUNK) {
                 this->tower = static_cast<PhysicsChunk *>(object)->tower;
-            } else if (object->type == PLATFORM) {
-                static_cast<PlatformPhysics *>(object)->platform->destroy();
             }
 
             object->explode(this->explosion);
