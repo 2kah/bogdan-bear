@@ -17,6 +17,7 @@
 #include <OGRE/OgreQuaternion.h>
 #include "TowerBuilder.h"
 #include "Goal.h"
+#include "Turret.h"
 
 class Object;
 class Player;
@@ -93,6 +94,7 @@ struct TurretInfo
 {
 	unsigned char typeID;
 	int turretID;
+	bool turretBusy;
 	Ogre::Vector3 position;
 	Ogre::Vector3 velocity;
 	Ogre::Quaternion orientation;
@@ -120,7 +122,35 @@ struct NetScore
 };
 #pragma pack(pop)
 
+static const unsigned short SERVER_PORT=12345;
 
+static const unsigned char ID_TEXT = 140;
+
+static const unsigned char ID_NEW_EXPLOSION = 141;
+static const unsigned char ID_EXIST_EXPLOSION = 142;
+static const unsigned char ID_UPDATE_EXPLOSION = 143;
+static const unsigned char ID_DESTROY_EXPLOSION = 144;
+
+static const unsigned char ID_ASSIGN_PLAYER = 151;
+static const unsigned char ID_INSERT_PLAYER = 152;
+static const unsigned char ID_UPDATE_PLAYER = 153;
+static const unsigned char ID_DESTROY_PLAYER = 154;
+
+static const unsigned char ID_NEW_PLATFORM = 161;
+static const unsigned char ID_EXIST_PLATFORM = 162;
+static const unsigned char ID_UPDATE_PLATFORM = 163;
+static const unsigned char ID_DESTROY_PLATFORM = 164;
+
+static const unsigned char ID_NEW_ROCKET = 171;
+static const unsigned char ID_EXIST_ROCKET = 172;
+static const unsigned char ID_UPDATE_ROCKET = 173;
+static const unsigned char ID_DESTROY_ROCKET = 174;
+
+static const unsigned char ID_UPDATE_TOWER = 175;
+static const unsigned char ID_UPDATE_SCORES = 176;
+static const unsigned char ID_START_GAME = 186;
+static const unsigned char ID_TURRET_BUSY = 187;
+static const unsigned char ID_TURRET_UPDATE = 188;
 
 class NetworkTestStuff : public Updatable
 {
@@ -140,7 +170,7 @@ public:
 	NetTower towerBuffer;
     NetworkSignals signals;
 	int teamScores[4];
-
+	Turret* turrets[4];
     NetworkTestStuff(char *hostIP);
     virtual ~NetworkTestStuff();
 	void setLocalPlayer(Player * p);
@@ -152,6 +182,13 @@ public:
 	virtual void sendChat(std::string message);
 	virtual void sendChat(std::string message, RakNet::AddressOrGUID target);
     virtual void update();
+
+	virtual void sendTurretBusy(int turretID, bool busy);
+	virtual void recvTurretBusy(RakNet::Packet *packet);
+	virtual void sendTurretInfo(TurretInfo ti);
+
+	virtual void sendTurretUpdate(int turretID);
+	virtual void recvTurretUpdate(RakNet::Packet *packet);
 
 	virtual void sendStartGame();
 

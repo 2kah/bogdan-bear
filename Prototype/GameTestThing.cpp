@@ -199,10 +199,10 @@ void GameTestThing::buildScene()
     //this->game->objects.insert(builder);
 
     // Add four turrets
-	Turret *turret1 = new Turret(Ogre::Vector3(0, 130, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y),this->network, true);
-	Turret *turret2 = new Turret(Ogre::Vector3(0, 130, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y),this->network, true);
-	Turret *turret3 = new Turret(Ogre::Vector3(400, 130, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y),this->network, true);
-	Turret *turret4 = new Turret(Ogre::Vector3(-400, 130, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y),this->network, true);
+	Turret *turret1 = new Turret(Ogre::Vector3(0, 130, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y),this->network, true,0);
+	Turret *turret2 = new Turret(Ogre::Vector3(0, 130, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y),this->network, true,1);
+	Turret *turret3 = new Turret(Ogre::Vector3(400, 130, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y),this->network, true,2);
+	Turret *turret4 = new Turret(Ogre::Vector3(-400, 130, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y),this->network, true,3);
 
     this->addTurret(turret1);
     this->addTurret(turret2);
@@ -338,11 +338,10 @@ void GameTestThing::startLocal()
     //this->game->objects.insert(builder);
 
     // Add four turrets
-    Turret *turret1 = new Turret(Ogre::Vector3(0, 130, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y),this->network, true);
-	Turret *turret2 = new Turret(Ogre::Vector3(0, 130, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y),this->network, true);
-	Turret *turret3 = new Turret(Ogre::Vector3(400, 130, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y),this->network, true);
-	Turret *turret4 = new Turret(Ogre::Vector3(-400, 130, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y),this->network, true);
-
+	Turret *turret1 = new Turret(Ogre::Vector3(0, 130, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y),this->network, true,0);
+	Turret *turret2 = new Turret(Ogre::Vector3(0, 130, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y),this->network, true,1);
+	Turret *turret3 = new Turret(Ogre::Vector3(400, 130, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y),this->network, true,2);
+	Turret *turret4 = new Turret(Ogre::Vector3(-400, 130, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y),this->network, true,3);
     this->addTurret(turret1);
     this->addTurret(turret2);
     this->addTurret(turret3);
@@ -431,11 +430,10 @@ void GameTestThing::startClient()
 
 	this->network->startNetwork(false);
 
-	Turret *turret1 = new Turret(Ogre::Vector3(0, 130, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y),this->network, true);
-	Turret *turret2 = new Turret(Ogre::Vector3(0, 130, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y),this->network, true);
-	Turret *turret3 = new Turret(Ogre::Vector3(400, 130, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y),this->network, true);
-	Turret *turret4 = new Turret(Ogre::Vector3(-400, 130, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y),this->network, true);
-
+	Turret *turret1 = new Turret(Ogre::Vector3(0, 130, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y),this->network, true,0);
+	Turret *turret2 = new Turret(Ogre::Vector3(0, 130, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y),this->network, true,1);
+	Turret *turret3 = new Turret(Ogre::Vector3(400, 130, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y),this->network, true,2);
+	Turret *turret4 = new Turret(Ogre::Vector3(-400, 130, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y),this->network, true,3);
 
 	turret1->isClientSide=true;
 	turret1->network_obj=this->network;
@@ -540,7 +538,7 @@ void GameTestThing::startServer()
 
 void GameTestThing::startNewRoundServer()
 {
-		isLocal = false;
+	isLocal = false;
 	isServer = true;
 	//printf("size of nettower %d\n",sizeof(NetTower));
 	unsigned divisions[] = {8, 16, 16, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 256, 256, 256, 256, 256, 256, 256};
@@ -672,23 +670,11 @@ void GameTestThing::startNewRoundClient()
     //btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
 	//fileLoader->loadFile("BowlBul.bullet");
 
-	Turret *turret1 = new Turret(Ogre::Vector3(0, 130, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y),this->network, true);
-	Turret *turret2 = new Turret(Ogre::Vector3(0, 130, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y),this->network, true);
-	Turret *turret3 = new Turret(Ogre::Vector3(400, 130, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y),this->network, true);
-	Turret *turret4 = new Turret(Ogre::Vector3(-400, 130, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y),this->network, true);
-
-	turret1->isClientSide=true;
-	turret1->network_obj=this->network;
+	Turret *turret1 = new Turret(Ogre::Vector3(0, 130, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y),this->network, true,0);
+	Turret *turret2 = new Turret(Ogre::Vector3(0, 130, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y),this->network, true,1);
+	Turret *turret3 = new Turret(Ogre::Vector3(400, 130, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y),this->network, true,2);
+	Turret *turret4 = new Turret(Ogre::Vector3(-400, 130, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y),this->network, true,3);
 	
-	turret2->isClientSide=true;
-	turret2->network_obj=this->network;
-
-	turret3->isClientSide=true;
-	turret3->network_obj=this->network;
-	
-	turret4->isClientSide=true;
-	turret4->network_obj=this->network;
-
     this->addTurret(turret1);
     this->addTurret(turret2);
     this->addTurret(turret3);
@@ -993,7 +979,7 @@ void GameTestThing::addTurret(Turret *turret)
     new TurretGraphics(turret, this->game->mSceneMgr);
     
     this->turrets.insert(turret);
-
+	this->network->turrets[turret->turretID] = turret;
     // update the turrets every frame
     this->game->objects.insert(turret);
 

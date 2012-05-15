@@ -32,38 +32,7 @@
 
 #include <boost/math/constants/constants.hpp>
 
-//TODO: make this a command line argument or something
-//static const char *SERVER_IP_ADDRESS="127.0.0.1";
-//static const char *SERVER_IP_ADDRESS="192.168.11.4";
-//static const char *SERVER_IP_ADDRESS="192.168.1.233";
-//static const char *SERVER_IP_ADDRESS="5.37.252.128";
-static const unsigned short SERVER_PORT=12345;
 
-static const unsigned char ID_TEXT = 140;
-
-static const unsigned char ID_NEW_EXPLOSION = 141;
-static const unsigned char ID_EXIST_EXPLOSION = 142;
-static const unsigned char ID_UPDATE_EXPLOSION = 143;
-static const unsigned char ID_DESTROY_EXPLOSION = 144;
-
-static const unsigned char ID_ASSIGN_PLAYER = 151;
-static const unsigned char ID_INSERT_PLAYER = 152;
-static const unsigned char ID_UPDATE_PLAYER = 153;
-static const unsigned char ID_DESTROY_PLAYER = 154;
-
-static const unsigned char ID_NEW_PLATFORM = 161;
-static const unsigned char ID_EXIST_PLATFORM = 162;
-static const unsigned char ID_UPDATE_PLATFORM = 163;
-static const unsigned char ID_DESTROY_PLATFORM = 164;
-
-static const unsigned char ID_NEW_ROCKET = 171;
-static const unsigned char ID_EXIST_ROCKET = 172;
-static const unsigned char ID_UPDATE_ROCKET = 173;
-static const unsigned char ID_DESTROY_ROCKET = 174;
-
-static const unsigned char ID_UPDATE_TOWER = 175;
-static const unsigned char ID_UPDATE_SCORES = 176;
-static const unsigned char ID_START_GAME = 186;
 
 std::tr1::unordered_map<uint64_t, NetPlayer*> NetPlayerByGUID;
 std::tr1::unordered_map<int, NetPlayer*> NetPlayerByPlayerID;
@@ -109,6 +78,29 @@ void NetworkTestStuff::setLocalPlayer(Player* p)
 	this->myNetPlayer->player = p;
 	p->signals.sendPlatform.connect(boost::bind(&NetworkTestStuff::sendPlatform, this, _1, _2));
 }
+
+
+void NetworkTestStuff::sendTurretBusy(int turretID, bool busy)
+{
+	std:cout << "Sending turret " << turretID << " is " << busy << std::endl;
+	TurretInfo ti;
+	ti.typeID = ID_TURRET_BUSY;
+	ti.turretID = turretID;
+	ti.turretBusy = busy;
+	rakPeer->Send((char*)&ti,sizeof(TurretInfo), HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+}
+void NetworkTestStuff::recvTurretBusy(RakNet::Packet *packet)
+{
+	TurretInfo* ti = (TurretInfo*)packet->data;
+std:cout << "Receive turret " << ti->turretID << " is " << ti->turretBusy << std::endl;
+	//this->turrets[ti->turretID]->
+	if (this->hosting) rakPeer->Send((char*)ti,sizeof(TurretInfo), HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+}
+
+void NetworkTestStuff::sendTurretInfo(TurretInfo ti){}
+void NetworkTestStuff::sendTurretUpdate(int turretID){}
+void NetworkTestStuff::recvTurretUpdate(RakNet::Packet *packet){}
+
 
 void NetworkTestStuff::sendStartGame()
 {
@@ -316,7 +308,7 @@ void NetworkTestStuff::update()
 				break;
 			case ID_UPDATE_TOWER:
 				receiveUpdateTower(packet);
-				std::cout << "Received Tower Update" << std::endl;
+				//std::cout << "Received Tower Update" << std::endl;
 				break;
 			case ID_UPDATE_SCORES:
 				receiveScores(packet);
@@ -328,6 +320,14 @@ void NetworkTestStuff::update()
 				break;
 			case ID_NEW_PLATFORM:
 				recvPlatform(packet);
+				//std::cout << "Received Start Game" << std::endl;
+				break;
+			case ID_TURRET_BUSY:
+				recvTurretBusy(packet);
+				//std::cout << "Received Start Game" << std::endl;
+				break;
+			case ID_TURRET_UPDATE:
+				recvTurretUpdate(packet);
 				//std::cout << "Received Start Game" << std::endl;
 				break;
 			}
@@ -659,8 +659,8 @@ void NetworkTestStuff::broadcastUpdateTower(int low_level, int high_level, int l
 	}
 	
 	rakPeer->Send(&b , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
-	printf("Sending %d blocks, %d active.\n",totalCount,totalActive);
-	printf("(%d, %d, %d, %d)\n",low_level, high_level, low_layer, high_layer);
+	//printf("Sending %d blocks, %d active.\n",totalCount,totalActive);
+	//printf("(%d, %d, %d, %d)\n",low_level, high_level, low_layer, high_layer);
 	}
 }
 
@@ -669,14 +669,14 @@ void NetworkTestStuff::receiveUpdateTower(RakNet::Packet *packet)
 	int low_level, high_level, low_layer, high_layer;
 	Tower* tower = this->tb->tower;
 	RakNet::BitStream b(packet->data, packet->length, false);
-	printf("Incoming tower update: %d bytes\n",packet->length);
+	//printf("Incoming tower update: %d bytes\n",packet->length);
 	unsigned char head;
 	b.Read(head);
 	b.Read(low_layer);
 	b.Read(low_level);
 	b.Read(high_layer);
 	b.Read(high_level);
-	printf("(%d, %d, %d, %d)\n",low_level, high_level, low_layer, high_layer);
+	//printf("(%d, %d, %d, %d)\n",low_level, high_level, low_layer, high_layer);
 	bool temp;
 	unsigned long totalActive = 0;
 	int totalCount = 0;
@@ -701,7 +701,7 @@ void NetworkTestStuff::receiveUpdateTower(RakNet::Packet *packet)
 		}
 	}
 	tower->signals.updated(tower, BoundingVolume(low_level,high_level,low_layer,high_layer,0,tower->sectors), -totalCount);
-	printf("Updated %d blocks, total active: %d\n", totalCount, totalActive);
+	//printf("Updated %d blocks, total active: %d\n", totalCount, totalActive);
 }
 
 

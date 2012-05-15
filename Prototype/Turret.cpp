@@ -11,7 +11,7 @@
 
 int print_delay = 0;
 
-Turret::Turret(Ogre::Vector3 position, Ogre::Quaternion orientation, NetworkTestStuff* net_stuff, bool client)
+Turret::Turret(Ogre::Vector3 position, Ogre::Quaternion orientation, NetworkTestStuff* net_stuff, bool client, int ID)
     : Object(position, orientation)
     , timer(0)
     //, target(NULL)
@@ -23,6 +23,8 @@ Turret::Turret(Ogre::Vector3 position, Ogre::Quaternion orientation, NetworkTest
 	, playerTimer(0)
 	, network_obj(net_stuff)
 	, isClientSide(client)
+	, turretID (ID)
+	, isBusy(false)
 {
 }
 
@@ -36,19 +38,19 @@ void Turret::update()
     double pitch;
 	double yaw;
 	Ogre::Vector3 d;
-	print_delay++;
+	//print_delay++;
 
-	if (print_delay >200)
-	{
-	printf("turret update loop: ");
-	if (this->occ) 
-		printf("OCCUPIED!!\n");
-	else if(this->playerTimer > 0)
-		printf("empty but locked\n");
-	else 
-		printf("empty\n");
-	print_delay = 0;
-	}
+	//if (print_delay >200)
+	//{
+	//printf("turret update loop: ");
+	//if (this->occ) 
+	//	printf("OCCUPIED!!\n");
+	//else if(this->playerTimer > 0)
+	//	printf("empty but locked\n");
+	//else 
+	//	printf("empty\n");
+	//print_delay = 0;
+	//}
 	if(!this->occ)
 	{
 		/*
@@ -108,7 +110,7 @@ void Turret::update()
 	}
 	else
 	{
-		printf("in fancy update loop\n");
+		//printf("in fancy update loop\n");
 		Ogre::Quaternion orientation = occupantOrientation * occupantRelativeAim;
 		orientation = orientation * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
 		this->orientation = orientation;
@@ -124,6 +126,7 @@ void Turret::setTarget(Ogre::Vector3 target)
 bool Turret::setOccupied(bool set, Player *player)
 {
 	//if someone is trying to enter the turret, but it's already inhabited, return false
+	if (isBusy) return false;
 	if(set && this->occ)
 		return false;
 	//if the same player is trying to enter, but the timer isn't finished, return false
@@ -133,10 +136,14 @@ bool Turret::setOccupied(bool set, Player *player)
 	if(!set)
 		this->playerTimer = 1000;
 	this->occ = set;
-	//if (!this->occ) printf("OCC is now false\n");
+	this->network_obj->sendTurretBusy(this->turretID, this->occ);
+
+
+
 	this->player = player;
 	//TODO: tweak
 	rockets = 10;
+	
 	return true;
 }
 
