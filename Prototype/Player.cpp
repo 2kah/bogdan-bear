@@ -203,7 +203,7 @@ void Player::create(bool state)
 			platformPosition.y -= 6;
 			this->signals.sendPlatform(platformPosition, this->orientation);
 
-			this->signals.platform(this, new Platform(platformPosition, this->orientation));
+			//this->signals.platform(this, new Platform(platformPosition, this->orientation));
 			//TODO: tweak
 			//number of seconds until player can place another platform (* 100)
 			this->platformTimer = 500;
