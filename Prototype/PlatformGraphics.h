@@ -1,13 +1,15 @@
 #ifndef __PlatformGraphics_h_
 #define __PlatformGraphics_h_
 
+#include <boost/signals.hpp>
+
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreEntity.h>
 
 class Platform;
 
-class PlatformGraphics
+class PlatformGraphics : public boost::signals::trackable
 {
 public:
     PlatformGraphics(Platform *platform, Ogre::SceneManager *sceneManager);
