@@ -36,11 +36,13 @@
 
 std::tr1::unordered_map<uint64_t, NetPlayer*> NetPlayerByGUID;
 std::tr1::unordered_map<int, NetPlayer*> NetPlayerByPlayerID;
+
 //NetPlayer* myNetPlayer = 0;
 
 
 
 int playerCounter = 0;
+unsigned long rocketCounter = 0;
 bool shouldUpload = false;
 int updateDelay = 0;
 
@@ -472,12 +474,19 @@ void NetworkTestStuff::receiveNewExplosion(RakNet::Packet *packet)
 
 void NetworkTestStuff::receiveNewRocket(RakNet::Packet *packet)
 {
-	std::cout << "Received Rocket"<< std::endl;
+	
 	NetRocket* rocket = (NetRocket*)packet->data;
+	
 	if (hosting)
 	{
-		std::cout << "Broadcasting Rocket" << std::endl;
+		rocket->rocketID=rocketCounter;
+		rocketCounter++;
+		std::cout << "Broadcasting Rocket " << rocket->rocketID << std::endl;
 		rakPeer->Send((char*)rocket,sizeof(*rocket) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+	}
+	else
+	{
+		std::cout << "Received Rocket ID "<< rocket->rocketID << std::endl;
 	}
 	this->signals.recvRocket(rocket->position, rocket->orientation);
 }
@@ -678,14 +687,14 @@ void NetworkTestStuff::receiveUpdateTower(RakNet::Packet *packet)
 	int low_level, high_level, low_layer, high_layer;
 	Tower* tower = this->tb->tower;
 	RakNet::BitStream b(packet->data, packet->length, false);
-	//printf("Incoming tower update: %d bytes\n",packet->length);
+	printf("Incoming tower update: %d bytes\n",packet->length);
 	unsigned char head;
 	b.Read(head);
 	b.Read(low_layer);
 	b.Read(low_level);
 	b.Read(high_layer);
 	b.Read(high_level);
-	//printf("(%d, %d, %d, %d)\n",low_level, high_level, low_layer, high_layer);
+	printf("(%d, %d, %d, %d)\n",low_level, high_level, low_layer, high_layer);
 	bool temp;
 	unsigned long totalActive = 0;
 	int totalCount = 0;
@@ -710,7 +719,7 @@ void NetworkTestStuff::receiveUpdateTower(RakNet::Packet *packet)
 		}
 	}
 	tower->signals.updated(tower, BoundingVolume(low_level,high_level,low_layer,high_layer,0,tower->sectors), -totalCount);
-	//printf("Updated %d blocks, total active: %d\n", totalCount, totalActive);
+	printf("Updated %d blocks, total active: %d\n", totalCount, totalActive);
 }
 
 
