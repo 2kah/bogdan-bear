@@ -887,7 +887,7 @@ void GameTestThing::playerUsed(Player *player)
 	printf("%f,%f,%f\n",min.x, min.y, min.z);*/
 	if(minDis < 180)
 	{
-	    if(player->position == min)
+	    if(player->position.x == min.x && player->position.y == (min.y - 3) && player->position.z == min.z)
 	    {
 			printf("-----setting turret occ to false from gametestthing\n");
 			turret->setOccupied(false, player);
@@ -910,7 +910,9 @@ void GameTestThing::playerUsed(Player *player)
 	    		player->enteredTurret();
 				player->setTurret(turret);
 				this->sounds->enterTurretSound(turret);
-				player->position = turret->position;
+				player->position.x = turret->position.x;
+				player->position.y = turret->position.y - 3;
+				player->position.z = turret->position.z;
 			}
 			//turret->setTarget(player);
 	    }
