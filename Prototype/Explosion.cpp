@@ -33,7 +33,7 @@ void Explosion::update(void)
     
         this->signals.updated(this);
     }
-	else if (size < 200 && isMassive)
+	else if (size < 150 && isMassive)
 	{
 		++size;
 
