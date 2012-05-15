@@ -33,5 +33,5 @@ void Platform::update()
 
 void Platform::destroy()
 {
-    this->signals.destroyed(this);
+    this->signals.expired(this);
 }

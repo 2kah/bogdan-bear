@@ -783,11 +783,12 @@ void GameTestThing::turretFired(Turret *turret, Rocket *rocket)
 
 void GameTestThing::playerFired(Player *player, Rocket *rocket)
 {
-    if (isLocal) 
-		{
-			std::cout<<"Local Rocket" <<std::endl;
-			this->addRocket(rocket);
-	}
+	//unnecessary as rocket is added when the server tells us about it anyway
+ //   if (isLocal) 
+	//	{
+	//		std::cout<<"Local Rocket" <<std::endl;
+	//		this->addRocket(rocket);
+	//}
 	this->network->sendRocket(rocket->position,rocket->orientation);
 }
 
@@ -801,6 +802,7 @@ void GameTestThing::rocketExploded(Rocket *rocket, Explosion *explosion)
 		this->addExplosion(explosion);
 		this->network->sendExplosion(explosion->position);
 	}
+	//this should never happen
     if (isLocal) 
 	{
 		std::cout<<"Local Explosion" <<std::endl;
@@ -1025,8 +1027,9 @@ void GameTestThing::addRocket(Rocket *rocket)
     this->game->objects.insert(rocket);
 
     new RocketGraphics(rocket, this->game->mSceneMgr);
-    new RocketPhysics(rocket, this->game->dynamicsWorld);
     new RocketSound(rocket, this->sounds->engine);
+	if(isServer)
+		new RocketPhysics(rocket, this->game->dynamicsWorld);
 
     rocket->signals.exploded.connect(boost::bind(&GameTestThing::rocketExploded, this, _1, _2));
 }

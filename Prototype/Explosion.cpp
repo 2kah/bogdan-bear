@@ -27,18 +27,12 @@ Explosion::~Explosion(void)
 
 void Explosion::update(void)
 {
-    if (size < 100 && !isMassive)
+    if (size < 50)
     {
         ++size;
     
         this->signals.updated(this);
     }
-	else if (size < 200 && isMassive)
-	{
-		++size;
-
-		this->signals.updated(this);
-	}
     else
     {
         this->signals.finished(this);
