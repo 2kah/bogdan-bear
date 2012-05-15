@@ -21,6 +21,7 @@ public:
 	virtual void ReloadSound(Player *player);
     virtual void createPlatformStop();
 	virtual void enterTurretSound(Turret *turret);
+	virtual void exitTurret();
 
     irrklang::ISoundEngine *engine;
 	irrklang::ISound *create;

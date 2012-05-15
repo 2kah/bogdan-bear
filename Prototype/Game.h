@@ -54,10 +54,20 @@ protected:
     GameTestThing *gameTestThing;
 
     PlayerInput playerInput;
+	irrklang::ISoundEngine *enginestart;
 	int gameCount;
 	bool leaderBoard;
 	int interRoundTimer;
 	bool serverGameStarted;
+	OgreBites::Button* b1;
+	OgreBites::Button* b2;
+	OgreBites::Button* b3;
+	OgreBites::Button* b4;
+	OgreBites::Button* butt;
+	Ogre::Overlay* overlay;
+	Ogre::Overlay* overlay2;
+	Ogre::OverlayContainer* panel21;
+	Ogre::OverlayContainer* panel31;
 	
 private:
     std::set<Updatable *> objects;

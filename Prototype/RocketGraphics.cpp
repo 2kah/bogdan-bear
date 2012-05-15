@@ -13,6 +13,7 @@ RocketGraphics::RocketGraphics(Rocket *rocket, Ogre::SceneManager *sceneManager)
     
     this->sceneManager = sceneManager;
     this->entity = sceneManager->createEntity("sphererocket.mesh");
+	this->entity->setMaterialName("sphererocket");
     this->sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode();
     this->sceneNode->attachObject(this->entity);
 

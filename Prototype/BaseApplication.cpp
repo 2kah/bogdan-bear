@@ -145,7 +145,7 @@ void BaseApplication::createFrameListener(void)
     Ogre::OverlayManager& overlayManager = Ogre::OverlayManager::getSingleton();
     
     // Create a panel
-    Ogre::OverlayContainer* panel = static_cast<Ogre::OverlayContainer*>(
+   /* Ogre::OverlayContainer* panel = static_cast<Ogre::OverlayContainer*>(
     overlayManager.createOverlayElement("Panel", "PanelName"));
     panel->setMetricsMode(Ogre::GMM_PIXELS);
     panel->setPosition((mWindow->getWidth()/2), (mWindow->getHeight()/2));
@@ -162,7 +162,7 @@ void BaseApplication::createFrameListener(void)
     overlay->add2D(panel);
     
     // Show the overlay
-    overlay->show();
+    overlay->show();*/
 
     mRoot->addFrameListener(this);
 }

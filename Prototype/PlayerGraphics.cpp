@@ -138,81 +138,84 @@ void PlayerGraphics::playerUpdated(Player *player)
     //this->sceneNode->setOrientation(this->player->orientation * this->player->relativeAim * Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y));
 	if(this->player->prop->isPlayerLocal())
 	{
-	    this->sceneNode->setPosition(this->player->position);
-	    this->camNode->setOrientation(this->player->orientation * this->player->relativeAim * Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y));
-	    //printf("x %f, y %f, z %f\n", this->player->position.x, this->player->position.y, this->player->position.z);
-	    if(this->check >= 1) this->check = 0;
-	    this->check += 0.001;
-
-	    this->team1->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->player->getScore(0)/(double)12000);
-	    this->team2->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->player->getScore(1)/(double)12000);
-	    this->team3->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->player->getScore(2)/(double)12000);
-	    this->team4->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->player->getScore(3)/(double)12000);
-	    this->team1->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->player->getScore(0)/(double)12000);
-	    this->team2->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->player->getScore(1)/(double)12000);
-	    this->team3->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->player->getScore(2)/(double)12000);
-	    this->team4->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->player->getScore(3)/(double)12000);
-
-		int max = 4;
-		int maxScore = 10;
-		for(int i = 0; i < 4; i++) {
-			if(this->player->getScore(i) > maxScore) {
-				max = i;
-				maxScore = this->player->getScore(i);
-			}
+		if(!player->isInTurret) {
+	        this->sceneNode->setPosition(this->player->position);
+	        this->camNode->setOrientation(this->player->orientation * this->player->relativeAim * Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y));
+	        //printf("x %f, y %f, z %f\n", this->player->position.x, this->player->position.y, this->player->position.z);
+	        //if(this->check >= 3000) this->check = 0;
+	        //this->check += 5;
+		    
+	        this->team1->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, +0.028 + 0.222*(this->player->getScore(0)/(double)3000));
+	        this->team2->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, +0.028 + 0.222*(this->player->getScore(1)/(double)3000));
+	        this->team3->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, +0.028 + 0.222*(this->player->getScore(2)/(double)3000));
+	        this->team4->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, +0.028 + 0.222*(this->player->getScore(3)/(double)3000));
+	        this->team1->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, +0.028 + 0.222*(this->player->getScore(0)/(double)3000));
+	        this->team2->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, +0.028 + 0.222*(this->player->getScore(1)/(double)3000));
+	        this->team3->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, +0.028 + 0.222*(this->player->getScore(2)/(double)3000));
+	        this->team4->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, +0.028 + 0.222*(this->player->getScore(3)/(double)3000));
+		    
+		    int max = 4;
+		    int maxScore = 10;
+		    for(int i = 0; i < 4; i++) {
+		    	if(this->player->getScore(i) > maxScore) {
+		    		max = i;
+		    		maxScore = this->player->getScore(i);
+		    	}
+		    }
+		    if(max == 0) {
+		        this->teamWin->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0.7, 0);
+		        this->teamWin->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0.7, 0);
+		    }
+		    else if(max == 1) {
+		        this->teamWin->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, 0.5);
+		        this->teamWin->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, 0.5);
+		    }
+		    else if(max == 2) {
+		        this->teamWin->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, 0.25);
+		        this->teamWin->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, 0.25);
+		    }
+		    else if(max == 3) {
+		        this->teamWin->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0.45, 0);
+		        this->teamWin->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0.45, 0);
+		    }
+		    else {
+		        this->teamWin->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, 0);
+		        this->teamWin->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, 0);
+		    }
+		    
+		    /*this->team1->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->check);
+	        this->team2->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->check);
+	        this->team3->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->check);
+	        this->team4->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->check);
+	        this->team1->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->check);
+	        this->team2->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->check);
+	        this->team3->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->check);
+	        this->team4->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->check);*/
+		    
+	        double ammo = this->player->getAmmo();
+		    int reloading = this->player->getAmmoAmount();
+		    
+		    double ammoClips[] = {-0.4, -0.4, -0.4, -0.4};
+		    for(int i = 0; i < reloading; i++)
+	        {
+		        ammoClips[i] = 0;
+	        }
+		    if(reloading < 4) ammoClips[reloading] = ammo;
+		    
+		    //printf("%lf, %lf, %lf, %lf\n", ammoClips[0], ammoClips[1], ammoClips[2], ammoClips[3]);
+	        this->ammo1->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, ammoClips[0]);
+	        this->ammo2->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, ammoClips[1]);
+	        this->ammo3->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, ammoClips[2]);
+	        this->ammo4->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, ammoClips[3]);
+	        this->ammo1->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, ammoClips[0]);
+	        this->ammo2->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, ammoClips[1]);
+	        this->ammo3->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, ammoClips[2]);
+	        this->ammo4->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, ammoClips[3]);
+		    
+		    this->platforms->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, 0.542 - this->player->getPlatformReload());
+		    this->platforms->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, 0.542 - this->player->getPlatformReload());
 		}
-		if(max == 0) {
-		    this->teamWin->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0.7, 0);
-		    this->teamWin->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0.7, 0);
-		}
-		else if(max == 1) {
-		    this->teamWin->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, 0.5);
-		    this->teamWin->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, 0.5);
-		}
-		else if(max == 2) {
-		    this->teamWin->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, 0.25);
-		    this->teamWin->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, 0.25);
-		}
-		else if(max == 3) {
-		    this->teamWin->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0.45, 0);
-		    this->teamWin->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0.45, 0);
-		}
-		else {
-		    this->teamWin->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, 0);
-		    this->teamWin->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, 0);
-		}
-
-		/*this->team1->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->check);
-	    this->team2->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->check);
-	    this->team3->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->check);
-	    this->team4->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->check);
-	    this->team1->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->check);
-	    this->team2->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->check);
-	    this->team3->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->check);
-	    this->team4->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, this->check);*/
-
-	    double ammo = this->player->getAmmo();
-		int reloading = this->player->getAmmoAmount();
-
-		double ammoClips[] = {-0.4, -0.4, -0.4, -0.4};
-		for(int i = 0; i < reloading; i++)
-	    {
-		    ammoClips[i] = 0;
-	    }
-		if(reloading < 4) ammoClips[reloading] = ammo;
-
-		//printf("%lf, %lf, %lf, %lf\n", ammoClips[0], ammoClips[1], ammoClips[2], ammoClips[3]);
-	    this->ammo1->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, ammoClips[0]);
-	    this->ammo2->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, ammoClips[1]);
-	    this->ammo3->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, ammoClips[2]);
-	    this->ammo4->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, ammoClips[3]);
-	    this->ammo1->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, ammoClips[0]);
-	    this->ammo2->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, ammoClips[1]);
-	    this->ammo3->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, ammoClips[2]);
-	    this->ammo4->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, ammoClips[3]);
-
-		this->platforms->getSubEntity(0)->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, 0.542 - this->player->getPlatformReload());
-		this->platforms->getSubEntity(0)->getMaterial()->getTechnique(1)->getPass(0)->getTextureUnitState(0)->setTextureScroll(0, 0.542 - this->player->getPlatformReload());
+		else {this->sceneNode->setPosition(0,-100,0);}
 	}
 	else
 	{
