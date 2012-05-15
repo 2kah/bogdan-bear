@@ -30,6 +30,7 @@ Player::Player(Ogre::Vector3 position)
 	, cooldown(50)
 	, platformTimer(1000)
     , spawnID(0)
+	, isInTurret(false)
 {
 }
 
@@ -228,11 +229,13 @@ void Player::use(bool state)
 //TODO: remove these 2 (testing purposes only)
 void Player::enteredTurret()
 {
+	this->isInTurret = true;
 	this->signals.enteredTurret(this);
 }
 
 void Player::exitedTurret()
 {
+	this->isInTurret = false;
 	this->signals.exitedTurret(this);
 }
 

@@ -38,7 +38,7 @@ void Turret::update()
 	Ogre::Vector3 d;
 	print_delay++;
 
-	if (print_delay >200)
+	if (print_delay >500)
 	{
 	printf("turret update loop: ");
 	if (this->occ) 

@@ -20,7 +20,7 @@ PlatformPhysics::PlatformPhysics(Platform *platform, btDiscreteDynamicsWorld *dy
     this->platform->signals.destroyed.connect(boost::bind(&PlatformPhysics::platformExpired, this, _1));
 
 	//TODO: tweak
-	btVector3 platformSize(10, 1, 10);
+	btVector3 platformSize(12, 1, 12);
 
 	btBoxShape *shape = new btBoxShape(platformSize);
 

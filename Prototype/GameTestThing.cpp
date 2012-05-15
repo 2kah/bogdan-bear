@@ -199,10 +199,10 @@ void GameTestThing::buildScene()
     //this->game->objects.insert(builder);
 
     // Add four turrets
-	Turret *turret1 = new Turret(Ogre::Vector3(0, 130, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y),this->network, true);
-	Turret *turret2 = new Turret(Ogre::Vector3(0, 130, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y),this->network, true);
-	Turret *turret3 = new Turret(Ogre::Vector3(400, 130, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y),this->network, true);
-	Turret *turret4 = new Turret(Ogre::Vector3(-400, 130, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y),this->network, true);
+	Turret *turret1 = new Turret(Ogre::Vector3(0, 146.5, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y),this->network, true);
+	Turret *turret2 = new Turret(Ogre::Vector3(0, 146.5, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y),this->network, true);
+	Turret *turret3 = new Turret(Ogre::Vector3(400, 146.5, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y),this->network, true);
+	Turret *turret4 = new Turret(Ogre::Vector3(-400, 146.5, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y),this->network, true);
 
     this->addTurret(turret1);
     this->addTurret(turret2);
@@ -215,11 +215,15 @@ void GameTestThing::buildScene()
 
 	Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowlchip.mesh");
     Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
+	sceneNode->setPosition(Ogre::Vector3(0,16.5,0));
     sceneNode->attachObject(bowl);
     sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
 
-    btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
-	fileLoader->loadFile("BowlBul.bullet");
+	btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
+	fileLoader->loadFile("harshna4.bullet");
+
+	btBulletWorldImporter* fileLoader2 = new btBulletWorldImporter(this->game->dynamicsWorld);
+	fileLoader2->loadFile("wallsWithLid.bullet");
 
 }
 
@@ -338,10 +342,10 @@ void GameTestThing::startLocal()
     //this->game->objects.insert(builder);
 
     // Add four turrets
-    Turret *turret1 = new Turret(Ogre::Vector3(0, 130, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y),this->network, true);
-	Turret *turret2 = new Turret(Ogre::Vector3(0, 130, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y),this->network, true);
-	Turret *turret3 = new Turret(Ogre::Vector3(400, 130, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y),this->network, true);
-	Turret *turret4 = new Turret(Ogre::Vector3(-400, 130, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y),this->network, true);
+    Turret *turret1 = new Turret(Ogre::Vector3(0, 146.5, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y),this->network, true);
+	Turret *turret2 = new Turret(Ogre::Vector3(0, 146.5, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y),this->network, true);
+	Turret *turret3 = new Turret(Ogre::Vector3(400, 146.5, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y),this->network, true);
+	Turret *turret4 = new Turret(Ogre::Vector3(-400, 146.5, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y),this->network, true);
 
     this->addTurret(turret1);
     this->addTurret(turret2);
@@ -376,10 +380,14 @@ void GameTestThing::startLocal()
 	Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowlchip.mesh");
     Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
     sceneNode->attachObject(bowl);
+	sceneNode->setPosition(Ogre::Vector3(0,16.5,0));
     sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
 
-    btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
-	fileLoader->loadFile("BowlBul.bullet");
+	btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
+	fileLoader->loadFile("harshna4.bullet");
+
+	btBulletWorldImporter* fileLoader2 = new btBulletWorldImporter(this->game->dynamicsWorld);
+	fileLoader2->loadFile("wallsWithLid.bullet");
 
 	this->game->game=true;
     // Set the turret to aim at the player always. Setting it to NULL makes it shoot randomly at the tower.
@@ -419,11 +427,14 @@ void GameTestThing::startClient()
 	Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowlchip.mesh");
     Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
     sceneNode->attachObject(bowl);
-    sceneNode->setPosition(Ogre::Vector3(0,14,0));
+    sceneNode->setPosition(Ogre::Vector3(0,16.5,0));
     sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
 
-    btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
-	fileLoader->loadFile("bowlup.bullet");
+	btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
+	fileLoader->loadFile("harshna4.bullet");
+
+	btBulletWorldImporter* fileLoader2 = new btBulletWorldImporter(this->game->dynamicsWorld);
+	fileLoader2->loadFile("wallsWithLid.bullet");
     //btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
 	//fileLoader->loadFile("BowlBul.bullet");\\\\\\\\\\\\\\\
 
@@ -431,10 +442,10 @@ void GameTestThing::startClient()
 
 	this->network->startNetwork(false);
 
-	Turret *turret1 = new Turret(Ogre::Vector3(0, 130, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y),this->network, true);
-	Turret *turret2 = new Turret(Ogre::Vector3(0, 130, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y),this->network, true);
-	Turret *turret3 = new Turret(Ogre::Vector3(400, 130, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y),this->network, true);
-	Turret *turret4 = new Turret(Ogre::Vector3(-400, 130, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y),this->network, true);
+	Turret *turret1 = new Turret(Ogre::Vector3(0, 146.5, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y),this->network, true);
+	Turret *turret2 = new Turret(Ogre::Vector3(0, 146.5, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y),this->network, true);
+	Turret *turret3 = new Turret(Ogre::Vector3(400, 146.5, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y),this->network, true);
+	Turret *turret4 = new Turret(Ogre::Vector3(-400, 146.5, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y),this->network, true);
 
 
 	turret1->isClientSide=true;
@@ -506,10 +517,13 @@ void GameTestThing::startServer()
 	Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowlchip.mesh");
     Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
     sceneNode->attachObject(bowl);
-    sceneNode->setPosition(Ogre::Vector3(0,14,0));
+    sceneNode->setPosition(Ogre::Vector3(0,16.5,0));
     sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
-    btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
-	fileLoader->loadFile("bowlup.bullet");
+	btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
+	fileLoader->loadFile("harshna4.bullet");
+
+	btBulletWorldImporter* fileLoader2 = new btBulletWorldImporter(this->game->dynamicsWorld);
+	fileLoader2->loadFile("wallsWithLid.bullet");
 	this->network->g = this->goal;
 	this->network->startNetwork(true);
     
@@ -589,10 +603,13 @@ void GameTestThing::startNewRoundServer()
 	Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowlchip.mesh");
     Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
     sceneNode->attachObject(bowl);
-    sceneNode->setPosition(Ogre::Vector3(0,14,0));
+    sceneNode->setPosition(Ogre::Vector3(0,16.5,0));
     sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
-    btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
-	fileLoader->loadFile("bowlup.bullet");
+	btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
+	fileLoader->loadFile("harshna4.bullet");
+
+	btBulletWorldImporter* fileLoader2 = new btBulletWorldImporter(this->game->dynamicsWorld);
+	fileLoader2->loadFile("wallsWithLid.bullet");
 	this->network->g = this->goal;
     
     //// listen for new players, adding them when they come
@@ -664,18 +681,21 @@ void GameTestThing::startNewRoundClient()
 	Ogre::Entity *bowl = this->game->mSceneMgr->createEntity("Bowlchip.mesh");
     Ogre::SceneNode *sceneNode = this->game->mSceneMgr->getRootSceneNode()->createChildSceneNode();
     sceneNode->attachObject(bowl);
-    sceneNode->setPosition(Ogre::Vector3(0,14,0));
+    sceneNode->setPosition(Ogre::Vector3(0,16.5,0));
     sceneNode->setScale(30*Ogre::Vector3::UNIT_SCALE);
 
-    btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
-	fileLoader->loadFile("bowlup.bullet");
+	btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
+	fileLoader->loadFile("harshna4.bullet");
+
+	btBulletWorldImporter* fileLoader2 = new btBulletWorldImporter(this->game->dynamicsWorld);
+	fileLoader2->loadFile("wallsWithLid.bullet");
     //btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
 	//fileLoader->loadFile("BowlBul.bullet");
 
-	Turret *turret1 = new Turret(Ogre::Vector3(0, 130, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y),this->network, true);
-	Turret *turret2 = new Turret(Ogre::Vector3(0, 130, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y),this->network, true);
-	Turret *turret3 = new Turret(Ogre::Vector3(400, 130, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y),this->network, true);
-	Turret *turret4 = new Turret(Ogre::Vector3(-400, 130, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y),this->network, true);
+	Turret *turret1 = new Turret(Ogre::Vector3(0, 146.5, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y),this->network, true);
+	Turret *turret2 = new Turret(Ogre::Vector3(0, 146.5, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y),this->network, true);
+	Turret *turret3 = new Turret(Ogre::Vector3(400, 146.5, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y),this->network, true);
+	Turret *turret4 = new Turret(Ogre::Vector3(-400, 146.5, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y),this->network, true);
 
 	turret1->isClientSide=true;
 	turret1->network_obj=this->network;
@@ -883,6 +903,7 @@ void GameTestThing::playerUsed(Player *player)
 			//turret->setTarget(NULL);
 			player->setTurret(NULL);
 	        player->exitedTurret();
+			this->sounds->exitTurret();
 
 	    }
 	    else
@@ -892,7 +913,7 @@ void GameTestThing::playerUsed(Player *player)
 			{
 				printf("entering turret\n");
 				if (turret->isOccupied())
-					printf("turret is now occupied\n");
+					printf("\n");
 				else
 					printf("errm, logic fail?!\n");
 	    		player->enteredTurret();
@@ -904,7 +925,7 @@ void GameTestThing::playerUsed(Player *player)
 	    }
 	}
     // look at all turrets here and see if the player is getting inside one
-    std::cout << "USING!" << std::endl;
+    //std::cout << "USING!" << std::endl;
 }
 
 void GameTestThing::setLocalPlayer(Player *player)
