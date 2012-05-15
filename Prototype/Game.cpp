@@ -287,6 +287,7 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
 			//overlayManager.getByName("OverlayName")->clear();
 			mTrayMgr->clearAllTrays();
 			mTrayMgr->destroyAllWidgets();
+			//mTrayMgr->hideAll();
 			printf("hereeeeee in if \n");
 			mTrayMgr->createButton(OgreBites::TL_CENTER, "Exit2", "Exit Game");
 			printf("kjgkgj\n");
@@ -298,11 +299,11 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
 			panel31->setMetricsMode(Ogre::GMM_PIXELS);
 			panel31->setPosition(10, 10);
 			panel31->_setDimensions(0.95, 0.95);
-		
+			
 			Ogre::MaterialPtr options = Ogre::MaterialManager::getSingleton().create("options", "General");
 			options->getTechnique(0)->getPass(0)->createTextureUnitState("playercontrols.png");
 			panel31->setMaterialName("options");
-
+			
 			mTrayMgr->showAll();
 		}
 		else{
@@ -615,6 +616,32 @@ void Game::endRound()
 	Ogre::OverlayManager& overlayManager = Ogre::OverlayManager::getSingleton();
 
 	overlayManager.destroyAllOverlayElements();
+	//overlayManager.destroyOverlayElement("OverlayName");
+	/*overlayManager.destroyOverlayElement("AAAPanelName3");
+	overlayManager.destroyOverlayElement("AAAPanelName4");
+	overlayManager.destroyOverlayElement("AAAPanelName5");
+	overlayManager.destroyOverlayElement("AAAPanelName6");
+	overlayManager.destroyOverlayElement("AAAPanelName7");
+	overlayManager.destroyOverlayElement("CharGreenPanel");
+	overlayManager.destroyOverlayElement("CharOrangePanel");
+	overlayManager.destroyOverlayElement("CharPurplePanel");
+	overlayManager.destroyOverlayElement("CharRedPanel");
+	overlayManager.destroyOverlayElement("PanelName1");
+	overlayManager.destroyOverlayElement("PanelName2");
+	overlayManager.destroyOverlayElement("PanelName21");
+	overlayManager.destroyOverlayElement("PanelName22");
+	overlayManager.destroyOverlayElement("greenTeamPoints");
+	overlayManager.destroyOverlayElement("greenTeamWins");
+	overlayManager.destroyOverlayElement("numberOfWins");
+	overlayManager.destroyOverlayElement("orangeTeamPoints");
+	overlayManager.destroyOverlayElement("orangeTeamWins");
+	overlayManager.destroyOverlayElement("purpleTeamPoints");
+	overlayManager.destroyOverlayElement("purpleTeamWins");
+	overlayManager.destroyOverlayElement("redTeamPoints");
+	overlayManager.destroyOverlayElement("redTeamWins");
+	overlayManager.destroyOverlayElement("teamWins");
+	overlayManager.destroyOverlayElement("timeHeld");*/
+
 	//overlayManager.getByName("OverlayName")->clear();
 	if(overlayManager.getByName("OverlayName") != NULL)
 	{
@@ -951,7 +978,7 @@ void Game::startRound()
 	}
     // Create a panel
     Ogre::OverlayContainer* panel = static_cast<Ogre::OverlayContainer*>(
-    overlayManager.createOverlayElement("Panel", "PanelName1"));
+    overlayManager.createOverlayElement("Panel", "PanelName121"));
     panel->setMetricsMode(Ogre::GMM_PIXELS);
     panel->setPosition((mWindow->getWidth()/2)-10, (mWindow->getHeight()/2)-10);
 	panel->setDimensions(20,20);
