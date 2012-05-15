@@ -179,7 +179,7 @@ void Player::fire(bool state)
                 Ogre::Quaternion orientation = this->orientation * this->relativeAim;
                 orientation = orientation * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
 		    
-                this->signals.fired(this, new Rocket(this->position + Ogre::Vector3::UNIT_Y * 9.0 + (orientation * Ogre::Vector3::UNIT_X * 15.4), orientation));
+                this->signals.fired(this, new Rocket(this->position + Ogre::Vector3::UNIT_Y * 9.0 + (orientation * Ogre::Vector3::UNIT_X * 10.0), orientation));
 		    	this->rocketAmmo--;
 		    	std::cout << "Ammo " << this->rocketAmmo << std::endl;
 		    	this->needsReload = true;
@@ -204,7 +204,7 @@ void Player::create(bool state)
 			platformPosition.y -= 6;
 			this->signals.sendPlatform(platformPosition, this->orientation);
 
-			this->signals.platform(this, new Platform(platformPosition, this->orientation));
+			//this->signals.platform(this, new Platform(platformPosition, this->orientation));
 			//TODO: tweak
 			//number of seconds until player can place another platform (* 100)
 			this->platformTimer = 500;

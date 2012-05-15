@@ -30,7 +30,7 @@ ExplosionPhysics::ExplosionPhysics(Explosion *explosion, btDiscreteDynamicsWorld
     btVector3 position(this->explosion->position.x, this->explosion->position.y, this->explosion->position.z);
 	double size = Explosion::SIZE;
 	if(explosion->isMassive)
-		size *= 10;
+		size *= 2.5;
     this->ghost->setCollisionShape(new btSphereShape(size));
 
     this->ghost->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
@@ -53,8 +53,6 @@ ExplosionPhysics::ExplosionPhysics(Explosion *explosion, btDiscreteDynamicsWorld
         if (object != NULL) {
             if (object->type == TOWER_CHUNK) {
                 this->tower = static_cast<PhysicsChunk *>(object)->tower;
-            } else if (object->type == PLATFORM) {
-                static_cast<PlatformPhysics *>(object)->platform->destroy();
             }
 
             object->explode(this->explosion);

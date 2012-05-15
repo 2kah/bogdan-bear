@@ -27,7 +27,7 @@
 #include "GameTestThing.h"
 
 Game::Game()
-	: game(false)
+	: game(false), serverGameStarted(false)
 {
 #ifdef _DEBUG
     mResourcesCfg = "resources_d.cfg";
@@ -137,6 +137,7 @@ void Game::run(char *hostIP)
     int counted = 0;
 	this->gameCount = 0;
 	this->leaderBoard = false;
+	this->interRoundTimer = 0;
 	//bool game = true;
     while (true)
     {
@@ -173,6 +174,35 @@ void Game::run(char *hostIP)
                 }
 			
                 this->gameTestThing->update();
+			}
+			//start new round x seconds after old one ended
+			else if(this->serverGameStarted && this->gameTestThing->network->hosting)
+			{
+				if(this->interRoundTimer < 1500)
+					this->interRoundTimer++;
+				//remove the leader board and put players in spawn locations after 10 secs
+				if(this->interRoundTimer == 1000)
+				{
+					startRound();
+					this->mRoot->clearEventTimes();
+					this->gameTestThing->destroyScene();
+					this->gameTestThing->resetScores();
+					this->gameTestThing->network->sendStartGame();
+					this->gameTestThing->startNewRoundServer();
+					for(int i = 0; i < 10000; i++) {
+						//printf("%i\n", i);
+					}
+					leaderBoard = false;
+				}
+				//then start the game after waiting another 5 secs
+				else if(this->interRoundTimer == 1500)
+				{
+					this->gameTestThing->network->sendStartGame();
+					game = true;
+					this->gameTestThing->network->sendExplosion((Ogre::Vector3(0, 240, 0)),true);
+
+					this->interRoundTimer = 0;
+				}
 			}
 
             simTime += simFrameLength;
@@ -226,11 +256,14 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
     
 	if (arg.key == OIS::KC_RETURN && this->gameTestThing->network->hosting && game == false) {
 		if(!this->leaderBoard) {
+			//then this
 		    this->gameTestThing->network->sendStartGame();
 		    game = true;
 		    this->gameTestThing->network->sendExplosion((Ogre::Vector3(0, 240, 0)),true);
+			this->serverGameStarted = true;
 		}
 		else {
+			//server should do this after x time
 			startRound();
 			mTrayMgr->hideCursor();
 			mTrayMgr->destroyAllWidgets();
