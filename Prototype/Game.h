@@ -56,6 +56,8 @@ protected:
     PlayerInput playerInput;
 	int gameCount;
 	bool leaderBoard;
+	int interRoundTimer;
+	bool serverGameStarted;
 	
 private:
     std::set<Updatable *> objects;
