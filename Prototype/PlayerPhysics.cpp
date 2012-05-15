@@ -151,15 +151,22 @@ void PlayerPhysics::playerUpdated(Player *player)
 			}
 			walk += (oldWalkDirection * btScalar(0.99));
 			
-			actualMovement += walk;
-			
-			if(actualMovement.length() > maxMoveSpeed)
+			//cap maximum player move speed
+			if(walk.length() > maxMoveSpeed)
 			{
-				actualMovement = actualMovement.normalize();
-				actualMovement *= maxMoveSpeed;
+				walk = walk.normalize();
+				walk *= maxMoveSpeed;
 			}
 
+			actualMovement += walk;
 		}
+		//cap maximum move speed
+		if(actualMovement.length() > btScalar(0.9))
+		{
+			actualMovement = actualMovement.normalize();
+			actualMovement *= btScalar(0.9);
+		}
+
 		m_character->setWalkDirection(actualMovement);
 		oldPosition = xform.getOrigin();
 		oldWalkDirection = actualMovement;
