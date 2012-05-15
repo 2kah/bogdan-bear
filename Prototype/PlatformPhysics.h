@@ -17,6 +17,7 @@ public:
     Platform *platform;
 protected:
     virtual void platformExpired(Platform *platform);
+    virtual void explode(Explosion *explosion);
 
     btDiscreteDynamicsWorld *dynamicsWorld;    
 	btRigidBody *body;
