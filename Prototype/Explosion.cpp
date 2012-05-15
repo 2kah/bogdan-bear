@@ -27,7 +27,7 @@ Explosion::~Explosion(void)
 
 void Explosion::update(void)
 {
-    if (size < 100)
+    if (size < 50)
     {
         ++size;
     
