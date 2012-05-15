@@ -241,13 +241,13 @@ void GameTestThing::destroyScene()
 		}
 	}
 	this->playersGraphics.clear();
-	/*Turret *turret;
+	Turret *turret;
 	for(std::set<Turret *>::iterator i = this->turrets.begin(); i != this->turrets.end(); ++i)
     {
         turret = *i;
 		delete turret;
     }
-	this->turrets.clear();*/
+	this->turrets.clear();
 	//delete this->towerBuilder;
 	this->game->mSceneMgr->getRootSceneNode()->removeAndDestroyAllChildren();
 	this->game->mSceneMgr->destroyAllEntities();
@@ -671,6 +671,28 @@ void GameTestThing::startNewRoundClient()
 	fileLoader->loadFile("bowlup.bullet");
     //btBulletWorldImporter* fileLoader = new btBulletWorldImporter(this->game->dynamicsWorld);
 	//fileLoader->loadFile("BowlBul.bullet");
+
+	Turret *turret1 = new Turret(Ogre::Vector3(0, 130, 400), Ogre::Quaternion(Ogre::Degree(-180), Ogre::Vector3::UNIT_Y),this->network, true);
+	Turret *turret2 = new Turret(Ogre::Vector3(0, 130, -400), Ogre::Quaternion(Ogre::Degree(-0), Ogre::Vector3::UNIT_Y),this->network, true);
+	Turret *turret3 = new Turret(Ogre::Vector3(400, 130, 0), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y),this->network, true);
+	Turret *turret4 = new Turret(Ogre::Vector3(-400, 130, 0), Ogre::Quaternion(Ogre::Degree(-270), Ogre::Vector3::UNIT_Y),this->network, true);
+
+	turret1->isClientSide=true;
+	turret1->network_obj=this->network;
+	
+	turret2->isClientSide=true;
+	turret2->network_obj=this->network;
+
+	turret3->isClientSide=true;
+	turret3->network_obj=this->network;
+	
+	turret4->isClientSide=true;
+	turret4->network_obj=this->network;
+
+    this->addTurret(turret1);
+    this->addTurret(turret2);
+    this->addTurret(turret3);
+    this->addTurret(turret4);
 }
 
 void GameTestThing::netSendChat(std::string message)

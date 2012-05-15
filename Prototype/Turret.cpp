@@ -41,13 +41,15 @@ void Turret::update()
 	if (print_delay >200)
 	{
 	printf("turret update loop: ");
-	if (occ) 
+	if (this->occ) 
 		printf("OCCUPIED!!\n");
-	else
+	else if(this->playerTimer > 0)
+		printf("empty but locked\n");
+	else 
 		printf("empty\n");
 	print_delay = 0;
 	}
-	if(!occ)
+	if(!this->occ)
 	{
 		/*
         //if (this->target != NULL) {
@@ -98,10 +100,10 @@ void Turret::update()
         else
         {
             ++this->timer;
-        }f
+        }f*/
 		if(this->playerTimer > 0)
 			this->playerTimer--;
-			*/
+			
 		
 	}
 	else
@@ -131,7 +133,7 @@ bool Turret::setOccupied(bool set, Player *player)
 	if(!set)
 		this->playerTimer = 1000;
 	this->occ = set;
-	if (!this->occ) printf("OCC is now false\n");
+	//if (!this->occ) printf("OCC is now false\n");
 	this->player = player;
 	//TODO: tweak
 	rockets = 10;
