@@ -28,7 +28,7 @@ Player::Player(Ogre::Vector3 position)
 	, rocketAmmo(4)
 	, canFire(true)
 	, cooldown(50)
-	, platformTimer(1000)
+	, platformTimer(500)
     , spawnID(0)
 	, isInTurret(false)
 {
