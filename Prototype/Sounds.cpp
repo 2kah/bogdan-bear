@@ -36,7 +36,6 @@ void Sounds::setListener(Player *player)
 
 void Sounds::listenerUpdated(Player *player)
 {
-
     float x = player->position.x;
 	float y = player->position.y;
 	float z = player->position.z;
@@ -92,9 +91,14 @@ void Sounds::enterTurretSound(Turret *turret)
 	float z = turret->position.z;
 
 	irrklang::vec3df position(x, y, z);
-	//BtOgre convert wasn't recognised here?
+	this->engine->setSoundVolume(0.5f);
 	enter = this->engine->play3D("sounds/enter_turret.mp3", position, true, false, true);
 	enter->setIsLooped(0);
 
+}
+
+void Sounds::exitTurret()
+{
+	this->engine->setSoundVolume(1.0f);
 }
 
