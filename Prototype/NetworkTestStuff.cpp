@@ -93,7 +93,7 @@ void NetworkTestStuff::recvTurretBusy(RakNet::Packet *packet)
 {
 	TurretInfo* ti = (TurretInfo*)packet->data;
 std:cout << "Receive turret " << ti->turretID << " is " << ti->turretBusy << std::endl;
-	//this->turrets[ti->turretID]->
+	this->turrets[ti->turretID]->isBusy=ti->turretBusy;
 	if (this->hosting) rakPeer->Send((char*)ti,sizeof(TurretInfo), HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
 }
 
