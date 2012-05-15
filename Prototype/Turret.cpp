@@ -126,7 +126,7 @@ void Turret::setTarget(Ogre::Vector3 target)
 bool Turret::setOccupied(bool set, Player *player)
 {
 	//if someone is trying to enter the turret, but it's already inhabited, return false
-	if (isBusy) return false;
+	if (set && isBusy) return false;
 	if(set && this->occ)
 		return false;
 	//if the same player is trying to enter, but the timer isn't finished, return false
