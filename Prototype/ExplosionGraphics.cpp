@@ -33,6 +33,9 @@ ExplosionGraphics::ExplosionGraphics(Explosion *explosion, Ogre::SceneManager *s
 
     this->explosion->signals.finished.connect(boost::bind(&ExplosionGraphics::explosionFinished, this, _1));
     this->explosion->signals.updated.connect(boost::bind(&ExplosionGraphics::explosionUpdated, this, _1));
+
+    if (this->explosion->isMassive)
+        this->sceneNode->scale(Ogre::Vector3::UNIT_SCALE * 2.5);
 }
 
 ExplosionGraphics::~ExplosionGraphics()

@@ -30,7 +30,7 @@ ExplosionPhysics::ExplosionPhysics(Explosion *explosion, btDiscreteDynamicsWorld
     btVector3 position(this->explosion->position.x, this->explosion->position.y, this->explosion->position.z);
 	double size = Explosion::SIZE;
 	if(explosion->isMassive)
-		size *= 1.5;
+		size *= 2.5;
     this->ghost->setCollisionShape(new btSphereShape(size));
 
     this->ghost->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
