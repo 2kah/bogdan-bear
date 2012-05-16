@@ -29,11 +29,13 @@
 #include "Tower.h"
 #include "Game.h"
 #include "Platform.h"
+#include "Rocket.h"
+#include "GameTestThing.h"
 
 #include <boost/math/constants/constants.hpp>
 
 
-
+std::tr1::unordered_map<uint64_t, Rocket*> RocketByID;
 std::tr1::unordered_map<uint64_t, NetPlayer*> NetPlayerByGUID;
 std::tr1::unordered_map<int, NetPlayer*> NetPlayerByPlayerID;
 
@@ -42,15 +44,15 @@ std::tr1::unordered_map<int, NetPlayer*> NetPlayerByPlayerID;
 
 
 int playerCounter = 0;
-unsigned long rocketCounter = 0;
+unsigned long rocketCounter = 1;
 bool shouldUpload = false;
 int updateDelay = 0;
 
 RakNet::RakPeerInterface *rakPeer;
 RakNet::SocketDescriptor sd;
 
-NetworkTestStuff::NetworkTestStuff(char *hostIP)
-	: lastID(0)
+NetworkTestStuff::NetworkTestStuff(char *hostIP, GameTestThing* gtt)
+	: lastID(0), gamett_obj(gtt)
 {
 	this->myNetPlayer = 0;
 	std::cout << "Init Network" << std::endl;
@@ -73,6 +75,11 @@ NetworkTestStuff::NetworkTestStuff(char *hostIP)
 
 NetworkTestStuff::~NetworkTestStuff()
 {
+}
+
+void NetworkTestStuff::insertRocket(unsigned long ID, Rocket* r)
+{
+	RocketByID.insert(std::pair<uint64_t, Rocket*>(ID, r));
 }
 
 void NetworkTestStuff::setLocalPlayer(Player* p)
@@ -216,8 +223,23 @@ void NetworkTestStuff::sendExplosion(Ogre::Vector3 position)
 		exp.typeId=ID_NEW_EXPLOSION;
 		exp.vector=position;
 		exp.isMassive = false;
+		exp.rocketID=0;
 		rakPeer->Send((char*)&exp,sizeof(exp) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
-		std::cout << "Sending Explosion at: " << "(" << position.x << "," << position.y << "," << position.z << ")"  << std::endl;
+		std::cout << "OLD CODE: Sending Explosion at: " << "(" << position.x << "," << position.y << "," << position.z << ")"  << std::endl;
+	}
+}
+
+void NetworkTestStuff::sendExplosion(Ogre::Vector3 position, unsigned long rID)
+{
+	if (rakPeer >0)
+	{
+		NetExplosion exp;
+		exp.typeId=ID_NEW_EXPLOSION;
+		exp.vector=position;
+		exp.isMassive = false;
+		exp.rocketID=rID;
+		rakPeer->Send((char*)&exp,sizeof(exp) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+		std::cout << "NEW CODE: Rocket "<< rID <<" caused Explosion at: " << "(" << position.x << "," << position.y << "," << position.z << ")"  << std::endl;
 	}
 }
 
@@ -229,6 +251,7 @@ void NetworkTestStuff::sendExplosion(Ogre::Vector3 position, bool isMassive)
 		exp.typeId=ID_NEW_EXPLOSION;
 		exp.vector=position;
 		exp.isMassive = isMassive;
+		exp.rocketID=0;
 		rakPeer->Send((char*)&exp,sizeof(exp) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
 		std::cout << "Sending Massive Explosion at: " << "(" << position.x << "," << position.y << "," << position.z << ")"  << std::endl;
 	}
@@ -469,6 +492,32 @@ void NetworkTestStuff::receiveNewExplosion(RakNet::Packet *packet)
 		std::cout << "Broadcasting explosion" << std::endl;
 		rakPeer->Send((char*)exp,sizeof(*exp) , HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
 	}
+	else
+	{
+		if (exp->rocketID > 0)
+		{
+			std::cout << "Need to destroy rocket id " << exp->rocketID <<std::endl;
+
+			//find rocket from id
+
+			std::tr1::unordered_map<uint64_t, Rocket*>::iterator it = RocketByID.find(exp->rocketID);
+			Rocket* r = it->second;
+			
+			if (!(it == RocketByID.end()))
+			{
+				v = r->position;
+				std::cout << "Rocket to destroy at (" << v.x << "," << v.y << "," << v.z << ")"  << std::endl;
+				r->timer = 2000;
+				//r->explode();
+				//this->gamett_obj->removeQueue.insert(r);
+
+			}	
+			
+
+
+
+		}
+	}
 	this->signals.explosion(v.x, v.y, v.z, exp->isMassive);
 }
 
@@ -488,7 +537,7 @@ void NetworkTestStuff::receiveNewRocket(RakNet::Packet *packet)
 	{
 		std::cout << "Received Rocket ID "<< rocket->rocketID << std::endl;
 	}
-	this->signals.recvRocket(rocket->position, rocket->orientation);
+	this->signals.recvRocket(rocket->position, rocket->orientation, rocket->rocketID);
 }
 
 void NetworkTestStuff::connectedToServer(RakNet::Packet *packet)
