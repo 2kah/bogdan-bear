@@ -7,12 +7,13 @@
 
 const double Rocket::SPEED = 1.3;
 
-Rocket::Rocket(Ogre::Vector3 position, Ogre::Quaternion orientation)
+Rocket::Rocket(Ogre::Vector3 position, Ogre::Quaternion orientation, unsigned long newID)
 {
     this->position = position;
     this->orientation = orientation;
-
+	this->ID=newID;
     this->timer = 0;
+
 }
 
 Rocket::~Rocket()

@@ -22,9 +22,9 @@ public:
 class Rocket: public Updatable, public Object
 {
 public:
+	unsigned long ID;
     static const double SPEED;
-
-    Rocket(Ogre::Vector3 position, Ogre::Quaternion orientation);
+    Rocket(Ogre::Vector3 position, Ogre::Quaternion orientation, unsigned long newID);
     virtual ~Rocket();
 
     virtual void update();
@@ -32,8 +32,8 @@ public:
     RocketSignals signals;
 
     virtual void explode();
-private:
-    unsigned timer;
+	unsigned timer;
+    
 };
 
 #endif // #ifndef __Rocket_h_
