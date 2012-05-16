@@ -50,10 +50,10 @@ Goal::Goal(Ogre::Vector3 position, Player *playerTracked, Ogre::SceneManager *sc
 	this->sceneNode->setPosition(0,goalPosition.y + 20, 0);
 
 	btBulletWorldImporter* fileLoader = new btBulletWorldImporter(dynamicsWorld);
-	fileLoader->loadFile("goal.bullet");
+	fileLoader->loadFile("goal2.bullet");
 	
-	btCollisionObject* obj = dynamicsWorld->getCollisionObjectArray()[dynamicsWorld->getNumCollisionObjects()-1];
-	obj->setWorldTransform(btTransform(btQuaternion(), btVector3(0,goalPosition.y + 20, 0)));
+	//btCollisionObject* obj = dynamicsWorld->getCollisionObjectArray()[dynamicsWorld->getNumCollisionObjects()-1];
+	//obj->setWorldTransform(btTransform(btQuaternion(), btVector3(0,goalPosition.y + 20, 0)));
 }
 
 Goal::~Goal()
