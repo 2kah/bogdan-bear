@@ -68,6 +68,7 @@ protected:
 	Ogre::Overlay* overlay2;
 	Ogre::OverlayContainer* panel21;
 	Ogre::OverlayContainer* panel31;
+	Ogre::OverlayContainer* panel;
 	
 private:
     std::set<Updatable *> objects;
