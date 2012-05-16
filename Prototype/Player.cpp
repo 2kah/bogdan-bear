@@ -8,7 +8,7 @@
 #include <OGRE/OgreQuaternion.h>
 
 #include "PlayerInput.h"
-
+#include "PlayerSound.h"
 #include "Platform.h"
 #include "Rocket.h"
 
@@ -40,6 +40,7 @@ Player::~Player()
 
 void Player::setState(Ogre::Vector3 position, Ogre::Vector3 velocity, Ogre::Quaternion orientation)
 {
+	//PlayerSound* plays = new PlayerSound(this);
 	this->oldPosition = this->position;
     this->position = position;
     this->velocity = velocity;
@@ -48,8 +49,14 @@ void Player::setState(Ogre::Vector3 position, Ogre::Vector3 velocity, Ogre::Quat
 	this->newPosition = this->position;
 
 	Ogre::Vector3 difference = this->oldPosition - this->newPosition;
-	if(sqrt(pow(difference.x,2) + pow(difference.z,2)) > 1) this->anim = true;
-	else this->anim = false;
+	if(sqrt(pow(difference.x,2) + pow(difference.z,2)) > 1){
+		//plays->PlayerWalk(this);
+		this->anim = true;
+	}
+	else{
+		//plays->PlayerStop(this);
+		this->anim = false;
+	}
 
     //this->update();
 

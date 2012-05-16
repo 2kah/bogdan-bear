@@ -11,7 +11,7 @@ class PlayerSound
 public:
     PlayerSound(Player *player);
     virtual ~PlayerSound();
-protected:
+
     virtual void PlayerWalk(Player *player);
     virtual void PlayerStop(Player *player);
 
