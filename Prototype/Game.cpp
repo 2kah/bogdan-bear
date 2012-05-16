@@ -372,31 +372,31 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
 	{
         this->playerInput.signals.jump(true);
 	}
-	else if (arg.key == OIS::KC_F12)
-	{
-		//this->gameTestThing->netSendExplosion(1.0,2.0,3.0);
-	}
-	else if (arg.key == OIS::KC_F8)
-	{
-		//this->gameTestThing->startClient();
-		//mTrayMgr->hideCursor();
-	}
-	else if (arg.key == OIS::KC_F9)
-	{
-		//this->gameTestThing->startServer();
-		//mTrayMgr->hideCursor();
-	}
-	else if (arg.key == OIS::KC_F10)
-	{
-		//printf("%d - %d = %d\n",sizeof(NetTower),420000,sizeof(NetTower)-420000);
-		//this->gameTestThing->resetTower();
-    }
-    else if (arg.key == OIS::KC_F11)
-	{
-		//this->gameTestThing->startLocal();
-		//mTrayMgr->hideCursor();
-    }
-    //else if (arg.key == OIS::KC_T)
+	//else if (arg.key == OIS::KC_F12)
+	//{
+	//	//this->gameTestThing->netSendExplosion(1.0,2.0,3.0);
+	//}
+	//else if (arg.key == OIS::KC_F8)
+	//{
+	//	//this->gameTestThing->startClient();
+	//	//mTrayMgr->hideCursor();
+	//}
+	//else if (arg.key == OIS::KC_F9)
+	//{
+	//	//this->gameTestThing->startServer();
+	//	//mTrayMgr->hideCursor();
+	//}
+	//else if (arg.key == OIS::KC_F10)
+	//{
+	//	//printf("%d - %d = %d\n",sizeof(NetTower),420000,sizeof(NetTower)-420000);
+	//	//this->gameTestThing->resetTower();
+ //   }
+ //   else if (arg.key == OIS::KC_F11)
+	//{
+	//	this->gameTestThing->startLocal();
+	//	mTrayMgr->hideCursor();
+ //   }
+ //   //else if (arg.key == OIS::KC_T)
     //{
     //    this->playerInput.signals.use(true);
 	//}

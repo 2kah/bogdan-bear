@@ -70,11 +70,11 @@ GameTestThing::GameTestThing(Game *game, char *hostIP)
         spawn_points[i] = spawn;
     }
     
-    this->network = new NetworkTestStuff(hostIP);
+    this->network = new NetworkTestStuff(hostIP, this);
 	this->network->game_obj = this->game;
     this->network->signals.chat.connect(boost::bind(&GameTestThing::chatReceived, this, _1));
     this->network->signals.explosion.connect(boost::bind(&GameTestThing::networkExplosion, this, _1, _2, _3, _4));
-	this->network->signals.recvRocket.connect(boost::bind(&GameTestThing::networkRocket, this, _1, _2));
+	this->network->signals.recvRocket.connect(boost::bind(&GameTestThing::networkRocket, this, _1, _2, _3));
     //this->game->objects.insert(this->network);
 	this->network->signals.recvPlatform.connect(boost::bind(&GameTestThing::platformReceived, this, _1));
 	this->network->signals.addPlayer.connect(boost::bind(&GameTestThing::addPlayer, this, _1, _2));
@@ -783,13 +783,19 @@ void GameTestThing::playerFired(Player *player, Rocket *rocket)
 
 void GameTestThing::rocketExploded(Rocket *rocket, Explosion *explosion)
 {
+	printf("IN ROCKET EXPLODE CODE\n");
+	try{
     this->removeQueue.insert(rocket);
+	printf ("REMOVED ROCKET\n");
+	}
+	catch (char * ex)
+	{}
     // TODO: refactor
 
     if (isServer)
 	{
 		this->addExplosion(explosion);
-		this->network->sendExplosion(explosion->position);
+		this->network->sendExplosion(explosion->position, rocket->ID);
 	}
 	//this should never happen
     if (isLocal) 
@@ -851,9 +857,10 @@ void GameTestThing::networkExplosion(double x, double y, double z, bool isMassiv
     this->addExplosion(explosion);
 }
 
-void GameTestThing::networkRocket(Ogre::Vector3 position, Ogre::Quaternion orientation)
+void GameTestThing::networkRocket(Ogre::Vector3 position, Ogre::Quaternion orientation, unsigned long ID)
 {
-	Rocket* rocket = new Rocket(position,orientation);
+	Rocket* rocket = new Rocket(position,orientation, ID);
+	this->network->insertRocket(ID,rocket);
 	this->addRocket(rocket);
 }
 
@@ -991,7 +998,7 @@ void GameTestThing::removePlayer(Player *player)
 				this->playersGraphics[position] = NULL;
 			}
 			if(it2 != this->playersGraphics.end()) ++it2;
-			position++;
+			position++; 
 		}
 	}
 
@@ -1020,6 +1027,7 @@ void GameTestThing::addRocket(Rocket *rocket)
 
     new RocketGraphics(rocket, this->game->mSceneMgr);
     new RocketSound(rocket, this->sounds->engine);
+	
 	if(isServer)
 		new RocketPhysics(rocket, this->game->dynamicsWorld);
 
