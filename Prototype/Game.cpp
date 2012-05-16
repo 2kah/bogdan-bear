@@ -281,62 +281,79 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
 	}
 	if (arg.key == OIS::KC_ESCAPE)
     {	
-		
-		if(!optionsmenu && !endofRound){
-			optionsmenu = true;
-			//overlayManager.getByName("OverlayName")->clear();
-			mTrayMgr->clearAllTrays();
-			mTrayMgr->destroyAllWidgets();
-			//mTrayMgr->hideAll();
-	        //if(mTrayMgr->getListener() == NULL) printf("mTrayMgr has lost its listener\n");
-			//printf("hereeeeee in if \n");
-			//mTrayMgr->createButton(OgreBites::TL_CENTER, "Exit2", "Exit Game");
-			//printf("kjgkgj\n");
-			//mTrayMgr->createButton(OgreBites::TL_CENTER, "Controls2", "Show Controls");
-			//mTrayMgr->createLabel(OgreBites::TL_CENTER,"info","Press Escape to return to game");
-			//printf("gets here but \n");
-			//In game pause menu
-			
-			panel31->setMetricsMode(Ogre::GMM_PIXELS);
-			panel31->setPosition(10, 10);
-			panel31->_setDimensions(0.95, 0.95);
-			
-			Ogre::MaterialPtr options = Ogre::MaterialManager::getSingleton().create("options", "General");
-			options->getTechnique(0)->getPass(0)->createTextureUnitState("playercontrols.png");
-			panel31->setMaterialName("options");
-			
-			//mTrayMgr->showAll();
-
-			//alreadyshown = TRUE;
-		    mTrayMgr->clearAllTrays();
-		    mTrayMgr->destroyAllWidgets();
-		    //butt->show();
-		    // Create an overlay, and add the panel
-		    if(overlayManager.getByName("OverlayName") == NULL)
-		    {
-		    	overlay2 = overlayManager.create("OverlayName");
+		if(!this->leaderBoard) {
+		    if(!optionsmenu && !endofRound){
+		    	optionsmenu = true;
+		    	//overlayManager.getByName("OverlayName")->clear();
+		    	mTrayMgr->clearAllTrays();
+		    	mTrayMgr->destroyAllWidgets();
+		    	//mTrayMgr->hideAll();
+	            //if(mTrayMgr->getListener() == NULL) printf("mTrayMgr has lost its listener\n");
+		    	//printf("hereeeeee in if \n");
+		    	//mTrayMgr->createButton(OgreBites::TL_CENTER, "Exit2", "Exit Game");
+		    	//printf("kjgkgj\n");
+		    	//mTrayMgr->createButton(OgreBites::TL_CENTER, "Controls2", "Show Controls");
+		    	//mTrayMgr->createLabel(OgreBites::TL_CENTER,"info","Press Escape to return to game");
+		    	//printf("gets here but \n");
+		    	//In game pause menu
+		    	
+		    	panel31->setMetricsMode(Ogre::GMM_PIXELS);
+		    	panel31->setPosition(10, 10);
+		    	panel31->_setDimensions(0.95, 0.95);
+		    	
+		    	Ogre::MaterialPtr options = Ogre::MaterialManager::getSingleton().create("options", "General");
+		    	options->getTechnique(0)->getPass(0)->createTextureUnitState("controls.png");
+		    	panel31->setMaterialName("options");
+		    	
+		    	//mTrayMgr->showAll();
+		    
+		    	//alreadyshown = TRUE;
+		        mTrayMgr->clearAllTrays();
+		        mTrayMgr->destroyAllWidgets();
+		        //butt->show();
+		        // Create an overlay, and add the panel
+		        if(overlayManager.getByName("OverlayName") == NULL)
+		        {
+		        	overlay2 = overlayManager.create("OverlayName");
+		        }
+		        else
+		        {
+		        	overlay2 = overlayManager.getByName("OverlayName");
+		        }
+		        overlay2->setZOrder(200);
+		        overlay2->add2D(panel31);
+		        // Show the overlay
+		        if(!overlay2->isVisible()) 
+		        {
+		        	overlay2->show();	
+		        }
 		    }
-		    else
-		    {
-		    	overlay2 = overlayManager.getByName("OverlayName");
+		    else{
+		    	//if(!alreadyshown){
+		            overlayManager.getByName("OverlayName")->clear();
+		    		mTrayMgr->destroyAllWidgets();
+		    		mTrayMgr->clearAllTrays();
+		    		//mTrayMgr->hideCursor();
+		    		optionsmenu = false;
+		    		Ogre::Overlay* overlay2 = NULL;
+		    		if(overlayManager.getByName("OverlayName") == NULL)
+		    		{
+		    		    overlay2 = overlayManager.create("OverlayName");
+		    		}
+		    		else
+		    		{
+		    			overlay2 = overlayManager.getByName("OverlayName");
+		    		}
+		    		overlay2->add2D(panel);
+		    		
+		    		// Show the overlay
+		    		if(!overlay2->isVisible()) 
+		    		{
+		    		    overlay2->show();
+		    		}
+		    	//}
+		    	
 		    }
-		    overlay2->setZOrder(200);
-		    overlay2->add2D(panel31);
-		    // Show the overlay
-		    if(!overlay2->isVisible()) 
-		    {
-		    	overlay2->show();	
-		    }
-		}
-		else{
-			//if(!alreadyshown){
-		        overlayManager.getByName("OverlayName")->clear();
-				mTrayMgr->destroyAllWidgets();
-				mTrayMgr->clearAllTrays();
-				//mTrayMgr->hideCursor();
-				optionsmenu = false;
-			//}
-			
 		}
 	}
 	if (!game) return true;
@@ -503,8 +520,8 @@ void Game::buttonHit(OgreBites::Button *button)
     else if(button->getName() == "JoinGame")
 	{
 		this->enginestart->stopAllSounds();
-		this->enginestart->setSoundVolume(0.4f);
-				this->enginestart->play2D("sounds/refactortheme1.mp3");
+		//this->enginestart->setSoundVolume(0.4f);
+				//this->enginestart->play2D("sounds/refactortheme1.mp3");
 		//this->gameTestThing->destroyScene();
 		startRound();
 	    this->mRoot->clearEventTimes();
@@ -517,8 +534,8 @@ void Game::buttonHit(OgreBites::Button *button)
 	else if(button->getName() == "HostGame")
 	{
 				this->enginestart->stopAllSounds();
-				this->enginestart->setSoundVolume(0.4f);
-				this->enginestart->play2D("sounds/refactortheme1.mp3");
+				//this->enginestart->setSoundVolume(0.4f);
+				//this->enginestart->play2D("sounds/refactortheme1.mp3");
 		//this->gameTestThing->destroyScene();
 		startRound();
 	    this->mRoot->clearEventTimes();
@@ -666,10 +683,10 @@ void Game::endRound()
 	overlayManager.destroyOverlayElement("timeHeld");*/
 
 	//overlayManager.getByName("OverlayName")->clear();
-	//if(overlayManager.getByName("OverlayName") != NULL)
-	//{
-		//overlayManager.getByName("OverlayName")->clear();
-	//}
+	if(overlayManager.getByName("OverlayName") != NULL)
+	{
+		overlayManager.getByName("OverlayName")->clear();
+	}
 
 	Ogre::OverlayContainer* panel3 = static_cast<Ogre::OverlayContainer*>(
     overlayManager.createOverlayElement("Panel", "AAAPanelName3"));
@@ -804,6 +821,11 @@ void Game::endRound()
 	teamWins->setParameter("font_name", "MyFont");
     teamWins->setCaption(this->gameTestThing->winningTeam + " TEAM WINS");
     teamWins->setColour(Ogre::ColourValue(0, 0.984, 0.925));
+
+	if(this->gameTestThing->winningTeam == "RED") this->gameTestThing->wins[0]++;
+	else if(this->gameTestThing->winningTeam == "ORANGE") this->gameTestThing->wins[1]++;
+	else if(this->gameTestThing->winningTeam == "PURPLE") this->gameTestThing->wins[2]++;
+	else if(this->gameTestThing->winningTeam == "GREEN") this->gameTestThing->wins[3]++;
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	int time;
@@ -988,7 +1010,9 @@ void Game::startRound()
 	endofRound = false;
 	//setUpPhysicsWorld();
 	//this->gameTestThing->startLocal();
-	mTrayMgr->hideCursor();
+	if(mTrayMgr->isCursorVisible()) {
+	    mTrayMgr->hideCursor();
+	}
     mTrayMgr->destroyAllWidgets();
 	mTrayMgr->clearAllTrays();
 
@@ -1000,7 +1024,7 @@ void Game::startRound()
 		overlayManager.getByName("OverlayName")->clear();
 	}
     // Create a panel
-    Ogre::OverlayContainer* panel = static_cast<Ogre::OverlayContainer*>(
+    panel = static_cast<Ogre::OverlayContainer*>(
     overlayManager.createOverlayElement("Panel", "PanelName1"));
     panel->setMetricsMode(Ogre::GMM_PIXELS);
     panel->setPosition((mWindow->getWidth()/2)-10, (mWindow->getHeight()/2)-10);

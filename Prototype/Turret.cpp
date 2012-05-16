@@ -160,7 +160,7 @@ void Turret::fireTurret()
 		if (this->network_obj > 0)
 		{
 			printf("SENDING NETWORKED TURRET ROCKET (sorry for caps)\n");
-		this->network_obj->sendRocket(this->position, this->orientation);
+		    this->network_obj->sendRocket(Ogre::Vector3(this->position.x,this->position.y - 5,this->position.z), this->orientation);
 		}
 		else
 		{
@@ -170,7 +170,7 @@ void Turret::fireTurret()
 	}
 	else
 	{
-		this->signals.fired(this, new Rocket(this->position, this->orientation));
+		this->signals.fired(this, new Rocket(Ogre::Vector3(this->position.x,this->position.y - 5,this->position.z), this->orientation));
 	}
 	//
 	

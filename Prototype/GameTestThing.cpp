@@ -743,22 +743,22 @@ void GameTestThing::update()
 	    this->localPlayer->setScores(this->network->teamScores);
 	    if(this->network->teamScores[0] > 3000) {
 			this->winningTeam = "RED";
-			this->wins[0]++;
+			//this->wins[0]++;
 			this->goal->setGameOver();
 		}
 	    else if(this->network->teamScores[1] > 3000) {
 			this->winningTeam = "ORANGE";
-			this->wins[1]++;
+			//this->wins[1]++;
 			this->goal->setGameOver();
 		}
 		else if(this->network->teamScores[2] > 3000) {
 			this->winningTeam = "PURPLE";
-			this->wins[2]++;
+			//this->wins[2]++;
 			this->goal->setGameOver();
 		}
 		else if(this->network->teamScores[3] > 3000) {
 			this->winningTeam = "GREEN";
-			this->wins[3]++;
+			//this->wins[3]++;
 			this->goal->setGameOver();
 		}
 	}
@@ -887,7 +887,7 @@ void GameTestThing::playerUsed(Player *player)
 	printf("%f,%f,%f\n",min.x, min.y, min.z);*/
 	if(minDis < 180)
 	{
-	    if(player->position.x == min.x && player->position.y == (min.y - 3) && player->position.z == min.z)
+	    if(player->position.x == min.x && player->position.y == (min.y - 14) && player->position.z == min.z)
 	    {
 			printf("-----setting turret occ to false from gametestthing\n");
 			turret->setOccupied(false, player);
@@ -911,7 +911,7 @@ void GameTestThing::playerUsed(Player *player)
 				player->setTurret(turret);
 				this->sounds->enterTurretSound(turret);
 				player->position.x = turret->position.x;
-				player->position.y = turret->position.y - 3;
+				player->position.y = turret->position.y - 14;
 				player->position.z = turret->position.z;
 			}
 			//turret->setTarget(player);
