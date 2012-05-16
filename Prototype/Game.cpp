@@ -109,11 +109,10 @@ void Game::run(char *hostIP)
 	panel21->_setDimensions(1, 1);
 
 	//Ogre::OverlayManager& overlayManager2 = Ogre::OverlayManager::getSingleton();
-	panel31 = static_cast<Ogre::OverlayContainer*>(
-			overlayManager.createOverlayElement("Panel", "PanelName22"));
+	
 
 	Ogre::MaterialPtr crosshair = Ogre::MaterialManager::getSingleton().create("crosshair", "General");
-	crosshair->getTechnique(0)->getPass(0)->createTextureUnitState("controls.png");
+	crosshair->getTechnique(0)->getPass(0)->createTextureUnitState("splash.png");
 	panel21->setMaterialName("crosshair");
 
 	butt = mTrayMgr->createButton(OgreBites::TL_BOTTOMRIGHT, "Back", "Back to Main Menu");
@@ -184,7 +183,7 @@ void Game::run(char *hostIP)
 				if(this->interRoundTimer == 1000)
 				{
 					startRound();
-					this->mRoot->clearEventTimes();
+					//this->mRoot->clearEventTimes();
 					this->gameTestThing->destroyScene();
 					this->gameTestThing->resetScores();
 					this->gameTestThing->network->sendStartGame();
@@ -268,7 +267,7 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
 			mTrayMgr->hideCursor();
 			mTrayMgr->destroyAllWidgets();
 			mTrayMgr->clearAllTrays();
-	        this->mRoot->clearEventTimes();
+	        //this->mRoot->clearEventTimes();
 	        this->gameTestThing->destroyScene();
 	        this->gameTestThing->resetScores();
 			this->gameTestThing->network->sendStartGame();
@@ -282,11 +281,11 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
 	if (arg.key == OIS::KC_ESCAPE)
     {	
 		if(!this->leaderBoard) {
-		    if(!optionsmenu && !endofRound){
+		    if(!optionsmenu){
 		    	optionsmenu = true;
 		    	//overlayManager.getByName("OverlayName")->clear();
-		    	mTrayMgr->clearAllTrays();
-		    	mTrayMgr->destroyAllWidgets();
+		    	//mTrayMgr->clearAllTrays();
+		    	//mTrayMgr->destroyAllWidgets();
 		    	//mTrayMgr->hideAll();
 	            //if(mTrayMgr->getListener() == NULL) printf("mTrayMgr has lost its listener\n");
 		    	//printf("hereeeeee in if \n");
@@ -297,60 +296,55 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
 		    	//printf("gets here but \n");
 		    	//In game pause menu
 		    	
-		    	panel31->setMetricsMode(Ogre::GMM_PIXELS);
-		    	panel31->setPosition(10, 10);
-		    	panel31->_setDimensions(0.95, 0.95);
-		    	
-		    	Ogre::MaterialPtr options = Ogre::MaterialManager::getSingleton().create("options", "General");
-		    	options->getTechnique(0)->getPass(0)->createTextureUnitState("controls.png");
-		    	panel31->setMaterialName("options");
 		    	
 		    	//mTrayMgr->showAll();
 		    
 		    	//alreadyshown = TRUE;
-		        mTrayMgr->clearAllTrays();
-		        mTrayMgr->destroyAllWidgets();
+		        //mTrayMgr->clearAllTrays();
+		        //mTrayMgr->destroyAllWidgets();
 		        //butt->show();
 		        // Create an overlay, and add the panel
-		        if(overlayManager.getByName("OverlayName") == NULL)
-		        {
-		        	overlay2 = overlayManager.create("OverlayName");
-		        }
-		        else
-		        {
-		        	overlay2 = overlayManager.getByName("OverlayName");
-		        }
-		        overlay2->setZOrder(200);
-		        overlay2->add2D(panel31);
+		        //if(overlayManager.getByName("OverlayName") == NULL)
+		        //{
+		        //	overlay2 = overlayManager.create("OverlayName");
+		        //}
+		        //else
+		        //{
+		        //	overlay2 = overlayManager.getByName("OverlayName");
+		        //}
+		        //overlay2->setZOrder(200);
+		        //overlay2->add2D(panel31);
 		        // Show the overlay
-		        if(!overlay2->isVisible()) 
-		        {
-		        	overlay2->show();	
-		        }
+		        //if(!overlay2->isVisible()) 
+		        //{
+		        //	overlay2->show();	
+		        //}
+				panel31->show();
 		    }
 		    else{
 		    	//if(!alreadyshown){
-		            overlayManager.getByName("OverlayName")->clear();
-		    		mTrayMgr->destroyAllWidgets();
-		    		mTrayMgr->clearAllTrays();
-		    		//mTrayMgr->hideCursor();
 		    		optionsmenu = false;
-		    		Ogre::Overlay* overlay2 = NULL;
-		    		if(overlayManager.getByName("OverlayName") == NULL)
-		    		{
-		    		    overlay2 = overlayManager.create("OverlayName");
-		    		}
-		    		else
-		    		{
-		    			overlay2 = overlayManager.getByName("OverlayName");
-		    		}
-		    		overlay2->add2D(panel);
+		            //overlayManager.getByName("OverlayName")->clear();
+		    		//mTrayMgr->clearAllTrays();
+		    		//mTrayMgr->destroyAllWidgets();
+		    		//mTrayMgr->hideCursor();
+		    		//Ogre::Overlay* overlay2 = NULL;
+		    		//if(overlayManager.getByName("OverlayName") == NULL)
+		    		//{
+		    		//    overlay2 = overlayManager.create("OverlayName");
+		    		//}
+		    		//else
+		    		//{
+		    		//	overlay2 = overlayManager.getByName("OverlayName");
+		    		//}
+		    		//overlay2->add2D(panel);
 		    		
 		    		// Show the overlay
-		    		if(!overlay2->isVisible()) 
-		    		{
-		    		    overlay2->show();
-		    		}
+		    		//if(!overlay2->isVisible()) 
+		    		//{
+		    		//    overlay2->show();
+		    		//}
+					panel31->hide();
 		    	//}
 		    	
 		    }
@@ -399,8 +393,8 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
     }
     else if (arg.key == OIS::KC_F11)
 	{
-		this->gameTestThing->startLocal();
-		mTrayMgr->hideCursor();
+		//this->gameTestThing->startLocal();
+		//mTrayMgr->hideCursor();
     }
     //else if (arg.key == OIS::KC_T)
     //{
@@ -409,11 +403,11 @@ bool Game::keyPressed(const OIS::KeyEvent &arg)
 	//TODO: remove these 2 (testing purposes only)
 	else if (arg.key == OIS::KC_1)
 	{
-		this->playerInput.signals.deactivate(true);
+		//this->playerInput.signals.deactivate(true);
 	}
 	else if (arg.key == OIS::KC_2)
 	{
-		this->playerInput.signals.reactivate(true);
+		//this->playerInput.signals.reactivate(true);
 	}
 	else if (arg.key == OIS::KC_E)
     {
@@ -524,7 +518,7 @@ void Game::buttonHit(OgreBites::Button *button)
 				//this->enginestart->play2D("sounds/refactortheme1.mp3");
 		//this->gameTestThing->destroyScene();
 		startRound();
-	    this->mRoot->clearEventTimes();
+	    //this->mRoot->clearEventTimes();
 	    this->gameTestThing->destroyScene();
 		this->gameTestThing->startClient();
 		mTrayMgr->hideCursor();
@@ -538,7 +532,7 @@ void Game::buttonHit(OgreBites::Button *button)
 				//this->enginestart->play2D("sounds/refactortheme1.mp3");
 		//this->gameTestThing->destroyScene();
 		startRound();
-	    this->mRoot->clearEventTimes();
+	    //this->mRoot->clearEventTimes();
 	    this->gameTestThing->destroyScene();
 		this->gameTestThing->startServer();
 		mTrayMgr->hideCursor();
@@ -1034,6 +1028,15 @@ void Game::startRound()
     //crosshair->getTechnique(0)->getPass(0)->setDepthCheckEnabled(true);
     crosshair->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
     panel->setMaterialName("crosshair2");
+
+	panel31 = static_cast<Ogre::OverlayContainer*>(
+			overlayManager.createOverlayElement("Panel", "PanelName22"));
+	panel31->setMetricsMode(Ogre::GMM_PIXELS);
+	panel31->setPosition(10, 10);
+	panel31->_setDimensions(0.95, 0.95);
+	Ogre::MaterialPtr options = Ogre::MaterialManager::getSingleton().create("options", "General");
+	options->getTechnique(0)->getPass(0)->createTextureUnitState("controls.png");
+	panel31->setMaterialName("options");
     
     // Create an overlay, and add the panel
 	Ogre::Overlay* overlay2 = NULL;
@@ -1046,6 +1049,8 @@ void Game::startRound()
 		overlay2 = overlayManager.getByName("OverlayName");
 	}
     overlay2->add2D(panel);
+	overlay2->add2D(panel31);
+	panel31->hide();
     
     // Show the overlay
 	if(!overlay2->isVisible()) 
@@ -1080,7 +1085,7 @@ void Game::restartClient()
 {
 	if(this->leaderBoard) {
 		startRound();
-	    this->mRoot->clearEventTimes();
+	    //this->mRoot->clearEventTimes();
 	    this->gameTestThing->destroyScene();
 		//for(int i = 0; i < 10000; i++) {
 			//printf("%i\n", i);
