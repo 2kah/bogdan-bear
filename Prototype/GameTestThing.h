@@ -48,7 +48,7 @@ public:
 	virtual void netSendChat(std::string message);
 	virtual void netSendExplosion(Ogre::Vector3 position);
 	virtual void netSendRocket(Ogre::Vector3 position, Ogre::Quaternion orientation);
-
+	
     virtual void addPlayer(Player *player, int team);
     virtual void removePlayer(Player *player);
 
@@ -67,6 +67,7 @@ public:
 	int wins[4];
 
     Ogre::Vector3 spawn_points[8];
+	std::set<Updatable *> removeQueue;
 
 protected:
     Game *game;
@@ -84,11 +85,11 @@ private:
 
     void chatReceived(std::string message);
     void networkExplosion(double x, double y, double z, bool isMassive);
-	void networkRocket(Ogre::Vector3 position, Ogre::Quaternion orientation);
+	void networkRocket(Ogre::Vector3 position, Ogre::Quaternion orientation, unsigned long ID);
 
     void playerUsed(Player *player);
 
-    std::set<Updatable *> removeQueue;
+    
 
 
 // networky stuff

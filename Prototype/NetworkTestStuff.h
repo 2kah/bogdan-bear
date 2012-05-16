@@ -23,6 +23,7 @@ class Object;
 class Player;
 class Game;
 class Rocket;
+class GameTestThing;
 
 namespace {
 struct NetworkSignals {
@@ -33,7 +34,7 @@ struct NetworkSignals {
 
     boost::signal<void (std::string message)> chat;
     boost::signal<void (double x, double y, double z, bool isBig)> explosion;
-	boost::signal<void (Ogre::Vector3 position, Ogre::Quaternion orientation)> recvRocket;
+	boost::signal<void (Ogre::Vector3 position, Ogre::Quaternion orientation, unsigned long ID)> recvRocket;
 	boost::signal<void (Platform *p)> recvPlatform;
 };
 }
@@ -159,7 +160,6 @@ static const unsigned char ID_TURRET_UPDATE = 188;
 class NetworkTestStuff : public Updatable
 {
 public:
-	std::tr1::unordered_map<unsigned long, Rocket*> RocketsByID;
 	//NetPlayer* myNetPlayer;
     // for spawn positions
 	Ogre::Vector3 spawn_points[8];
@@ -167,22 +167,25 @@ public:
     //
 
 	char *SERVER_IP_ADDRESS;
-
     bool hosting;
 	Goal* g;
 	TowerBuilder* tb;
 	Game* game_obj;
+	GameTestThing* gamett_obj;
 	NetTower towerBuffer;
     NetworkSignals signals;
 	int teamScores[4];
 	Turret* turrets[4];
-    NetworkTestStuff(char *hostIP);
+    NetworkTestStuff(char *hostIP, GameTestThing* gtt);
     virtual ~NetworkTestStuff();
 	void setLocalPlayer(Player * p);
 	void broadcastUpdateTower(int low_level, int high_level, int low_layer, int high_layer);
 	void sendFullTower(RakNet::Packet *packet);
 	void receiveUpdateTower(RakNet::Packet *packet);
 	void updateScores();
+
+	virtual void insertRocket(unsigned long ID, Rocket* r);
+
 	virtual void startNetwork(bool asServer);
 	virtual void sendChat(std::string message);
 	virtual void sendChat(std::string message, RakNet::AddressOrGUID target);
@@ -198,6 +201,7 @@ public:
 	virtual void sendStartGame();
 
     virtual void sendExplosion(Ogre::Vector3 position);
+	virtual void sendExplosion(Ogre::Vector3 position, unsigned long rocketID);
 	virtual void sendExplosion(Ogre::Vector3 position, bool isMassive);
 	virtual void sendRocket(Ogre::Vector3 position, Ogre::Quaternion orientation);
 	virtual void sendNetScores();
